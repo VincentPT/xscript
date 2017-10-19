@@ -1,0 +1,332 @@
+#include "stdafx.h"
+#include "CppUnitTest.h"
+#include "ExpresionParser.h"
+#include <functional>
+#include "TemplateForTest.hpp"
+#include "Variable.h"
+#include "FunctionRegisterHelper.h"
+#include "BasicFunction.h"
+#include "BasicType.h"
+#include "FunctionFactory.h"
+#include "function\MemberFunction2.hpp"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace std;
+using namespace ffscript;
+
+#include "ExpresionParser.h"
+#include "ScriptCompiler.h"
+#include "ScriptScope.h"
+#include "expressionunit.h"
+#include "Expression.h"
+
+namespace ffscriptUT
+{
+	template <int paramSize> 
+	class FunctionFactoryForTest : public FunctionFactory
+	{
+		DFunction2Ref _nativeFunction;
+	public:
+		FunctionFactoryForTest(ScriptCompiler* pCompiler, int returnType, DFunction2* nativeFunction) :
+			_nativeFunction(nativeFunction),
+			FunctionFactory(nullptr, pCompiler)
+		{
+			this->setReturnType(ScriptType(returnType, pCompiler->getType(returnType)));
+		}
+
+		virtual ~FunctionFactoryForTest() {}
+
+		ffscript::Function* createFunction(const std::string& name, int id) {
+			ffscript::NativeFunction* function = new FixParamFunction<paramSize>(name, EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, this->getReturnType());
+			function->setNative(_nativeFunction);
+			return function;
+		}
+	};
+
+	TEST_CLASS(ExpressionLinkUT)
+	{
+	public:
+
+		ExpressionLinkUT() {
+
+		}
+
+		TEST_METHOD(testExpressionLink1)
+		{
+			ScriptCompiler scriptCompiler;
+			ExpressionParser parser(&scriptCompiler);
+			FunctionRegisterHelper funcLibHelper(&scriptCompiler);
+			const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
+			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
+			importBasicfunction(funcLibHelper);
+
+			list<ExpUnitRef> units;
+			EExpressionResult eResult = parser.stringToExpList(L"1 + 2", units);
+
+			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+
+			list<ExpressionRef> expList;
+			bool res = parser.compile(units, expList);
+
+			Assert::IsTrue(res, L"compile '1 + 2' failed!");
+
+			eResult = parser.link(expList.front().get());
+			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2' failed!");
+		}
+
+		TEST_METHOD(testExpressionLink2)
+		{
+			ScriptCompiler scriptCompiler;
+			ExpressionParser parser(&scriptCompiler);
+			FunctionRegisterHelper funcLibHelper(&scriptCompiler);
+			const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
+			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
+			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
+			importBasicfunction(funcLibHelper);
+
+			list<ExpUnitRef> units;
+			EExpressionResult eResult = parser.stringToExpList(L"1 + 2.0", units);
+
+			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+
+			list<ExpressionRef> expList;
+			bool res = parser.compile(units, expList);
+			units.clear();
+
+			Assert::IsTrue(res, L"compile '1 + 2.0' failed!");
+
+			eResult = parser.link(expList.front().get());
+			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2.0'  failed!");
+		}
+
+		TEST_METHOD(testExpressionLink3)
+		{
+			ScriptCompiler scriptCompiler;
+			ExpressionParser parser(&scriptCompiler);
+			FunctionRegisterHelper funcLibHelper(&scriptCompiler);
+			const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
+			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
+			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
+			importBasicfunction(funcLibHelper);
+
+			list<ExpUnitRef> units;
+			EExpressionResult eResult = parser.stringToExpList(L"1 + 2.0", units);
+
+			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+
+			list<ExpressionRef> expList;
+			bool res = parser.compile(units, expList);
+			units.clear();
+
+			Assert::IsTrue(res, L"compile '1 + 2.0' failed!");
+
+			eResult = parser.link(expList.front().get());
+			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2.0' failed");
+		}
+
+		TEST_METHOD(testExpressionLink4)
+		{
+			ScriptCompiler scriptCompiler;
+			ExpressionParser parser(&scriptCompiler);
+			FunctionRegisterHelper funcLibHelper(&scriptCompiler);
+			const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
+			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);			
+			importBasicfunction(funcLibHelper);
+
+			list<ExpUnitRef> units;
+			EExpressionResult eResult = parser.stringToExpList(L"1 + 2.0 * 3", units);
+
+			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+
+			list<ExpressionRef> expList;
+			bool res = parser.compile(units, expList);
+			units.clear();
+
+			Assert::IsTrue(res, L"compile '1 + 2.0 * 3' failed!");
+
+			eResult = parser.link(expList.front().get());
+			//Assert::IsTrue(eResult != E_SUCCESS, L"link expression '1 + 2.0 * 3'  must failed. To link successfully, program must register casting function");
+			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3'  should be success. To link successfully, program should implement basic function support all basic parameters without registering casting function");
+		}
+
+		TEST_METHOD(testExpressionLink5)
+		{
+			ScriptCompiler scriptCompiler;
+			ExpressionParser parser(&scriptCompiler);
+			FunctionRegisterHelper funcLibHelper(&scriptCompiler);
+			const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
+			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
+			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
+			importBasicfunction(funcLibHelper);
+
+			list<ExpUnitRef> units;
+			EExpressionResult eResult = parser.stringToExpList(L"1 + 2.0 * 3", units);
+
+			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+
+			list<ExpressionRef> expList;
+			bool res = parser.compile(units, expList);
+			units.clear();
+
+			Assert::IsTrue(res, L"compile '1 + 2.0 * 3' failed!");
+
+			eResult = parser.link(expList.front().get());
+			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3' failed.");
+
+			Assert::IsTrue(expList.front()->getRoot()->toString() == "+", L"Root function must be '+'");
+			Assert::IsTrue(expList.front()->getRoot()->getReturnType().iType() == basicType.TYPE_DOUBLE , L"operator '+' must return double");
+		}
+
+		TEST_METHOD(testExpressionLink6)
+		{
+			ScriptCompiler scriptCompiler;
+			ExpressionParser parser(&scriptCompiler);
+			FunctionRegisterHelper funcLibHelper(&scriptCompiler);
+			const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
+			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
+			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
+			importBasicfunction(funcLibHelper);
+
+			list<ExpUnitRef> units;
+			EExpressionResult eResult = parser.stringToExpList(L"1 + 2.0 * 3", units);
+
+			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+
+			list<ExpressionRef> expList;
+			bool res = parser.compile(units, expList);
+			units.clear();
+
+			Assert::IsTrue(res, L"compile '1 + 2.0 * 3' failed!");
+
+			eResult = parser.link(expList.front().get());
+			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3' failed.");
+		}
+
+		double sum(double a) {
+			return a;
+		}
+
+		double sum(double a, float b) {
+			return a + b;
+		}
+
+		double sum(double a, float b, int c) {
+			return a + b + c;
+		}
+
+		double sum(double a, int b, int c) {
+			return a + b + c;
+		}
+
+		TEST_METHOD(testExpressionLink7)
+		{
+			ScriptCompiler scriptCompiler;
+			ExpressionParser parser(&scriptCompiler);
+			FunctionRegisterHelper funcLibHelper(&scriptCompiler);
+			const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
+			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
+			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
+			importCoreFunctions(funcLibHelper);
+
+			MFunction2W<double, ExpressionLinkUT, double> sum1(this, &ExpressionLinkUT::sum);
+			MFunction2W<double, ExpressionLinkUT, double, float> sum2(this, &ExpressionLinkUT::sum);
+			MFunction2W<double, ExpressionLinkUT, double, float, int> sum3(this, &ExpressionLinkUT::sum);
+			MFunction2W<double, ExpressionLinkUT, double, int, int> sum4(this, &ExpressionLinkUT::sum);
+			
+			wstring functionString = L"sum(1, 2.0, 3)";
+
+			int functionId1 = funcLibHelper.registFunction("sum", "double", new FunctionFactoryForTest<1>(&scriptCompiler,basicType.TYPE_DOUBLE, sum1.clone()));
+			int functionId2 = funcLibHelper.registFunction("sum", "double,float", new FunctionFactoryForTest<2>(&scriptCompiler, basicType.TYPE_DOUBLE, sum2.clone()));
+			int functionId3 = funcLibHelper.registFunction("sum", "double,float,int", new FunctionFactoryForTest<3>(&scriptCompiler, basicType.TYPE_DOUBLE, sum3.clone()));
+			int functionId4 = funcLibHelper.registFunction("sum", "double,int,int", new FunctionFactoryForTest<3>(&scriptCompiler, basicType.TYPE_DOUBLE, sum4.clone()));
+
+			list<ExpUnitRef> units;
+			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+
+			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+
+			list<ExpressionRef> expList;
+			bool res = parser.compile(units, expList);
+			units.clear();
+
+			Assert::IsTrue(res, (L"compile '" + functionString + L"' failed!").c_str());
+
+			eResult = parser.link(expList.front().get());
+			//Assert::IsTrue(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
+			//Assert::IsTrue( dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId3, (L"function '" + functionString + L"' must be linked to sum(double,float,int).").c_str());
+			Assert::IsTrue(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
+		}
+
+		TEST_METHOD(testExpressionLink8)
+		{
+			ScriptCompiler scriptCompiler;
+			ExpressionParser parser(&scriptCompiler);
+			FunctionRegisterHelper funcLibHelper(&scriptCompiler);
+			const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
+			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
+			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
+			importCoreFunctions(funcLibHelper);
+
+			MFunction2W<double, ExpressionLinkUT, double> sum1(this, &ExpressionLinkUT::sum);
+			MFunction2W<double, ExpressionLinkUT, double, float> sum2(this, &ExpressionLinkUT::sum);
+			MFunction2W<double, ExpressionLinkUT, double, float, int> sum3(this, &ExpressionLinkUT::sum);
+			MFunction2W<double, ExpressionLinkUT, double, int, int> sum4(this, &ExpressionLinkUT::sum);
+
+			wstring functionString = L"sum(1.0, 2.0, 3.0)";
+
+			int functionId1 = funcLibHelper.registFunction("sum", "double", new FunctionFactoryForTest<1>(&scriptCompiler, basicType.TYPE_DOUBLE, sum1.clone()));
+			int functionId2 = funcLibHelper.registFunction("sum", "double,float", new FunctionFactoryForTest<2>(&scriptCompiler, basicType.TYPE_DOUBLE, sum2.clone()));
+			int functionId3 = funcLibHelper.registFunction("sum", "double,float,int", new FunctionFactoryForTest<3>(&scriptCompiler, basicType.TYPE_DOUBLE, sum3.clone()));
+			int functionId4 = funcLibHelper.registFunction("sum", "double,int,int", new FunctionFactoryForTest<3>(&scriptCompiler, basicType.TYPE_DOUBLE, sum4.clone()));
+			int functionId5 = funcLibHelper.registFunction("sum", "int,int,int", new FunctionFactoryForTest<3>(&scriptCompiler, basicType.TYPE_DOUBLE, nullptr));
+
+			list<ExpUnitRef> units;
+			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+
+			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+
+			list<ExpressionRef> expList;
+			bool res = parser.compile(units, expList);
+			units.clear();
+
+			Assert::IsTrue(res, (L"compile '" + functionString + L"' failed!").c_str());
+
+			eResult = parser.link(expList.front().get());
+			//Assert::IsTrue(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
+			//Assert::IsTrue(dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId3, (L"function '" + functionString + L"' must be linked to sum(double,float,int).").c_str());
+			Assert::IsTrue(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
+		}
+
+		TEST_METHOD(testExpressionLink9)
+		{
+			ScriptCompiler scriptCompiler;
+			ExpressionParser parser(&scriptCompiler);
+			FunctionRegisterHelper funcLibHelper(&scriptCompiler);
+			const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
+			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
+			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
+			importCoreFunctions(funcLibHelper);
+
+			wstring functionString = L"sum(1, 2.0, 3)";
+
+			int functionId1 = funcLibHelper.registFunction("sum", "int,int,int", new FunctionFactoryForTest<3>(&scriptCompiler, basicType.TYPE_INT , nullptr));
+			int functionId3 = funcLibHelper.registFunction("sum", "double,double,double", new FunctionFactoryForTest<3>(&scriptCompiler, basicType.TYPE_DOUBLE, nullptr));
+
+			list<ExpUnitRef> units;
+			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+
+			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+
+			list<ExpressionRef> expList;
+			bool res = parser.compile(units, expList);
+			units.clear();
+
+			Assert::IsTrue(res, (L"compile '" + functionString + L"' failed!").c_str());
+
+			eResult = parser.link(expList.front().get());
+			//Assert::IsTrue(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
+			//Assert::IsTrue(dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId1, (L"function '" + functionString + L"' must be linked to sum(int,int,int).").c_str());
+			Assert::IsTrue(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
+		}
+	};
+}

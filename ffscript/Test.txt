@@ -1,0 +1,23 @@
+1 ? 2 ? 3 : 4 : 5
+
+compile
+operand = 1
+operator = ?
+
+compileCondition 1
+ifExpUnits = 2
+operand = 1
+operator = ? ?
+
+compileCondition 2
+ifExpUnits = 3
+operand = 1
+operator = ? ? :
+
+compile 2
+operand = 3
+operator = {}
+
+compileCondition 2
+operator = :
+ifClause = 3

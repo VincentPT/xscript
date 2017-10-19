@@ -1,0 +1,54 @@
+#pragma once
+#include "ScriptScope.h"
+#include "Program.h"
+#include <string>
+
+namespace ffscript {
+	class FunctionScope;
+	class Executor;
+	class LoopScope;
+
+	class ContextScope :
+		public ScriptScope
+	{
+		FunctionScope* _functionScope;
+		LoopScope* _loopScope;
+		CodeSegmentEntry _codeSegment;
+		CommandPointer _beginExitScopeCommand;
+		ExecutorRef _beginExecutor;
+		ExecutorRef _endExecutor;
+		CommandUnit* _beginExitScopeUnit;
+		std::string _name;
+
+	public:
+		ContextScope(ScriptScope* parent, FunctionScope* functionScope);
+		virtual ~ContextScope();
+
+		void setLoopScope(LoopScope* loopScope);
+		LoopScope* getLoopScope() const;
+		FunctionScope* getFunctionScope() const;
+		void setName(const std::string& name);
+
+		//parser functions
+	public:
+		virtual const wchar_t* parse(const wchar_t* text, const wchar_t* end);
+		virtual bool extractCode(Program* program);
+		virtual bool updateCodeForControllerCommands(Program* program);
+		const wchar_t* parseCondition(const wchar_t* text, const wchar_t* end);
+		const wchar_t* parseIf(const wchar_t* text, const wchar_t* end);
+		const wchar_t* parseWhile(const wchar_t* text, const wchar_t* end);
+		const CodeSegmentEntry* getCode() const;
+		CommandPointer getBeginExitScopeCommand() const;
+		virtual void buildExitScopeCodeCommands(CommandList& commandList) const;
+		void setCodeBegin( CommandPointer startCode);
+		void setCodeEnd(CommandPointer endCode);
+		virtual int correctAndOptimize(Program* program);
+	protected:
+		//Executor* getExcutorBegin() const;
+		//Executor* getExcutorEnd() const;
+		void applyExitScopeCommand();
+		Function* checkAndGenerateDestructor(ScriptCompiler* scriptCompiler, const ScriptType& type);
+		int checkAndGenerateDestructors(ScriptCompiler* scriptCompiler, ExecutableUnit* exeUnit, std::list<FunctionRef>& destructors);
+		bool tryApplyConstructorForDeclarationExpression(Variable* pVariable, std::list<ExpUnitRef>& unitList, const ScriptType* expectedReturnType, EExpressionResult& eResult);
+	};
+}

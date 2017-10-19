@@ -1,0 +1,429 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dll_debug|Win32">
+      <Configuration>Dll_debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dll_debug|x64">
+      <Configuration>Dll_debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dll_Release|Win32">
+      <Configuration>Dll_Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dll_Release|x64">
+      <Configuration>Dll_Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{62653E92-4237-4105-8A30-C5BCC814CA67}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ffscript</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dll_debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dll_Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dll_debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dll_Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dll_debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dll_Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dll_debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dll_Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>ffscript</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dll_debug|Win32'">
+    <TargetName>ffscript</TargetName>
+    <TargetExt>.dll</TargetExt>
+    <OutDir>$(SolutionDir)Dll\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>ffscript</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dll_Release|Win32'">
+    <TargetName>ffscript</TargetName>
+    <TargetExt>.dll</TargetExt>
+    <OutDir>$(SolutionDir)Dll\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>ffscript</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dll_debug|x64'">
+    <TargetName>ffscript</TargetName>
+    <OutDir>$(SolutionDir)Dll\$(Platform)\$(Configuration)\</OutDir>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>ffscript</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dll_Release|x64'">
+    <TargetName>ffscript</TargetName>
+    <OutDir>$(SolutionDir)Dll\$(Platform)\$(Configuration)\</OutDir>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\UnitTest\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dll_debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>FFSCRIPT_DYNAMIC;FFSCIPT_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dll_debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>FFSCRIPT_DYNAMIC;FFSCIPT_EXPORTS;_DEBUG;DLL;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\UnitTest\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dll_Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WINDOWS;_USRDLL;FFSCRIPT_DYNAMIC;FFSCIPT_EXPORTS;WIN32;NDEBUG;DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dll_Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WINDOWS;_USRDLL;FFSCRIPT_DYNAMIC;FFSCIPT_EXPORTS;NDEBUG;DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+    <Text Include="Test.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BasicFunction.h" />
+    <ClInclude Include="BasicFunctionFactory.hpp" />
+    <ClInclude Include="BasicOperators.hpp" />
+    <ClInclude Include="BasicType.h" />
+    <ClInclude Include="CommandTree.h" />
+    <ClInclude Include="CommandUnit.h" />
+    <ClInclude Include="CompilerSuite.h" />
+    <ClInclude Include="ConditionalOperator.h" />
+    <ClInclude Include="FFScriptArray.hpp" />
+    <ClInclude Include="FFStack.h" />
+    <ClInclude Include="ffutil.hpp" />
+    <ClInclude Include="FuncLibrary.h" />
+    <ClInclude Include="function\MemberFunction2Ref.hpp" />
+    <ClInclude Include="InternalCompilerSuite.h" />
+    <ClInclude Include="LogicCommands.hpp" />
+    <ClInclude Include="OperatorObject.h" />
+    <ClInclude Include="OverloadingRules.h" />
+    <ClInclude Include="ScopedCompilingScope.h" />
+    <ClInclude Include="Context.h" />
+    <ClInclude Include="ContextScope.h" />
+    <ClInclude Include="ControllerExecutor.h" />
+    <ClInclude Include="core_function.h" />
+    <ClInclude Include="DynamicFunctionFactory.h" />
+    <ClInclude Include="Executor.h" />
+    <ClInclude Include="ExpresionParser.h" />
+    <ClInclude Include="expresion_defs.h" />
+    <ClInclude Include="Expression.h" />
+    <ClInclude Include="expressionunit.h" />
+    <ClInclude Include="ExpUnitExecutor.h" />
+    <ClInclude Include="FactoryTree.h" />
+    <ClInclude Include="ffscript.h" />
+    <ClInclude Include="FunctionFactory.h" />
+    <ClInclude Include="FunctionRegisterHelper.h" />
+    <ClInclude Include="FunctionScope.h" />
+    <ClInclude Include="function\CdeclFunction.hpp" />
+    <ClInclude Include="function\CdeclFunction2.hpp" />
+    <ClInclude Include="function\DynamicFunction.h" />
+    <ClInclude Include="function\DynamicFunction2.h" />
+    <ClInclude Include="Function\functioninternal.hpp" />
+    <ClInclude Include="function\functioninternal2.hpp" />
+    <ClInclude Include="function\MemberFunction.hpp" />
+    <ClInclude Include="function\MemberFunction2.hpp" />
+    <ClInclude Include="function\StdFunction.hpp" />
+    <ClInclude Include="GlobalScope.h" />
+    <ClInclude Include="InstructionCommand.h" />
+    <ClInclude Include="Internal.h" />
+    <ClInclude Include="LoopScope.h" />
+    <ClInclude Include="MemberVariableAccessors.h" />
+    <ClInclude Include="MemoryBlock.h" />
+    <ClInclude Include="ObjectBlock.hpp" />
+    <ClInclude Include="Program.h" />
+    <ClInclude Include="RefFunction.h" />
+    <ClInclude Include="ReservedContextScope.h" />
+    <ClInclude Include="ScopedContext.h" />
+    <ClInclude Include="ScopeRuntimeData.h" />
+    <ClInclude Include="ScriptArgStream.h" />
+    <ClInclude Include="ScriptCompiler.h" />
+    <ClInclude Include="ScriptFunction.h" />
+    <ClInclude Include="ScriptParamBuffer.hpp" />
+    <ClInclude Include="ScriptScope.h" />
+    <ClInclude Include="ScriptTask.h" />
+    <ClInclude Include="ScriptType.h" />
+    <ClInclude Include="SingleList.h" />
+    <ClInclude Include="StaticContext.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StructClass.h" />
+    <ClInclude Include="DefaultCommands.h" />
+    <ClInclude Include="Supportfunctions.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Template.h" />
+    <ClInclude Include="template\TemplateBlock.hpp" />
+    <ClInclude Include="template\TemplateTypeManager.h" />
+    <ClInclude Include="tree\Tree.h" />
+    <ClInclude Include="TypeManager.h" />
+    <ClInclude Include="unitType.h" />
+    <ClInclude Include="CodeUpdater.h" />
+    <ClInclude Include="Utility.hpp" />
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="Variable.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BasicFunction.cpp" />
+    <ClCompile Include="BasicType.cpp" />
+    <ClCompile Include="CommandTree.cpp" />
+    <ClCompile Include="CommandUnit.cpp" />
+    <ClCompile Include="CompilerSuite.cpp" />
+    <ClCompile Include="ConditionalOperator.cpp" />
+    <ClCompile Include="FuncLibrary.cpp" />
+    <ClCompile Include="InternalCompilerSuite.cpp" />
+    <ClCompile Include="OperatorObject.cpp" />
+    <ClCompile Include="OverloadingRules.cpp" />
+    <ClCompile Include="ScopedCompilingScope.cpp" />
+    <ClCompile Include="Context.cpp" />
+    <ClCompile Include="ContextScope.cpp" />
+    <ClCompile Include="ControllerExecutor.cpp" />
+    <ClCompile Include="DynamicFunctionFactory.cpp" />
+    <ClCompile Include="Executor.cpp" />
+    <ClCompile Include="ExpresionParser.cpp" />
+    <ClCompile Include="Expression.cpp" />
+    <ClCompile Include="expressionunit.cpp" />
+    <ClCompile Include="ExpUnitExecutor.cpp" />
+    <ClCompile Include="ExpUnitExecutor2.cpp" />
+    <ClCompile Include="FactoryTree.cpp" />
+    <ClCompile Include="FunctionFactory.cpp" />
+    <ClCompile Include="FunctionRegisterHelper.cpp" />
+    <ClCompile Include="FunctionScope.cpp" />
+    <ClCompile Include="function\DynamicFunction.cpp" />
+    <ClCompile Include="function\DynamicFunction2.cpp" />
+    <ClCompile Include="GlobalScope.cpp" />
+    <ClCompile Include="GlobalScopeParser.cpp" />
+    <ClCompile Include="InstructionCommand.cpp" />
+    <ClCompile Include="Internal.cpp" />
+    <ClCompile Include="LoopScope.cpp" />
+    <ClCompile Include="MemberVariableAccessors.cpp" />
+    <ClCompile Include="MemoryBlock.cpp" />
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="RefFunction.cpp" />
+    <ClCompile Include="ReservedContextScope.cpp" />
+    <ClCompile Include="ScopedContext.cpp" />
+    <ClCompile Include="ScopeRuntimeData.cpp" />
+    <ClCompile Include="ScriptArgStream.cpp" />
+    <ClCompile Include="ScriptCompiler.cpp" />
+    <ClCompile Include="ScriptFunction.cpp" />
+    <ClCompile Include="ScriptScope.cpp" />
+    <ClCompile Include="ScriptScopeParser.cpp" />
+    <ClCompile Include="ScriptTask.cpp" />
+    <ClCompile Include="ScriptType.cpp" />
+    <ClCompile Include="StaticContext.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dll_debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dll_debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dll_Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dll_Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="StructClass.cpp" />
+    <ClCompile Include="DefaultCommands.cpp" />
+    <ClCompile Include="Supportfunctions.cpp" />
+    <ClCompile Include="Template.cpp" />
+    <ClCompile Include="template\TemplateTypeManager.cpp" />
+    <ClCompile Include="tree\Tree.cpp" />
+    <ClCompile Include="CodeUpdater.cpp" />
+    <ClCompile Include="TypeManager.cpp" />
+    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="Variable.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
