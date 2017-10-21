@@ -1,0 +1,25 @@
+{
+   "pretzelSettings" : {
+      "Address" : "",
+      "Background Color" : {
+         "a" : "1",
+         "b" : "0.996078",
+         "g" : "0.996078",
+         "r" : "1"
+      },
+      "line with" : "1",
+      "object background color" : {
+         "a" : "1",
+         "b" : "0.996078",
+         "g" : "0.996078",
+         "r" : "1"
+      },
+      "object line color" : {
+         "a" : "1",
+         "b" : "0.996078",
+         "g" : "0.996078",
+         "r" : "1"
+      },
+      "process name" : "vstest.executionengine.exe"
+   }
+}

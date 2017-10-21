@@ -3026,7 +3026,9 @@ namespace ffscript {
 						}
 					}
 					//the code bellow is going to check assigment for structs
-					else if (ISOPERAND(pExeUnit1)) {
+					else if (ISOPERAND(pExeUnit1) &&
+						(function->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT ||
+							function->getType() == EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR)) {
 						struct1 = scriptCompiler->getStruct(dataType1.iType());
 						int variantArrayType = basicType.TYPE_VARIANTARRAY;
 						if (variantArrayType == dataType2.iType() || variantArrayType == dataType2.origin()) {
