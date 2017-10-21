@@ -61,3 +61,5 @@ firefly.VC.VC.opendb
 /debugger/buid64/CMakeCache.txt
 /debugger/buid64/ALL_BUILD.vcxproj.filters
 /debugger/buid64/ALL_BUILD.vcxproj
+/ffscriptUT/Debug
+/ffscriptUT/Release
