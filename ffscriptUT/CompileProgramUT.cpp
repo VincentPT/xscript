@@ -368,5 +368,49 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, nullptr);
 		}
+
+		///
+		/// Call a function script in global code
+		///
+		TEST_METHOD(CompileProgram9)
+		{
+			//prepare compiler object with some basic types and functions
+			ScriptCompiler scriptCompiler;
+			FunctionRegisterHelper funcLibHelper(&scriptCompiler);
+
+			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
+			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
+			importBasicfunction(funcLibHelper);
+
+			//initialize global scope and its data
+			byte globalData[1024];
+			StaticContext staticContex(globalData, sizeof(globalData));
+			GlobalScope rootScope(&staticContex, &scriptCompiler);
+
+			//initialize an instance of script program
+			Program theProgram;
+			scriptCompiler.bindProgram(&theProgram);
+
+			const wchar_t* scriptCode =
+				L"int test() {"
+				L"	return 1;"
+				L"}"
+				L"int a = test();"
+				;
+
+			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsTrue(res != nullptr, L"compile program failed");
+
+			bool blRes = rootScope.extractCode(&theProgram);
+			Assert::IsTrue(blRes, L"extract code failed");
+
+			auto pVariable = rootScope.findVariable("a");
+			Assert::IsNotNull(pVariable, L"cannot find variable 'a'");
+
+			Assert::IsTrue(false, L"Current the engine cannot call a script function in global code");
+			staticContex.run();
+			int* iRes = (int*)staticContex.getAbsoluteAddress(pVariable->getOffset());
+			Assert::AreEqual(1, *iRes, L"program does not run properly");
+		}
 	};
 }
