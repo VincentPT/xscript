@@ -421,8 +421,8 @@ namespace ffscript {
 		//fisrt param space is address of array SimpleVariantArray
 		moveLocalOffset(sizeof(void*));
 
-		//reversed the space for the list holds pointer of each param and param size
-		moveLocalOffset(sizeof(SimpleVariantArray::size) + n*sizeof(SimpleVariant));
+		//reversed the space for the list holds pointer of each param and param size		
+		moveLocalOffset(sizeof(SimpleVariantArray) - sizeof(SimpleVariantArray::elems) + n * sizeof(SimpleVariantArray::elems[0]));
 
 		int i;
 		int paramSpace = 0;
