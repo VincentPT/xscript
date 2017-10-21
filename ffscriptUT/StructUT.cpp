@@ -1333,6 +1333,74 @@ namespace ffscriptUT
 			Assert::AreEqual(4, objRes->c, L"program can run but return wrong value");
 		}
 
+		///
+		/// Check initializing struct with a dynamic array and function inside the dynamic array
+		///
+		TEST_METHOD(TestStructInitialize6)
+		{
+			byte globalData[1024];
+			StaticContext staticContext(globalData, sizeof(globalData));
+			GlobalScope rootScope(&staticContext, &scriptCompiler);
+
+			importBasicfunction(funcLibHelper);
+
+			//initialize an instance of script program
+			Program theProgram;
+			scriptCompiler.bindProgram(&theProgram);
+
+			const wchar_t* scriptCode =
+				L"struct StructA {"
+				L"	int a;"
+				L"	int b;"
+				L"}"
+
+				L"struct StructB {"
+				L"	int a;"
+				L"	StructA b;"
+				L"	int c;"
+				L"}"
+
+				L"int fx(int x) {"
+				L"  return x;"
+				L"}"
+
+				L"StructB test() {"
+				L"	StructB objTemp1;"
+				L"	return objTemp1 = {fx(1),{2,fx(3)},4};"
+				L"}"
+				;
+#pragma pack(push)
+#pragma pack(1)
+			struct StructA
+			{
+				int a;
+				int b;
+			};
+			struct StructB
+			{
+				int a;
+				StructA b;
+				int c;
+			};
+#pragma pack(pop)
+			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::AreNotEqual(nullptr, res, L"compile program failed");
+
+			bool blRes = rootScope.extractCode(&theProgram);
+			Assert::IsTrue(blRes, L"extract code failed");
+
+			int functionId = scriptCompiler.findFunction("test", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+
+			ScriptTask scriptTask(&theProgram);
+			scriptTask.runFunction(functionId, nullptr);
+			StructB* objRes = (StructB*)scriptTask.getTaskResult();
+			Assert::AreEqual(1, objRes->a, L"program can run but return wrong value");
+			Assert::AreEqual(2, objRes->b.a, L"program can run but return wrong value");
+			Assert::AreEqual(3, objRes->b.b, L"program can run but return wrong value");
+			Assert::AreEqual(4, objRes->c, L"program can run but return wrong value");
+		}
+
 		TEST_METHOD(TestStructReturnRef)
 		{
 			byte globalData[1024];
