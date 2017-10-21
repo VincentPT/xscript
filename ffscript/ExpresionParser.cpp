@@ -1680,36 +1680,30 @@ namespace ffscript {
 		return bestCandidate;
 	}
 
-	int checkAssigmentOperatorForStruct(ScriptCompiler* scriptCompiler, const StructClass* pStruct, const DynamicParamFunctionRef& function) {
+	bool checkAssigmentOperatorForStruct(ScriptCompiler* scriptCompiler, const StructClass* pStruct, const DynamicParamFunctionRef& function) {
 		MemberInfo memberInfo;
 		bool res = pStruct->getMemberFirst(nullptr, &memberInfo);
 		auto& params = function->getParams();
 		auto iter = params.begin();
-		int i = 0;
 		bool blError;
-		while (res && iter != params.end())
-		{
+		while (res && iter != params.end()) {
 			if (memberInfo.type != iter->get()->getReturnType()) {
 				blError = true;
 				//does not allow different type assigment for each member in the struct
 				const StructClass* pSubStruct = scriptCompiler->getStruct(memberInfo.type.iType());
 				if (pSubStruct != nullptr && iter->get()->getType() == EXP_UNIT_ID_DYNAMIC_FUNC) {
-					if (checkAssigmentOperatorForStruct(scriptCompiler, pSubStruct, dynamic_pointer_cast<DynamicParamFunction>(*iter)) < 0)
+					if (checkAssigmentOperatorForStruct(scriptCompiler, pSubStruct, dynamic_pointer_cast<DynamicParamFunction>(*iter)))
 						blError = false;
 
 				}
-				if(blError)
-					return i;
+				if (blError)
+					return false;
 			}
 			res = pStruct->getMemberNext(nullptr, &memberInfo);
 			iter++;
-			i++;
-		}
-		if (i != (int)params.size()) {
-			return i;
 		}
 
-		return -1;
+		return true;
 	}
 
 	bool convertToRef(ScriptCompiler* scriptCompiler, ExecutableUnitRef& param) {
@@ -3035,8 +3029,7 @@ namespace ffscript {
 							if (struct1) {
 
 								//check variant array if valid or not in use to assign to a struct
-								int errorIdx;
-								if ((errorIdx = checkAssigmentOperatorForStruct(scriptCompiler, struct1, dynamic_pointer_cast<DynamicParamFunction>(pExeUnit2))) >= 0) {
+								if (!checkAssigmentOperatorForStruct(scriptCompiler, struct1, dynamic_pointer_cast<DynamicParamFunction>(pExeUnit2))) {
 									eResult = E_TYPE_CONVERSION_ERROR;
 									scriptCompiler->setErrorText("different type and different number of element for struct assigment does not allow");
 									return nullptr;
