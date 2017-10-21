@@ -24,6 +24,10 @@
 *.la
 *.a
 
+#debug database files
+firefly.VC.db
+firefly.VC.VC.opendb
+
 # Executables
 *.exe
 *.out
