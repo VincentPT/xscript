@@ -47,14 +47,14 @@ namespace ffscript {
 	}
 
 	Variable* Variable::clone() {
-		Variable* child = new Variable(_name);
-		child->_offset = _offset;
-		child->_type = _type;
-		child->_ownerScope = _ownerScope;
+		Variable* aCopy = new Variable(_name);
+		aCopy->_offset = _offset;
+		aCopy->_type = _type;
+		aCopy->_ownerScope = _ownerScope;
 
-		_copies.push_back(std::shared_ptr<Variable>(child));
+		_copies.push_back(std::shared_ptr<Variable>(aCopy));
 
-		return child;
+		return aCopy;
 	}
 
 	int Variable::getSize() const {
@@ -74,5 +74,9 @@ namespace ffscript {
 
 	Variable* MemberVariable::getParent() const {
 		return _parent;
+	}
+
+	int MemberVariable::getOffset() const {
+		return Variable::getOffset() + _parent->getOffset();
 	}
 }

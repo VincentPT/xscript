@@ -30,7 +30,7 @@ namespace ffscript {
 		void setGroupType(VariableGroupType groupType);
 		VariableGroupType getGroupType() const;
 		const std::string& getName() const;
-		int getOffset() const;
+		virtual int getOffset() const;
 		void setOffset(int offset);
 		ScriptScope* getScope() const;
 		void setScope(ScriptScope* ownerScope);
@@ -46,5 +46,6 @@ namespace ffscript {
 
 		void setParent(Variable* parent);
 		Variable* getParent() const;
+		int getOffset() const;
 	};
 }
