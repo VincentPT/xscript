@@ -21,7 +21,7 @@ namespace ffscript {
 		int _offset;
 		ScriptScope* _ownerScope;
 		std::string _name;
-		std::list<std::shared_ptr<Variable>> _children;
+		std::list<std::shared_ptr<Variable>> _copies;
 	public:
 		Variable(const std::string& name);
 		virtual ~Variable();

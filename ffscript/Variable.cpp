@@ -33,8 +33,9 @@ namespace ffscript {
 	int Variable::getOffset() const { return _offset; }
 	void Variable::setOffset(int offset) {
 		_offset = offset;
-		for (auto it = _children.begin(); it != _children.end(); it++) {
-			it->get()->setOffset(offset);
+		for (auto it = _copies.begin(); it != _copies.end(); it++) {
+			auto& copyRef = *it;
+			copyRef->setOffset(offset);
 		}
 	}
 	ScriptScope* Variable::getScope() const {
@@ -51,7 +52,7 @@ namespace ffscript {
 		child->_type = _type;
 		child->_ownerScope = _ownerScope;
 
-		_children.push_back(std::shared_ptr<Variable>(child));
+		_copies.push_back(std::shared_ptr<Variable>(child));
 
 		return child;
 	}
