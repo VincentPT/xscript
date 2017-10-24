@@ -43,10 +43,10 @@ namespace ffscript {
 			//if (expectedType != actualReturnType) {
 				ParamCastingInfo paramInfo;
 				bool res = false;
-				if (res = findMatchingLevel1(scriptCompiler, refVoidType, expectedType, actualReturnType, paramInfo)) {
+				if (res = scriptCompiler->findMatchingLevel1(refVoidType, expectedType, actualReturnType, paramInfo)) {
 					;
 				}
-				else if (res = findMatchingLevel2(scriptCompiler, expectedType, actualReturnType, paramInfo)) {
+				else if (res = scriptCompiler->findMatchingLevel2(expectedType, actualReturnType, paramInfo)) {
 					;
 				}
 				if (res) {

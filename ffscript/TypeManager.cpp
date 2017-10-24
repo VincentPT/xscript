@@ -42,7 +42,7 @@ namespace ffscript {
 			typeInString.append(POINTER_SIGN " ");
 		}
 
-		typeId &= DATA_TYPE_UNKNOWN;
+		typeId &= DATA_TYPE_ORIGIN_MASK;
 		typeInString.append(*(_typesInString.at(typeId).name));
 
 		return typeInString;
@@ -66,7 +66,7 @@ namespace ffscript {
 		if ((typeId & DATA_TYPE_POINTER_MASK) || (typeId & DATA_TYPE_REF_MASK)) {
 			return sizeof(void*);
 		}
-		typeId &= DATA_TYPE_UNKNOWN;
+		typeId &= DATA_TYPE_ORIGIN_MASK;
 		int realSize = _typesInString.at(typeId).size;
 		return ((realSize - 1)/sizeof(void*) + 1) * sizeof(void*);
 	}
@@ -75,12 +75,12 @@ namespace ffscript {
 		if ( (typeId & DATA_TYPE_POINTER_MASK) || (typeId & DATA_TYPE_REF_MASK)) {
 			return sizeof(void*);
 		}
-		typeId &= DATA_TYPE_UNKNOWN;
+		typeId &= DATA_TYPE_ORIGIN_MASK;
 		return _typesInString.at(typeId).size;
 	}
 
 	void TypeManager::setTypeSize(int typeId, int size) {
-		typeId &= DATA_TYPE_UNKNOWN;
+		typeId &= DATA_TYPE_ORIGIN_MASK;
 		_typesInString.at(typeId).size = size;
 	}
 

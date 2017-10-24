@@ -120,6 +120,25 @@ namespace ffscript {
 		return scriptType.iType();
 	}
 
+	ScriptType ScriptType::buildScriptType(ScriptCompiler* scriptCompiler, int iType, char refLevel) {
+		ScriptType stype;
+		stype.setType(iType);
+		auto& typeStr = stype._sType;
+		auto typeOriginStr = scriptCompiler->getType(stype.origin());
+		while (refLevel > 0)
+		{
+			typeStr.append(POINTER_SIGN " ");
+		}
+
+		typeStr.append(typeOriginStr);
+
+		if (stype.isSemiRefType()) {
+			typeStr.push_back('&');
+		}
+
+		return stype;
+	}
+
 	void ScriptType::updateType(ScriptCompiler* scriptCompiler) {
 		_iType = stringTypeToInt(scriptCompiler, _sType);
 	}

@@ -462,7 +462,7 @@ namespace ffscript {
 			this->setErrorText("operator is not found");
 			return false;
 		}
-		if (functionFactory->getParamCount() != 1) {
+		if (functionFactory->getParamCount() < 1) {
 			this->setErrorText("operator is specified to an incompatible function");
 			return false;
 		}
@@ -473,16 +473,89 @@ namespace ffscript {
 			return false;
 		}
 
+		if (functionFactory->getParamCount() == 1) {
+			return registDefaultConstructor(type, functionId);
+		}
+		if (functionFactory->getParamCount() == 2) {
+			return registCopyConstructor(type, functionId);
+		}
+
+		ConstructorIDListRef dummy;
+		auto it = _constructorsMap.insert( make_pair(type, dummy) );
+		if (it.second) {
+			it.first->second = make_shared<ConstructorIDList>();
+			it.first->second->push_back(functionId);
+
+			return true;
+		}
+
+		// check if there is same constructor prototype is registered
+		auto desireOverloadingItem = _functionLibRef->findFunctionInfo(functionId);
+		auto desireParamTypes = desireOverloadingItem->paramTypes;
+		auto& constructorListRef = it.first->second;
+		for (auto it = constructorListRef->begin(); it != constructorListRef->end(); it++) {
+			auto pRegisteredItem = _functionLibRef->findFunctionInfo(*it);
+			auto& registeredParamTypes = pRegisteredItem->paramTypes;
+
+			if (desireParamTypes.size() == registeredParamTypes.size()) {
+				auto ptjt = registeredParamTypes.begin();
+				for (auto ptit = desireParamTypes.begin(); ptit != desireParamTypes.end(); ptit++, ptjt++) {
+					if (ptit != ptjt) {
+						break;
+					}
+				}
+				if (ptjt == registeredParamTypes.end()) {
+					return false;
+				}
+			}
+		}
+
+		constructorListRef->push_back(functionId);
+		return true;
+	}
+
+	bool ScriptCompiler::registDefaultConstructor(int type, int functionId) {		
 		//overwrite if the constructor is already exist
 		auto it = _constructorMap.insert(std::make_pair(type, functionId));
 		if (it.second == false) {
-			it.first->second = functionId;
+			//it.first->second = functionId;
+			return false;
 		}
 
 		return true;
 	}
 
-	int ScriptCompiler::getConstructor(int type) {
+	bool ScriptCompiler::registCopyConstructor(int type, int functionId) {
+		auto functionFactory = getFunctionFactory(functionId);
+		ScriptType& paramType2 = functionFactory->getParamType(1);
+
+		auto key = type;
+
+		BinaryFunctionParamMapRef emptyId;
+		BinaryFunctionParamMap* registFunctions;
+
+		//overwrite if the constructor is already exist
+		auto it = _copyConstructorMap.insert(std::make_pair(key, emptyId));
+		if (it.second == false) {
+			//auto& newList = it.first->second;
+			//registFunctions = newList.get();
+			return false;
+		}
+		else
+		{
+			auto& newMap = it.first->second;
+			newMap.reset(new BinaryFunctionParamMap());
+
+			registFunctions = newMap.get();
+		}
+
+		string subKey = paramType2.sType();
+		registFunctions->operator[](subKey) = functionId;
+
+		return true;
+	}
+
+	int ScriptCompiler::getDefaultConstructor(int type) {
 		auto it = _constructorMap.find(type);
 		if (it != _constructorMap.end()) {
 			return it->second;
@@ -497,7 +570,7 @@ namespace ffscript {
 			this->setErrorText("operator is not found");
 			return false;
 		}
-		if (functionFactory->getParamCount() != 1) {
+		if (functionFactory->getParamCount() < 1) {
 			this->setErrorText("operator is specified to an incompatible function");
 			return false;
 		}
@@ -524,51 +597,7 @@ namespace ffscript {
 		}
 
 		return -1;
-	}
-
-	bool ScriptCompiler::registCopyConstructor(int type, int functionId) {
-		auto functionFactory = getFunctionFactory(functionId);
-		if (functionFactory == nullptr) {
-			this->setErrorText("operator is not found");
-			return false;
-		}
-		if (functionFactory->getParamCount() != 2) {
-			this->setErrorText("operator is specified to an incompatible function");
-			return false;
-		}
-
-		ScriptType& paramTpe1 = functionFactory->getParamType(0);
-		if (paramTpe1.refLevel() != 1) {
-			this->setErrorText("operator is specified to an incompatible function");
-			return false;
-		}
-
-		ScriptType& paramTpe2 = functionFactory->getParamType(1);
-
-		auto key = type;
-
-		BinaryFunctionParamMapRef emptyId;
-		BinaryFunctionParamMap* registFunctions;
-		
-		//overwrite if the constructor is already exist
-		auto it = _copyConstructorMap.insert(std::make_pair(key, emptyId));
-		if (it.second == false) {
-			auto& newList = it.first->second;
-			registFunctions = newList.get();
-		}
-		else
-		{
-			auto& newMap = it.first->second;
-			newMap.reset(new BinaryFunctionParamMap() );
-
-			registFunctions = newMap.get();
-		}
-
-		string subKey = paramTpe2.sType();
-		registFunctions->operator[](subKey) = functionId;
-
-		return true;
-	}
+	}	
 
 	void ScriptCompiler::getCopyConstructor(int type, const ScriptType& param2Type, list<std::pair<const OverLoadingItem*, ParamCastingInfo>>& constructorCandidates) {
 		auto key = type;
@@ -600,8 +629,8 @@ namespace ffscript {
 			auto& expectedType = *(overLoadingItem->paramTypes[1].get());
 
 			ParamCastingInfo castingInfo;
-			if (!findMatchingLevel1(this, refVoidType, expectedType, param2Type, castingInfo)) {
-				if (!findMatchingLevel2(this, expectedType, param2Type, castingInfo)) {
+			if (!findMatchingLevel1(refVoidType, expectedType, param2Type, castingInfo)) {
+				if (!findMatchingLevel2(expectedType, param2Type, castingInfo)) {
 					continue;
 				}
 			}
@@ -612,6 +641,251 @@ namespace ffscript {
 		constructorCandidates.sort([](std::pair<const OverLoadingItem*, ParamCastingInfo>& element1, std::pair<const OverLoadingItem*, ParamCastingInfo>& element2) {
 			return element1.second.accurative < element2.second.accurative;
 		});
+	}
+
+	void ScriptCompiler::getConstructors(int iType, list<OverLoadingItem*>& overloadingItems) {
+		auto it = _constructorsMap.find(iType);
+		if (it != _constructorsMap.end()) {
+			auto constructorList = it->second.get();
+			if (constructorList == nullptr || constructorList->size() == 0) return;
+
+			for (auto it = constructorList->begin(); it != constructorList->end(); it++) {
+				auto pItem = _functionLibRef->findFunctionInfo(*it);
+				if (pItem) {
+					overloadingItems.push_back((OverLoadingItem*)pItem);
+				}
+			}
+		}
+		
+		auto jt = _constructorMap.find(iType);
+		if (jt != _constructorMap.end()) {
+			auto pItem = _functionLibRef->findFunctionInfo(jt->second);
+			if (pItem) {
+				overloadingItems.push_back((OverLoadingItem*)pItem);
+			}
+		}
+
+		auto kt = _copyConstructorMap.find(iType);
+		if (kt != _copyConstructorMap.end()) {
+			auto& copyConstrucrorOverloadings = kt->second;
+			for (auto lt = copyConstrucrorOverloadings->begin(); lt != copyConstrucrorOverloadings->end(); lt++) {
+				auto pItem = _functionLibRef->findFunctionInfo(lt->second);
+				if (pItem) {
+					overloadingItems.push_back((OverLoadingItem*)pItem);
+				}				
+			}
+
+		}
+	}
+
+	bool inline canMakeSemiRef(const ScriptType& argType, const ScriptType& paramType) {
+		return argType.isSemiRefType() && !paramType.isSemiRefType() && argType.refLevel() == paramType.refLevel() && argType.origin() == paramType.origin();
+	}
+
+	bool ScriptCompiler::findMatchingLevel1(const ScriptType& refVoidType, const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo) {
+		//same type => perfect match
+		if (argumentType == paramType) {
+			paramInfo.accurative = 0; //best match
+			paramInfo.castingFunction = nullptr; //no need to casting
+			return true;
+		}
+		if (argumentType.refLevel() == 1 && paramType.isSemiRefType() && argumentType.origin() == paramType.origin()) {
+			paramInfo.accurative = 0; //best match
+			paramInfo.castingFunction = nullptr; //no need to casting
+			return true;
+		}
+
+		if (argumentType == refVoidType && paramType.isRefType()) {
+			paramInfo.accurative = 2; //change a specific ref type to general ref type(Ex in c++: int* -> void*
+			paramInfo.castingFunction = nullptr; //no need to casting
+			return true;
+		}
+
+		//not same origin type
+		if (argumentType.origin() != paramType.origin()) {
+			if (argumentType.isRefType() && (paramType.iType() & DATA_TYPE_ARRAY_MASK)) {
+				auto arrayInfo = (StaticArrayInfo*)getTypeInfo(paramType.origin());
+				ScriptType elmType(arrayInfo->elmType, "");
+				if (arrayInfo && elmType.origin() == argumentType.origin() && argumentType.refLevel() - (int)arrayInfo->refLevel == 1) {
+					if (paramType.isSemiRefType()) {
+						paramInfo.accurative = 2; //change a specific ref type of static array to its element's ref type(Ex: array<int>& -> ref int)
+						paramInfo.castingFunction = nullptr; //no need to casting
+					}
+					else {
+						int functionId = getMakingRefFunction();
+						if (functionId == -1) {
+							setErrorText("Internal error: ref operator is not defined");
+							return false;
+						}
+						paramInfo.castingFunction = FunctionRef(createFunctionFromId(functionId));
+						paramInfo.castingFunction->setReturnType(argumentType);
+						paramInfo.accurative = 2;
+					}
+				}
+				return true;
+			}
+			return false;
+		}
+		// now two types have the same origin, check if they are not same ref level
+		if (paramType.refLevel() - argumentType.refLevel() >= 1) {
+			//param type is deeper level of ref than argument type
+			return false;
+		}
+
+		if (argumentType.refLevel() - paramType.refLevel() == 1) {
+			//argument type is ref type but param type is not
+			//we can make reference to the param type
+			//so this case is acceptable
+			int functionId = getMakingRefFunction();
+			if (functionId == -1) {
+				setErrorText("Internal error: ref operator is not defined");
+				return false;
+			}
+			paramInfo.castingFunction = FunctionRef(createFunctionFromId(functionId));
+			paramInfo.castingFunction->setReturnType(argumentType);
+			paramInfo.accurative = 2;
+
+			return true;
+		}
+		if (canMakeSemiRef(argumentType, paramType)) {
+			int functionId = getMakingRefFunction();
+			if (functionId == -1) {
+				setErrorText("Internal error: ref operator is not defined");
+				return false;
+			}
+			paramInfo.castingFunction = FunctionRef(createFunctionFromId(functionId));
+			paramInfo.castingFunction->setReturnType(argumentType);
+			paramInfo.accurative = 2;
+
+			return true;
+		}
+		if (canMakeSemiRef(paramType, argumentType)) {
+			auto nativeFunction = new FixParamFunction<1>(DEREF_OPERATOR, EXP_UNIT_ID_DEREF, FUNCTION_PRIORITY_UNARY_PREFIX, argumentType);
+			paramInfo.castingFunction = FunctionRef(nativeFunction);
+			nativeFunction->setNative((DFunction2Ref)(new DeRefCommand(getTypeSize(argumentType))));
+			paramInfo.accurative = 2;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	bool ScriptCompiler::findMatchingLevel2(const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo) {
+		//same type => perfect match
+		if (argumentType == paramType) {
+			paramInfo.accurative = 0; //best match
+			paramInfo.castingFunction = nullptr; //no need to casting
+			return true;
+		}
+
+		string castingFunction = getType(argumentType.iType());
+		int functionId = findFunction(castingFunction, paramType.sType());
+		if (functionId < 0) {
+			return false;
+		}
+
+		paramInfo.accurative = findConversionAccurative(paramType.iType(), argumentType.iType());
+		paramInfo.castingFunction = FunctionRef(createFunctionFromId(functionId));
+
+		return true;
+	}
+
+	int ScriptCompiler::findMatching(const ScriptType& refVoidType, const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo, bool tryFindingLevel2) {
+		if (findMatchingLevel1(refVoidType, argumentType, paramType, paramInfo)) {
+			return 1;
+		}
+		if (tryFindingLevel2 && findMatchingLevel2(argumentType, paramType, paramInfo)) {
+			return 2;
+		}
+
+		return 0;
+	}
+
+	std::shared_ptr<list<CandidateInfo>> ScriptCompiler::selectMultiCandidates(const list<OverLoadingItem*>& overloadingItems, const std::list<ExecutableUnitRef>& params) {		
+		int n = (int)params.size();
+		ParamCastingInfo paramInfoTemp;
+		paramInfoTemp.accurative = 0;
+		paramInfoTemp.castingFunction = nullptr;
+
+		auto overloadingCandidates = make_shared<list<CandidateInfo>>();
+
+		// filter overloading functions by number of parameters
+		for (auto it = overloadingItems.begin(); it != overloadingItems.end(); ++it) {
+			if ((*it)->paramTypes.size() == (size_t)n) {
+				CandidateInfo candidateInfo;
+				overloadingCandidates->push_back(candidateInfo);
+				CandidateInfo& candidateInfoRef = overloadingCandidates->back();
+				candidateInfoRef.item = (*it);
+				candidateInfoRef.paramCasting.resize(n, paramInfoTemp);
+			}
+		}
+		int overloadingSize = (int)overloadingCandidates->size();
+
+		ScriptType refVoidType(_typeManagerRef->getBasicTypes().TYPE_VOID | DATA_TYPE_POINTER_MASK, "ref void");
+		// filter candidates by the ability to convert each paramter type to its argument type
+		int i = 0;
+		for (auto pit = params.begin(); pit != params.begin(); pit++, i++) {
+			auto& paramType = (*pit)->getReturnType();
+			auto it = overloadingCandidates->begin();
+			decltype(it) itTemp;
+
+			while (it != overloadingCandidates->end()) {
+				auto& argumentType = *(it->item->paramTypes[i]);
+				if (findMatching(refVoidType, argumentType, paramType, it->paramCasting.at(i), overloadingSize == 1)) {
+					++it;
+				}
+				else {
+					itTemp = it;
+					++it;
+					overloadingCandidates->erase(itTemp);
+				}
+			}
+		}
+
+		// calculate totalAccurative to convert a given params set to a candidate arguments set
+		for (auto it = overloadingCandidates->begin(); it != overloadingCandidates->end(); it++) {			
+			it->totalAccurative = 0;
+			for (i = 0; i < n; i++) {
+				it->totalAccurative += it->paramCasting.at(i).accurative;
+			}
+		}
+
+		return overloadingCandidates;
+	}
+
+	FunctionRef ScriptCompiler::applyParamToCandidate(const CandidateInfo& candidate, std::list<ExecutableUnitRef>& params) {
+		FunctionRef functionRef;
+
+		if (params.size() != candidate.paramCasting.size()) {
+			return functionRef;
+		}
+
+		int functionId = candidate.item->functionId;
+		auto pFunc = createFunctionFromId(functionId);
+		if (pFunc == nullptr) {
+			return functionRef;
+		}
+
+		auto& paramCasting = candidate.paramCasting;
+		auto& argumentTypes = candidate.item->paramTypes;
+		auto pit = params.begin();
+		auto argit = argumentTypes.begin();
+		for (auto it = paramCasting.begin(); it != paramCasting.end(); it++, pit++, argit++) {
+			auto& castingF = it->castingFunction;
+			auto& paramRef = *pit;
+			if (castingF) {
+				applyCasting(paramRef, castingF);
+				functionRef->pushParam(paramRef);
+				paramRef->setReturnType(*(argit->get()));
+			}
+			else {
+				functionRef->pushParam(paramRef);
+			}
+		}
+
+
+		return functionRef;
 	}
 
 	bool ScriptCompiler::registFunctionOperator(int type, int functionId) {
@@ -822,7 +1096,7 @@ namespace ffscript {
 
 	int ScriptCompiler::registFunctionType(const std::string& functionType) {
 		int iType = registType(functionType, DATA_TYPE_FUNCTION_MASK);
-		if (iType == DATA_TYPE_UNKNOWN) {
+		if (IS_UNKNOWN_TYPE(iType)) {
 			iType = getType(functionType);
 		}
 		else {
@@ -870,14 +1144,14 @@ namespace ffscript {
 		}
 
 		int iElmType = elmType.iType();
-		if (iElmType == DATA_TYPE_UNKNOWN) {
+		if (elmType.isUnkownType()) {
 			setErrorText("unknown data type " + elmType.sType());
 			return DATA_TYPE_UNKNOWN;
 		}
 
 		int iType;
 		int dim;
-		auto refLevel = (unsigned char)elmType.refLevel();		
+		auto refLevel = (char)elmType.refLevel();		
 
 		int i = (int)dimensions.size();
 

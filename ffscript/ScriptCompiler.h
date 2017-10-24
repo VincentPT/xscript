@@ -54,31 +54,25 @@ namespace ffscript {
 
 		typedef std::map<std::string, int> BinaryFunctionParamMap;
 		typedef std::shared_ptr<BinaryFunctionParamMap> BinaryFunctionParamMapRef;
-
-		//struct TypeInfo {
-		//	const string* name;
-		//	int size;
-		//};
+		typedef vector<int> ConstructorIDList;
+		typedef std::shared_ptr<ConstructorIDList> ConstructorIDListRef;
 
 		FuncLibraryRef _functionLibRef;
 		TypeManagerRef _typeManagerRef;
 
-		stack<ScriptScope*> _scopeStack;		
-		//vector<TypeInfo> _typesInString;
+		stack<ScriptScope*> _scopeStack;
 		vector<FunctionFactory*> _functionFactories;
-		//map<const std::string, int> _typeStringIntMap;
 		map<string, EKeyword > _keywordMap;
 		list<FunctionFactoryRef> _factoriesStorage;
 		TypeCompatibilityMap _typeConversionMap;
 		typedef std::map<string, OperatorEntry*>  OperatorMap;
 		OperatorMap _preCompileOperators; /*map operator name to operator information, pre-defined operator is only allow type overloading, not param count overloading*/
-		//map<int, StructClassRef> _structMap;
 		map<int, int> _constructorMap;
 		map<int, int> _destructorMap;
 		map<int, BinaryFunctionParamMapRef> _copyConstructorMap;
+		map<int, ConstructorIDListRef> _constructorsMap; // map a data type to its constructor list
 		map<string, TemplateRef> _templates;
 		map<string, DFunctionRef> _constantMap;
-		//map<int, MemoryBlockRef> _typeInfoMap;
 		map<int, int> _functionCallMap;
 
 		Program* _program;
@@ -124,12 +118,11 @@ namespace ffscript {
 		int getRuntimeInfoDestructor() const;
 		void setRuntimeInfoCopyConstructor(int functionId);
 		int getRuntimeInfoCopyConstructor() const;		
-
+		
 		int registDefaultCopyFunction(FunctionFactory* factory);
 		int getDefaultCopyFunction();
 
 		int registStruct(StructClass* pStruct);
-		//int registUserStruct(StructClass* pStruct);
 		const StructClass* getStruct(int type);
 
 		ExpUnit* createExpUnitFromName(const std::string&);
@@ -139,7 +132,7 @@ namespace ffscript {
 		int registConditionalFunction(FunctionFactory* factory);
 		void unregisterFunction(int functionId);
 		int registDynamicFunction(const std::string& name, FunctionFactory* factory);
-		const list<OverLoadingItem>* findOverloadingFuncRoot(const std::string& name);		
+		const list<OverLoadingItem>* findOverloadingFuncRoot(const std::string& name);
 		int findFunction(const std::string& name, const std::string& sargs);
 		int findDynamicFunctionOnly(const std::string& name);
 		FunctionFactory* getFunctionFactory(int functionId) const;
@@ -156,13 +149,21 @@ namespace ffscript {
 		void* getTypeInfo(int type);
 
 		bool registConstructor(int type, int functionId);
-		int getConstructor(int type);
-
+		int getDefaultConstructor(int type);
+		void getCopyConstructor(int rootType, const ScriptType& param2Type, list<std::pair<const OverLoadingItem*, ParamCastingInfo>>& constructorCandidates);
+		void getConstructors(int iType, list<OverLoadingItem*>& overloadingItems);
 		bool registDestructor(int type, int functionId);
 		int getDestructor(int type);
 
-		bool registCopyConstructor(int type, int functionId);
-		void getCopyConstructor(int rootType, const ScriptType& param2Type, list<std::pair<const OverLoadingItem*, ParamCastingInfo>>& constructorCandidates);
+		bool findMatchingLevel1(const ScriptType& refVoidType, const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo);
+		bool findMatchingLevel2(const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo);
+		///
+		/// return 0 if not find matching, 1 if found matching by using findMatchingLevel1
+		/// 2 if found matching by using findMatchingLevel2
+		///
+		int findMatching(const ScriptType& refVoidType, const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo, bool tryFindingLevel2);
+		std::shared_ptr<list<CandidateInfo>> selectMultiCandidates(const list<OverLoadingItem*>& overloadingItems, const std::list<ExecutableUnitRef>& params);
+		FunctionRef applyParamToCandidate(const CandidateInfo& item, std::list<ExecutableUnitRef>& params);
 
 		bool registFunctionOperator(int type, int functionId);
 		int getFunctionOperator(int type);
@@ -191,6 +192,8 @@ namespace ffscript {
 
 	protected:
 		int registArrayType(const ScriptType& elmType, const std::vector<int>& dimensions);
+		bool registDefaultConstructor(int type, int functionId);
+		bool registCopyConstructor(int type, int functionId);
 	public:
 		inline static bool isCommandBreakSign(wchar_t c) {		
 			return c == ';';
@@ -200,7 +203,7 @@ namespace ffscript {
 		}
 		inline static bool isCloseScopeSign(wchar_t c) {
 			return c == '}';
-		}		
+		}
 	};
 
 	typedef std::shared_ptr<ScriptCompiler> ScriptCompilerRef;

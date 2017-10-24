@@ -171,12 +171,44 @@ namespace ffscript {
 			destructorFunctionId = _scriptCompiler->findFunction(DEFAULT_DUMMY_OPERATOR, "ref void");
 		}
 
-		auto getConstructorFunction = std::bind(&ScriptCompiler::getConstructor, _scriptCompiler, std::placeholders::_1);
+		auto getConstructorFunction = std::bind(&ScriptCompiler::getDefaultConstructor, _scriptCompiler, std::placeholders::_1);
 
 		auto constructorBuildInfoBlockRef = std::make_shared<ObjectBlock<OperatorBuidInfo>>();
 		ObjectBlock<OperatorBuidInfo>* constructorBuildInfoBlock = constructorBuildInfoBlockRef.get();
 		OperatorBuidInfo* constructorBuildInfo = (OperatorBuidInfo*)constructorBuildInfoBlock->getDataRef();
 		checkAutoOperatorForChildren(getCompiler(), getConstructorFunction, pVariable->getDataType(), 0, &(constructorBuildInfo->buildItems));
+		constructorBuildInfo->operatorIndex = _constructorCount;
+
+		constructor->setUserData(constructorBuildInfoBlockRef);
+
+		if (destructorFunctionId >= 0) {
+			auto destructor = generateDefaultAutoOperator(destructorFunctionId, pVariable);
+			if (destructor == nullptr) {
+				// it should throw exception here
+				return;
+			}
+
+			destructorBuildInfo->operatorIndex = _constructorCount;
+			destructor->setMask(MaskType::Destructor);
+			destructor->setUserData(destructorBuildInfoBlockRef);
+
+			//store last unit to the destuctor list
+			_destructors.push_front(CommandUnitRef(destructor));
+		}
+
+		_constructorCount++;
+	}
+
+	void ScriptScope::checkVariableToRunConstructorNonRecursive(Variable* pVariable, Function* constructor) {
+		auto destructorBuildInfoBlockRef = std::make_shared<ObjectBlock<OperatorBuidInfo>>();
+		ObjectBlock<OperatorBuidInfo>* destructorBuildInfoBlock = destructorBuildInfoBlockRef.get();
+		OperatorBuidInfo* destructorBuildInfo = (OperatorBuidInfo*)destructorBuildInfoBlock->getDataRef();
+
+		int destructorFunctionId = _scriptCompiler->getDestructor(pVariable->getDataType().iType());
+
+		auto constructorBuildInfoBlockRef = std::make_shared<ObjectBlock<OperatorBuidInfo>>();
+		ObjectBlock<OperatorBuidInfo>* constructorBuildInfoBlock = constructorBuildInfoBlockRef.get();
+		OperatorBuidInfo* constructorBuildInfo = (OperatorBuidInfo*)constructorBuildInfoBlock->getDataRef();
 		constructorBuildInfo->operatorIndex = _constructorCount;
 
 		constructor->setUserData(constructorBuildInfoBlockRef);
@@ -213,7 +245,7 @@ namespace ffscript {
 			destructorFunctionId = _scriptCompiler->findFunction(DEFAULT_DUMMY_OPERATOR, "ref void");
 		}
 
-		auto getConstructorFunction = std::bind(&ScriptCompiler::getConstructor, _scriptCompiler, std::placeholders::_1);
+		auto getConstructorFunction = std::bind(&ScriptCompiler::getDefaultConstructor, _scriptCompiler, std::placeholders::_1);
 
 		auto constructorBuildInfoBlockRef = std::make_shared<ObjectBlock<OperatorBuidInfo>>();
 		ObjectBlock<OperatorBuidInfo>* constructorBuildInfoBlock = constructorBuildInfoBlockRef.get();

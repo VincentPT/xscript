@@ -59,6 +59,7 @@ namespace ffscript {
 		CommandUnit* checkVariableToRunConstructor(Variable* pVariable);
 		Function* generateDefaultAutoOperator(int operatorId, Variable* obj);
 		void checkVariableToRunConstructor(Variable* pVariable, Function* constructor);
+		void checkVariableToRunConstructorNonRecursive(Variable* pVariable, Function* constructor);
 		void checkVariableToRunDestructor(Variable* pVariable);
 		int getConstructorCommandCount() const;
 		ComandRefList* getDestructorList();

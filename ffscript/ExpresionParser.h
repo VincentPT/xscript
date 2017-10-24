@@ -44,17 +44,6 @@ namespace ffscript {
 		int totalAccurative;
 	};
 
-	bool findMatchingLevel1(
-		ScriptCompiler* scriptCompiler,
-		const ScriptType& refVoidType,
-		const ScriptType& argumentType, const ScriptType& paramType,
-		ParamCastingInfo& paramInfo);
-
-	bool findMatchingLevel2(
-		ScriptCompiler* scriptCompiler,
-		const ScriptType& argumentType, const ScriptType& paramType,
-		ParamCastingInfo& paramInfo);
-
 	void applyCasting(ExecutableUnitRef& unit, const FunctionRef& castingUnit);
 	
 	class FFSCRIPT_API ExpressionParser
@@ -78,6 +67,8 @@ namespace ffscript {
 		static CandidateCollectionRef linkForUnit(ScriptCompiler* scriptCompiler, ExecutableUnitRef& unit, EExpressionResult& eResult);
 		static CandidateCollectionRef completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult );
 		static Function* applyConstructor(ScriptCompiler* compiler, ExecutableUnitRef& variableUnit, ExecutableUnitRef& argUnit, bool& blHasError);
+		bool breakCompositeAssigment(ScriptCompiler* scriptCompiler, Variable* pVariable, const DynamicParamFunctionRef& secondOperand, list<ExecutableUnitRef>& assigments);
+		FunctionRef applyConstructorForCompisiteType(ScriptCompiler* scriptCompiler, Variable* pVariable, DynamicParamFunctionRef& secondOperand, bool& hasNoError);
 	protected:
 		EExpressionResult compileConditionalExpression(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, ExecutableUnitRef& ifClauseUnit, ExecutableUnitRef& elseClauseUnit);
 		EExpressionResult putAnExpUnit(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, ExpressionInputList& inputList);

@@ -125,7 +125,7 @@ namespace ffscriptUT
 			int functionId = scriptCompiler->registFunction("copyConstructor", args, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyFunction, scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for copy constructor failed");
 
-			bool blRes = scriptCompiler->registCopyConstructor(type, functionId);
+			bool blRes = scriptCompiler->registConstructor(type, functionId);
 			Assert::IsTrue(blRes, L"Register copy constructor failed");
 		}
 

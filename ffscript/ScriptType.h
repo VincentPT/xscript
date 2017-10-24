@@ -34,6 +34,7 @@ namespace ffscript {
 
 		static ScriptType parseType(ScriptCompiler* scriptCompiler, const std::string& sType);
 		static int stringTypeToInt(ScriptCompiler* scriptCompiler, const std::string& sType);
+		static ScriptType buildScriptType(ScriptCompiler* scriptCompiler, int iType, char refLevel);
 	};
 
 	typedef std::shared_ptr<ScriptType> ScriptTypeRef;

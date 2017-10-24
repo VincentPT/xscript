@@ -1477,127 +1477,6 @@ namespace ffscript {
 	}
 #endif
 
-
-	bool inline canMakeSemiRef(const ScriptType& argType, const ScriptType& paramType) {
-		return argType.isSemiRefType() && !paramType.isSemiRefType() && argType.refLevel() == paramType.refLevel() && argType.origin() == paramType.origin();
-	}
-
-	bool findMatchingLevel1(
-		ScriptCompiler* scriptCompiler,
-		const ScriptType& refVoidType,
-		const ScriptType& argumentType, const ScriptType& paramType,
-		ParamCastingInfo& paramInfo) {
-		//same type => perfect match
-		if (argumentType == paramType) {
-			paramInfo.accurative = 0; //best match
-			paramInfo.castingFunction = nullptr; //no need to casting
-			return true;
-		}
-		if (argumentType.refLevel() == 1 && paramType.isSemiRefType() && argumentType.origin() == paramType.origin()) {
-			paramInfo.accurative = 0; //best match
-			paramInfo.castingFunction = nullptr; //no need to casting
-			return true;
-		}
-
-		if (argumentType == refVoidType && paramType.isRefType()) {
-			paramInfo.accurative = 2; //change a specific ref type to general ref type(Ex in c++: int* -> void*
-			paramInfo.castingFunction = nullptr; //no need to casting
-			return true;
-		}
-
-		//not same origin type
-		if ( argumentType.origin() != paramType.origin()) {
-			if (argumentType.isRefType() && (paramType.iType() & DATA_TYPE_ARRAY_MASK)) {
-				auto arrayInfo = (StaticArrayInfo*)scriptCompiler->getTypeInfo(paramType.origin());
-				ScriptType elmType(arrayInfo->elmType, "");
-				if (arrayInfo && elmType.origin() == argumentType.origin() && argumentType.refLevel() - (int)arrayInfo->refLevel == 1) {
-					if (paramType.isSemiRefType()) {
-						paramInfo.accurative = 2; //change a specific ref type of static array to its element's ref type(Ex: array<int>& -> ref int)
-						paramInfo.castingFunction = nullptr; //no need to casting
-					}
-					else {
-						int functionId = scriptCompiler->getMakingRefFunction();
-						if (functionId == -1) {
-							scriptCompiler->setErrorText("Internal error: ref operator is not defined");
-							return false;
-						}
-						paramInfo.castingFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
-						paramInfo.castingFunction->setReturnType(argumentType);
-						paramInfo.accurative = 2;
-					}
-				}
-				return true;
-			}
-			return false;
-		}
-		// now two types have the same origin, check if they are not same ref level
-		if (paramType.refLevel() - argumentType.refLevel() >= 1) {
-			//param type is deeper level of ref than argument type
-			return false;
-		}
-
-		if (argumentType.refLevel() - paramType.refLevel() == 1) {
-			//argument type is ref type but param type is not
-			//we can make reference to the param type
-			//so this case is acceptable
-			int functionId = scriptCompiler->getMakingRefFunction();
-			if (functionId == -1) {
-				scriptCompiler->setErrorText("Internal error: ref operator is not defined");
-				return false;
-			}
-			paramInfo.castingFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
-			paramInfo.castingFunction->setReturnType(argumentType);
-			paramInfo.accurative = 2;
-			
-			return true;
-		}
-		if (canMakeSemiRef(argumentType, paramType)) {
-			int functionId = scriptCompiler->getMakingRefFunction();
-			if (functionId == -1) {
-				scriptCompiler->setErrorText("Internal error: ref operator is not defined");
-				return false;
-			}
-			paramInfo.castingFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
-			paramInfo.castingFunction->setReturnType(argumentType);
-			paramInfo.accurative = 2;
-
-			return true;
-		}
-		if (canMakeSemiRef(paramType, argumentType)) {
-			auto nativeFunction = new FixParamFunction<1>(DEREF_OPERATOR, EXP_UNIT_ID_DEREF, FUNCTION_PRIORITY_UNARY_PREFIX, argumentType);
-			paramInfo.castingFunction = FunctionRef(nativeFunction);
-			nativeFunction->setNative((DFunction2Ref)(new DeRefCommand(scriptCompiler->getTypeSize(argumentType))));
-			paramInfo.accurative = 2;
-
-			return true;
-		}
-
-		return false;
-	}
-
-	bool findMatchingLevel2(
-		ScriptCompiler* scriptCompiler,
-		const ScriptType& argumentType, const ScriptType& paramType,
-		ParamCastingInfo& paramInfo) {
-		//same type => perfect match
-		if (argumentType == paramType) {
-			paramInfo.accurative = 0; //best match
-			paramInfo.castingFunction = nullptr; //no need to casting
-			return true;
-		}
-
-		string castingFunction = scriptCompiler->getType(argumentType.iType());
-		int functionId = scriptCompiler->findFunction(castingFunction, paramType.sType());
-		if (functionId < 0) {
-			return false;
-		}
-
-		paramInfo.accurative = scriptCompiler->findConversionAccurative(paramType.iType(), argumentType.iType());
-		paramInfo.castingFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
-
-		return true;
-	}
-
 #if 0 /*following function are no longer used*/
 	EExpressionResult findCandidates(ScriptCompiler* scriptCompiler,
 		const FunctionRef& function,
@@ -1680,6 +1559,9 @@ namespace ffscript {
 		return bestCandidate;
 	}
 
+	///
+	/// check ability of assigning a dynamic array to a struct
+	///
 	bool checkAssigmentOperatorForStruct(ScriptCompiler* scriptCompiler, const StructClass* pStruct, const DynamicParamFunctionRef& function) {
 		MemberInfo memberInfo;
 		bool res = pStruct->getMemberFirst(nullptr, &memberInfo);
@@ -1702,6 +1584,201 @@ namespace ffscript {
 			res = pStruct->getMemberNext(nullptr, &memberInfo);
 			iter++;
 		}
+
+		return true;
+	}
+
+	///
+	/// check ability of assigning a dynamic array to a struct and apply a new function t o
+	/// allow assign each member of struct to a parameter unit of second operand unit
+	///
+	FunctionRef ExpressionParser::applyConstructorForCompisiteType(ScriptCompiler* scriptCompiler, Variable* pVariable, DynamicParamFunctionRef& secondOperand, bool& hasNoError) {
+		ScriptType typeVoid(scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID, "void");
+		DynamicParamFunctionRef assignmentCompositeUnit;
+
+		list<ExecutableUnitRef> assigments;
+		hasNoError = breakCompositeAssigment(scriptCompiler, pVariable, secondOperand, assigments);
+
+		if (hasNoError && assigments.size()) {
+			assignmentCompositeUnit = make_shared<DynamicParamFunction>("__ctor_composite", EXP_UNIT_ID_CONSTRUCTOR_COMPOSITE, FUNCTION_PRIORITY_USER_FUNCTION, typeVoid);
+
+			for (auto it = assigments.begin(); it != assigments.end(); it++) {
+				assignmentCompositeUnit->pushParam(*it);
+			}
+		}
+
+		return assignmentCompositeUnit;
+	}
+
+	bool ExpressionParser::breakCompositeAssigment(ScriptCompiler* scriptCompiler, Variable* pVariable, const DynamicParamFunctionRef& secondOperand, list<ExecutableUnitRef>& assigments) {
+		const ScriptType& param1Type = pVariable->getDataType();
+
+		// check if param 1 type is a reference or pointer...
+		if (param1Type.isSemiRefType() || param1Type.isRefType()) {
+			// then we just return cause these type cannot apply to a dynamic array
+			return false;
+		}
+		list<OverLoadingItem*> overloadingConstructors;
+		scriptCompiler->getConstructors(param1Type.origin(), overloadingConstructors);
+
+		if (overloadingConstructors.size()) {
+			auto& params = secondOperand->getParams();
+			auto constructorCandidates = scriptCompiler->selectMultiCandidates(overloadingConstructors, params);
+			if (!constructorCandidates || constructorCandidates->size() == 0) {
+				return false;
+			}
+
+			auto it = std::min_element(constructorCandidates->begin(), constructorCandidates->end(), [](const CandidateInfo& c1, const CandidateInfo& c2) {
+				return c1.totalAccurative < c2.totalAccurative;
+			});
+
+			auto tranformFunction = scriptCompiler->createFunctionFromId(it->item->functionId);
+			int i = 0;
+			auto& paramCastings = it->paramCasting;
+			for (auto jt = params.begin(); jt != params.end(); jt++) {
+				auto& castingInfo = paramCastings[i];
+				auto& castingFunction = castingInfo.castingFunction;
+				if (castingFunction) {
+					castingFunction->pushParam(*jt);
+					tranformFunction->pushParam(castingFunction);
+				}
+				else {
+					tranformFunction->pushParam(*jt);
+				}
+			}
+
+			assigments.push_back(ExecutableUnitRef(tranformFunction));
+			return true;
+		}
+
+		auto currentScope = scriptCompiler->currentScope();
+		auto applyTranformTypeUnit = [this, currentScope, scriptCompiler, &assigments](Variable* memberVariable, ExecutableUnitRef& paramUnit) -> bool {
+			auto& argumentType = memberVariable->getDataType();
+			auto& paramType = paramUnit->getReturnType();
+
+			// ...check if the parameter unit is a variant array...
+			if (paramUnit->getType() == EXP_UNIT_ID_DYNAMIC_FUNC) {
+				// ...then call breakCompositeAssigment recursively to break composite assigment to smaller units
+				auto subParams = dynamic_pointer_cast<DynamicParamFunction>(paramUnit);
+				if (!breakCompositeAssigment(scriptCompiler, memberVariable, subParams, assigments)) {
+					return false;
+				}
+			}
+			else {
+				FunctionRef tranformFunctionRef;
+
+				// ...then first check copy constructor for data type of member of struct
+				auto subUnit = new CXOperand(currentScope, memberVariable, memberVariable->getDataType());
+				auto subUnitRef = ExecutableUnitRef(subUnit);
+				bool hasError;
+				auto copyConstructor = applyConstructor(scriptCompiler, subUnitRef, paramUnit, hasError);
+				if (hasError) {
+					return false;
+				}
+				// has copy constructor for corressponding argument's types?...
+				if (copyConstructor) {
+					// ...then generate constructor info and destructor info for the variable in current scope
+					currentScope->checkVariableToRunConstructorNonRecursive(memberVariable, copyConstructor);
+					tranformFunctionRef.reset(copyConstructor);
+				}
+				else {
+					// ...not have copy constructor...
+					// ... then, find casting function to convert data type of param unit to data type of member in struct
+					string castingFunction = scriptCompiler->getType(argumentType.iType());
+					int functionId = scriptCompiler->findFunction(castingFunction, paramType.sType());
+					if (functionId >= 0) {
+						auto tranformFunction = scriptCompiler->createFunctionFromId(functionId);
+						if (tranformFunction) {
+							tranformFunction->pushParam(paramUnit);
+							tranformFunctionRef.reset(tranformFunction);
+						}
+					}
+				}
+				// check if there is no available unit can convert from data type of parameter unit to
+				// data type of member in struct
+				if (!tranformFunctionRef) {
+					scriptCompiler->setErrorText("cannot convert from type '" + paramType.sType() + "' to type '" + argumentType.sType() + "'");
+					return false;
+				}
+
+				assigments.push_back(tranformFunctionRef);
+			}
+
+			return true;
+		};
+
+		// check if data type of variable is a struct
+		auto pStruct = scriptCompiler->getStruct(param1Type.iType());
+		if (pStruct) {
+			MemberInfo memberInfo;
+			string memberName;
+			bool res = pStruct->getMemberFirst(&memberName, &memberInfo);
+			auto& params = secondOperand->getParams();
+			auto iter = params.begin();
+
+			// break assigment for each member of the struct
+			while (res && iter != params.end()) {
+				auto& paramUnit = *iter;
+				auto& argumentType = memberInfo.type;
+				auto& paramType = paramUnit->getReturnType();
+
+				// check if member data type is different than parameter unit which want assign to it...
+				if (argumentType != paramType) {
+					// ...generate assigment unit for them
+
+					// first, create a variable that hold member offset in struct...
+					auto memberVariable = currentScope->registMemberVariable(pVariable, pVariable->getName() + "." + memberName);
+					memberVariable->setDataType(argumentType);
+					memberVariable->setOffset(memberInfo.offset);
+
+					if (!applyTranformTypeUnit(memberVariable, paramUnit)) {
+						return false;
+					}
+				}
+				else {
+					assigments.push_back(paramUnit);
+				}				
+				res = pStruct->getMemberNext(nullptr, &memberInfo);
+				iter++;
+			}
+
+			return true;
+		}
+		// check if data type of variable is a static array
+		if (param1Type.iType() & DATA_TYPE_ARRAY_MASK) {
+			auto arrayInfo = (StaticArrayInfo*)scriptCompiler->getTypeInfo(param1Type.origin());
+			if (arrayInfo == nullptr) {
+				return false;
+			}
+			auto argumentType = ScriptType::buildScriptType(scriptCompiler, arrayInfo->elmType, arrayInfo->refLevel);
+
+			int elmIdx = 0;
+			int elmOffset = 0;
+
+			auto& params = secondOperand->getParams();
+			for (auto it = params.begin(); it != params.end(); it++) {
+				auto& paramUnit = *it;
+				auto& paramType = paramUnit->getReturnType();
+
+				// check if member data type is different than parameter unit which want assign to it...
+				if (argumentType != paramType) {
+					// ...generate assigment unit for them
+					// first, create a variable that hold member offset in struct...
+					auto memberVariable = currentScope->registMemberVariable(pVariable, pVariable->getName() + "[" + std::to_string(elmIdx) + "]");
+					memberVariable->setDataType(argumentType);
+					memberVariable->setOffset(elmOffset);
+
+					if (!applyTranformTypeUnit(memberVariable, paramUnit)) {
+						return false;
+					}
+				}
+				else {
+					assigments.push_back(paramUnit);
+				}
+				elmOffset += arrayInfo->elmSize;
+			}
+		}
+		
 
 		return true;
 	}
@@ -2065,10 +2142,10 @@ namespace ffscript {
 			for (i = 0; i < n; i++) {
 				auto& paramType = path[i]->getReturnType();
 				auto& argumentType = *argTypes[i];
-				if (findMatchingLevel1(scriptCompiler, refVoidType, argumentType, paramType, paramCastingList.at(i))) {
+				if (scriptCompiler->findMatchingLevel1(refVoidType, argumentType, paramType, paramCastingList.at(i))) {
 					;
 				}
-				else if (findMatchingLevel2(scriptCompiler, argumentType, paramType, paramCastingList.at(i))) {
+				else if (scriptCompiler->findMatchingLevel2(argumentType, paramType, paramCastingList.at(i))) {
 					;
 				}
 				else {
@@ -2176,10 +2253,7 @@ namespace ffscript {
 
 				while (it != overloadingCandidates.end()) {
 					auto& argumentType = *(it->item->paramTypes[i]);
-					if (findMatchingLevel1(scriptCompiler, refVoidType, argumentType, paramType, it->paramCasting.at(i))) {
-						++it;
-					}
-					else if (overloadingSize == 1 && findMatchingLevel2(scriptCompiler, argumentType, paramType, it->paramCasting.at(i))) {
+					if (scriptCompiler->findMatching(refVoidType, argumentType, paramType, it->paramCasting.at(i), overloadingSize == 1)) {
 						++it;
 					}
 					else {
@@ -2475,7 +2549,7 @@ namespace ffscript {
 			}
 			else if(pExeUnit1->getReturnType().isFunctionType()){
 				candidatesForParams.resize(1 + params.size());
-				auto forwardCallUnitRef = make_shared<DynamicParamFunction>(FUNCTION_OPERATOR, EXP_UNIT_ID_FORWARD_CALL, FUNCTION_PRIORITY_FUNCTIONCALL, 1 + params.size());
+				auto forwardCallUnitRef = make_shared<DynamicParamFunction>(FUNCTION_OPERATOR, EXP_UNIT_ID_FORWARD_CALL, FUNCTION_PRIORITY_FUNCTIONCALL, 1 + (int)params.size());
 				forwardCallUnitRef->pushParam(pExeUnit1);
 				for (auto it = params.begin(); it != params.end(); it++) {
 					forwardCallUnitRef->pushParam(*it);
@@ -2493,7 +2567,7 @@ namespace ffscript {
 				// first check the candidate is a function type...
 				if (param1CandidatesTmp->size() == 1 && param1CandidatesTmp->front()->getReturnType().isFunctionType()) {
 					candidatesForParams.resize(1 + params.size());
-					auto forwardCallUnitRef = make_shared<DynamicParamFunction>(FUNCTION_OPERATOR, EXP_UNIT_ID_FORWARD_CALL, FUNCTION_PRIORITY_FUNCTIONCALL, 1 + params.size());
+					auto forwardCallUnitRef = make_shared<DynamicParamFunction>(FUNCTION_OPERATOR, EXP_UNIT_ID_FORWARD_CALL, FUNCTION_PRIORITY_FUNCTIONCALL, 1 + (int)params.size());
 					forwardCallUnitRef->pushParam(pExeUnit1);
 					for (auto it = params.begin(); it != params.end(); it++) {
 						forwardCallUnitRef->pushParam(*it);
@@ -2833,7 +2907,7 @@ namespace ffscript {
 						needToCallConstructor = true;
 					}
 					else {
-						int defaultConstructor = scriptCompiler->getConstructor(param1->getReturnType().iType());
+						int defaultConstructor = scriptCompiler->getDefaultConstructor(param1->getReturnType().iType());
 						needToCallConstructor = defaultConstructor >= 0;
 						if (!needToCallConstructor) {
 							needToCallConstructor = scriptCompiler->getDestructor(param1->getReturnType().iType()) >= 0;

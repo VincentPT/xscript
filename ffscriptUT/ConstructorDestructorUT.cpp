@@ -531,7 +531,7 @@ namespace ffscriptUT
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for destructor failed");
 
-			blRes = scriptCompiler.registCopyConstructor (basicType.TYPE_INT, functionId);
+			blRes = scriptCompiler.registConstructor (basicType.TYPE_INT, functionId);
 			Assert::IsTrue(blRes, L"Register copy constructor failed");
 
 			/*in bellow function, destuctor will not run for 'ret' because*/
@@ -610,14 +610,14 @@ namespace ffscriptUT
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for destructor failed");
 
-			blRes = scriptCompiler.registCopyConstructor(basicType.TYPE_INT, functionId);
+			blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			Assert::IsTrue(blRes, L"Register copy constructor failed");
 
 			DFunction2* structCopyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, DummyStruct2*, DummyStruct2*>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator1);
 			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, ref DummyStruct2", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for destructor failed");
 
-			blRes = scriptCompiler.registCopyConstructor(structType2, functionId);
+			blRes = scriptCompiler.registConstructor(structType2, functionId);
 			Assert::IsTrue(blRes, L"Register copy constructor failed");
 
 			DFunction2* structDestuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
@@ -703,14 +703,14 @@ namespace ffscriptUT
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for destructor failed");
 
-			blRes = scriptCompiler.registCopyConstructor(basicType.TYPE_INT, functionId);
+			blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			Assert::IsTrue(blRes, L"Register copy constructor failed");
 
 			DFunction2* structCopyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, DummyStruct2*, DummyStruct2*>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator2);
 			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, ref DummyStruct2", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for destructor failed");
 
-			blRes = scriptCompiler.registCopyConstructor(structType2, functionId);
+			blRes = scriptCompiler.registConstructor(structType2, functionId);
 			Assert::IsTrue(blRes, L"Register copy constructor failed");
 
 			DFunction2* structDestuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
@@ -798,14 +798,14 @@ namespace ffscriptUT
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for destructor failed");
 
-			blRes = scriptCompiler.registCopyConstructor(basicType.TYPE_INT, functionId);
+			blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			Assert::IsTrue(blRes, L"Register copy constructor failed");
 
 			DFunction2* structCopyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, DummyStruct2*, int>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator3);
 			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for destructor failed");
 
-			blRes = scriptCompiler.registCopyConstructor(structType2, functionId);
+			blRes = scriptCompiler.registConstructor(structType2, functionId);
 			Assert::IsTrue(blRes, L"Register copy constructor failed");
 
 			DFunction2* structDestuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);

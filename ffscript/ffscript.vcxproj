@@ -281,6 +281,7 @@
     <ClInclude Include="CommandTree.h" />
     <ClInclude Include="CommandUnit.h" />
     <ClInclude Include="CompilerSuite.h" />
+    <ClInclude Include="CompositeConstrutorUnit.h" />
     <ClInclude Include="ConditionalOperator.h" />
     <ClInclude Include="FFScriptArray.hpp" />
     <ClInclude Include="FFStack.h" />
@@ -360,6 +361,7 @@
     <ClCompile Include="CommandTree.cpp" />
     <ClCompile Include="CommandUnit.cpp" />
     <ClCompile Include="CompilerSuite.cpp" />
+    <ClCompile Include="CompositeConstrutorUnit.cpp" />
     <ClCompile Include="ConditionalOperator.cpp" />
     <ClCompile Include="FuncLibrary.cpp" />
     <ClCompile Include="InternalCompilerSuite.cpp" />

@@ -195,7 +195,7 @@ namespace ffscript {
 	};
 
 	struct StaticArrayInfo {
-		unsigned char refLevel; // element ref count
+		char refLevel; // element ref count
 		unsigned char dim; // number of dimension
 		short reserved2;
 		int elmType;
