@@ -65,10 +65,7 @@ namespace ffscript {
 		EExpressionResult link(Expression* pExp);
 		EExpressionResult link(Expression* pExp, CandidateCollectionRef& candidates);
 		static CandidateCollectionRef linkForUnit(ScriptCompiler* scriptCompiler, ExecutableUnitRef& unit, EExpressionResult& eResult);
-		static CandidateCollectionRef completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult );
-		static Function* applyConstructor(ScriptCompiler* compiler, ExecutableUnitRef& variableUnit, ExecutableUnitRef& argUnit, bool& blHasError);
-		bool breakCompositeAssigment(ScriptCompiler* scriptCompiler, Variable* pVariable, const DynamicParamFunctionRef& secondOperand, list<ExecutableUnitRef>& assigments);
-		FunctionRef applyConstructorForCompisiteType(ScriptCompiler* scriptCompiler, Variable* pVariable, DynamicParamFunctionRef& secondOperand, bool& hasNoError);
+		static CandidateCollectionRef completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult );		
 	protected:
 		EExpressionResult compileConditionalExpression(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, ExecutableUnitRef& ifClauseUnit, ExecutableUnitRef& elseClauseUnit);
 		EExpressionResult putAnExpUnit(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, ExpressionInputList& inputList);

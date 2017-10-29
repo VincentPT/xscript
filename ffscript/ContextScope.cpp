@@ -27,8 +27,6 @@ namespace ffscript {
 	extern std::string key_pointer;
 	extern std::string key_array;
 
-	extern bool convertToRef(ScriptCompiler* scriptCompiler, ExecutableUnitRef& param);
-
 	ContextScope::ContextScope(ScriptScope* parent, FunctionScope* functionScope) : 
 		_functionScope(functionScope),
 		_loopScope(nullptr),
@@ -225,7 +223,7 @@ namespace ffscript {
 		bool hasError;
 
 		//try to find copy contructor for current types
-		auto constructorFunc = ExpressionParser::applyConstructor(scriptCompiler, param1, param2, hasError);
+		auto constructorFunc = scriptCompiler->applyConstructor(param1, param2, hasError);
 		if (hasError) {
 			eResult = E_FAIL;
 			return false;
@@ -453,7 +451,7 @@ namespace ffscript {
 								//set ExcludeFromDestructor to notice that return object from this unit will not be destroy by destructor
 								//this mask will make affect if this unit is function unit
 								//for variable unit(or X Opeand unit), we must use another way
-								unitForReturn->setMask(MaskType::ExcludeFromDestructor);
+								unitForReturn->setMask((MaskType)((unsigned int) unitForReturn->getMask() | (unsigned int)MaskType::ExcludeFromDestructor));
 
 								//try another way to notice that return object from this unit will not be destroy by destructor
 								//in case the return unit is a EXP_UNIT_ID_XOPERAND
@@ -712,7 +710,6 @@ namespace ffscript {
 		return destructor;
 	}
 
-	extern bool convertToRef(ScriptCompiler* scriptCompiler, ExecutableUnitRef& param);
 	int ContextScope::checkAndGenerateDestructors(ScriptCompiler* scriptCompiler, ExecutableUnit* exeUnit, std::list<FunctionRef>& destructors) {
 		if (!ISFUNCTION(exeUnit)) {
 			return 0;
@@ -721,7 +718,7 @@ namespace ffscript {
 
 		auto function = (Function*)exeUnit;
 		//only generate destructor for function has not ExcludeFromDestructor in mask
-		if (function->getMask() != MaskType::ExcludeFromDestructor) {
+		if (((unsigned int) function->getMask() & (unsigned int)MaskType::ExcludeFromDestructor) == 0) {
 			auto& type = function->getReturnType();
 			auto destructor = checkAndGenerateDestructor(scriptCompiler, type);
 			if (destructor != nullptr) {
@@ -733,7 +730,7 @@ namespace ffscript {
 				pVariable->setDataType(type);
 				ExecutableUnitRef returnUnit = std::make_shared<CXOperand>(this, pVariable, pVariable->getDataType());
 
-				if (!convertToRef(scriptCompiler, returnUnit)) {
+				if (!scriptCompiler->convertToRef(returnUnit)) {
 					return 1;
 				}
 

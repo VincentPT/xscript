@@ -21,6 +21,8 @@
 #include "LogicCommands.hpp"
 #include "DefaultCommands.h"
 #include "Supportfunctions.h"
+#include "CompositeConstrutorUnit.h"
+#include "FwdCompositeConstrutorUnit.h"
 
 namespace ffscript {	
 	
@@ -647,6 +649,81 @@ namespace ffscript {
 		return command;
 	}
 
+	TargetedCommand* ExpUnitExecutor::extractParamForStructInitializing(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset) {
+		auto& constructorObject = functionUnit->getChild(0);
+		auto xOperand = dynamic_cast<CXOperand*>(constructorObject.get());
+		if (!xOperand) {
+			// throw exception here
+		}
+		auto pVariable = xOperand->getVariable();
+		int variableOffset = pVariable->getOffset();
+
+		auto objectType = pVariable->getDataType();
+		auto pStruct = scriptCompiler->getStruct(objectType.iType());
+		if(!pStruct) {
+			// throw exception here
+		}
+
+		auto typeVoid = scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID;
+
+		MemberInfo memberInfo;
+		string memberName;
+		
+		FunctionCommandNP* functionCommand = new FunctionCommandNP(functionUnit->getChildCount() - 1);
+
+		auto res = pStruct->getMemberFirst(&memberName, &memberInfo);
+		// break assigment for each member of the struct
+		for (int i = 1; res; i ++) {
+			auto paramUnit = functionUnit->getChild(i);
+			auto targetCommand = convert2Code2(scriptCompiler, paramUnit, variableOffset + memberInfo.offset);
+			res = pStruct->getMemberNext(nullptr, &memberInfo);
+
+			functionCommand->pushCommandParam(targetCommand);
+		}
+
+
+		return functionCommand;
+	}
+
+	TargetedCommand* ExpUnitExecutor::extractParamForConstructorComposite(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset) {		
+		auto compositeConstructorUnit = dynamic_cast<CompositeConstrutorUnit*>(functionUnit);
+		if (!compositeConstructorUnit) {
+			// throw exception here
+		}
+		auto assigments = compositeConstructorUnit->getAssigments();
+
+		FunctionCommandNP* functionCommand = new FunctionCommandNP((int)assigments.size());
+
+		for (auto it = assigments.begin(); it != assigments.end(); it++) {
+			auto pVariable = it->first;
+			auto& unitRef = it->second;
+
+			auto targetCommand = convert2Code2(scriptCompiler, unitRef, pVariable->getOffset());
+			if (!targetCommand) {		
+				delete functionCommand;
+				functionCommand = nullptr;
+				break;
+			}
+
+			functionCommand->pushCommandParam(targetCommand);
+		}
+
+		return functionCommand;
+	}
+
+	TargetedCommand* ExpUnitExecutor::extractParamForFwdConstructorComposite(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset) {
+		auto fwdCompositeConstructorUnit = dynamic_cast<FwdCompositeConstrutorUnit*>(functionUnit);
+		if (!fwdCompositeConstructorUnit) {
+			// throw exception here
+		}
+
+		auto constructorUnitRef = fwdCompositeConstructorUnit->getConstructorUnit();
+		// first character should be always making ref function
+		auto makeRefFuncRef = constructorUnitRef->getChild(0);
+		
+		return convert2Code2(scriptCompiler, makeRefFuncRef, returnOffset);
+	}
+
 	template <template <typename, typename> class CommandT>
 	FunctionCommand* createLogicCommand(ScriptCompiler* scriptCompiler, int paramType1, int paramType2) {
 		FunctionCommand* functionCommandTree = nullptr;
@@ -824,6 +901,12 @@ namespace ffscript {
 		else if (node.get()->getType() == EXP_UNIT_ID_CREATE_LAMBDA) {
 			assitFunction = extractParamForCreateLambdaFunction(scriptCompiler, (Function*)node.get(), beginParamOffset, returnOffset);
 		}
+		else if (node.get()->getType() == EXP_UNIT_ID_CONSTRUCTOR_COMPOSITE) {
+			assitFunction = extractParamForConstructorComposite(scriptCompiler, (Function*)node.get(), beginParamOffset, returnOffset);
+		}
+		else if (node.get()->getType() == EXP_UNIT_ID_CREATE_OBJECT_COMPOSITE) {
+			assitFunction = extractParamForFwdConstructorComposite(scriptCompiler, (Function*)node.get(), beginParamOffset, returnOffset);
+		}
 		else {
 			NativeFunction* expFunctionUnit = dynamic_cast<NativeFunction*>(node.get());
 			int n = ((Function*)node.get())->getChildCount();
@@ -895,7 +978,7 @@ namespace ffscript {
 #endif
 	TargetedCommand* ExpUnitExecutor::convert2Code2(ScriptCompiler* scriptCompiler, const ExecutableUnitRef& node, int returnOffset) {
 		TargetedCommand* assitFunction;
-		if (_currentScope) {
+		if (_currentScope && (unsigned int)node->getMask() | (unsigned int)MaskType::ExcludeFromDestructor ) {
 			auto pVariable = _currentScope->findTempVariable(node.get());
 			if (pVariable) {
 				//pVariable->setOffset(_returnOffset);

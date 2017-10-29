@@ -42,17 +42,18 @@ namespace ffscript {
 			auto& actualReturnType = candidateUnitRef->getReturnType();			
 			//if (expectedType != actualReturnType) {
 				ParamCastingInfo paramInfo;
-				bool res = false;
-				if (res = scriptCompiler->findMatchingLevel1(refVoidType, expectedType, actualReturnType, paramInfo)) {
+				int res = 0;
+				if (res = scriptCompiler->findMatchingComposite(expectedType, candidateUnitRef, paramInfo)) {
 					;
 				}
-				else if (res = scriptCompiler->findMatchingLevel2(expectedType, actualReturnType, paramInfo)) {
+				else if (res = scriptCompiler->findMatching(refVoidType, expectedType, actualReturnType, paramInfo, true)) {
 					;
 				}
 				if (res) {
 					if (paramInfo.castingFunction) {
 						auto& castingFunction = paramInfo.castingFunction;
 						applyCasting(candidateUnitRef, castingFunction);
+						candidateUnitRef->setReturnType(expectedType);
 					}					
 					return candidateUnitRef;
 				}

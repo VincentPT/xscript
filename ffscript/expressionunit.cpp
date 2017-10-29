@@ -263,14 +263,15 @@ namespace ffscript {
 
 	////////////////////////////////////////////////////////
 	DynamicParamFunction::DynamicParamFunction(const std::string& name, unsigned int functionType, int iPriority, const std::string& returnType) : _maxParam(-1),
-		NativeFunction(name, functionType, iPriority, returnType){}
+		NativeFunction(name, functionType, iPriority, returnType){
+	}
 
 	DynamicParamFunction::DynamicParamFunction(const std::string& name, unsigned int functionType, int iPriority, const ScriptType& returnType) : _maxParam(-1),
-		NativeFunction(name, functionType, iPriority, returnType) {}
+		NativeFunction(name, functionType, iPriority, returnType) {
+	}
 
 	DynamicParamFunction::DynamicParamFunction(const std::string& name, unsigned int functionType, int iPriority, int maxParam) : _maxParam(maxParam),
-		NativeFunction(name, functionType, iPriority, "TBD")
-	{
+		NativeFunction(name, functionType, iPriority, "TBD") {
 	}
 
 	DynamicParamFunction::~DynamicParamFunction() {}

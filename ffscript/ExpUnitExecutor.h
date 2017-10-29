@@ -63,6 +63,9 @@ namespace ffscript {
 		TargetedCommand* extractParamDefaultCopyOperator(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
 		TargetedCommand* extractParamDefaultCopyOperatorRef(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
 		TargetedCommand* extractParamAccessStaticArray(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
+		TargetedCommand* extractParamForConstructorComposite(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
+		TargetedCommand* extractParamForFwdConstructorComposite(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
+		TargetedCommand* extractParamForStructInitializing(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
 		FunctionCommand* createParamLogicAndCommand(ScriptCompiler* scriptCompiler, Function* functionUnit);
 		FunctionCommand* createParamLogicOrCommand(ScriptCompiler* scriptCompiler, Function* functionUnit);
 		RuntimeFunctionInfo* buildRuntimeInfoForConstant(ScriptCompiler* scriptCompiler, const ExecutableUnitRef& constantUnit);

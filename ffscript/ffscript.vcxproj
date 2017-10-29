@@ -288,6 +288,7 @@
     <ClInclude Include="ffutil.hpp" />
     <ClInclude Include="FuncLibrary.h" />
     <ClInclude Include="function\MemberFunction2Ref.hpp" />
+    <ClInclude Include="FwdCompositeConstrutorUnit.h" />
     <ClInclude Include="InternalCompilerSuite.h" />
     <ClInclude Include="LogicCommands.hpp" />
     <ClInclude Include="OperatorObject.h" />
@@ -364,6 +365,7 @@
     <ClCompile Include="CompositeConstrutorUnit.cpp" />
     <ClCompile Include="ConditionalOperator.cpp" />
     <ClCompile Include="FuncLibrary.cpp" />
+    <ClCompile Include="FwdCompositeConstrutorUnit.cpp" />
     <ClCompile Include="InternalCompilerSuite.cpp" />
     <ClCompile Include="OperatorObject.cpp" />
     <ClCompile Include="OverloadingRules.cpp" />

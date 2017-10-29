@@ -271,6 +271,9 @@
     <ClInclude Include="CompositeConstrutorUnit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FwdCompositeConstrutorUnit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -448,6 +451,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CompositeConstrutorUnit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FwdCompositeConstrutorUnit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

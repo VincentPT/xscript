@@ -50,7 +50,7 @@ namespace ffscript {
 	Variable* ScriptScope::registTempVariable(CommandUnit* parentUnit, int offset) {
 		auto it = _variableUnitMap.insert(std::make_pair(parentUnit, nullptr));
 		if (it.second == false) {
-			return nullptr;
+			return it.first->second;
 		}
 		Variable variable("ret of " + parentUnit->toString());
 		_tempVariablesForCode.push_back(variable);

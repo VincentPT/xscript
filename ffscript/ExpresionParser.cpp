@@ -1586,223 +1586,7 @@ namespace ffscript {
 		}
 
 		return true;
-	}
-
-	///
-	/// check ability of assigning a dynamic array to a struct and apply a new function t o
-	/// allow assign each member of struct to a parameter unit of second operand unit
-	///
-	FunctionRef ExpressionParser::applyConstructorForCompisiteType(ScriptCompiler* scriptCompiler, Variable* pVariable, DynamicParamFunctionRef& secondOperand, bool& hasNoError) {
-		ScriptType typeVoid(scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID, "void");
-		DynamicParamFunctionRef assignmentCompositeUnit;
-
-		list<ExecutableUnitRef> assigments;
-		hasNoError = breakCompositeAssigment(scriptCompiler, pVariable, secondOperand, assigments);
-
-		if (hasNoError && assigments.size()) {
-			assignmentCompositeUnit = make_shared<DynamicParamFunction>("__ctor_composite", EXP_UNIT_ID_CONSTRUCTOR_COMPOSITE, FUNCTION_PRIORITY_USER_FUNCTION, typeVoid);
-
-			for (auto it = assigments.begin(); it != assigments.end(); it++) {
-				assignmentCompositeUnit->pushParam(*it);
-			}
-		}
-
-		return assignmentCompositeUnit;
-	}
-
-	bool ExpressionParser::breakCompositeAssigment(ScriptCompiler* scriptCompiler, Variable* pVariable, const DynamicParamFunctionRef& secondOperand, list<ExecutableUnitRef>& assigments) {
-		const ScriptType& param1Type = pVariable->getDataType();
-
-		// check if param 1 type is a reference or pointer...
-		if (param1Type.isSemiRefType() || param1Type.isRefType()) {
-			// then we just return cause these type cannot apply to a dynamic array
-			return false;
-		}
-		list<OverLoadingItem*> overloadingConstructors;
-		scriptCompiler->getConstructors(param1Type.origin(), overloadingConstructors);
-
-		if (overloadingConstructors.size()) {
-			auto& params = secondOperand->getParams();
-			auto constructorCandidates = scriptCompiler->selectMultiCandidates(overloadingConstructors, params);
-			if (!constructorCandidates || constructorCandidates->size() == 0) {
-				return false;
-			}
-
-			auto it = std::min_element(constructorCandidates->begin(), constructorCandidates->end(), [](const CandidateInfo& c1, const CandidateInfo& c2) {
-				return c1.totalAccurative < c2.totalAccurative;
-			});
-
-			auto tranformFunction = scriptCompiler->createFunctionFromId(it->item->functionId);
-			int i = 0;
-			auto& paramCastings = it->paramCasting;
-			for (auto jt = params.begin(); jt != params.end(); jt++) {
-				auto& castingInfo = paramCastings[i];
-				auto& castingFunction = castingInfo.castingFunction;
-				if (castingFunction) {
-					castingFunction->pushParam(*jt);
-					tranformFunction->pushParam(castingFunction);
-				}
-				else {
-					tranformFunction->pushParam(*jt);
-				}
-			}
-
-			assigments.push_back(ExecutableUnitRef(tranformFunction));
-			return true;
-		}
-
-		auto currentScope = scriptCompiler->currentScope();
-		auto applyTranformTypeUnit = [this, currentScope, scriptCompiler, &assigments](Variable* memberVariable, ExecutableUnitRef& paramUnit) -> bool {
-			auto& argumentType = memberVariable->getDataType();
-			auto& paramType = paramUnit->getReturnType();
-
-			// ...check if the parameter unit is a variant array...
-			if (paramUnit->getType() == EXP_UNIT_ID_DYNAMIC_FUNC) {
-				// ...then call breakCompositeAssigment recursively to break composite assigment to smaller units
-				auto subParams = dynamic_pointer_cast<DynamicParamFunction>(paramUnit);
-				if (!breakCompositeAssigment(scriptCompiler, memberVariable, subParams, assigments)) {
-					return false;
-				}
-			}
-			else {
-				FunctionRef tranformFunctionRef;
-
-				// ...then first check copy constructor for data type of member of struct
-				auto subUnit = new CXOperand(currentScope, memberVariable, memberVariable->getDataType());
-				auto subUnitRef = ExecutableUnitRef(subUnit);
-				bool hasError;
-				auto copyConstructor = applyConstructor(scriptCompiler, subUnitRef, paramUnit, hasError);
-				if (hasError) {
-					return false;
-				}
-				// has copy constructor for corressponding argument's types?...
-				if (copyConstructor) {
-					// ...then generate constructor info and destructor info for the variable in current scope
-					currentScope->checkVariableToRunConstructorNonRecursive(memberVariable, copyConstructor);
-					tranformFunctionRef.reset(copyConstructor);
-				}
-				else {
-					// ...not have copy constructor...
-					// ... then, find casting function to convert data type of param unit to data type of member in struct
-					string castingFunction = scriptCompiler->getType(argumentType.iType());
-					int functionId = scriptCompiler->findFunction(castingFunction, paramType.sType());
-					if (functionId >= 0) {
-						auto tranformFunction = scriptCompiler->createFunctionFromId(functionId);
-						if (tranformFunction) {
-							tranformFunction->pushParam(paramUnit);
-							tranformFunctionRef.reset(tranformFunction);
-						}
-					}
-				}
-				// check if there is no available unit can convert from data type of parameter unit to
-				// data type of member in struct
-				if (!tranformFunctionRef) {
-					scriptCompiler->setErrorText("cannot convert from type '" + paramType.sType() + "' to type '" + argumentType.sType() + "'");
-					return false;
-				}
-
-				assigments.push_back(tranformFunctionRef);
-			}
-
-			return true;
-		};
-
-		// check if data type of variable is a struct
-		auto pStruct = scriptCompiler->getStruct(param1Type.iType());
-		if (pStruct) {
-			MemberInfo memberInfo;
-			string memberName;
-			bool res = pStruct->getMemberFirst(&memberName, &memberInfo);
-			auto& params = secondOperand->getParams();
-			auto iter = params.begin();
-
-			// break assigment for each member of the struct
-			while (res && iter != params.end()) {
-				auto& paramUnit = *iter;
-				auto& argumentType = memberInfo.type;
-				auto& paramType = paramUnit->getReturnType();
-
-				// check if member data type is different than parameter unit which want assign to it...
-				if (argumentType != paramType) {
-					// ...generate assigment unit for them
-
-					// first, create a variable that hold member offset in struct...
-					auto memberVariable = currentScope->registMemberVariable(pVariable, pVariable->getName() + "." + memberName);
-					memberVariable->setDataType(argumentType);
-					memberVariable->setOffset(memberInfo.offset);
-
-					if (!applyTranformTypeUnit(memberVariable, paramUnit)) {
-						return false;
-					}
-				}
-				else {
-					assigments.push_back(paramUnit);
-				}				
-				res = pStruct->getMemberNext(nullptr, &memberInfo);
-				iter++;
-			}
-
-			return true;
-		}
-		// check if data type of variable is a static array
-		if (param1Type.iType() & DATA_TYPE_ARRAY_MASK) {
-			auto arrayInfo = (StaticArrayInfo*)scriptCompiler->getTypeInfo(param1Type.origin());
-			if (arrayInfo == nullptr) {
-				return false;
-			}
-			auto argumentType = ScriptType::buildScriptType(scriptCompiler, arrayInfo->elmType, arrayInfo->refLevel);
-
-			int elmIdx = 0;
-			int elmOffset = 0;
-
-			auto& params = secondOperand->getParams();
-			for (auto it = params.begin(); it != params.end(); it++) {
-				auto& paramUnit = *it;
-				auto& paramType = paramUnit->getReturnType();
-
-				// check if member data type is different than parameter unit which want assign to it...
-				if (argumentType != paramType) {
-					// ...generate assigment unit for them
-					// first, create a variable that hold member offset in struct...
-					auto memberVariable = currentScope->registMemberVariable(pVariable, pVariable->getName() + "[" + std::to_string(elmIdx) + "]");
-					memberVariable->setDataType(argumentType);
-					memberVariable->setOffset(elmOffset);
-
-					if (!applyTranformTypeUnit(memberVariable, paramUnit)) {
-						return false;
-					}
-				}
-				else {
-					assigments.push_back(paramUnit);
-				}
-				elmOffset += arrayInfo->elmSize;
-			}
-		}
-		
-
-		return true;
-	}
-
-	bool convertToRef(ScriptCompiler* scriptCompiler, ExecutableUnitRef& param) {
-		if (param->getType() == EXP_UNIT_ID_DEREF) {
-			//make ref meet deref then both is removed from the expression
-			auto& paramOfDeref = ((Function*)param.get())->getChild(0);
-			param = paramOfDeref;
-			return true;
-		}
-		int refFunctionId = scriptCompiler->getMakingRefFunction();
-		if (refFunctionId < 0) {
-			scriptCompiler->setErrorText("Internal error: making ref function is missing");
-			return false;
-		}
-
-		Function* refFunction = (Function*)scriptCompiler->createFunctionFromId(refFunctionId);
-		refFunction->pushParam(param);
-		refFunction->setMask(MaskType::CastingUnitNotInExpression);
-		param.reset((ExecutableUnit*)(refFunction));
-
-		return true;
-	}
+	}	
 
 	CandidateCollectionRef findApproxiateDefaultOperator(ScriptCompiler* scriptCompiler, FunctionRef funcNode, const std::vector<CandidateCollectionRef>& candidatesForParams) {
 		int childCount = funcNode->getChildCount();
@@ -1848,7 +1632,7 @@ namespace ffscript {
 				if (funcNode->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT || funcNode->getType() == EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR) {
 					if (param1Type == param2Type) {
 						//default assigment operator for all types
-						if (!convertToRef(scriptCompiler, param1)) {
+						if (!scriptCompiler->convertToRef(param1)) {
 							return nullptr;
 						}						
 
@@ -1862,7 +1646,7 @@ namespace ffscript {
 					else if (param1Type.origin() == param2Type.origin() && param1Type.refLevel() == param2Type.refLevel()/* && param2Type.isSemiRefType()*/) {
 						//default assigment operator for all types
 						if (!param1Type.isSemiRefType()) {
-							if (!convertToRef(scriptCompiler, param1)) {
+							if (!scriptCompiler->convertToRef(param1)) {
 								return nullptr;
 							}
 						}
@@ -1880,7 +1664,7 @@ namespace ffscript {
 						continue;
 					}
 					else if (param1Type.refLevel() == 0 && param1Type.isFunctionType() && param2Type.iType() == basicTypes.TYPE_NULL) {
-						if (!convertToRef(scriptCompiler, param1)) {
+						if (!scriptCompiler->convertToRef(param1)) {
 							return nullptr;
 						}
 					
@@ -1899,7 +1683,7 @@ namespace ffscript {
 					if (pStructInfo != nullptr && param2Type.origin() == basicTypes.TYPE_VARIANTARRAY) {
 						//default assigment operator for variant array to struct
 						if (param1Type.isRefType() == false) {
-							if (!convertToRef(scriptCompiler, param1)) {
+							if (!scriptCompiler->convertToRef(param1)) {
 								return nullptr;
 							}
 						}
@@ -1996,10 +1780,10 @@ namespace ffscript {
 
 				if (funcNode->getType() == EXP_UNIT_ID_USER_OPER && funcNode->getName() == "==") {
 					if (param1Type.refLevel() == 0 && param1Type.isFunctionType() && param2Type.refLevel() == 0 && param2Type.isFunctionType()) {
-						if (!convertToRef(scriptCompiler, param1)) {
+						if (!scriptCompiler->convertToRef(param1)) {
 							return nullptr;
 						}
-						if (!convertToRef(scriptCompiler, param2)) {
+						if (!scriptCompiler->convertToRef(param2)) {
 							return nullptr;
 						}
 						ScriptType boolType(basicTypes.TYPE_BOOL, "bool");
@@ -2021,7 +1805,7 @@ namespace ffscript {
 					}
 					//default member assign operator for variant array to struct
 					if (param1Type.isRefType() == false) {
-						if (param1Type.isSemiRefType() == false && !convertToRef(scriptCompiler, param1)) {
+						if (param1Type.isSemiRefType() == false && !scriptCompiler->convertToRef(param1)) {
 							return nullptr;
 						}						
 					}
@@ -2140,12 +1924,13 @@ namespace ffscript {
 			paramCastingList.resize(n);
 
 			for (i = 0; i < n; i++) {
-				auto& paramType = path[i]->getReturnType();
+				auto& param = path[i];
+				auto& paramType = param->getReturnType();
 				auto& argumentType = *argTypes[i];
-				if (scriptCompiler->findMatchingLevel1(refVoidType, argumentType, paramType, paramCastingList.at(i))) {
+				if (scriptCompiler->findMatchingComposite(argumentType, param, paramCastingList.at(i))) {
 					;
 				}
-				else if (scriptCompiler->findMatchingLevel2(argumentType, paramType, paramCastingList.at(i))) {
+				else if (scriptCompiler->findMatching(refVoidType, argumentType, paramType, paramCastingList.at(i), true)) {
 					;
 				}
 				else {
@@ -2247,13 +2032,17 @@ namespace ffscript {
 
 			list<CandidateInfo> overloadingCandidates = overloadingCandidatesOrigin;
 			for (int i = 0; i < n; i++) {
-				auto& paramType = path[i]->getReturnType();
+				auto& param = path[i];
+				auto& paramType = param->getReturnType();
 				auto it = overloadingCandidates.begin();
 				decltype(it) itTemp;
 
 				while (it != overloadingCandidates.end()) {
 					auto& argumentType = *(it->item->paramTypes[i]);
-					if (scriptCompiler->findMatching(refVoidType, argumentType, paramType, it->paramCasting.at(i), overloadingSize == 1)) {
+					if (scriptCompiler->findMatchingComposite(argumentType, param, it->paramCasting.at(i))) {
+						++it;
+					}
+					else if (scriptCompiler->findMatching(refVoidType, argumentType, paramType, it->paramCasting.at(i), overloadingSize == 1)) {
 						++it;
 					}
 					else {
@@ -2452,53 +2241,6 @@ namespace ffscript {
 		}
 
 		return unitCandidate;
-	}
-
-	Function* ExpressionParser::applyConstructor(ScriptCompiler* scriptCompiler, ExecutableUnitRef& variableUnit, ExecutableUnitRef& argUnit, bool& blHasError) {
-		//find registered copy contructor for current types
-		list<std::pair<const OverLoadingItem*, ParamCastingInfo>> constructorCandidates;
-
-		auto& param1 = variableUnit;
-		auto& param2 = argUnit;
-
-		auto& param1Type = param1->getReturnType();
-		auto& param2Type = param2->getReturnType();
-
-		auto currentScope = scriptCompiler->currentScope();
-		scriptCompiler->getCopyConstructor(param1Type.iType(), param2Type, constructorCandidates);
-
-		blHasError = false;
-
-		//copy constructor found
-		if (constructorCandidates.size()) {
-			auto& functionInfo = constructorCandidates.front().first;
-			auto& castingInfo = constructorCandidates.front().second;
-
-			//convert param 1 to ref
-			if (param1Type.refLevel() == param2Type.refLevel()) {
-				if (!convertToRef(scriptCompiler, param1)) {
-					blHasError = true;
-					return nullptr;
-				}
-			}
-
-			//param 2 is not availble for using imediately and need to be cast before use.
-			if (castingInfo.castingFunction) {
-				auto& castingFunction = castingInfo.castingFunction;
-				castingFunction->setMask(MaskType::CastingUnitNotInExpression);
-				castingFunction->pushParam(param2);
-
-				param2 = castingFunction;
-			}
-			auto newFunction = scriptCompiler->createFunctionFromId(functionInfo->functionId);
-			newFunction->pushParam(param1);
-			newFunction->pushParam(param2);
-			newFunction->setMask(MaskType::CopyConstructor);
-
-			return newFunction;
-		}
-
-		return nullptr;
 	}
 
 	CandidateCollectionRef ExpressionParser::completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult) {
@@ -2891,7 +2633,7 @@ namespace ffscript {
 					auto xOperand = (CXOperand*)param1.get();
 					auto pVariable = xOperand->getVariable();
 
-					auto newFunction = applyConstructor(scriptCompiler, param1, param2, blHasError);
+					auto newFunction = scriptCompiler->applyConstructor(param1, param2, blHasError);
 					if (blHasError) {
 						return nullptr;
 					}
@@ -2930,7 +2672,7 @@ namespace ffscript {
 					//default copy constructor should be run only when param 2 is a function
 					//if (ISFUNCTION(param2)) {
 					if (param1->getType() == EXP_UNIT_ID_XOPERAND) {
-						if (param1Type == param2Type && convertToRef(scriptCompiler, param1)) {
+						if (param1Type == param2Type && scriptCompiler->convertToRef(param1)) {
 							acceptPath = true;
 						}
 					}
@@ -3094,24 +2836,43 @@ namespace ffscript {
 						}
 					}
 					//the code bellow is going to check assigment for structs
-					else if (ISOPERAND(pExeUnit1) &&
-						(function->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT ||
-							function->getType() == EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR)) {
-						struct1 = scriptCompiler->getStruct(dataType1.iType());
-						int variantArrayType = basicType.TYPE_VARIANTARRAY;
-						if (variantArrayType == dataType2.iType() || variantArrayType == dataType2.origin()) {
-							if (struct1) {
+					else if (ISOPERAND(pExeUnit1)) {						
+						if (function->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT ||
+							function->getType() == EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR) {
+							struct1 = scriptCompiler->getStruct(dataType1.iType());
+							int variantArrayType = basicType.TYPE_VARIANTARRAY;
+							if (variantArrayType == dataType2.iType() || variantArrayType == dataType2.origin()) {
+								if (struct1) {
 
-								//check variant array if valid or not in use to assign to a struct
-								if (!checkAssigmentOperatorForStruct(scriptCompiler, struct1, dynamic_pointer_cast<DynamicParamFunction>(pExeUnit2))) {
+									//check variant array if valid or not in use to assign to a struct
+									if (!checkAssigmentOperatorForStruct(scriptCompiler, struct1, dynamic_pointer_cast<DynamicParamFunction>(pExeUnit2))) {
+										eResult = E_TYPE_CONVERSION_ERROR;
+										scriptCompiler->setErrorText("different type and different number of element for struct assigment does not allow");
+										return nullptr;
+									}
+								}
+							}
+						}
+						else if(function->getType() == EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR) {
+							int variantArrayType = basicType.TYPE_VARIANTARRAY;
+							if (variantArrayType == dataType2.iType() || variantArrayType == dataType2.origin()) {							
+								bool hasNoError;
+								auto functionRef = scriptCompiler->applyConstructorForCompisiteType(pExeUnit1, dynamic_pointer_cast<DynamicParamFunction>(pExeUnit2), hasNoError);
+								if (!hasNoError) {
 									eResult = E_TYPE_CONVERSION_ERROR;
 									scriptCompiler->setErrorText("different type and different number of element for struct assigment does not allow");
 									return nullptr;
+								}
+								if (functionRef) {
+									functionCandidates->push_back(functionRef);									
 								}
 							}
 						}
 					}
 #pragma endregion
+				}
+				if (functionCandidates && functionCandidates->size()) {
+					return functionCandidates;
 				}
 			}
 

@@ -150,13 +150,15 @@ namespace ffscript {
 
 		bool registConstructor(int type, int functionId);
 		int getDefaultConstructor(int type);
-		void getCopyConstructor(int rootType, const ScriptType& param2Type, list<std::pair<const OverLoadingItem*, ParamCastingInfo>>& constructorCandidates);
+		std::shared_ptr<list<CandidateInfo>> getConstructor(int rootType, const ExecutableUnitRef& unit);
+		std::shared_ptr<list<CandidateInfo>> getCopyConstructor(int rootType, const ScriptType& param2Type);
 		void getConstructors(int iType, list<OverLoadingItem*>& overloadingItems);
 		bool registDestructor(int type, int functionId);
 		int getDestructor(int type);
 
 		bool findMatchingLevel1(const ScriptType& refVoidType, const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo);
 		bool findMatchingLevel2(const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo);
+		bool findMatchingConstructor(const ScriptType& argumentType, const ExecutableUnitRef& unit, ParamCastingInfo& paramInfo);
 		///
 		/// return 0 if not find matching, 1 if found matching by using findMatchingLevel1
 		/// 2 if found matching by using findMatchingLevel2
@@ -164,6 +166,13 @@ namespace ffscript {
 		int findMatching(const ScriptType& refVoidType, const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo, bool tryFindingLevel2);
 		std::shared_ptr<list<CandidateInfo>> selectMultiCandidates(const list<OverLoadingItem*>& overloadingItems, const std::list<ExecutableUnitRef>& params);
 		FunctionRef applyParamToCandidate(const CandidateInfo& item, std::list<ExecutableUnitRef>& params);
+		static CandidateInfo* selectSingleCandidate(const std::shared_ptr<list<CandidateInfo>>& candidates);
+
+		Function* applyConstructor(ExecutableUnitRef& variableUnit, ExecutableUnitRef& argUnit, bool& blHasError);
+		bool convertToRef(ExecutableUnitRef& param);
+		bool breakCompositeAssigment(Variable* pVariable, const DynamicParamFunctionRef& secondOperand, list<pair<Variable*, ExecutableUnitRef>>& assigments);
+		FunctionRef applyConstructorForCompisiteType(const ExecutableUnitRef& xOperand, const DynamicParamFunctionRef& secondOperand, bool& hasNoError);
+		bool findMatchingComposite(const ScriptType& argumentType, const ExecutableUnitRef& unit, ParamCastingInfo& paramInfo);
 
 		bool registFunctionOperator(int type, int functionId);
 		int getFunctionOperator(int type);

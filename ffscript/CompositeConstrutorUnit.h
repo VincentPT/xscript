@@ -6,12 +6,9 @@ namespace ffscript {
 	class CompositeConstrutorUnit :
 		public Function
 	{
-		ExecutableUnitRef _constructorUnit;
-		std::vector<ExecutableUnitRef> _constructorParams;
-		std::vector<ScriptTypeRef> _argumentTypes;
-		ParamCastingList _castingList;
+		list<pair<Variable*, ExecutableUnitRef>> _assigments;
 	public:
-		CompositeConstrutorUnit(std::vector<ScriptTypeRef> argumentTypes);
+		CompositeConstrutorUnit(const list<pair<Variable*, ExecutableUnitRef>>& assigments);
 		virtual ~CompositeConstrutorUnit();
 
 		virtual int pushParam(ExecutableUnitRef pExeUnit);
@@ -19,5 +16,7 @@ namespace ffscript {
 		virtual const ExecutableUnitRef& getChild(int index) const;
 		virtual ExecutableUnitRef& getChild(int index);
 		virtual int getChildCount();
+
+		list<pair<Variable*, ExecutableUnitRef>>& getAssigments();
 	};
 }
