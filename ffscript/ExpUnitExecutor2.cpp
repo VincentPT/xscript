@@ -692,9 +692,9 @@ namespace ffscript {
 		}
 		auto assigments = compositeConstructorUnit->getAssigments();
 
-		FunctionCommandNP* functionCommand = new FunctionCommandNP((int)assigments.size());
-
-		for (auto it = assigments.begin(); it != assigments.end(); it++) {
+		FunctionCommandNP* functionCommand = new FunctionCommandNP((int)assigments.size() - 1);
+		int i = 0;
+		for (auto it = assigments.begin(); it != assigments.end(); it++, i++) {
 			auto pVariable = it->first;
 			auto& unitRef = it->second;
 
@@ -704,8 +704,12 @@ namespace ffscript {
 				functionCommand = nullptr;
 				break;
 			}
-
-			functionCommand->pushCommandParam(targetCommand);
+			if (i < functionCommand->getParamCap()) {
+				functionCommand->pushCommandParam(targetCommand);
+			}
+			else {
+				functionCommand->setCommand(targetCommand);
+			}
 		}
 
 		return functionCommand;
@@ -990,117 +994,119 @@ namespace ffscript {
 			int beginParamOffset = getCurrentLocalOffset();
 			assitFunction = extractCodeForFunction(scriptCompiler, node, returnOffset);
 
-			auto operatorType = ((Function*)node.get())->getMask();
-			if (operatorType == MaskType::Constructor || operatorType == MaskType::CopyConstructor) {
-				TriggerCommand* triggerCommand = new TriggerCommand();
-				triggerCommand->setCommand(assitFunction);
+			if (node->getUserData()) {
+				auto operatorType = ((Function*)node.get())->getMask();
+				if (operatorType == MaskType::Constructor || operatorType == MaskType::CopyConstructor) {
+					TriggerCommand* triggerCommand = new TriggerCommand();
+					triggerCommand->setCommand(assitFunction);
 
-				auto constructorTrigger = std::make_shared<CdeclFunction<void, int>>(afterCallConstructor);
-				auto userBlockRef =  dynamic_pointer_cast<ObjectBlock<OperatorBuidInfo>>(node->getUserData());
-				OperatorBuidInfo* buildInfo = (OperatorBuidInfo*) userBlockRef->getDataRef();
+					auto constructorTrigger = std::make_shared<CdeclFunction<void, int>>(afterCallConstructor);
+					auto userBlockRef = dynamic_pointer_cast<ObjectBlock<OperatorBuidInfo>>(node->getUserData());
+					OperatorBuidInfo* buildInfo = (OperatorBuidInfo*)userBlockRef->getDataRef();
 
-				//push constructor index to function afterCallConstructor
-				constructorTrigger->pushParam((void*)(size_t)buildInfo->operatorIndex);
-				triggerCommand->setAfterTrigger(constructorTrigger);
+					//push constructor index to function afterCallConstructor
+					constructorTrigger->pushParam((void*)(size_t)buildInfo->operatorIndex);
+					triggerCommand->setAfterTrigger(constructorTrigger);
 
-				if (buildInfo->buildItems.size()) {
-					TargetedCommand* pushParamRefOffset = nullptr;
+					if (buildInfo->buildItems.size()) {
+						TargetedCommand* pushParamRefOffset = nullptr;
 
-					//we need to take command push object address and give it to function object BeforeConstructorCall
-					//because it must be run first to allow children constructor can run
-					//chidren constructor can run only if they known address of parent object
-					if (operatorType == MaskType::Constructor) {
-						auto constructorCommandTree = (FunctionCommand*)assitFunction;
-						//take the command from constructor command
-						pushParamRefOffset = constructorCommandTree->popCommandParam();
-						//because constructor command have only one param
-						//so now, it becomes empty param
-						//and for faster run, we bring it up to trigger command
-						auto constructorCommand = constructorCommandTree->getCommand();
-						constructorCommandTree->setCommand(nullptr);
-						delete constructorCommandTree;
-						//bring it up to trigger command
-						triggerCommand->setCommand(constructorCommand);
+						//we need to take command push object address and give it to function object BeforeConstructorCall
+						//because it must be run first to allow children constructor can run
+						//chidren constructor can run only if they known address of parent object
+						if (operatorType == MaskType::Constructor) {
+							auto constructorCommandTree = (FunctionCommand*)assitFunction;
+							//take the command from constructor command
+							pushParamRefOffset = constructorCommandTree->popCommandParam();
+							//because constructor command have only one param
+							//so now, it becomes empty param
+							//and for faster run, we bring it up to trigger command
+							auto constructorCommand = constructorCommandTree->getCommand();
+							constructorCommandTree->setCommand(nullptr);
+							delete constructorCommandTree;
+							//bring it up to trigger command
+							triggerCommand->setCommand(constructorCommand);
+						}
+						else if (operatorType == MaskType::CopyConstructor) {
+							auto constructorCommandTree = (FunctionCommand*)assitFunction;
+							//take the the first command param
+							auto pushParamRefOffsetForParam = constructorCommandTree->popCommandParam();
+							//take the the second command param (address of current object need to construct)
+							pushParamRefOffset = constructorCommandTree->popCommandParam();
+							//because copy constructor command have two params
+							//so now, it becomes one param
+							//and for faster run, we bring change it to FunctionCommand1P
+							auto constructorCommand = constructorCommandTree->getCommand();
+							constructorCommandTree->setCommand(nullptr);
+							delete constructorCommandTree;
+
+							FunctionCommand1P* newConstuctCommand = new FunctionCommand1P();
+							newConstuctCommand->setCommand(constructorCommand);
+							newConstuctCommand->pushCommandParam(pushParamRefOffsetForParam);
+
+							//bring it up to trigger command
+							triggerCommand->setCommand(newConstuctCommand);
+						}
+
+						auto runChildConstructors = std::make_shared<BeforeConstructorCall>(pushParamRefOffset, beginParamOffset);
+						triggerCommand->setBeforeTrigger(runChildConstructors);
+
+						//set param to build constructor for children member
+						auto codeUpdateLater = CodeUpdater::getInstance(getScope());
+
+						auto constructorUpdater = new MFunction<
+							void, BeforeConstructorCall, ScriptCompiler*,
+							ScriptScope*, const std::list<OperatorBuidItemInfo>&>(
+								runChildConstructors.get(), &BeforeConstructorCall::buildOperator);
+						//add params for function BeforeConstructorCall::buildOperator
+						constructorUpdater->pushParam((void*)scriptCompiler);
+						constructorUpdater->pushParam((void*)getScope());
+						constructorUpdater->pushParam((void*)(&buildInfo->buildItems));
+
+						codeUpdateLater->addUpdateLaterTask(constructorUpdater);
 					}
-					else if (operatorType == MaskType::CopyConstructor) {
-						auto constructorCommandTree = (FunctionCommand*)assitFunction;
-						//take the the first command param
-						auto pushParamRefOffsetForParam = constructorCommandTree->popCommandParam();
-						//take the the second command param (address of current object need to construct)
-						pushParamRefOffset = constructorCommandTree->popCommandParam();
-						//because copy constructor command have two params
-						//so now, it becomes one param
-						//and for faster run, we bring change it to FunctionCommand1P
-						auto constructorCommand = constructorCommandTree->getCommand();
-						constructorCommandTree->setCommand(nullptr);
-						delete constructorCommandTree;
 
-						FunctionCommand1P* newConstuctCommand = new FunctionCommand1P();
-						newConstuctCommand->setCommand(constructorCommand);
-						newConstuctCommand->pushCommandParam(pushParamRefOffsetForParam);
-
-						//bring it up to trigger command
-						triggerCommand->setCommand(newConstuctCommand);
+					assitFunction = triggerCommand;
+				}
+				else if (operatorType == MaskType::Destructor || operatorType == MaskType::DestructorForReturnData) {
+					TriggerCommand* triggerCommand = nullptr;
+					auto userBlockRef = dynamic_pointer_cast<ObjectBlock<OperatorBuidInfo>>(node->getUserData());
+					OperatorBuidInfo* buildInfo = (OperatorBuidInfo*)userBlockRef->getDataRef();
+					if (operatorType == MaskType::Destructor) {
+						triggerCommand = new ConditionTriggerCommand();
+						auto destructorTrigger = std::make_shared<CdeclFunction<unsigned char, int>>(beforeCallDestructor);
+						//push constructor index to function beforeCallDestructor
+						destructorTrigger->pushParam((void*)(size_t)buildInfo->operatorIndex);
+						//set condition command
+						triggerCommand->setBeforeTrigger(destructorTrigger);
 					}
-					
-					auto runChildConstructors = std::make_shared<BeforeConstructorCall>(pushParamRefOffset, beginParamOffset);
-					triggerCommand->setBeforeTrigger(runChildConstructors);
+					else {
+						triggerCommand = new TriggerCommand();
+					}
+					//set constructor command
+					triggerCommand->setCommand(assitFunction);
 
-					//set param to build constructor for children member
-					auto codeUpdateLater = CodeUpdater::getInstance(getScope());
+					if (buildInfo->buildItems.size()) {
+						auto runChilddestructors = std::make_shared<BeforeConstructorCall>(nullptr, beginParamOffset);
+						triggerCommand->setAfterTrigger(runChilddestructors);
 
-					auto constructorUpdater = new MFunction<
-						void, BeforeConstructorCall, ScriptCompiler*,
-						ScriptScope*, const std::list<OperatorBuidItemInfo>&>(
-							runChildConstructors.get(), &BeforeConstructorCall::buildOperator);
-					//add params for function BeforeConstructorCall::buildOperator
-					constructorUpdater->pushParam((void*)scriptCompiler);
-					constructorUpdater->pushParam((void*)getScope());
-					constructorUpdater->pushParam((void*)(&buildInfo->buildItems));
+						//set param to build constructor for children member
+						auto codeUpdateLater = CodeUpdater::getInstance(getScope());
 
-					codeUpdateLater->addUpdateLaterTask(constructorUpdater);
+						auto destructorUpdater = new MFunction<
+							void, BeforeConstructorCall, ScriptCompiler*,
+							ScriptScope*, const std::list<OperatorBuidItemInfo>&>(
+								runChilddestructors.get(), &BeforeConstructorCall::buildOperator);
+						//add params for function BeforeConstructorCall::buildOperator
+						destructorUpdater->pushParam((void*)scriptCompiler);
+						destructorUpdater->pushParam((void*)getScope());
+						destructorUpdater->pushParam((void*)(&buildInfo->buildItems));
+
+						codeUpdateLater->addUpdateLaterTask(destructorUpdater);
+					}
+
+					assitFunction = triggerCommand;
 				}
-
-				assitFunction = triggerCommand;
-			}
-			else if (operatorType == MaskType::Destructor || operatorType == MaskType::DestructorForReturnData) {
-				TriggerCommand* triggerCommand = nullptr;
-				auto userBlockRef = dynamic_pointer_cast<ObjectBlock<OperatorBuidInfo>>(node->getUserData());
-				OperatorBuidInfo* buildInfo = (OperatorBuidInfo*)userBlockRef->getDataRef();
-				if (operatorType == MaskType::Destructor) {
-					triggerCommand = new ConditionTriggerCommand();
-					auto destructorTrigger = std::make_shared<CdeclFunction<unsigned char, int>>(beforeCallDestructor);
-					//push constructor index to function beforeCallDestructor
-					destructorTrigger->pushParam((void*)(size_t)buildInfo->operatorIndex);
-					//set condition command
-					triggerCommand->setBeforeTrigger(destructorTrigger);
-				}
-				else {
-					triggerCommand = new TriggerCommand();
-				}
-				//set constructor command
-				triggerCommand->setCommand(assitFunction);
-
-				if (buildInfo->buildItems.size()) {					
-					auto runChilddestructors = std::make_shared<BeforeConstructorCall>(nullptr, beginParamOffset);
-					triggerCommand->setAfterTrigger(runChilddestructors);
-
-					//set param to build constructor for children member
-					auto codeUpdateLater = CodeUpdater::getInstance(getScope());
-
-					auto destructorUpdater = new MFunction<
-						void, BeforeConstructorCall, ScriptCompiler*,
-						ScriptScope*, const std::list<OperatorBuidItemInfo>&>(
-							runChilddestructors.get(), &BeforeConstructorCall::buildOperator);
-					//add params for function BeforeConstructorCall::buildOperator
-					destructorUpdater->pushParam((void*)scriptCompiler);
-					destructorUpdater->pushParam((void*)getScope());
-					destructorUpdater->pushParam((void*)(&buildInfo->buildItems));
-
-					codeUpdateLater->addUpdateLaterTask(destructorUpdater);
-				}
-
-				assitFunction = triggerCommand;
 			}
 		}
 		else {

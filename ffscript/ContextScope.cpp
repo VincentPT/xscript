@@ -220,14 +220,8 @@ namespace ffscript {
 
 		ExecutableUnitRef param1 = ExecutableUnitRef(new CXOperand(this, pVariable, param1Type));
 		
-		bool hasError;
-
 		//try to find copy contructor for current types
-		auto constructorFunc = scriptCompiler->applyConstructor(param1, param2, hasError);
-		if (hasError) {
-			eResult = E_FAIL;
-			return false;
-		}
+		auto constructorFunc = scriptCompiler->applyConstructor(param1, param2);
 
 		if (constructorFunc) {
 			checkVariableToRunConstructor(pVariable, constructorFunc);

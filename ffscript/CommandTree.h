@@ -63,6 +63,7 @@ namespace ffscript {
 		virtual int pushCommandParam(TargetedCommand* command);
 		virtual TargetedCommand* popCommandParam();
 		virtual void execute();
+		int getParamCap() const;
 	};
 
 	////////////////////////////////////////////////////

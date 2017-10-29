@@ -169,6 +169,10 @@ namespace ffscript {
 		return _currentScope;
 	}
 
+	void CXOperand::setVariable(Variable* pVariable) {
+		_variable = pVariable;
+	}
+
 	Variable* CXOperand::getVariable() const {
 		return _variable;
 	}

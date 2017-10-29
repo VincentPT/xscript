@@ -153,6 +153,10 @@ namespace ffscript {
 		
 		return _commandParams[--_nParam];
 	}
+
+	int FunctionCommandNP::getParamCap() const {
+		return _nMaxParam;
+	}
 	/////////////////////////////////////////////////////////////////////////////////////
 	OptimizedLogicCommand::OptimizedLogicCommand() {}
 	

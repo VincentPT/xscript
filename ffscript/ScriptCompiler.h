@@ -158,7 +158,7 @@ namespace ffscript {
 
 		bool findMatchingLevel1(const ScriptType& refVoidType, const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo);
 		bool findMatchingLevel2(const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo);
-		bool findMatchingConstructor(const ScriptType& argumentType, const ExecutableUnitRef& unit, ParamCastingInfo& paramInfo);
+		bool findMatchingConstructor(const ExecutableUnitRef& objectParam, const ExecutableUnitRef& secondParam, ParamCastingInfo& paramInfo);
 		///
 		/// return 0 if not find matching, 1 if found matching by using findMatchingLevel1
 		/// 2 if found matching by using findMatchingLevel2
@@ -168,9 +168,11 @@ namespace ffscript {
 		FunctionRef applyParamToCandidate(const CandidateInfo& item, std::list<ExecutableUnitRef>& params);
 		static CandidateInfo* selectSingleCandidate(const std::shared_ptr<list<CandidateInfo>>& candidates);
 
-		Function* applyConstructor(ExecutableUnitRef& variableUnit, ExecutableUnitRef& argUnit, bool& blHasError);
+		Function* applyConstructor(ExecutableUnitRef& variableUnit, ExecutableUnitRef& argUnit, int* pAccurative = nullptr);
 		bool convertToRef(ExecutableUnitRef& param);
-		bool breakCompositeAssigment(Variable* pVariable, const DynamicParamFunctionRef& secondOperand, list<pair<Variable*, ExecutableUnitRef>>& assigments);
+		bool breakCompositeAssigment(const ExecutableUnitRef& variableUnit,
+			const DynamicParamFunctionRef& secondOperand, list<pair<Variable*,
+			ExecutableUnitRef>>& assigments, int& accurative);
 		FunctionRef applyConstructorForCompisiteType(const ExecutableUnitRef& xOperand, const DynamicParamFunctionRef& secondOperand, bool& hasNoError);
 		bool findMatchingComposite(const ScriptType& argumentType, const ExecutableUnitRef& unit, ParamCastingInfo& paramInfo);
 

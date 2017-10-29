@@ -202,6 +202,7 @@ namespace ffscript {
 		virtual UNIT_TYPE getType()const;
 		virtual ScriptScope* getScope() const;
 		virtual Variable* getVariable() const;
+		virtual void setVariable(Variable* pVariable);
 		virtual ExecutableUnit* clone();
 	};
 

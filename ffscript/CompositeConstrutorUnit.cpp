@@ -2,10 +2,14 @@
 #include "CompositeConstrutorUnit.h"
 
 namespace ffscript {
-	CompositeConstrutorUnit::CompositeConstrutorUnit(const list<pair<Variable*, ExecutableUnitRef>>& assigments) :
-		Function("__ctor_composite", EXP_UNIT_ID_CONSTRUCTOR_COMPOSITE, FUNCTION_PRIORITY_USER_FUNCTION, "void")
+
+	CompositeConstrutorUnit::CompositeConstrutorUnit() :
+		Function("__ctor_composite", EXP_UNIT_ID_CONSTRUCTOR_COMPOSITE, FUNCTION_PRIORITY_USER_FUNCTION, "void") {
+	}
+
+	CompositeConstrutorUnit::CompositeConstrutorUnit(const list<pair<Variable*, ExecutableUnitRef>>& assigments) : CompositeConstrutorUnit()
 	{
-		_assigments.insert(assigments.end(), assigments.begin(), assigments.end());
+		_assigments = assigments;
 	}
 
 
@@ -51,6 +55,11 @@ namespace ffscript {
 
 	int CompositeConstrutorUnit::getChildCount() {
 		return (int)_assigments.size();
+	}
+
+	void CompositeConstrutorUnit::setAssigments(list<pair<Variable*, ExecutableUnitRef>>& assigments) {
+		_assigments.clear();
+		_assigments.splice(_assigments.end(), assigments);
 	}
 
 	list<pair<Variable*, ExecutableUnitRef>>& CompositeConstrutorUnit::getAssigments() {

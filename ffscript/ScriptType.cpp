@@ -124,6 +124,7 @@ namespace ffscript {
 		ScriptType stype;
 		stype.setType(iType);
 		auto& typeStr = stype._sType;
+		typeStr.clear();
 		auto typeOriginStr = scriptCompiler->getType(stype.origin());
 		while (refLevel > 0)
 		{

@@ -49,20 +49,22 @@ namespace ffscript {
 
 	Variable* ScriptScope::registTempVariable(CommandUnit* parentUnit, int offset) {
 		auto it = _variableUnitMap.insert(std::make_pair(parentUnit, nullptr));
-		if (it.second == false) {
-			return it.first->second;
-		}
-		Variable variable("ret of " + parentUnit->toString());
-		_tempVariablesForCode.push_back(variable);
-		it.first->second = &(_tempVariablesForCode.back());
-		it.first->second->setScope(this);
-		return it.first->second;
+		if (it.second) {
+			auto pVvariable = new Variable("ret of " + parentUnit->toString());
+			pVvariable->setScope(this);
+			it.first->second.reset(pVvariable);
+		}		
+		return it.first->second.get();
+	}
+
+	bool ScriptScope::deleteTempVariable(CommandUnit* parentUnit) {
+		return _variableUnitMap.erase(parentUnit) != 0;
 	}
 
 	Variable* ScriptScope::findTempVariable(CommandUnit* parentUnit) {
 		auto it = _variableUnitMap.find(parentUnit);
 		if (it != _variableUnitMap.end()) {
-			return it->second;
+			return it->second.get();
 		}
 		return nullptr;
 	}
@@ -439,8 +441,7 @@ namespace ffscript {
 		_variableNameMap.clear();
 		_varibles.clear();
 		_memberVaribles.clear();
-		_destructors.clear();
-		_tempVariablesForCode.clear();
+		_destructors.clear();		
 		_children.clear();
 		_parent = nullptr;
 		_scopeSize = 0;

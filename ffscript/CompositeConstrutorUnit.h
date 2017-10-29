@@ -8,6 +8,7 @@ namespace ffscript {
 	{
 		list<pair<Variable*, ExecutableUnitRef>> _assigments;
 	public:
+		CompositeConstrutorUnit();
 		CompositeConstrutorUnit(const list<pair<Variable*, ExecutableUnitRef>>& assigments);
 		virtual ~CompositeConstrutorUnit();
 
@@ -17,6 +18,7 @@ namespace ffscript {
 		virtual ExecutableUnitRef& getChild(int index);
 		virtual int getChildCount();
 
+		void setAssigments(list<pair<Variable*, ExecutableUnitRef>>& assigments);
 		list<pair<Variable*, ExecutableUnitRef>>& getAssigments();
 	};
 }

@@ -29,13 +29,12 @@ namespace ffscript {
 		typedef std::map<std::string, DFunction2Ref> KeywordProcessingMap;
 
 		std::map<std::string, Variable*> _variableNameMap;
-		std::map<CommandUnit*, Variable*> _variableUnitMap;
+		std::map<CommandUnit*, std::shared_ptr<Variable>> _variableUnitMap;
 		KeywordProcessingMap _keywordProcessingMap;
 		std::list<Variable> _varibles;
 		std::list<MemberVariable> _memberVaribles;
 		ComandRefList _destructors;
 		ScopeAutoRunList _constructors;
-		std::list<Variable> _tempVariablesForCode;
 		ScriptScope* _parent;
 		ScopeRefList _children;
 		int _scopeSize;
@@ -55,6 +54,7 @@ namespace ffscript {
 		Variable* registVariable(const std::string&);
 		Variable* registVariable();
 		Variable* registTempVariable(CommandUnit* parentUnit, int offset);
+		bool deleteTempVariable(CommandUnit* parentUnit);
 		Variable* findTempVariable(CommandUnit* parentUnit);
 		CommandUnit* checkVariableToRunConstructor(Variable* pVariable);
 		Function* generateDefaultAutoOperator(int operatorId, Variable* obj);

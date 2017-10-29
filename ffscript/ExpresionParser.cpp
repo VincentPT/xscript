@@ -2627,16 +2627,11 @@ namespace ffscript {
 					// ...then it is must used constructor instead of default copy constructor if there is
 					// constructor for data type of the variable
 
-					bool blHasError;
-
 					//retreive varible object inside param 1 maybe changed in function applyConstructor
 					auto xOperand = (CXOperand*)param1.get();
 					auto pVariable = xOperand->getVariable();
 
-					auto newFunction = scriptCompiler->applyConstructor(param1, param2, blHasError);
-					if (blHasError) {
-						return nullptr;
-					}
+					auto newFunction = scriptCompiler->applyConstructor(param1, param2);
 
 					// check if constructor was applied					
 					if (newFunction) {
@@ -2837,8 +2832,8 @@ namespace ffscript {
 					}
 					//the code bellow is going to check assigment for structs
 					else if (ISOPERAND(pExeUnit1)) {						
-						if (function->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT ||
-							function->getType() == EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR) {
+						if (function->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT/* ||
+							function->getType() == EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR*/) {
 							struct1 = scriptCompiler->getStruct(dataType1.iType());
 							int variantArrayType = basicType.TYPE_VARIANTARRAY;
 							if (variantArrayType == dataType2.iType() || variantArrayType == dataType2.origin()) {
