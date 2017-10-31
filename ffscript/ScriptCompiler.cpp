@@ -601,8 +601,9 @@ namespace ffscript {
 		return -1;
 	}
 
-	std::shared_ptr<list<CandidateInfo>> ScriptCompiler::getCopyConstructor(int type, const ScriptType& param2Type) {
+	std::shared_ptr<list<CandidateInfo>> ScriptCompiler::getCopyConstructor(int type, const ExecutableUnitRef& paramUnit) {
 		auto key = type;
+		const ScriptType& param2Type = paramUnit->getReturnType();
 		string subKey = param2Type.sType();
 
 		std::shared_ptr<list<CandidateInfo>> candidates;
@@ -641,8 +642,10 @@ namespace ffscript {
 			auto& expectedType = *(overLoadingItem->paramTypes[1].get());
 
 			ParamCastingInfo castingInfo;
-			if (!findMatching(refVoidType, expectedType, param2Type, castingInfo, true)) {
-				continue;
+			if (!findMatchingComposite(expectedType, paramUnit, castingInfo)) {
+				if (!findMatching(refVoidType, expectedType, param2Type, castingInfo, true)) {
+					continue;
+				}
 			}
 
 			CandidateInfo constructorCandidate;
@@ -657,9 +660,8 @@ namespace ffscript {
 	}
 
 	std::shared_ptr<list<CandidateInfo>> ScriptCompiler::getConstructor(int type, const ExecutableUnitRef& unit) {
-		auto& param2Type = unit->getReturnType();
 		if (unit->getType() != EXP_UNIT_ID_DYNAMIC_FUNC) {
-			return getCopyConstructor(type, param2Type);
+			return getCopyConstructor(type, unit);
 		}
 
 		auto collector = dynamic_cast<DynamicParamFunction*>(unit.get());
@@ -1175,8 +1177,6 @@ namespace ffscript {
 
 			scope->deleteTempVariable(assignmentCompositeUnit.get());
 		}
-		
-
 
 		return false;
 	}
