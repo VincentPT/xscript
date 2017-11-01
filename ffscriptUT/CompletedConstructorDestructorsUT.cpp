@@ -185,6 +185,13 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			int interferAssigment = scriptCompiler->findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then cannot construct object ret in expression int ret = 1;
+				Assert::IsNull(program, L"compile program should failed");
+				return;
+			}
 			Assert::IsNotNull(program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", {});
@@ -576,8 +583,18 @@ namespace ffscriptUT
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
+			int expectedDestructorCount = 4;
+			int interferAssigment = scriptCompiler->findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then operator '=' is replace by default copy operator
+				// becuase default copy operator is not return a l-value,
+				// the destructor is not run for return object from the default copy operator
+				expectedDestructorCount = 2;
+			}
+
 			Assert::AreEqual(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(4, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			Assert::AreEqual(expectedDestructorCount, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
 			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
 			Assert::AreEqual(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
@@ -627,7 +644,7 @@ namespace ffscriptUT
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
-			scriptTask.runFunction(functionId, nullptr);
+			scriptTask.runFunction(functionId, nullptr);			
 
 			Assert::AreEqual(6, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
 			Assert::AreEqual(6, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
@@ -670,7 +687,6 @@ namespace ffscriptUT
 				L"	point.x = 0;"
 				L"	point.y = 1;"
 				L"	Rectangle rect;"
-				//L"	rect.location = point;"
 				L"}"
 				;
 
@@ -685,8 +701,18 @@ namespace ffscriptUT
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
+			int expectedDestructorCount = 8;
+			int interferAssigment = scriptCompiler->findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then operator '=' is replace by default copy operator
+				// becuase default copy operator is not return a l-value,
+				// the destructor is not run for return object from the default copy operator
+				expectedDestructorCount = 6;
+			}
+
 			Assert::AreEqual(6, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(8, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			Assert::AreEqual(expectedDestructorCount, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
 			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
 			Assert::AreEqual(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
