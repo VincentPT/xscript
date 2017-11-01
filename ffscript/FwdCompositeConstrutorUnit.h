@@ -3,15 +3,15 @@
 
 
 namespace ffscript {
-	class FwdCompositeConstrutorUnit :
+	class FwdConstrutorUnit :
 		public Function
 	{
+	protected:
 		FunctionRef _constructorUnit;
-		std::vector<ScriptTypeRef> _argumentTypes;
-		ParamCastingList _castingList;
+		FwdConstrutorUnit(const FunctionRef& constructorUnit, int functionType);
 	public:
-		FwdCompositeConstrutorUnit(const FunctionRef& constructorUnit, const std::vector<ScriptTypeRef>& argumentTypes, const ParamCastingList& castingList);
-		virtual ~FwdCompositeConstrutorUnit();
+		FwdConstrutorUnit(const FunctionRef& constructorUnit);
+		virtual ~FwdConstrutorUnit();
 
 		virtual int pushParam(ExecutableUnitRef pExeUnit);
 		virtual ExecutableUnitRef popParam();
@@ -19,5 +19,17 @@ namespace ffscript {
 		virtual ExecutableUnitRef& getChild(int index);
 		virtual int getChildCount();
 		FunctionRef& getConstructorUnit();
+	};
+
+	class FwdCompositeConstrutorUnit :
+		public FwdConstrutorUnit
+	{
+		std::vector<ScriptTypeRef> _argumentTypes;
+		ParamCastingList _castingList;
+	public:
+		FwdCompositeConstrutorUnit(const FunctionRef& constructorUnit, const std::vector<ScriptTypeRef>& argumentTypes, const ParamCastingList& castingList);
+		virtual ~FwdCompositeConstrutorUnit();
+
+		virtual int pushParam(ExecutableUnitRef pExeUnit);
 	};
 }

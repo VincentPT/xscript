@@ -158,18 +158,33 @@ namespace ffscript {
 		return _nMaxParam;
 	}
 	/////////////////////////////////////////////////////////////////////////////////////
-	OptimizedLogicCommand::OptimizedLogicCommand() {}
-	
-	void OptimizedLogicCommand::setCommand(TargetedCommand* command) {
-		FunctionCommand2P::setCommand(command);
-
-		CallNativeFuntion* nativeCommand = (CallNativeFuntion*)command;
-		_firstParamOffset = nativeCommand->getBeginParamOffset();
-		_resultOffset = nativeCommand->getTargetOffset();
-
-		_secondParamOffset = _firstParamOffset + sizeof(void*);
+	OptimizedLogicCommand::OptimizedLogicCommand() : _commandParam1(nullptr), _commandParam2(nullptr) {
+		setTargetSize(sizeof(bool));
 	}
 
+	int OptimizedLogicCommand::pushCommandParam(TargetedCommand* command) {
+		if (_commandParam2) { return -1; }
+		if (_commandParam1) {
+			_commandParam2 = command;
+			return 1;
+		}
+		_commandParam1 = command;
+		return 0;
+	}
+
+	TargetedCommand* OptimizedLogicCommand::popCommandParam() {
+		TargetedCommand* backupCommand;
+		if (_commandParam2) {
+			backupCommand = _commandParam2;
+			_commandParam2 = nullptr;
+		}
+		else {
+			backupCommand = _commandParam1;
+			_commandParam1 = nullptr;
+		}
+		return backupCommand;
+	}
+	
 	/////////////////////////////////////////////////////////////////////////////////////
 	LogicAndCommand::LogicAndCommand() {}
 
@@ -177,8 +192,8 @@ namespace ffscript {
 		_commandParam1->execute();
 
 		Context* context = Context::getCurrent();
-		int paramOffset = _firstParamOffset + context->getCurrentOffset();
-		int returnOffset = _resultOffset + context->getCurrentOffset();
+		int paramOffset = _commandParam1->getTargetOffset() + context->getCurrentOffset();
+		int returnOffset = getTargetOffset() + context->getCurrentOffset();
 		bool* paramValueRef = (bool*)context->getAbsoluteAddress(paramOffset);
 		bool* resultValueRef = (bool*)context->getAbsoluteAddress(returnOffset);
 
@@ -187,7 +202,7 @@ namespace ffscript {
 		}
 		else {
 			_commandParam2->execute();
-			paramOffset = _secondParamOffset + context->getCurrentOffset();
+			paramOffset = _commandParam2->getTargetOffset() + context->getCurrentOffset();
 			paramValueRef = (bool*)context->getAbsoluteAddress(paramOffset);
 			*resultValueRef = *paramValueRef;
 		}
@@ -200,8 +215,8 @@ namespace ffscript {
 		_commandParam1->execute();
 
 		Context* context = Context::getCurrent();
-		int paramOffset = _firstParamOffset + context->getCurrentOffset();
-		int returnOffset = _resultOffset + context->getCurrentOffset();
+		int paramOffset = _commandParam1->getTargetOffset() + context->getCurrentOffset();
+		int returnOffset = getTargetOffset() + context->getCurrentOffset();
 		bool* paramValueRef = (bool*)context->getAbsoluteAddress(paramOffset);
 		bool* resultValueRef = (bool*)context->getAbsoluteAddress(returnOffset);
 
@@ -210,7 +225,7 @@ namespace ffscript {
 		}
 		else {
 			_commandParam2->execute();
-			paramOffset = _secondParamOffset + context->getCurrentOffset();
+			paramOffset = _commandParam2->getTargetOffset() + context->getCurrentOffset();
 			paramValueRef = (bool*)context->getAbsoluteAddress(paramOffset);
 			*resultValueRef = *paramValueRef;
 		}

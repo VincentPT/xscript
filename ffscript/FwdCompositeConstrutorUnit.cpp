@@ -2,12 +2,54 @@
 #include "FwdCompositeConstrutorUnit.h"
 
 namespace ffscript {
-	FwdCompositeConstrutorUnit::FwdCompositeConstrutorUnit(const FunctionRef& constructorUnit, const std::vector<ScriptTypeRef>& argumentTypes, const ParamCastingList& castingList) :
+	FwdConstrutorUnit::FwdConstrutorUnit(const FunctionRef& constructorUnit) :
 		_constructorUnit(constructorUnit),
+		Function("_create_object_by_ctor", EXP_UNIT_ID_CREATE_OBJECT, FUNCTION_PRIORITY_USER_FUNCTION, "TBD")
+	{
+	}
+
+	FwdConstrutorUnit::FwdConstrutorUnit(const FunctionRef& constructorUnit, int functionType) :
+		_constructorUnit(constructorUnit),
+		Function("_create_object_by_ctor", functionType, FUNCTION_PRIORITY_USER_FUNCTION, "TBD")
+	{
+	}
+
+	FwdConstrutorUnit::~FwdConstrutorUnit()
+	{
+	}
+
+	int FwdConstrutorUnit::pushParam(ExecutableUnitRef pExeUnit) {
+		return _constructorUnit->pushParam(pExeUnit);
+	}
+
+	ExecutableUnitRef FwdConstrutorUnit::popParam() {
+		return _constructorUnit->popParam();
+	}
+
+	const ExecutableUnitRef& FwdConstrutorUnit::getChild(int index) const {
+		return _constructorUnit->getChild(index);
+	}
+
+	ExecutableUnitRef& FwdConstrutorUnit::getChild(int index) {
+		return _constructorUnit->getChild(index);
+	}
+
+	int FwdConstrutorUnit::getChildCount() {
+		return _constructorUnit->getChildCount();
+	}
+
+	FunctionRef& FwdConstrutorUnit::getConstructorUnit() {
+		return _constructorUnit;
+	}
+
+	///
+	///
+	///
+	FwdCompositeConstrutorUnit::FwdCompositeConstrutorUnit(const FunctionRef& constructorUnit, const std::vector<ScriptTypeRef>& argumentTypes, const ParamCastingList& castingList) :
 		_argumentTypes(argumentTypes),
 		_castingList(castingList),
-		Function("_create_object_by_ctor", EXP_UNIT_ID_CREATE_OBJECT_COMPOSITE, FUNCTION_PRIORITY_USER_FUNCTION, "TBD")
-	{		
+		FwdConstrutorUnit(constructorUnit, EXP_UNIT_ID_CREATE_OBJECT_COMPOSITE)
+	{
 	}
 
 
@@ -51,25 +93,5 @@ namespace ffscript {
 		}
 
 		return 0;
-	}
-
-	ExecutableUnitRef FwdCompositeConstrutorUnit::popParam() {
-		return _constructorUnit->popParam();
-	}
-
-	const ExecutableUnitRef& FwdCompositeConstrutorUnit::getChild(int index) const {
-		return _constructorUnit->getChild(index);
-	}
-
-	ExecutableUnitRef& FwdCompositeConstrutorUnit::getChild(int index) {
-		return _constructorUnit->getChild(index);
-	}
-
-	int FwdCompositeConstrutorUnit::getChildCount() {
-		return _constructorUnit->getChildCount();
-	}
-
-	FunctionRef& FwdCompositeConstrutorUnit::getConstructorUnit() {
-		return _constructorUnit;
 	}
 }

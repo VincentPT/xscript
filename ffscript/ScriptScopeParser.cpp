@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include "ScopedCompilingScope.h"
 #include "Program.h"
+#include "FwdCompositeConstrutorUnit.h"
 
 namespace ffscript {
 	const wchar_t* ScriptScope::parseType(const wchar_t* text, const wchar_t* end, ScriptType& type) {
@@ -24,11 +25,44 @@ namespace ffscript {
 		return c;
 	}
 
+	void ScriptScope::constructObjectForReturning(ExecutableUnitRef& candidateUnitRef, const ScriptType& expectedType) {
+		auto scriptCompiler = getCompiler();
+		// ser variable to null to don't allow findMatchingConstructor method
+		// apply destructor for the return object
+		CXOperand* pCXOperand = new CXOperand(this, nullptr, expectedType);
+		ExecutableUnitRef variableUnitRef(pCXOperand);
+		ParamCastingInfo paramInfo;
+		if (scriptCompiler->findMatchingConstructor(variableUnitRef, candidateUnitRef, paramInfo)) {
+			auto& constructorUnit = paramInfo.castingFunction;
+			auto pVariable = registTempVariable(constructorUnit.get(), -1);
+			pCXOperand->setVariable(pVariable);
+
+			auto typeVoid = scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID;
+			if (constructorUnit->getReturnType().iType() == typeVoid) {
+				auto fwdConstructorUnitRef = make_shared<FwdConstrutorUnit>(constructorUnit);
+				fwdConstructorUnitRef->setReturnType(expectedType);
+				//// set it excludedded from destructor to prevent the data of variable is destroyed
+				//fwdConstructorUnitRef->setMask(fwdConstructorUnitRef->getMask() | UMASK_EXCLUDEFROMDESTRUCTOR);
+
+				candidateUnitRef = fwdConstructorUnitRef;
+
+				pVariable = nullptr;
+			}
+			else if (constructorUnit->getReturnType() != expectedType) {
+				// throw exception here
+				throw exception("return type of the constructor must be void");
+			}
+		}
+	}
+
 	ExecutableUnitRef ScriptScope::chooseCandidate(const CandidateCollectionRef& candidates, const ScriptType& expectedType) {
 		auto scriptCompiler = getCompiler();
 		for (auto it = candidates->begin(); it != candidates->end(); ++it) {
 			auto& candidateUnitRef = *it;
-			if ((*it)->getReturnType() == expectedType) {
+			if (candidateUnitRef->getReturnType() == expectedType) {
+				if (candidateUnitRef->getType() == EXP_UNIT_ID_CONST || candidateUnitRef->getType() == EXP_UNIT_ID_DEREF) {
+					constructObjectForReturning(candidateUnitRef, expectedType);
+				}
 				return candidateUnitRef;
 			}
 		}
@@ -54,7 +88,16 @@ namespace ffscript {
 						auto& castingFunction = paramInfo.castingFunction;
 						applyCasting(candidateUnitRef, castingFunction);
 						candidateUnitRef->setReturnType(expectedType);
-					}					
+					}
+
+					// check to construct a object for returning in the function
+					if (candidateUnitRef->getType() == EXP_UNIT_ID_DEREF) {						
+						// because the deref just only do a shallow copy
+						// to return a object to outside, the object must be constructed
+						// and not be destructed after out of scope
+						constructObjectForReturning(candidateUnitRef, expectedType);
+					}
+
 					return candidateUnitRef;
 				}
 				

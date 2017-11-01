@@ -10,6 +10,7 @@
 #include "ScriptCompiler.h"
 #include "ScriptType.h"
 #include "ExpresionParser.h"
+#include "ObjectBlock.hpp"
 
 namespace ffscript {
 
@@ -46,7 +47,8 @@ namespace ffscript {
 	protected:
 		ComandRefList _commandBuilder;
 	protected:
-		ExecutableUnitRef chooseCandidate(const CandidateCollectionRef& candidates, const ScriptType& expectedReturnType);		
+		ExecutableUnitRef chooseCandidate(const CandidateCollectionRef& candidates, const ScriptType& expectedReturnType);
+		void constructObjectForReturning(ExecutableUnitRef& candidate, const ScriptType& expectedReturnType);
 	public:
 		ScriptScope(ScriptCompiler* scriptCompiler);
 		virtual ~ScriptScope();
@@ -54,14 +56,18 @@ namespace ffscript {
 		Variable* registVariable(const std::string&);
 		Variable* registVariable();
 		Variable* registTempVariable(CommandUnit* parentUnit, int offset);
+		Variable* applyTemporaryVariableFor(CommandUnit* parentUnit, Variable* pVariable);
 		bool deleteTempVariable(CommandUnit* parentUnit);
 		Variable* findTempVariable(CommandUnit* parentUnit);
 		CommandUnit* checkVariableToRunConstructor(Variable* pVariable);
 		Function* generateDefaultAutoOperator(int operatorId, Variable* obj);
-		void checkVariableToRunConstructor(Variable* pVariable, Function* constructor);
+		void applyDefaultConstructorForConstructor(const ScriptType& type, Function* constructor);
 		void checkVariableToRunConstructorNonRecursive(Variable* pVariable, Function* constructor);
-		void checkVariableToRunDestructor(Variable* pVariable);
+		bool checkVariableToRunDestructor(Variable* pVariable);
 		int getConstructorCommandCount() const;
+		void generateNextConstructId();
+		OperatorBuidInfo* applyConstructBuildInfo(Function* constructFactor);
+		std::shared_ptr<ObjectBlock<OperatorBuidInfo>> generateConstructBuildInfo() const;
 		ComandRefList* getDestructorList();
 		ScopeAutoRunList* getConstructorList();
 		MemberVariable* registMemberVariable(Variable* parent, const std::string&);

@@ -78,8 +78,8 @@ typedef const __int64 LONG_CP;
 #else
 typedef __int64& LONG_P;
 typedef const __int64& LONG_CP;
-#define S_LONG_P "ref long"
-#define S_LONG_CP "ref long"
+#define S_LONG_P "long&"
+#define S_LONG_CP "long&"
 #endif
 
 typedef __int64 LONG_T;
@@ -205,15 +205,14 @@ namespace ffscript {
 
 #pragma pack(pop)
 
-	enum class MaskType : unsigned int
-	{
-		None = 0,
-		Constructor = 1,
-		Destructor = 2,		
-		CopyConstructor = 4,
-		DestructorForReturnData = 8,
-		CastingUnitNotInExpression = 16,
-		ExcludeFromDestructor = 32,
-		DeclareInExpression = 64,
-	};
+typedef unsigned int MaskType;
+#define UMASK_NONE 0
+#define UMASK_DEFAULT_CTOR 1
+#define UMASK_DESTRUCTOR 2
+#define UMASK_CONSTRUCTOR 4
+#define UMASK_DESTRUCTORFORRETURNDATA 8
+#define UMASK_CASTINGUNITNOTINEXPRESSION 16
+#define UMASK_EXCLUDEFROMDESTRUCTOR 32
+#define UMASK_DECLAREINEXPRESSION 64
+#define UMASK_CONSTRUCT_FACTOR 128
 }

@@ -498,7 +498,7 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			scriptTask.getTaskResult();
 
-			Assert::AreEqual(5, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			Assert::AreEqual(0, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 		}
 
 		TEST_METHOD(ConstructorDestructorUT6)
@@ -614,7 +614,7 @@ namespace ffscriptUT
 			Assert::IsTrue(blRes, L"Register copy constructor failed");
 
 			DFunction2* structCopyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, DummyStruct2*, DummyStruct2*>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator1);
-			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, ref DummyStruct2", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
+			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, DummyStruct2&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(structType2, functionId);
@@ -653,8 +653,10 @@ namespace ffscriptUT
 
 			Assert::AreEqual(param.structVal.iVal, *iRes, L"Construtor and destructor does not work properly");
 			Assert::AreEqual(2, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
-			Assert::AreEqual(1, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
-			Assert::AreEqual(constuctorCounter.getCount() + copyConstructorCounter.getCount(), destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			// one for initialize ret, one for initialize return value from ret.structVal.iVal
+			Assert::AreEqual(2, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
+			// destructor for return value is not called because its scope is outside of test function
+			Assert::AreEqual(constuctorCounter.getCount() + copyConstructorCounter.getCount() - 1, destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 		}
 
 		TEST_METHOD(ConstructorDestructorUT8)
@@ -707,7 +709,7 @@ namespace ffscriptUT
 			Assert::IsTrue(blRes, L"Register copy constructor failed");
 
 			DFunction2* structCopyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, DummyStruct2*, DummyStruct2*>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator2);
-			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, ref DummyStruct2", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
+			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, DummyStruct2&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(structType2, functionId);
@@ -748,8 +750,10 @@ namespace ffscriptUT
 			//so integer value is still keep value when it is constructed
 			Assert::AreEqual(0, *iRes, L"Construtor and destructor does not work properly");
 			Assert::AreEqual(2, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
-			Assert::AreEqual(1, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
-			Assert::AreEqual(constuctorCounter.getCount() + copyConstructorCounter.getCount(), destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			// one for initialize ret, one for initialize return value from ret.structVal.iVal
+			Assert::AreEqual(2, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
+			// destructor for return value is not called because its scope is outside of test function
+			Assert::AreEqual(constuctorCounter.getCount() + copyConstructorCounter.getCount() - 1, destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 		}
 
 		TEST_METHOD(ConstructorDestructorUT9)
@@ -842,8 +846,10 @@ namespace ffscriptUT
 			//so integer value is still keep value when it is constructed
 			Assert::AreEqual(param, *iRes, L"Construtor and destructor does not work properly");
 			Assert::AreEqual(2, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
-			Assert::AreEqual(1, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
-			Assert::AreEqual(constuctorCounter.getCount() + copyConstructorCounter.getCount(), destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			// one for initialize ret, one for initialize return value from ret.iVal
+			Assert::AreEqual(2, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
+			// destructor for return value is not called because its scope is outside of test function
+			Assert::AreEqual(constuctorCounter.getCount() + copyConstructorCounter.getCount() - 1, destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 		}
 
 		TEST_METHOD(ConstructorDestructorWithIf)

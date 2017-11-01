@@ -204,7 +204,7 @@ namespace ffscriptUT
 				L"}"
 				L"int foo() {"
 				L"	int n = 1;"
-				L"	int&f = test(n);"
+				L"	int&f = test(ref(n));"
 				L"	return f;"
 				L"}"
 				;
@@ -242,8 +242,8 @@ namespace ffscriptUT
 				L"int foo() {"
 				L"	int n = 1;"
 				L"	int m = 1;"
-				L"	int&f = test(n);"
-				L"	test2(m);"
+				L"	int&f = test(ref(n));"
+				L"	test2(ref(m));"
 				L"	return f;"
 				L"}"
 				;
@@ -309,7 +309,7 @@ namespace ffscriptUT
 				L"}"
 				L"int foo() {"
 				L"	int n = 1;"
-				L"	int&f = test(n);"
+				L"	int&f = test(ref(n));"
 				L"	return f;"
 				L"}"
 				;

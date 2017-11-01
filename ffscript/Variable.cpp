@@ -30,6 +30,10 @@ namespace ffscript {
 
 	const std::string& Variable::getName()  const { return _name; }
 
+	void Variable::setName(const std::string& name) {
+		_name = name;
+	}
+
 	int Variable::getOffset() const { return _offset; }
 	void Variable::setOffset(int offset) {
 		_offset = offset;

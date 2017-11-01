@@ -19,6 +19,7 @@ namespace ffscript {
 	class MemberVariableAccessor;
 	class ScriptFunction;
 	class TargetedCommand;
+	class OptimizedLogicCommand;
 
 	class ExpUnitExecutor :
 		public Executor
@@ -64,10 +65,13 @@ namespace ffscript {
 		TargetedCommand* extractParamDefaultCopyOperatorRef(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
 		TargetedCommand* extractParamAccessStaticArray(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
 		TargetedCommand* extractParamForConstructorComposite(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
-		TargetedCommand* extractParamForFwdConstructorComposite(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
+		TargetedCommand* extractParamForFwdConstructor(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
 		TargetedCommand* extractParamForStructInitializing(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
-		FunctionCommand* createParamLogicAndCommand(ScriptCompiler* scriptCompiler, Function* functionUnit);
-		FunctionCommand* createParamLogicOrCommand(ScriptCompiler* scriptCompiler, Function* functionUnit);
+		OptimizedLogicCommand* createParamLogicAndCommand(ScriptCompiler* scriptCompiler, Function* functionUnit);
+		OptimizedLogicCommand* createParamLogicOrCommand(ScriptCompiler* scriptCompiler, Function* functionUnit);
+		TargetedCommand* extractParamForOptimizedLogicCommand(ScriptCompiler* scriptCompiler,
+			OptimizedLogicCommand* optimizedCommand,
+			Function* functionUnit, int beginParamOffset, int returnOffset);
 		RuntimeFunctionInfo* buildRuntimeInfoForConstant(ScriptCompiler* scriptCompiler, const ExecutableUnitRef& constantUnit);
 	};
 }

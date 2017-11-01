@@ -1710,7 +1710,7 @@ namespace ffscript {
 							//the following code is casting before execute param 2 unit
 							auto castingFunction = scriptCompiler->createFunctionFromId(integerCasting);
 							castingFunction->pushParam(param2);
-							castingFunction->setMask(MaskType::CastingUnitNotInExpression);
+							castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
 							//replace param 2 by casting function
 							param2.reset(castingFunction);
 						}
@@ -1756,7 +1756,7 @@ namespace ffscript {
 								//the following code is casting before execute param 2 unit
 								auto castingFunction = scriptCompiler->createFunctionFromId(integerCasting);
 								castingFunction->pushParam(param2);
-								castingFunction->setMask(MaskType::CastingUnitNotInExpression);
+								castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
 								//replace param 2 by casting function
 								param2.reset(castingFunction);
 							}
@@ -1911,7 +1911,7 @@ namespace ffscript {
 		int n = (int)argTypes.size();
 		int i;
 
-		ScriptType refVoidType(scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID | DATA_TYPE_POINTER_MASK, "ref void");		
+		ScriptType refVoidType(scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID | DATA_TYPE_POINTER_MASK, "ref void");
 
 		std::list<CandidatePathInfo> candidatePaths;
 		for (auto pit = paramPaths.begin(); pit != paramPaths.end(); pit++) {
@@ -2243,6 +2243,14 @@ namespace ffscript {
 		return unitCandidate;
 	}
 
+	inline bool isLogicBuitInTypes(const BasicTypes& basicTypes, int originType) {
+		return (originType == basicTypes.TYPE_INT ||
+			originType == basicTypes.TYPE_DOUBLE ||
+			originType == basicTypes.TYPE_FLOAT ||
+			originType == basicTypes.TYPE_LONG ||
+			originType == basicTypes.TYPE_BOOL);
+	}
+
 	CandidateCollectionRef ExpressionParser::completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult) {
 		LOG_I("begin update expression tree for " + POINTER2STRING(function.get()));
 		eResult = E_SUCCESS;
@@ -2412,6 +2420,92 @@ namespace ffscript {
 
 			return functionCandidates;
 		}
+		else if (function->getType() == EXP_UNIT_ID_OPERATOR_LOGIC_AND ||
+			function->getType() == EXP_UNIT_ID_OPERATOR_LOGIC_OR) {
+			if (n != 2) {
+				eResult = E_TOKEN_INVALID;
+				scriptCompiler->setErrorText("operator '" + function->getName() + "' must has two parameters");
+				return nullptr;
+			}
+
+			ExecutableUnitRef& pExeUnit1 = function->getChild(0);
+			ExecutableUnitRef& pExeUnit2 = function->getChild(1);
+
+			ScriptType typeBool(basicType.TYPE_BOOL, scriptCompiler->getType(basicType.TYPE_BOOL));
+
+			param1Candidates = linkForUnit(scriptCompiler, pExeUnit1, eResult);
+			if (param1Candidates && param1Candidates->size() && eResult == E_SUCCESS) {
+				auto param2Candidates = linkForUnit(scriptCompiler, pExeUnit2, eResult);
+				if (param2Candidates && param2Candidates->size() && eResult == E_SUCCESS) {
+					functionCandidates = make_shared<CandidateCollection>();
+					
+					candidatesForParams[0] = param1Candidates;
+					candidatesForParams[1] = param2Candidates;
+
+					std::list<std::vector<ExecutableUnitRef>> paramPaths;
+					std::list<pair<int, ExecutableUnitRef>> boolOpercandidates;
+					ParamCastingInfo castingInfo;
+					listPaths<ExecutableUnitRef, CandidateCollection, ExecutableUnitRef>(candidatesForParams, paramPaths);
+					int acurative1;
+					int acurative2;
+					int acurative;
+					for (auto it = paramPaths.begin(); it != paramPaths.end(); it++) {
+						auto& param1 = it->at(0);
+						auto& param2 = it->at(1);
+
+						auto& paramType1 = param1->getReturnType();
+						auto& paramType2 = param2->getReturnType();
+
+						if (paramType1.isRefType()) continue;
+						if (paramType2.isRefType()) continue;
+
+						if (!isLogicBuitInTypes(basicType, paramType1.origin())) {
+							auto boolOperator = scriptCompiler->findBoolOperatorForType(paramType1.origin(), param1, &acurative1);
+							if (!boolOperator) continue;
+
+							param1 = boolOperator;
+						}
+						else {
+							acurative1 = 0;
+						}
+						if (!isLogicBuitInTypes(basicType, paramType2.origin())) {
+							auto boolOperator = scriptCompiler->findBoolOperatorForType(paramType2.origin(), param2, &acurative2);
+							if (!boolOperator) continue;
+
+							param2 = boolOperator;
+						}
+						else {
+							acurative2 = 0;
+						}
+						acurative = acurative1 + acurative2;
+						auto functionCandidate = make_shared<FixParamFunction<2>>(function->getName(), function->getType(), function->getPriority(), typeBool);
+						functionCandidate->pushParam(param1);
+						functionCandidate->pushParam(param2);
+						functionCandidate->setMask(function->getMask());
+						functionCandidate->setUserData(function->getUserData());
+
+						if (acurative == 0) {
+							functionCandidates->push_back(functionCandidate);
+							return functionCandidates;
+						}
+
+						boolOpercandidates.push_back(make_pair(acurative, functionCandidate));
+					}
+
+					auto it = min_element(boolOpercandidates.begin(), boolOpercandidates.end(), [](auto& elm1, auto& elm2) {
+						return elm1.first < elm2.first;
+					});
+
+					if (it != boolOpercandidates.end()) {
+						functionCandidates->push_back(it->second);
+						return functionCandidates;
+					}
+				}
+			}
+
+			return nullptr;
+
+		}
 		bool updated = false;
 		if (check == false && n == 2) {
 #pragma region update data type for auto variable
@@ -2428,7 +2522,7 @@ namespace ffscript {
 						return nullptr;
 					}
 
-					MaskType mask = (MaskType)((unsigned int)pExeUnit1->getMask() | (unsigned int)MaskType::DeclareInExpression);
+					MaskType mask = (pExeUnit1->getMask() | UMASK_DECLAREINEXPRESSION);
 
 					param1Candidates = std::make_shared<CandidateCollection>();
 					pExeUnit1->setReturnType(param2Candidates->front()->getReturnType());
@@ -2473,7 +2567,7 @@ namespace ffscript {
 		int choosedFunctionId = -1;
 		Function* bestFunctionMatch = nullptr;
 
-		if(updated == false && n > 0) {			
+		if(updated == false && n > 0) {
 			for (int i = 0, k = 0; i < n && eResult == E_SUCCESS; i++, k++) {
 				//if candidate is already updated
 				if (candidatesForParams[k]) {
@@ -2623,23 +2717,19 @@ namespace ffscript {
 				auto param2 = pit->at(1);
 
 				// check if param 1 is a variable and it is declared in expression...
-				if (param1->getType() == EXP_UNIT_ID_XOPERAND && ((unsigned int)param1->getMask() & (unsigned int)MaskType::DeclareInExpression) != 0) {
+				if (param1->getType() == EXP_UNIT_ID_XOPERAND &&
+					(param1->getMask() & UMASK_DECLAREINEXPRESSION) != 0 &&
+					!ISFUNCTION(param2)
+					) {
 					// ...then it is must used constructor instead of default copy constructor if there is
-					// constructor for data type of the variable
-
-					//retreive varible object inside param 1 maybe changed in function applyConstructor
-					auto xOperand = (CXOperand*)param1.get();
-					auto pVariable = xOperand->getVariable();
-
+					// constructor for data type of the variable and param 2 is not a function
+					// because a function will return an object from inside of it, and this object is already construct
+					
 					auto newFunction = scriptCompiler->applyConstructor(param1, param2);
 
 					// check if constructor was applied					
 					if (newFunction) {
 						functionCandidates->push_back(ExecutableUnitRef(newFunction));
-
-						if (currentScope != nullptr) {
-							currentScope->checkVariableToRunConstructor(pVariable, newFunction);
-						}
 
 						needToCallConstructor = true;
 					}
@@ -2680,7 +2770,7 @@ namespace ffscript {
 							if (castingFunctionId >= 0) {
 								auto castingFunction = (Function*)scriptCompiler->createFunctionFromId(castingFunctionId);
 								castingFunction->pushParam(param2);
-								castingFunction->setMask(MaskType::CastingUnitNotInExpression);
+								castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
 								param2 = ExecutableUnitRef(castingFunction);
 
 								acceptPath = true;
@@ -2694,6 +2784,33 @@ namespace ffscript {
 						defaultCopyFunction->pushParam(param1);
 						defaultCopyFunction->pushParam(param2);
 						defaultCopyFunction->setReturnType(param2->getReturnType().makeSemiRef());
+
+						auto& oldParam1 = ((Function*)param1.get())->getChild(0);
+						// check if param 1 is a variable and
+						// its was declared inside the expression...
+						if (oldParam1->getType() == EXP_UNIT_ID_XOPERAND &&
+							(oldParam1->getMask() & UMASK_DECLAREINEXPRESSION)) {
+							// ...then generate destructor for it
+							
+							auto xOperand = (CXOperand*)oldParam1.get();
+							auto pVariable = xOperand->getVariable();							
+							if (currentScope->checkVariableToRunDestructor(pVariable)) {
+								// set construct build info to allow frame work set the object to be constructed
+								// when the command is run
+								currentScope->applyConstructBuildInfo(defaultCopyFunction);
+								defaultCopyFunction->setMask(defaultCopyFunction->getMask() | UMASK_CONSTRUCT_FACTOR);
+								// must generate next id for constructed object in current scope
+								currentScope->generateNextConstructId();
+							}
+						}
+
+						// check if param 2 is a function...
+						if (ISFUNCTION(param2)) {
+							// ...then exclude it from destructor
+							// because the whole data of object return by a function will be copy directly to
+							// the new object
+							param2->setMask(param2->getMask() | UMASK_EXCLUDEFROMDESTRUCTOR);
+						}
 
 						functionCandidates->push_back(ExecutableUnitRef(defaultCopyFunction));
 					}

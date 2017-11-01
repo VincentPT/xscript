@@ -2,7 +2,7 @@
 #include "CommandUnit.h"
 
 namespace ffscript {
-	CommandUnit::CommandUnit() : _mask(MaskType::None)
+	CommandUnit::CommandUnit() : _mask(UMASK_NONE)
 	{
 	}
 

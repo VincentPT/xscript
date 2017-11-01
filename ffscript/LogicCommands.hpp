@@ -31,8 +31,8 @@ namespace ffscript {
 			_commandParam1->execute();
 
 			Context* context = Context::getCurrent();
-			int paramOffset = _firstParamOffset + context->getCurrentOffset();
-			int returnOffset = _resultOffset + context->getCurrentOffset();
+			int paramOffset = _commandParam1->getTargetOffset() + context->getCurrentOffset();
+			int returnOffset = getTargetOffset() + context->getCurrentOffset();
 			void* paramValueRef1 = context->getAbsoluteAddress(paramOffset);
 			bool* resultValueRef = (bool*)context->getAbsoluteAddress(returnOffset);
 
@@ -41,11 +41,12 @@ namespace ffscript {
 			}
 			else {
 				_commandParam2->execute();
-				paramOffset = _secondParamOffset + context->getCurrentOffset();
+				paramOffset = _commandParam2->getTargetOffset() + context->getCurrentOffset();
 				void* paramValueRef2 = context->getAbsoluteAddress(paramOffset);
 				*resultValueRef = (fVal2(paramValueRef2) != 0);
 			}
 		}
+		virtual void buildCommandText() {}
 	};
 
 	////////////////////////////////////////////////////
@@ -57,8 +58,8 @@ namespace ffscript {
 			_commandParam1->execute();
 
 			Context* context = Context::getCurrent();
-			int paramOffset = _firstParamOffset + context->getCurrentOffset();
-			int returnOffset = _resultOffset + context->getCurrentOffset();
+			int paramOffset = _commandParam1->getTargetOffset() + context->getCurrentOffset();
+			int returnOffset = getTargetOffset() + context->getCurrentOffset();
 			void* paramValueRef1 = (T1*)context->getAbsoluteAddress(paramOffset);
 			bool* resultValueRef = (bool*)context->getAbsoluteAddress(returnOffset);
 
@@ -67,10 +68,12 @@ namespace ffscript {
 			}
 			else {
 				_commandParam2->execute();
-				paramOffset = _secondParamOffset + context->getCurrentOffset();
+				paramOffset = _commandParam2->getTargetOffset() + context->getCurrentOffset();
 				void* paramValueRef2 = context->getAbsoluteAddress(paramOffset);
 				*resultValueRef = (fVal1(paramValueRef2) != 0);
 			}
 		}
+
+		virtual void buildCommandText() {}
 	};
 }

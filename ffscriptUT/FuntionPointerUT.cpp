@@ -311,8 +311,8 @@ namespace ffscriptUT
 			funcLibHelper.registFunction("test", "int", new BasicFunctionFactory<4>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new CdeclFunction2<int, int>(test), scriptCompiler), true);
 
 			const wchar_t* scriptCode =
-				L"void getFn(ref function<int(int)> f) {"
-				L"	*f = test;"
+				L"void getFn(function<int(int)>& f) {"
+				L"	f = test;"
 				L"}"
 				L"int foo() {"
 				L"	function<int(int)> f;"

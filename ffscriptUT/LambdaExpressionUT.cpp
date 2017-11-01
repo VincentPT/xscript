@@ -150,7 +150,7 @@ namespace ffscriptUT
 				L"	int n = 1;"
 				L"	int a;"
 				L"	f = [n](ref int a) { a[0] = n; };"
-				L"	f(a);"
+				L"	f(ref(a));"
 				L"	return a;"
 				L"}"
 				;
@@ -180,10 +180,10 @@ namespace ffscriptUT
 
 			const wchar_t* scriptCode =
 				L"int foo() {"
-				L"	int n;"
+				L"	int n = 2;"
 				L"	int a = 1;"
 				L"	f = [&n](ref int a) { n = a[0]; };"
-				L"	f(a);"
+				L"	f(ref(a));"
 				L"	return n;"
 				L"}"
 				;
@@ -216,7 +216,7 @@ namespace ffscriptUT
 				L"	int n;"
 				L"	int a = 1;"
 				L"	function<void(ref int)> f = [&n](ref int a) { n = a[0]; };"
-				L"	f(a);"
+				L"	f(ref(a));"
 				L"	return n;"
 				L"}"
 				;

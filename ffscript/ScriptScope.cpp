@@ -57,6 +57,15 @@ namespace ffscript {
 		return it.first->second.get();
 	}
 
+	Variable* ScriptScope::applyTemporaryVariableFor(CommandUnit* parentUnit, Variable* pVariable) {
+		auto it = _variableUnitMap.insert(std::make_pair(parentUnit, pVariable));
+		if (it.second) {
+			pVariable->setName("ret of " + parentUnit->toString());
+			pVariable->setScope(this);			
+		}
+		return it.first->second.get();
+	}
+
 	bool ScriptScope::deleteTempVariable(CommandUnit* parentUnit) {
 		return _variableUnitMap.erase(parentUnit) != 0;
 	}
@@ -159,46 +168,11 @@ namespace ffscript {
 		return operatorFunction;
 	}
 
-	void ScriptScope::checkVariableToRunConstructor(Variable* pVariable, Function* constructor) {
-		auto getDestructorFunction = std::bind(&ScriptCompiler::getDestructor, _scriptCompiler, std::placeholders::_1);
-
-		auto destructorBuildInfoBlockRef = std::make_shared<ObjectBlock<OperatorBuidInfo>>();
-		ObjectBlock<OperatorBuidInfo>* destructorBuildInfoBlock = destructorBuildInfoBlockRef.get();
-		OperatorBuidInfo* destructorBuildInfo = (OperatorBuidInfo*)destructorBuildInfoBlock->getDataRef();
-
-		int destructorFunctionId = checkAutoOperatorForChildren(getCompiler(), getDestructorFunction, pVariable->getDataType(), 0, &(destructorBuildInfo->buildItems));
-		// check if current type has no destructor but member types have...
-		if (destructorFunctionId < 0 && destructorBuildInfo->buildItems.size() > 0) {
-			// then use auto operator, this default operator act as container to contain the member destructor
-			destructorFunctionId = _scriptCompiler->findFunction(DEFAULT_DUMMY_OPERATOR, "ref void");
-		}
-
+	void ScriptScope::applyDefaultConstructorForConstructor(const ScriptType& type, Function* constructor){
 		auto getConstructorFunction = std::bind(&ScriptCompiler::getDefaultConstructor, _scriptCompiler, std::placeholders::_1);
-
-		auto constructorBuildInfoBlockRef = std::make_shared<ObjectBlock<OperatorBuidInfo>>();
-		ObjectBlock<OperatorBuidInfo>* constructorBuildInfoBlock = constructorBuildInfoBlockRef.get();
-		OperatorBuidInfo* constructorBuildInfo = (OperatorBuidInfo*)constructorBuildInfoBlock->getDataRef();
-		checkAutoOperatorForChildren(getCompiler(), getConstructorFunction, pVariable->getDataType(), 0, &(constructorBuildInfo->buildItems));
-		constructorBuildInfo->operatorIndex = _constructorCount;
-
-		constructor->setUserData(constructorBuildInfoBlockRef);
-
-		if (destructorFunctionId >= 0) {
-			auto destructor = generateDefaultAutoOperator(destructorFunctionId, pVariable);
-			if (destructor == nullptr) {
-				// it should throw exception here
-				return;
-			}
-
-			destructorBuildInfo->operatorIndex = _constructorCount;
-			destructor->setMask(MaskType::Destructor);
-			destructor->setUserData(destructorBuildInfoBlockRef);
-
-			//store last unit to the destuctor list
-			_destructors.push_front(CommandUnitRef(destructor));
-		}
-
-		_constructorCount++;
+		auto constructorBuildInfoBlockRef = generateConstructBuildInfo();
+		OperatorBuidInfo* constructorBuildInfo = applyConstructBuildInfo(constructor);
+		checkAutoOperatorForChildren(getCompiler(), getConstructorFunction, type, 0, &(constructorBuildInfo->buildItems));
 	}
 
 	void ScriptScope::checkVariableToRunConstructorNonRecursive(Variable* pVariable, Function* constructor) {
@@ -223,7 +197,7 @@ namespace ffscript {
 			}
 
 			destructorBuildInfo->operatorIndex = _constructorCount;
-			destructor->setMask(MaskType::Destructor);
+			destructor->setMask(destructor->getMask() | UMASK_DESTRUCTOR);
 			destructor->setUserData(destructorBuildInfoBlockRef);
 
 			//store last unit to the destuctor list
@@ -234,30 +208,21 @@ namespace ffscript {
 	}
 
 	CommandUnit* ScriptScope::checkVariableToRunConstructor(Variable* pVariable) {
-		auto getDestructorFunction = std::bind(&ScriptCompiler::getDestructor, _scriptCompiler, std::placeholders::_1);
-
-		auto destructorBuildInfoBlockRef = std::make_shared<ObjectBlock<OperatorBuidInfo>>();
-		ObjectBlock<OperatorBuidInfo>* destructorBuildInfoBlock = destructorBuildInfoBlockRef.get();
-		OperatorBuidInfo* destructorBuildInfo = (OperatorBuidInfo*)destructorBuildInfoBlock->getDataRef();
-
-		int destructorFunctionId = checkAutoOperatorForChildren(getCompiler(), getDestructorFunction, pVariable->getDataType(), 0, &(destructorBuildInfo->buildItems));
-		// check if current type has no destructor but member types have...
-		if (destructorFunctionId < 0 && destructorBuildInfo->buildItems.size() > 0) {
-			// then use auto operator, this default operator act as container to contain the member destructor
-			destructorFunctionId = _scriptCompiler->findFunction(DEFAULT_DUMMY_OPERATOR, "ref void");
-		}
+		bool hasDestructors = checkVariableToRunDestructor(pVariable);
 
 		auto getConstructorFunction = std::bind(&ScriptCompiler::getDefaultConstructor, _scriptCompiler, std::placeholders::_1);
-
-		auto constructorBuildInfoBlockRef = std::make_shared<ObjectBlock<OperatorBuidInfo>>();
-		ObjectBlock<OperatorBuidInfo>* constructorBuildInfoBlock = constructorBuildInfoBlockRef.get();
-		OperatorBuidInfo* constructorBuildInfo = (OperatorBuidInfo*)constructorBuildInfoBlock->getDataRef();
-
+		auto constructorBuildInfoBlockRef = generateConstructBuildInfo();
+		auto constructorBuildInfo = (OperatorBuidInfo*)constructorBuildInfoBlockRef->getDataRef();
 		int constructorFunctionId = checkAutoOperatorForChildren(getCompiler(), getConstructorFunction, pVariable->getDataType(), 0, &(constructorBuildInfo->buildItems));
+
 		// check if current type has no constructor but member types have...
-		if (constructorFunctionId < 0 && (constructorBuildInfo->buildItems.size() > 0 || destructorFunctionId >= 0 )) {
+		if (constructorFunctionId < 0 && (hasDestructors || constructorBuildInfo->buildItems.size())) {
 			// then use auto operator, this default operator act as container to contain the member constructor
 			constructorFunctionId = _scriptCompiler->findFunction(DEFAULT_DUMMY_OPERATOR, "ref void");
+		}
+
+		if (constructorFunctionId >= 0 || hasDestructors) {
+			generateNextConstructId();
 		}
 
 		if (constructorFunctionId >= 0) {
@@ -267,42 +232,23 @@ namespace ffscript {
 				return nullptr;
 			}
 
-			constructorBuildInfo->operatorIndex = _constructorCount;
-			constructorUnit->setMask(MaskType::Constructor);
 			constructorUnit->setUserData(constructorBuildInfoBlockRef);
+			constructorUnit->setMask(constructorUnit->getMask() | UMASK_DEFAULT_CTOR);
 
 			// push constructor to scope
 			putCommandUnit(constructorUnit);
-			
-			if (destructorFunctionId >= 0) {
-				auto destructor = generateDefaultAutoOperator(destructorFunctionId, pVariable);
-				if (destructor == nullptr) {
-					return nullptr;
-				}
 
-				destructorBuildInfo->operatorIndex = _constructorCount;
-				destructor->setMask(MaskType::Destructor);
-				destructor->setUserData(destructorBuildInfoBlockRef);
-
-				//store last unit to the destuctor list
-				_destructors.push_front(CommandUnitRef(destructor));
-			}
-
-			_constructorCount++;
-
-			//return constructorUnit->get();
 			return constructorUnit;
 		}
 
 		return nullptr;
 	}
 
-	void ScriptScope::checkVariableToRunDestructor(Variable* pVariable) {
+	bool ScriptScope::checkVariableToRunDestructor(Variable* pVariable) {
 		auto getDestructorFunction = std::bind(&ScriptCompiler::getDestructor, _scriptCompiler, std::placeholders::_1);
 
-		auto destructorBuildInfoBlockRef = std::make_shared<ObjectBlock<OperatorBuidInfo>>();
-		ObjectBlock<OperatorBuidInfo>* destructorBuildInfoBlock = destructorBuildInfoBlockRef.get();
-		OperatorBuidInfo* destructorBuildInfo = (OperatorBuidInfo*)destructorBuildInfoBlock->getDataRef();
+		auto destructorBuildInfoBlockRef = generateConstructBuildInfo();
+		auto destructorBuildInfo = (OperatorBuidInfo*)destructorBuildInfoBlockRef->getDataRef();
 
 		int destructorFunctionId = checkAutoOperatorForChildren(getCompiler(), getDestructorFunction, pVariable->getDataType(), 0, &(destructorBuildInfo->buildItems));
 		// check if current type has no destructor but member types have...
@@ -315,20 +261,41 @@ namespace ffscript {
 			auto destructor = generateDefaultAutoOperator(destructorFunctionId, pVariable);
 			if (destructor == nullptr) {
 				// it should throw exception here
-				return;
+				return false;
 			}
 
-			destructorBuildInfo->operatorIndex = _constructorCount;
-			destructor->setMask(MaskType::Destructor);
+			destructor->setMask(destructor->getMask() | UMASK_DESTRUCTOR);
 			destructor->setUserData(destructorBuildInfoBlockRef);
 
 			//store last unit to the destuctor list
 			_destructors.push_front(CommandUnitRef(destructor));
+			return true;
 		}
+		return false;
+	}
+
+	std::shared_ptr<ObjectBlock<OperatorBuidInfo>> ScriptScope::generateConstructBuildInfo() const {
+		auto constructBuildInfoBlockRef = std::make_shared<ObjectBlock<OperatorBuidInfo>>();
+		ObjectBlock<OperatorBuidInfo>* constructBuildInfoBlock = constructBuildInfoBlockRef.get();
+		OperatorBuidInfo* constructBuildInfo = (OperatorBuidInfo*)constructBuildInfoBlock->getDataRef();
+		constructBuildInfo->operatorIndex = _constructorCount;
+
+		return constructBuildInfoBlockRef;
+	}
+
+	OperatorBuidInfo* ScriptScope::applyConstructBuildInfo(Function* constructFactor) {
+		auto constructBuildInfoBlockRef = generateConstructBuildInfo();
+		constructFactor->setUserData(constructBuildInfoBlockRef);
+
+		return (OperatorBuidInfo*)constructBuildInfoBlockRef->getDataRef();
 	}
 
 	int ScriptScope::getConstructorCommandCount() const {
 		return _constructorCount;
+	}
+
+	void ScriptScope::generateNextConstructId() {
+		_constructorCount++;
 	}
 
 	ComandRefList* ScriptScope::getDestructorList() {

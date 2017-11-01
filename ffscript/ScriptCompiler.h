@@ -167,11 +167,14 @@ namespace ffscript {
 		std::shared_ptr<list<CandidateInfo>> selectMultiCandidates(const list<OverLoadingItem*>& overloadingItems, const std::list<ExecutableUnitRef>& params);
 		FunctionRef applyParamToCandidate(const CandidateInfo& item, std::list<ExecutableUnitRef>& params);
 		static CandidateInfo* selectSingleCandidate(const std::shared_ptr<list<CandidateInfo>>& candidates);
+		ExecutableUnitRef findBoolOperatorForType(int type, const ExecutableUnitRef& paramUnit, int* pAccurative = nullptr);
 
 		Function* applyConstructor(ExecutableUnitRef& variableUnit, ExecutableUnitRef& argUnit, int* pAccurative = nullptr);
 		bool convertToRef(ExecutableUnitRef& param);
+
+		// return
 		bool breakCompositeAssigment(const ExecutableUnitRef& variableUnit,
-			const DynamicParamFunctionRef& secondOperand, list<pair<Variable*,
+			const ExecutableUnitRef& secondOperand, list<pair<Variable*,
 			ExecutableUnitRef>>& assigments, int& accurative);
 		FunctionRef applyConstructorForCompisiteType(const ExecutableUnitRef& xOperand, const DynamicParamFunctionRef& secondOperand, bool& hasNoError);
 		bool findMatchingComposite(const ScriptType& argumentType, const ExecutableUnitRef& unit, ParamCastingInfo& paramInfo);

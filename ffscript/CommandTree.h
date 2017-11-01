@@ -67,16 +67,14 @@ namespace ffscript {
 	};
 
 	////////////////////////////////////////////////////
-	class OptimizedLogicCommand : public FunctionCommand2P {
+	class OptimizedLogicCommand : public TargetedCommand {
 	protected:
-		int _firstParamOffset;
-		int _secondParamOffset;
-		int _resultOffset;
-
+		TargetedCommand* _commandParam1;
+		TargetedCommand* _commandParam2;
 		OptimizedLogicCommand();
-
 	public:
-		void setCommand(TargetedCommand* command);
+		virtual int pushCommandParam(TargetedCommand* command);
+		virtual TargetedCommand* popCommandParam();
 	};
 
 	////////////////////////////////////////////////////

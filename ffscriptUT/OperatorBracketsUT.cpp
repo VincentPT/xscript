@@ -267,7 +267,7 @@ namespace ffscriptUT
 				L"}"
 				;
 			DFunction2* intFunctionOperator = new CdeclFunction2<int*, int&>(int_ref);
-			int functionId = fb.registFunction("forward_ref", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "ref int", intFunctionOperator, scriptCompiler));
+			int functionId = fb.registFunction("forward_ref", "int&", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "ref int", intFunctionOperator, scriptCompiler));
 			Assert::IsTrue(functionId > 0, L"register function failed");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);

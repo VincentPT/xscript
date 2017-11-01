@@ -224,7 +224,6 @@ namespace ffscript {
 		auto constructorFunc = scriptCompiler->applyConstructor(param1, param2);
 
 		if (constructorFunc) {
-			checkVariableToRunConstructor(pVariable, constructorFunc);
 			putCommandUnit(ExecutableUnitRef(constructorFunc));
 
 			return true;
@@ -398,7 +397,7 @@ namespace ffscript {
 								auto& secondtUnit = *it++;								
 								if (firstUnit->getType() == EXP_UNIT_ID_XOPERAND && secondtUnit->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
 									auto xOperand = unitList.front();
-									MaskType mask = (MaskType)((unsigned int)xOperand->getMask() | (unsigned int)MaskType::DeclareInExpression);
+									MaskType mask = (xOperand->getMask() | UMASK_DECLAREINEXPRESSION);
 									firstUnit->setMask(mask);
 
 									auto operatorEntry = scriptCompiler->findPredefinedOperator(DEFAULT_COPY_OPERATOR);
@@ -445,7 +444,7 @@ namespace ffscript {
 								//set ExcludeFromDestructor to notice that return object from this unit will not be destroy by destructor
 								//this mask will make affect if this unit is function unit
 								//for variable unit(or X Opeand unit), we must use another way
-								unitForReturn->setMask((MaskType)((unsigned int) unitForReturn->getMask() | (unsigned int)MaskType::ExcludeFromDestructor));
+								unitForReturn->setMask(unitForReturn->getMask() | UMASK_EXCLUDEFROMDESTRUCTOR);
 
 								//try another way to notice that return object from this unit will not be destroy by destructor
 								//in case the return unit is a EXP_UNIT_ID_XOPERAND
@@ -697,7 +696,7 @@ namespace ffscript {
 			destructor = scriptCompiler->createFunctionFromId(destructorFunctionId);
 
 			destructorBuildInfo->operatorIndex = -1;
-			destructor->setMask(MaskType::DestructorForReturnData);
+			destructor->setMask(destructor->getMask() | UMASK_DESTRUCTORFORRETURNDATA);
 			destructor->setUserData(destructorBuildInfoBlockRef);
 		}
 
@@ -712,7 +711,7 @@ namespace ffscript {
 
 		auto function = (Function*)exeUnit;
 		//only generate destructor for function has not ExcludeFromDestructor in mask
-		if (((unsigned int) function->getMask() & (unsigned int)MaskType::ExcludeFromDestructor) == 0) {
+		if (((unsigned int) function->getMask() & (unsigned int)UMASK_EXCLUDEFROMDESTRUCTOR) == 0) {
 			auto& type = function->getReturnType();
 			auto destructor = checkAndGenerateDestructor(scriptCompiler, type);
 			if (destructor != nullptr) {

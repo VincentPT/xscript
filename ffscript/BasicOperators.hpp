@@ -113,7 +113,9 @@ namespace ffscript {
 			bool less_or_equal(T1 a, T2 b) { return a <= b; }
 
 			template <class T1, class T2>
-			bool great(T1 a, T2 b) { return (a > b);}
+			bool great(T1 a, T2 b) {
+				return (a > b);
+			}
 
 			template <class T1, class T2>
 			bool great_or_equal(T1 a, T2 b) { return a >= b; }
@@ -133,9 +135,7 @@ namespace ffscript {
 			bool logic_or(T1 a, T2 b) { return (a || b); }
 
 			template <class T>
-			bool logic_not(T a) {
-				return !a;
-			}
+			bool logic_not(T a) { return !a; }
 #pragma endregion
 		}
 	}

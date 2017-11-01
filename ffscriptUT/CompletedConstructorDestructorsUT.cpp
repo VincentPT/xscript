@@ -119,7 +119,7 @@ namespace ffscriptUT
 			auto refType = stype.makeRef();
 			string args = refType.sType();
 			args.append(",");
-			args.append(refType.sType());
+			args.append(stype.makeSemiRef().sType());
 
 			DFunction2* copyFunction = new MFunction2<void, T, void*, const void*>(obj, &T::operatorFunction);
 			int functionId = scriptCompiler->registFunction("copyConstructor", args, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyFunction, scriptCompiler));

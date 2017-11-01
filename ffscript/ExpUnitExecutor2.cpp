@@ -516,20 +516,49 @@ namespace ffscript {
 		int n = functionUnit->getChildCount();
 		int currentOffset = beginParamOffset;
 
+		TargetedCommand* assigmentCommand = nullptr;
+
 		ExecutableUnitRef& block1Ref = functionUnit->getChild(0);
 		ExecutableUnitRef& block2 = functionUnit->getChild(1);
 
-		int param1Size = scriptCompiler->getTypeSize(block1Ref->getReturnType());
-		int param2Size = scriptCompiler->getTypeSize(block2->getReturnType());
+		// optimized for xoperand
+		auto refFunction = dynamic_cast<RefFunction*>(block1Ref.get());
+		if (refFunction) {
+			auto& destUnitRef = refFunction->getChild(0);			
+			if (destUnitRef->getType() == EXP_UNIT_ID_XOPERAND) {
+				auto xOpeand = dynamic_cast<CXOperand*>(destUnitRef.get());
+				auto pVariable = xOpeand->getVariable();
 
-		DefaultAssigmentCommand* assigmentCommand = new DefaultAssigmentCommand(returnOffset, param2Size/*, currentOffset, currentOffset + param1Size*/);
-		moveLocalOffset(param1Size + param2Size);
+				// cannot optimized copying memory to a variable in global scope
+				auto globalScope = dynamic_cast<GlobalScope*>(pVariable->getScope());
+				if (!globalScope) {
+					auto param2Command = convert2Code2(scriptCompiler, block2, pVariable->getOffset());
+					auto copyAddressOfVarible = new PushParamRefOffset();
+					copyAddressOfVarible->setCommandData(pVariable->getOffset(), returnOffset);
 
-		auto param1Command = convert2Code2(scriptCompiler, block1Ref, currentOffset);
-		auto param2Command = convert2Code2(scriptCompiler, block2, currentOffset + param1Size);
+					auto defaltCopyCommand = new FunctionCommand1P();
+					defaltCopyCommand->pushCommandParam(param2Command);
+					defaltCopyCommand->setCommand(copyAddressOfVarible);
 
-		assigmentCommand->pushCommandParam(param1Command);
-		assigmentCommand->pushCommandParam(param2Command);
+					assigmentCommand = defaltCopyCommand;
+				}
+			}
+		}
+		if (!assigmentCommand) {
+			int param1Size = scriptCompiler->getTypeSize(block1Ref->getReturnType());
+			int param2Size = scriptCompiler->getTypeSize(block2->getReturnType());
+
+			DefaultAssigmentCommand* defaultAssigmentCommand = new DefaultAssigmentCommand(returnOffset, param2Size/*, currentOffset, currentOffset + param1Size*/);
+			moveLocalOffset(param1Size + param2Size);
+
+			auto param1Command = convert2Code2(scriptCompiler, block1Ref, currentOffset);
+			auto param2Command = convert2Code2(scriptCompiler, block2, currentOffset + param1Size);
+
+			defaultAssigmentCommand->pushCommandParam(param1Command);
+			defaultAssigmentCommand->pushCommandParam(param2Command);
+
+			assigmentCommand = defaultAssigmentCommand;
+		}
 
 		return assigmentCommand;
 	}
@@ -715,30 +744,26 @@ namespace ffscript {
 		return functionCommand;
 	}
 
-	TargetedCommand* ExpUnitExecutor::extractParamForFwdConstructorComposite(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset) {
-		auto fwdCompositeConstructorUnit = dynamic_cast<FwdCompositeConstrutorUnit*>(functionUnit);
-		if (!fwdCompositeConstructorUnit) {
+	TargetedCommand* ExpUnitExecutor::extractParamForFwdConstructor(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset) {
+		auto fwdConstructorUnit = dynamic_cast<FwdConstrutorUnit*>(functionUnit);
+		if (!fwdConstructorUnit) {
 			// throw exception here
 		}
-
-		auto constructorUnitRef = fwdCompositeConstructorUnit->getConstructorUnit();
-		// first character should be always making ref function
-		auto makeRefFuncRef = constructorUnitRef->getChild(0);
-		
-		return convert2Code2(scriptCompiler, makeRefFuncRef, returnOffset);
+		auto constructorUnitRef = fwdConstructorUnit->getConstructorUnit();		
+		return convert2Code2(scriptCompiler, constructorUnitRef, returnOffset);
 	}
 
 	template <template <typename, typename> class CommandT>
-	FunctionCommand* createLogicCommand(ScriptCompiler* scriptCompiler, int paramType1, int paramType2) {
-		FunctionCommand* functionCommandTree = nullptr;
+	OptimizedLogicCommand* createLogicCommand(ScriptCompiler* scriptCompiler, const ScriptType& sType1, const ScriptType& sType2) {
+		OptimizedLogicCommand* functionCommandTree = nullptr;
 		auto& basicTypes = scriptCompiler->getTypeManager()->getBasicTypes();
 
-		bool param1IsRef = (paramType1 & DATA_TYPE_POINTER_MASK) != 0;
-		bool param2IsRef = (paramType2 & DATA_TYPE_POINTER_MASK) != 0;
+		bool param1IsRef = sType1.isRefType() || sType1.isSemiRefType();
+		bool param2IsRef = sType2.isRefType() || sType2.isSemiRefType();
 
 		//reset pointer mask bit
-		paramType1 &= ~DATA_TYPE_POINTER_MASK;
-		paramType2 &= ~DATA_TYPE_POINTER_MASK;
+		int paramType1 = sType1.origin();
+		int paramType2 = sType2.origin();
 
 		if (paramType1 == basicTypes.TYPE_INT) {
 			if (paramType2 == basicTypes.TYPE_INT) {
@@ -832,16 +857,41 @@ namespace ffscript {
 		return functionCommandTree;
 	}
 
-	FunctionCommand* ExpUnitExecutor::createParamLogicAndCommand(ScriptCompiler* scriptCompiler, Function* node) {			
-		int paramType1 = node->getChild(0)->getReturnType().iType();
-		int paramType2 = node->getChild(1)->getReturnType().iType();
+	OptimizedLogicCommand* ExpUnitExecutor::createParamLogicAndCommand(ScriptCompiler* scriptCompiler, Function* node) {
+		auto& paramType1 = node->getChild(0)->getReturnType();
+		auto& paramType2 = node->getChild(1)->getReturnType();
 		return createLogicCommand<LogicAndCommandT>(scriptCompiler, paramType1, paramType2);
 	}
 
-	FunctionCommand* ExpUnitExecutor::createParamLogicOrCommand(ScriptCompiler* scriptCompiler, Function* node) {
-		int paramType1 = node->getChild(0)->getReturnType().iType();
-		int paramType2 = node->getChild(1)->getReturnType().iType();
+	OptimizedLogicCommand* ExpUnitExecutor::createParamLogicOrCommand(ScriptCompiler* scriptCompiler, Function* node) {
+		auto& paramType1 = node->getChild(0)->getReturnType();
+		auto& paramType2 = node->getChild(1)->getReturnType();
 		return createLogicCommand<LogicOrCommandT>(scriptCompiler, paramType1, paramType2);
+	}
+
+	TargetedCommand* ExpUnitExecutor::extractParamForOptimizedLogicCommand(
+		ScriptCompiler* scriptCompiler,
+		OptimizedLogicCommand* optimizedCommand,
+		Function* functionUnit,
+		int beginParamOffset, int returnOffset) {
+
+		int currentOffset = beginParamOffset;
+
+		auto& param1 = functionUnit->getChild(0);
+		auto& param2 = functionUnit->getChild(1);
+
+		int param1Size = scriptCompiler->getTypeSize(param1->getReturnType());
+		int param2Size = scriptCompiler->getTypeSize(param2->getReturnType());
+
+		moveLocalOffset(param1Size + param2Size);
+
+		auto param1Command = convert2Code2(scriptCompiler, param1, currentOffset);
+		auto param2Command = convert2Code2(scriptCompiler, param2, currentOffset + param1Size);
+
+		optimizedCommand->pushCommandParam(param1Command);
+		optimizedCommand->pushCommandParam(param2Command);
+
+		return optimizedCommand;
 	}
 
 	TargetedCommand* ExpUnitExecutor::extractCodeForFunction(ScriptCompiler* scriptCompiler, const ExecutableUnitRef& node, int returnOffset) {
@@ -908,8 +958,8 @@ namespace ffscript {
 		else if (node.get()->getType() == EXP_UNIT_ID_CONSTRUCTOR_COMPOSITE) {
 			assitFunction = extractParamForConstructorComposite(scriptCompiler, (Function*)node.get(), beginParamOffset, returnOffset);
 		}
-		else if (node.get()->getType() == EXP_UNIT_ID_CREATE_OBJECT_COMPOSITE) {
-			assitFunction = extractParamForFwdConstructorComposite(scriptCompiler, (Function*)node.get(), beginParamOffset, returnOffset);
+		else if (node.get()->getType() == EXP_UNIT_ID_CREATE_OBJECT_COMPOSITE || node.get()->getType() == EXP_UNIT_ID_CREATE_OBJECT) {
+			assitFunction = extractParamForFwdConstructor(scriptCompiler, (Function*)node.get(), beginParamOffset, returnOffset);
 		}
 		else {
 			NativeFunction* expFunctionUnit = dynamic_cast<NativeFunction*>(node.get());
@@ -925,10 +975,12 @@ namespace ffscript {
 				break;
 			case 2:
 				if (node->getType() == EXP_UNIT_ID_OPERATOR_LOGIC_AND) {
-					functionCommandTree = createParamLogicAndCommand(scriptCompiler, (Function*)node.get());
+					return extractParamForOptimizedLogicCommand(scriptCompiler,
+						createParamLogicAndCommand(scriptCompiler, (Function*)node.get()), (Function*)node.get(), beginParamOffset, returnOffset);
 				}
 				else if (node->getType() == EXP_UNIT_ID_OPERATOR_LOGIC_OR) {
-					functionCommandTree = createParamLogicOrCommand(scriptCompiler, (Function*)node.get());
+					return extractParamForOptimizedLogicCommand(scriptCompiler,
+						createParamLogicOrCommand(scriptCompiler, (Function*)node.get()), (Function*)node.get(), beginParamOffset, returnOffset);
 				}
 				else {
 					functionCommandTree = new FunctionCommand2P();
@@ -982,7 +1034,7 @@ namespace ffscript {
 #endif
 	TargetedCommand* ExpUnitExecutor::convert2Code2(ScriptCompiler* scriptCompiler, const ExecutableUnitRef& node, int returnOffset) {
 		TargetedCommand* assitFunction;
-		if (_currentScope && (unsigned int)node->getMask() | (unsigned int)MaskType::ExcludeFromDestructor ) {
+		if (_currentScope/* && (node->getMask() | UMASK_EXCLUDEFROMDESTRUCTOR) */) {
 			auto pVariable = _currentScope->findTempVariable(node.get());
 			if (pVariable) {
 				//pVariable->setOffset(_returnOffset);
@@ -996,7 +1048,7 @@ namespace ffscript {
 
 			if (node->getUserData()) {
 				auto operatorType = ((Function*)node.get())->getMask();
-				if (operatorType == MaskType::Constructor || operatorType == MaskType::CopyConstructor) {
+				if ( (operatorType & UMASK_DEFAULT_CTOR) || (operatorType & UMASK_CONSTRUCTOR) || (operatorType & UMASK_CONSTRUCT_FACTOR)) {
 					TriggerCommand* triggerCommand = new TriggerCommand();
 					triggerCommand->setCommand(assitFunction);
 
@@ -1010,43 +1062,46 @@ namespace ffscript {
 
 					if (buildInfo->buildItems.size()) {
 						TargetedCommand* pushParamRefOffset = nullptr;
+						auto constructorCommandTree = (FunctionCommand*)assitFunction;
 
-						//we need to take command push object address and give it to function object BeforeConstructorCall
-						//because it must be run first to allow children constructor can run
-						//chidren constructor can run only if they known address of parent object
-						if (operatorType == MaskType::Constructor) {
-							auto constructorCommandTree = (FunctionCommand*)assitFunction;
-							//take the command from constructor command
-							pushParamRefOffset = constructorCommandTree->popCommandParam();
-							//because constructor command have only one param
-							//so now, it becomes empty param
-							//and for faster run, we bring it up to trigger command
-							auto constructorCommand = constructorCommandTree->getCommand();
-							constructorCommandTree->setCommand(nullptr);
-							delete constructorCommandTree;
-							//bring it up to trigger command
-							triggerCommand->setCommand(constructorCommand);
+						list<TargetedCommand*> paramCommandLists;
+						TargetedCommand* paramCommand;
+						while (paramCommand = constructorCommandTree->popCommandParam())
+						{
+							paramCommandLists.push_front(paramCommand);
 						}
-						else if (operatorType == MaskType::CopyConstructor) {
-							auto constructorCommandTree = (FunctionCommand*)assitFunction;
-							//take the the first command param
-							auto pushParamRefOffsetForParam = constructorCommandTree->popCommandParam();
-							//take the the second command param (address of current object need to construct)
-							pushParamRefOffset = constructorCommandTree->popCommandParam();
-							//because copy constructor command have two params
-							//so now, it becomes one param
-							//and for faster run, we bring change it to FunctionCommand1P
-							auto constructorCommand = constructorCommandTree->getCommand();
-							constructorCommandTree->setCommand(nullptr);
-							delete constructorCommandTree;
 
-							FunctionCommand1P* newConstuctCommand = new FunctionCommand1P();
-							newConstuctCommand->setCommand(constructorCommand);
-							newConstuctCommand->pushCommandParam(pushParamRefOffsetForParam);
+						// take the the first command param(address of current object need to construct)
+						pushParamRefOffset = paramCommandLists.front();
+						paramCommandLists.pop_front();
 
-							//bring it up to trigger command
+						FunctionCommand* newConstuctCommand = nullptr;
+
+						if (paramCommandLists.size() == 0) {
+							newConstuctCommand = nullptr;
+						}
+						else if (paramCommandLists.size() == 1) {
+							newConstuctCommand = new FunctionCommand1P();
+						}
+						else if (paramCommandLists.size() == 2) {
+							newConstuctCommand = new FunctionCommand2P();
+						}
+						else {
+							newConstuctCommand = new FunctionCommandNP((int)paramCommandLists.size());
+						}
+
+						for (auto it = paramCommandLists.begin(); it != paramCommandLists.end(); it++) {
+							newConstuctCommand->pushCommandParam(*it);
+						}
+						if (newConstuctCommand) {
+							newConstuctCommand->setCommand(constructorCommandTree->getCommand());
 							triggerCommand->setCommand(newConstuctCommand);
 						}
+						else {
+							triggerCommand->setCommand(constructorCommandTree->getCommand());
+						}
+						constructorCommandTree->setCommand(nullptr);
+						delete constructorCommandTree;
 
 						auto runChildConstructors = std::make_shared<BeforeConstructorCall>(pushParamRefOffset, beginParamOffset);
 						triggerCommand->setBeforeTrigger(runChildConstructors);
@@ -1068,11 +1123,11 @@ namespace ffscript {
 
 					assitFunction = triggerCommand;
 				}
-				else if (operatorType == MaskType::Destructor || operatorType == MaskType::DestructorForReturnData) {
+				else if ( (operatorType & UMASK_DESTRUCTOR) || (operatorType & UMASK_DESTRUCTORFORRETURNDATA)) {
 					TriggerCommand* triggerCommand = nullptr;
 					auto userBlockRef = dynamic_pointer_cast<ObjectBlock<OperatorBuidInfo>>(node->getUserData());
 					OperatorBuidInfo* buildInfo = (OperatorBuidInfo*)userBlockRef->getDataRef();
-					if (operatorType == MaskType::Destructor) {
+					if (operatorType & UMASK_DESTRUCTOR) {
 						triggerCommand = new ConditionTriggerCommand();
 						auto destructorTrigger = std::make_shared<CdeclFunction<unsigned char, int>>(beforeCallDestructor);
 						//push constructor index to function beforeCallDestructor

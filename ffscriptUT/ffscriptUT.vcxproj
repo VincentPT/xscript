@@ -179,6 +179,7 @@
     </ClCompile>
     <ClCompile Include="CompileSuiteUT.cpp" />
     <ClCompile Include="CompletedConstructorDestructorsUT.cpp" />
+    <ClCompile Include="CompositeConstructorUT.cpp" />
     <ClCompile Include="ConditionalOperatorUT.cpp" />
     <ClCompile Include="ConstructorDestructorForCodeUT.cpp" />
     <ClCompile Include="DefaultOperatorsUT.cpp" />
