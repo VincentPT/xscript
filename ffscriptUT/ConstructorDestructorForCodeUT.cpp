@@ -164,6 +164,14 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+
+			int interferAssigment = scriptCompiler->findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then cannot construct object ret in expression int ret = 1;
+				Assert::IsNull(program, L"compile program should failed");
+				return;
+			}
 			Assert::IsNotNull(program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("test", {});

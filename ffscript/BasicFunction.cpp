@@ -91,7 +91,7 @@ namespace ffscript {
 		//negative operator
 		
 		//assigment operator
-		fb.registPredefinedOperators("=", "int&,int", "int", make_native(int, int&, int, assign));
+		//fb.registPredefinedOperators("=", "int&,int", "int", make_native(int, int&, int, assign));
 		//bitwises
 		fb.registPredefinedOperators("&", "int,int", "int", make_native(int, int, int, and));
 		fb.registPredefinedOperators("|", "int,int", "int", make_native(int, int, int, or));
@@ -138,7 +138,7 @@ namespace ffscript {
 		//negative operator
 
 		//assigment operator
-		fb.registPredefinedOperators("=", S_LONG_T "&" "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_T&, LONG_CP, assign));
+		//fb.registPredefinedOperators("=", S_LONG_T "&" "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_T&, LONG_CP, assign));
 		//bitwises
 		fb.registPredefinedOperators("&", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, and));
 		fb.registPredefinedOperators("|", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, or ));
@@ -183,7 +183,7 @@ namespace ffscript {
 		fb.registPredefinedOperators("/", "float&,float&", "float", make_native(float, const float&, const float&, div));
 
 		//assigment operator
-		fb.registPredefinedOperators("=", "float&,float&", "float", make_native(float, float&, const float&, assign));
+		//fb.registPredefinedOperators("=", "float&,float&", "float", make_native(float, float&, const float&, assign));
 		//pre-post fix operators
 		fb.registPredefinedOperators("neg", "float&", "float", new CdeclFunction2<float, const float&>(neg));
 		fb.registPredefinedOperators("post_fix_increase", "float&", "float", new CdeclFunction2<float, float&>(post_inc));
@@ -216,7 +216,7 @@ namespace ffscript {
 		fb.registPredefinedOperators("/", "double&,double&", "double", make_native(double, const double&, const double&, div));
 
 		//assigment operator
-		fb.registPredefinedOperators("=", "double&,double&", "double", make_native(double, double&, const double&, assign));
+		//fb.registPredefinedOperators("=", "double&,double&", "double", make_native(double, double&, const double&, assign));
 		//pre-post fix operators
 		fb.registPredefinedOperators("neg", "double&", "double", new CdeclFunction2<double, const double&>(neg));
 		fb.registPredefinedOperators("post_fix_increase", "double&", "double", new CdeclFunction2<double, double&>(post_inc));
@@ -244,7 +244,7 @@ namespace ffscript {
 
 #pragma region bool operators only
 		//assigment operator
-		fb.registPredefinedOperators("=", "bool&,bool", "bool", make_native(bool, bool&, bool, assign));
+		//fb.registPredefinedOperators("=", "bool&,bool", "bool", make_native(bool, bool&, bool, assign));
 		//comparision operators
 		fb.registPredefinedOperators("==", "bool,bool", "bool", new CdeclFunction2<bool, bool, bool>(operators::equal));
 		fb.registPredefinedOperators("!=", "bool,bool", "bool", new CdeclFunction2<bool, bool, bool>(operators::not_equal));

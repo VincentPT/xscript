@@ -688,7 +688,7 @@ namespace ffscript {
 		return candidates;
 	}
 
-	void ScriptCompiler::getConstructors(int iType, list<OverLoadingItem*>& overloadingItems) {
+	void ScriptCompiler::getConstructors(int iType, list<OverLoadingItem*>& overloadingItems) const {
 		auto it = _constructorsMap.find(iType);
 		if (it != _constructorsMap.end()) {
 			auto constructorList = it->second.get();
@@ -1144,6 +1144,12 @@ namespace ffscript {
 		return nullptr;
 	}
 
+	bool ScriptCompiler::hasConstructor(int iType) const {
+		list<OverLoadingItem*> items;
+		getConstructors(iType, items);
+		return items.size() > 0;
+	}
+
 	bool ScriptCompiler::convertToRef(ExecutableUnitRef& param) {
 		if (param->getType() == EXP_UNIT_ID_DEREF) {
 			//make ref meet deref then both is removed from the expression
@@ -1278,6 +1284,7 @@ namespace ffscript {
 			}
 
 			auto tranformFunction = castingInfo.castingFunction;
+			tranformFunction->pushParam(secondOperand);
 			assigments.emplace_back(make_pair(pVariable, ExecutableUnitRef(tranformFunction)));
 			accurative += castingInfo.accurative;
 			return true;

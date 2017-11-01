@@ -1630,11 +1630,10 @@ namespace ffscript {
 
 				//check default copy constructor
 				if (funcNode->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT || funcNode->getType() == EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR) {
-					if (param1Type == param2Type) {
-						//default assigment operator for all types
+					/*if (param1Type == param2Type) {
 						if (!scriptCompiler->convertToRef(param1)) {
 							return nullptr;
-						}						
+						}
 
 						auto defaultOperatorUnit = new FixParamFunction<2>(DEFAULT_COPY_OPERATOR, EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR, FUNCTION_PRIORITY_ASSIGNMENT, param2Type.makeSemiRef());
 						defaultOperatorUnit->pushParam(param1);
@@ -1643,7 +1642,7 @@ namespace ffscript {
 						defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit));
 						continue;
 					}
-					else if (param1Type.origin() == param2Type.origin() && param1Type.refLevel() == param2Type.refLevel()/* && param2Type.isSemiRefType()*/) {
+					else */if (param1Type.origin() == param2Type.origin() && param1Type.refLevel() == param2Type.refLevel()/* && param2Type.isSemiRefType()*/) {
 						//default assigment operator for all types
 						if (!param1Type.isSemiRefType()) {
 							if (!scriptCompiler->convertToRef(param1)) {
@@ -2733,7 +2732,7 @@ namespace ffscript {
 
 						needToCallConstructor = true;
 					}
-					else {
+					else {						
 						int defaultConstructor = scriptCompiler->getDefaultConstructor(param1->getReturnType().iType());
 						needToCallConstructor = defaultConstructor >= 0;
 						if (!needToCallConstructor) {
@@ -2841,6 +2840,14 @@ namespace ffscript {
 						}
 					}
 				}
+			}
+
+			// check if need call constructor but there is not candidate was create...
+			if (needToCallConstructor && functionCandidates->size() == 0) {
+				// ...then its must be and error case
+				eResult = E_FUNCTION_NOT_FOUND;
+				scriptCompiler->setErrorText("there is no copy constructor or a combination of default copy constructor and assigment operator found");
+				return nullptr;
 			}
 
 			candidateIsCompleted = true;

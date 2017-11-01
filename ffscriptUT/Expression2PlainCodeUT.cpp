@@ -998,9 +998,16 @@ namespace ffscriptUT
 			pExpUnitExecutor1->runCode();
 			//currentContext.moveOffset(pExpUnitExecutor1->getCurrentLocalOffset());
 			pExpUnitExecutor2->runCode();
-			int* execres = (int*)pExpUnitExecutor2->getReturnData();
-			//currentContext.moveOffset(pExpUnitExecutor2->getCurrentLocalOffset());
-
+			int interferAssigment = scriptCompiler.findFunction("=", "int&,int");
+			int* execres;
+			// if operator '=' of interger is not defined
+			if (interferAssigment < 0) {
+				execres = *(int**)pExpUnitExecutor2->getReturnData();
+			}
+			else {
+				// if operator '=' of interger is defined
+				 execres = (int*)pExpUnitExecutor2->getReturnData();
+			}
 			Assert::IsTrue(*execres == 2);
 		}
 
@@ -1039,8 +1046,17 @@ namespace ffscriptUT
 			int n = 10000;
 			for (int i = 0; i < n; i++) {
 				pExpUnitExecutor2->runCode();
-			}			
-			int* execres = (int*)pExpUnitExecutor2->getReturnData();
+			}						
+			int interferAssigment = scriptCompiler.findFunction("=", "int&,int");
+			int* execres;
+			// if operator '=' of interger is not defined
+			if (interferAssigment < 0) {
+				execres = *(int**)pExpUnitExecutor2->getReturnData();
+			}
+			else {
+				// if operator '=' of interger is defined
+				execres = (int*)pExpUnitExecutor2->getReturnData();
+			}
 
 			Assert::IsTrue(*execres == n);
 		}

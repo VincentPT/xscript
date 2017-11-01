@@ -218,6 +218,14 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+
+			int interferAssigment = scriptCompiler.findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then cannot construct object ret in expression int ret = 1;
+				Assert::AreEqual(nullptr, res, L"compile program should failed");
+				return;
+			}
 			Assert::AreNotEqual(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
@@ -265,7 +273,16 @@ namespace ffscriptUT
 				L"	return ret;"
 				L"}"
 				;
-			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+
+			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));			
+
+			int interferAssigment = scriptCompiler.findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then cannot construct object ret in expression int ret = 1;
+				Assert::AreEqual(nullptr, res, L"compile program should failed");
+				return;
+			}			
 			Assert::AreNotEqual(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
@@ -315,6 +332,14 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			
+			int interferAssigment = scriptCompiler.findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then cannot construct object ret in expression int ret = 1;
+				Assert::AreEqual(nullptr, res, L"compile program should failed");
+				return;
+			}
 			Assert::AreNotEqual(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
@@ -371,6 +396,14 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			
+			int interferAssigment = scriptCompiler.findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then cannot construct object ret in expression int ret = 1;
+				Assert::AreEqual(nullptr, res, L"compile program should failed");
+				return;
+			}
 			Assert::AreNotEqual(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
@@ -426,6 +459,14 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			
+			int interferAssigment = scriptCompiler.findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then cannot construct object ret in expression int ret = 1;
+				Assert::AreEqual(nullptr, res, L"compile program should failed");
+				return;
+			}
 			Assert::AreNotEqual(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
@@ -890,6 +931,14 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			
+			int interferAssigment = scriptCompiler.findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then cannot construct object ret in expression int ret = 1;
+				Assert::AreEqual(nullptr, res, L"compile program should failed");
+				return;
+			}
 			Assert::AreNotEqual(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
@@ -963,6 +1012,14 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			
+			int interferAssigment = scriptCompiler.findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then cannot construct object ret in expression int ret = 1;
+				Assert::AreEqual(nullptr, res, L"compile program should failed");
+				return;
+			}
 			Assert::AreNotEqual(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
@@ -1548,6 +1605,14 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+
+			int interferAssigment = scriptCompiler.findFunction("=", "int&,int");
+			// if operator '=' of interger is not defined...
+			if (interferAssigment < 0) {
+				// ...then cannot construct object ret in expression int ret = 1;
+				Assert::AreEqual(nullptr, res, L"compile program should failed");
+				return;
+			}
 			Assert::AreNotEqual(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);

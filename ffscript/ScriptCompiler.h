@@ -152,7 +152,7 @@ namespace ffscript {
 		int getDefaultConstructor(int type);
 		std::shared_ptr<list<CandidateInfo>> getConstructor(int rootType, const ExecutableUnitRef& paramUnit);
 		std::shared_ptr<list<CandidateInfo>> getCopyConstructor(int rootType, const ExecutableUnitRef& paramUnit);
-		void getConstructors(int iType, list<OverLoadingItem*>& overloadingItems);
+		void getConstructors(int iType, list<OverLoadingItem*>& overloadingItems) const;
 		bool registDestructor(int type, int functionId);
 		int getDestructor(int type);
 
@@ -168,8 +168,8 @@ namespace ffscript {
 		FunctionRef applyParamToCandidate(const CandidateInfo& item, std::list<ExecutableUnitRef>& params);
 		static CandidateInfo* selectSingleCandidate(const std::shared_ptr<list<CandidateInfo>>& candidates);
 		ExecutableUnitRef findBoolOperatorForType(int type, const ExecutableUnitRef& paramUnit, int* pAccurative = nullptr);
-
 		Function* applyConstructor(ExecutableUnitRef& variableUnit, ExecutableUnitRef& argUnit, int* pAccurative = nullptr);
+		bool hasConstructor(int iType) const;
 		bool convertToRef(ExecutableUnitRef& param);
 
 		// return

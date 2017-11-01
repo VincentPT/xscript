@@ -198,7 +198,7 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			Assert::IsTrue(*funcRes == 1, L"program can run but return wrong value");
+			Assert::AreEqual(1, *funcRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLambdaUT5)
@@ -231,7 +231,7 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			Assert::IsTrue(*funcRes == 1, L"program can run but return wrong value");
+			Assert::AreEqual(1, *funcRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLambdaUT6)

@@ -572,7 +572,7 @@ namespace ffscript {
 
 		int param1Size = scriptCompiler->getTypeSize(block1Ref->getReturnType());
 		int param2Size = scriptCompiler->getTypeSize(block2Ref->getReturnType());
-		auto blockType = block2Ref->getReturnType().deRef();
+		auto blockType = block2Ref->getReturnType().deSemiRef();
 		int blockSize = scriptCompiler->getTypeSize(blockType);
 
 		DefaultAssigmentCommandForSemiRef* assigmentCommand = new DefaultAssigmentCommandForSemiRef(returnOffset, blockSize/*, currentOffset, currentOffset + param1Size*/);
