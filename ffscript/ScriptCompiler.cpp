@@ -539,9 +539,9 @@ namespace ffscript {
 		//overwrite if the constructor is already exist
 		auto it = _copyConstructorMap.insert(std::make_pair(key, emptyId));
 		if (it.second == false) {
-			//auto& newList = it.first->second;
-			//registFunctions = newList.get();
-			return false;
+			auto& newList = it.first->second;
+			registFunctions = newList.get();
+			//return false;
 		}
 		else
 		{
@@ -1684,17 +1684,33 @@ namespace ffscript {
 		}
 		else {
 			setTypeSize(iType, sizeof(RuntimeFunctionInfo));
+
+			// register default constructor/destructor
 			registConstructor(iType, getRuntimeInfoConstructor());
 			registDestructor(iType, getRuntimeInfoDestructor());
+
+			// register copy constructor
 			string copyArgs("ref ");
 			copyArgs.append(getType(iType));
-			copyArgs.append(", ref ");
+			copyArgs.append(", ");
 			copyArgs.append(getType(iType));
+			copyArgs.append("&");
 
 			FunctionRegisterHelper fb(this);
 			int f = fb.registFunction(SYSTEM_FUNCTION_COPY_CONSTRUCTOR, copyArgs, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RuntimeFunctionInfo*, RuntimeFunctionInfo*>(runtimeFunctionInfoCopyConstructor), this), true);
-			bool res = registCopyConstructor(iType, f);
-			res = false;
+			if (!registCopyConstructor(iType, f)) {
+				throw exception("Cannot register copy constructor for function object");
+			}
+
+			copyArgs = "ref ";
+			copyArgs.append(getType(iType));
+			copyArgs.append(", " SYSTEM_NULL_TYPE);
+
+			f = fb.registFunction("_initize_by_null", copyArgs, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void",
+				new CdeclFunction2<void, RuntimeFunctionInfo*, void*>(runtimeFunctionInfoConstructByNull), this), true);
+			if (!registConstructor(iType, f)) {
+				throw exception("Cannot register initliaze constructor to null for function object");
+			}
 		}
 
 		return iType;

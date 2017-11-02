@@ -148,6 +148,7 @@ namespace ffscript {
 
 	void defaultRuntimeFunctionInfoConstructor(RuntimeFunctionInfo* obj);
 	void runtimeFunctionInfoCopyConstructor(RuntimeFunctionInfo* obj1, RuntimeFunctionInfo* obj2);
+	void runtimeFunctionInfoConstructByNull(RuntimeFunctionInfo* obj1, void*);
 	void runtimeFunctionInfoDestructor(RuntimeFunctionInfo* obj);
 
 	class CreateThreadCommand : public DFunction2 {

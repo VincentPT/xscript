@@ -454,6 +454,10 @@ namespace ffscript {
 		}
 	}
 
+	void runtimeFunctionInfoConstructByNull(RuntimeFunctionInfo* obj1, void*) {
+		memset(obj1, 0, sizeof(RuntimeFunctionInfo));
+	}
+
 	void runtimeFunctionInfoDestructor(RuntimeFunctionInfo* obj) {
 		if (obj->anoynymousInfo.data) {
 			free(obj->anoynymousInfo.data);
