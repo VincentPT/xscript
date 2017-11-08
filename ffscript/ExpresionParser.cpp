@@ -2266,6 +2266,8 @@ namespace ffscript {
 		bool check = false;
 		bool candidateIsCompleted = false;
 
+		ScriptScope* currentScope = scriptCompiler->currentScope();
+
 		if (function->getType() == EXP_UNIT_ID_OPERATOR_FUNCTIONCALL) {
 			ExecutableUnitRef& pExeUnit1 = function->getChild(0);
 			ExecutableUnitRef& pExeUnit2 = function->getChild(1);
@@ -2704,16 +2706,14 @@ namespace ffscript {
 			std::list<std::vector<ExecutableUnitRef>> paramPaths;
 			listPaths<ExecutableUnitRef, CandidateCollection, ExecutableUnitRef>(candidatesForParams, paramPaths);
 
-			auto currentScope = scriptCompiler->currentScope();
-
 			string error;
 			functionCandidates = std::make_shared<CandidateCollection>();
 			bool needToCallConstructor = false;
 
 			if (paramPaths.size()) {
 				auto pit = paramPaths.begin();
-				auto param1 = pit->at(0);
-				auto param2 = pit->at(1);
+				auto& param1 = pit->at(0);
+				auto& param2 = pit->at(1);
 
 				// check if param 1 is a variable and it is declared in expression...
 				if (param1->getType() == EXP_UNIT_ID_XOPERAND &&
@@ -2729,6 +2729,9 @@ namespace ffscript {
 					// check if constructor was applied					
 					if (newFunction) {
 						functionCandidates->push_back(ExecutableUnitRef(newFunction));
+						if (currentScope) {
+							currentScope->applyConstructorDestructor(param1, newFunction);
+						}
 
 						needToCallConstructor = true;
 					}
@@ -2955,7 +2958,7 @@ namespace ffscript {
 						}
 					}
 					//the code bellow is going to check assigment for structs
-					else if (ISOPERAND(pExeUnit1)) {						
+					else if (pExeUnit1->getType() == EXP_UNIT_ID_XOPERAND) {
 						if (function->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT/* ||
 							function->getType() == EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR*/) {
 							struct1 = scriptCompiler->getStruct(dataType1.iType());
@@ -2983,7 +2986,14 @@ namespace ffscript {
 									return nullptr;
 								}
 								if (functionRef) {
-									functionCandidates->push_back(functionRef);									
+									functionCandidates->push_back(functionRef);
+									
+									if (currentScope) {
+										functionRef->setMask(functionRef->getMask() | UMASK_CONSTRUCT_FACTOR);
+										currentScope->applyConstructBuildInfo(functionRef.get());
+										currentScope->applyDestructor(pExeUnit1);
+										currentScope->generateNextConstructId();
+									}
 								}
 							}
 						}

@@ -120,6 +120,7 @@ namespace ffscriptUT
 			string args = refType.sType();
 			args.append(",");
 			args.append(stype.makeSemiRef().sType());
+			//args.append(stype.sType());
 
 			DFunction2* copyFunction = new MFunction2<void, T, void*, const void*>(obj, &T::operatorFunction);
 			int functionId = scriptCompiler->registFunction("copyConstructor", args, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyFunction, scriptCompiler));
@@ -1124,6 +1125,81 @@ namespace ffscriptUT
 			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
+		// assignment
+		TEST_METHOD(ArrayInStructUT2)
+		{
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			ExcutionCounter intConstructorCounter, intDestructorCounter;
+			CopyConstructorCounter intCopyConstructorCounter(scriptCompiler->getTypeSize(basicType->TYPE_INT));
+			registerConstructor(&intConstructorCounter, basicType->TYPE_INT);
+			registerDestructor(&intDestructorCounter, basicType->TYPE_INT);
+			registerCopyConstructor(&intCopyConstructorCounter, basicType->TYPE_INT);
+
+			ScriptType typeInt(basicType->TYPE_INT, "int");
+			int iArrayType = scriptCompiler->registArrayType(L"array<int,10>");
+			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iArrayType, L"Register array type failed");
+			ScriptType arrayType(iArrayType, scriptCompiler->getType(iArrayType));
+
+			StructClass* structSimpleArray = new StructClass(scriptCompiler, "SimpleArray");
+			structSimpleArray->addMember(typeInt, "size");
+			structSimpleArray->addMember(arrayType, "data");
+			int iSimpleArrayType = scriptCompiler->registStruct(structSimpleArray);
+			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iSimpleArrayType, L"Register struct type failed");
+
+			const wchar_t scriptCode[] =
+				L"void foo() {"
+				L"	SimpleArray ret = {2, {1, 2}};"
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			int functionId = scriptCompiler->findFunction("foo", {});
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+
+			Assert::AreEqual(8, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			Assert::AreEqual(11, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			Assert::AreEqual(3, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+		}
+
+		// assignment
+		TEST_METHOD(ArrayInStructUT3)
+		{
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			ExcutionCounter intDestructorCounter;
+			CopyConstructorCounter intCopyConstructorCounter(scriptCompiler->getTypeSize(basicType->TYPE_INT));
+			registerDestructor(&intDestructorCounter, basicType->TYPE_INT);
+			registerCopyConstructor(&intCopyConstructorCounter, basicType->TYPE_INT);
+
+			ScriptType typeInt(basicType->TYPE_INT, "int");
+			int iArrayType = scriptCompiler->registArrayType(L"array<int,10>");
+			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iArrayType, L"Register array type failed");
+			ScriptType arrayType(iArrayType, scriptCompiler->getType(iArrayType));
+
+			StructClass* structSimpleArray = new StructClass(scriptCompiler, "SimpleArray");
+			structSimpleArray->addMember(typeInt, "size");
+			structSimpleArray->addMember(arrayType, "data");
+			int iSimpleArrayType = scriptCompiler->registStruct(structSimpleArray);
+			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iSimpleArrayType, L"Register struct type failed");
+
+			const wchar_t scriptCode[] =
+				L"void foo() {"
+				L"	SimpleArray ret = {2, {1, 2}};"
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNull(program, L"Compile program should failed due to no default constructor for int but copy constructor was defined for int");
+		}
+
 		/// check oder of calling operator for single object
 		TEST_METHOD(OperatorOrderUT1)
 		{
@@ -1355,6 +1431,88 @@ namespace ffscriptUT
 			}
 
 			Assert::IsTrue(jt == recorder.end(), L"constructor or destructor is executed in wrong order");
+		}
+
+		TEST_METHOD(CompositeTypeInParametersUT1)
+		{
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			ExcutionCounter intConstructorCounter, intDestructorCounter;
+			CopyConstructorCounter intCopyConstructorCounter(scriptCompiler->getTypeSize(basicType->TYPE_INT));
+			registerConstructor(&intConstructorCounter, basicType->TYPE_INT);
+			registerDestructor(&intDestructorCounter, basicType->TYPE_INT);
+			registerCopyConstructor(&intCopyConstructorCounter, basicType->TYPE_INT);
+
+			ScriptType typeInt(basicType->TYPE_INT, "int");
+
+			StructClass* pStructPoint = new StructClass(scriptCompiler, "Point2i");
+			pStructPoint->addMember(typeInt, "x");
+			pStructPoint->addMember(typeInt, "y");
+			int iPoint = scriptCompiler->registStruct(pStructPoint);
+			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+
+			const wchar_t scriptCode[] =
+				L"void foo(Point2i ret) {"
+				L"}"
+				L"void foo() {"
+				L"    foo({1,2});"
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			int functionId = scriptCompiler->findFunction("foo", {});
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+
+			Assert::AreEqual(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			Assert::AreEqual(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+		}
+
+		TEST_METHOD(CompositeTypeInParametersUT2)
+		{
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			ExcutionCounter intConstructorCounter, intDestructorCounter;
+			CopyConstructorCounter intCopyConstructorCounter(scriptCompiler->getTypeSize(basicType->TYPE_INT));
+			registerConstructor(&intConstructorCounter, basicType->TYPE_INT);
+			registerDestructor(&intDestructorCounter, basicType->TYPE_INT);
+			registerCopyConstructor(&intCopyConstructorCounter, basicType->TYPE_INT);
+
+			ScriptType typeInt(basicType->TYPE_INT, "int");
+
+			StructClass* pStructPoint = new StructClass(scriptCompiler, "Point2i");
+			pStructPoint->addMember(typeInt, "x");
+			pStructPoint->addMember(typeInt, "y");
+			int iPoint = scriptCompiler->registStruct(pStructPoint);
+			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+
+			const wchar_t scriptCode[] =
+				L"void foo(Point2i ret) {"
+				L"}"
+				L"void foo() {"
+				L"    foo({1,2.0});"
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			int functionId = scriptCompiler->findFunction("foo", {});
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+
+			Assert::AreEqual(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			Assert::AreEqual(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 	};
 }

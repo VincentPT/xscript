@@ -63,3 +63,7 @@ firefly.VC.VC.opendb
 /debugger/buid64/ALL_BUILD.vcxproj
 /ffscriptUT/Debug
 /ffscriptUT/Release
+/Debug
+/ffscript/Debug
+/ffscriptLibrary/Debug/ffscriptLibrary.tlog
+/ffscriptLibrary/Debug

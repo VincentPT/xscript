@@ -479,7 +479,7 @@ namespace ffscript {
 			return registDefaultConstructor(type, functionId);
 		}
 		if (functionFactory->getParamCount() == 2) {
-			return registCopyConstructor(type, functionId);
+			return registBinaryConstructor(type, functionId);
 		}
 
 		ConstructorIDListRef dummy;
@@ -527,7 +527,16 @@ namespace ffscript {
 		return true;
 	}
 
-	bool ScriptCompiler::registCopyConstructor(int type, int functionId) {
+	bool ScriptCompiler::registBinaryConstructor(int type, int functionId) {
+
+		// check data type of argument #2
+		auto factory = getFunctionFactory(functionId);
+		auto& secondArgType = factory->getParamType(1);
+		if (secondArgType.origin() == secondArgType.iType() && secondArgType.iType() == type) {
+			// data type of second argument must be ref type if it same type of constructor object
+			return false;
+		}
+
 		auto functionFactory = getFunctionFactory(functionId);
 		ScriptType& paramType2 = functionFactory->getParamType(1);
 
@@ -601,7 +610,28 @@ namespace ffscript {
 		return -1;
 	}
 
-	std::shared_ptr<list<CandidateInfo>> ScriptCompiler::getCopyConstructor(int type, const ExecutableUnitRef& paramUnit) {
+	int ScriptCompiler::getBinaryConstructor(int rootType, const ScriptType& paramType) {
+		auto key = rootType;
+		const ScriptType& param2Type = paramType;
+		string subKey = param2Type.sType();
+
+		auto it = _copyConstructorMap.find(key);
+		if (it == _copyConstructorMap.end()) {
+			return -1;
+		}
+
+		BinaryFunctionParamMap* registFunctions = it->second.get();
+		auto it2 = registFunctions->find(subKey);
+
+		//find exactly match constructor
+		if (it2 != registFunctions->end()) {			
+			return it2->second;
+		}
+
+		return -1;
+	}
+
+	std::shared_ptr<list<CandidateInfo>> ScriptCompiler::getBinaryConstructor(int type, const ExecutableUnitRef& paramUnit) {
 		auto key = type;
 		const ScriptType& param2Type = paramUnit->getReturnType();
 		string subKey = param2Type.sType();
@@ -613,7 +643,7 @@ namespace ffscript {
 			return candidates;
 		}
 
-		BinaryFunctionParamMap* registFunctions = it->second.get();		
+		BinaryFunctionParamMap* registFunctions = it->second.get();
 		auto it2 = registFunctions->find(subKey);
 
 		//find exactly match constructor
@@ -661,7 +691,7 @@ namespace ffscript {
 
 	std::shared_ptr<list<CandidateInfo>> ScriptCompiler::getConstructor(int type, const ExecutableUnitRef& unit) {
 		if (unit->getType() != EXP_UNIT_ID_DYNAMIC_FUNC) {
-			return getCopyConstructor(type, unit);
+			return getBinaryConstructor(type, unit);
 		}
 
 		auto collector = dynamic_cast<DynamicParamFunction*>(unit.get());
@@ -834,8 +864,17 @@ namespace ffscript {
 			return false;
 		}
 
+		auto theFunction = createFunctionFromId(functionId);
+		if (!theFunction) {
+			return false;
+		}
+
+		if (argumentType != theFunction->getReturnType()) {
+			return false;
+		}
+
 		paramInfo.accurative = findConversionAccurative(paramType.iType(), argumentType.iType());
-		paramInfo.castingFunction = FunctionRef(createFunctionFromId(functionId));
+		paramInfo.castingFunction.reset(theFunction);
 
 		return true;
 	}
@@ -918,9 +957,7 @@ namespace ffscript {
 			return true;
 		}
 
-		auto variableUnit = objectParam;
-		auto argUnit = secondParam;
-		auto constructorFunc = applyConstructor(variableUnit, argUnit, &paramInfo.accurative);
+		auto constructorFunc = applyConstructor(objectParam, secondParam, &paramInfo.accurative);
 		if (constructorFunc) {
 			paramInfo.castingFunction.reset(constructorFunc);
 			return true;
@@ -1087,11 +1124,11 @@ namespace ffscript {
 		return functionRef;
 	}
 
-	Function* ScriptCompiler::applyConstructor(ExecutableUnitRef& variableUnit, ExecutableUnitRef& argUnit, int* pAccurative) {
+	Function* ScriptCompiler::applyConstructor(const ExecutableUnitRef& variableUnit, const ExecutableUnitRef& argUnit, int* pAccurative) {
 		//find registered copy contructor for current types
 
-		auto& param1 = variableUnit;
-		auto& param2 = argUnit;
+		auto param1 = variableUnit;
+		auto param2 = argUnit;
 
 		auto& param1Type = param1->getReturnType();
 		auto& param2Type = param2->getReturnType();
@@ -1103,7 +1140,6 @@ namespace ffscript {
 		if (pCandidate) {
 			auto& functionInfo = pCandidate->item;
 			auto& castingInfo = pCandidate->paramCasting.front();
-			auto param1Origin = param1;
 
 			//convert param 1 to ref
 			if (param1Type.refLevel() == param2Type.refLevel()) {
@@ -1127,16 +1163,16 @@ namespace ffscript {
 			newFunction->pushParam(param2);
 			newFunction->setMask(newFunction->getMask() | UMASK_CONSTRUCTOR);
 
-			auto xOperand = dynamic_cast<CXOperand*>(param1Origin.get());
-			auto pVariable = xOperand->getVariable();
-			auto scope = currentScope();
-			if (scope) {
-				scope->applyDefaultConstructorForConstructor(xOperand->getReturnType(), newFunction);
-				if (pVariable) {
-					scope->checkVariableToRunDestructor(pVariable);
-				}
-				scope->generateNextConstructId();
-			}
+			//auto xOperand = dynamic_cast<CXOperand*>(variableUnit.get());
+			//auto pVariable = xOperand->getVariable();
+			//auto scope = currentScope();
+			//if (scope) {
+			//	scope->applyDefaultConstructor(xOperand->getReturnType(), newFunction);
+			//	if (pVariable) {
+			//		scope->checkVariableToRunDestructor(pVariable);
+			//	}
+			//	scope->generateNextConstructId();
+			//}
 
 			return newFunction;
 		}
@@ -1145,9 +1181,23 @@ namespace ffscript {
 	}
 
 	bool ScriptCompiler::hasConstructor(int iType) const {
-		list<OverLoadingItem*> items;
-		getConstructors(iType, items);
-		return items.size() > 0;
+		auto it = _constructorsMap.find(iType);
+		if (it != _constructorsMap.end()) {
+			return true;
+		}
+
+		auto jt = _constructorMap.find(iType);
+		if (jt != _constructorMap.end()) {
+			return true;
+		}
+
+		auto kt = _copyConstructorMap.find(iType);
+		if (kt != _copyConstructorMap.end()) {
+			auto& copyConstrucrorOverloadings = kt->second;
+			return copyConstrucrorOverloadings->size() != 0;
+		}
+
+		return false;
 	}
 
 	bool ScriptCompiler::convertToRef(ExecutableUnitRef& param) {
@@ -1181,7 +1231,29 @@ namespace ffscript {
 
 		list<pair<Variable*, ExecutableUnitRef>> assigments;
 		int accurative = 0;
-		hasNoError = breakCompositeAssigment(firstParamUnit, secondOperand, assigments, accurative);
+		hasNoError = breakCompositeConstructor(firstParamUnit, secondOperand, assigments, accurative);
+
+		if (hasNoError && assigments.size()) {
+			auto& firstUnit = assigments.front().second;
+			if (assigments.size() == 1 && firstUnit->getType() == EXP_UNIT_ID_CREATE_OBJECT_COMPOSITE) {
+				assignmentCompositeUnit = dynamic_pointer_cast<Function>(firstUnit);
+			}
+			else {
+				assignmentCompositeUnit = make_shared<CompositeConstrutorUnit>(assigments);
+			}
+			assignmentCompositeUnit->setReturnType(typeVoid);
+		}
+
+		return assignmentCompositeUnit;
+	}
+
+	FunctionRef ScriptCompiler::applyAssigmentForCompisiteType(const ExecutableUnitRef& firstParamUnit, const DynamicParamFunctionRef& secondOperand, bool& hasNoError) {
+		ScriptType typeVoid(getTypeManager()->getBasicTypes().TYPE_VOID, "void");
+		FunctionRef assignmentCompositeUnit;
+
+		list<pair<Variable*, ExecutableUnitRef>> assigments;
+		int accurative = 0;
+		hasNoError = breakCompositeConstructor(firstParamUnit, secondOperand, assigments, accurative);
 
 		if (hasNoError && assigments.size()) {
 			auto& firstUnit = assigments.front().second;
@@ -1227,17 +1299,13 @@ namespace ffscript {
 
 		if (unit->getType() == EXP_UNIT_ID_DYNAMIC_FUNC) {
 			auto assignmentCompositeUnit = make_shared<CompositeConstrutorUnit>();
-			/*auto pVarialbe = scope->registTempVariable(assignmentCompositeUnit.get(), -1);
-
-			pVarialbe->setDataType(argumentType);
-			pCXOperand->setVariable(pVarialbe);*/
 
 			ScriptType typeVoid(getTypeManager()->getBasicTypes().TYPE_VOID, "void");
 			list<pair<Variable*, ExecutableUnitRef>> assigments;
 
 			auto secondParamUnitRef = dynamic_pointer_cast<DynamicParamFunction>(unit);
 			paramInfo.accurative = 0;
-			bool hasNoError = breakCompositeAssigment(variableUnitRef, secondParamUnitRef, assigments, paramInfo.accurative);
+			bool hasNoError = breakCompositeConstructor(variableUnitRef, secondParamUnitRef, assigments, paramInfo.accurative);
 
 			if (hasNoError && assigments.size()) {
 				assignmentCompositeUnit->setAssigments(assigments);
@@ -1248,8 +1316,6 @@ namespace ffscript {
 				scope->applyTemporaryVariableFor(assignmentCompositeUnit.get(), pVariable);
 				return true;
 			}
-
-			//scope->deleteTempVariable(assignmentCompositeUnit.get());
 		}
 		delete pVariable;
 		return false;
@@ -1261,7 +1327,7 @@ namespace ffscript {
 		}
 	}
 
-	bool ScriptCompiler::breakCompositeAssigment(const ExecutableUnitRef& variableUnit, const ExecutableUnitRef& secondOperand, list<pair<Variable*, ExecutableUnitRef>>& assigments, int& accurative) {
+	bool ScriptCompiler::breakCompositeConstructor(const ExecutableUnitRef& variableUnit, const ExecutableUnitRef& secondOperand, list<pair<Variable*, ExecutableUnitRef>>& assigments, int& accurative) {
 		const ScriptType& param1Type = variableUnit->getReturnType();
 
 		auto pCXOperand = dynamic_cast<CXOperand*>(variableUnit.get());
@@ -1312,7 +1378,7 @@ namespace ffscript {
 			auto& argumentType = memberVariable->getDataType();
 			auto& paramType = paramUnit->getReturnType();
 
-			if (!breakCompositeAssigment(memberVariableUnit, paramUnit, assigments, accurative)) {
+			if (!breakCompositeConstructor(memberVariableUnit, paramUnit, assigments, accurative)) {
 				// cannot find matching constructor, and cannot find matching composite assigment
 				// then try to another matching type for given types
 				ExecutableUnitRef tranformUnitRef;
@@ -1323,6 +1389,9 @@ namespace ffscript {
 				// has copy constructor for corressponding argument's types?...
 				if (copyConstructor) {
 					tranformUnitRef.reset(copyConstructor);
+				}
+				else if (hasConstructor(argumentType.iType())) {
+					// has constructor but cannot find the matching one for given param unit
 				}
 				else {
 					ParamCastingInfo paramCastingInfo;
@@ -1405,6 +1474,14 @@ namespace ffscript {
 					auto defaultConstructor = scope->generateDefaultAutoOperator(defaultConstructorId, memberVariable);
 					assigments.emplace_back(make_pair(memberVariable, defaultConstructor));
 				}
+				else {
+					// element has constructor but don't have default constructor
+					// so, the engine don;t know how to initialize the left elements
+					// which have not initialized yet
+					if (hasConstructor(argumentType.iType())) {
+						return false;
+					}
+				}
 
 				res = pStruct->getMemberNext(&memberName, &memberInfo);
 				iter++;
@@ -1461,6 +1538,14 @@ namespace ffscript {
 					elmOffset += arrayInfo->elmSize;
 				}
 			}
+			else if (elmIdx < elmCount) {
+				// element has constructor but don't have default constructor
+				// so, the engine don;t know how to initialize the left elements
+				// which have not initialized yet
+				if (hasConstructor(argumentType.iType())) {
+					return false;
+				}
+			}
 			if (elmIdx < elmCount) {
 				accurative += (elmCount - elmIdx) * lackOfInitialValueAccurative;
 			}
@@ -1470,6 +1555,267 @@ namespace ffscript {
 
 		return false;
 	}
+
+	//bool ScriptCompiler::breakCompositeAssigment(const ExecutableUnitRef& variableUnit, const ExecutableUnitRef& secondOperand, list<pair<Variable*, ExecutableUnitRef>>& assigments, int& accurative) {
+	//	const ScriptType& param1Type = variableUnit->getReturnType();
+
+	//	auto pCXOperand = dynamic_cast<CXOperand*>(variableUnit.get());
+	//	if (!pCXOperand) {
+	//		// cannot applied assigment for non variable unit
+	//		return false;
+	//	}
+	//	Variable* pVariable = pCXOperand->getVariable();
+	//	const ScriptType& param2Type = secondOperand->getReturnType();
+
+	//	auto assigmentOverloadings = findOverloadingFuncRoot("=");
+	//	if (assigmentOverloadings && assigmentOverloadings->size()) {
+	//		auto param1Ref = param1Type.isSemiRefType() ? param1Type : param1Type.makeSemiRef();
+
+	//		list<OverLoadingItem*> filterdItems;
+	//		for (auto it = assigmentOverloadings->begin(); it != assigmentOverloadings->end(); it++) {
+	//			auto& firstParamType = *(it->paramTypes[0]);
+	//			if (firstParamType == param1Ref && it->paramTypes.size() == 2) {
+	//				filterdItems.push_back((OverLoadingItem*)&*it);
+	//			}
+	//		}
+
+	//		auto variableRefUnit = variableUnit;
+	//		if (!param1Type.isSemiRefType()) {
+	//			if (!convertToRef(variableRefUnit)) {
+	//				throw exception("making ref failed");
+	//			}
+	//			variableRefUnit->setReturnType(param1Ref);
+	//		}
+
+	//		list<ExecutableUnitRef> params = { variableRefUnit , secondOperand};
+	//		auto candidates = selectMultiCandidates(filterdItems, params);
+	//		auto pCandidate = selectSingleCandidate(candidates);
+
+	//		if (!pCandidate) {
+	//			
+	//		}
+	//	}
+
+	//	// first try to find matching constructor for object need to initialized
+	//	list<OverLoadingItem*> overloadingConstructors;
+	//	// try to find copy constructor with r-value first
+	//	int copyConstructor = -1;
+	//	if (param2Type.isSemiRefType()) {
+	//		copyConstructor = getBinaryConstructor(param1Type.iType(), param2Type);
+	//	}
+	//	else {
+	//		copyConstructor = getBinaryConstructor(param1Type.iType(), param2Type.makeSemiRef());
+	//	}
+	//	// check if cannot find it...
+	//	if (copyConstructor < 0) {
+	//		// then try to find constructor with l-value at param
+	//		if (param2Type.isSemiRefType()) {
+	//			copyConstructor = getBinaryConstructor(param1Type.iType(), param2Type.deSemiRef());
+	//		}
+	//		else {
+	//			copyConstructor = getBinaryConstructor(param1Type.iType(), param2Type);
+	//		}
+	//	}
+	//	if (copyConstructor >= 0) {
+	//		ParamCastingInfo castingInfo;
+	//		if (!findMatchingConstructor(variableUnit, secondOperand, castingInfo)) {
+	//			// cannot find a matching overloading constructor for given param unit(secondOperand)
+	//			// exit the function because for type has constructors, we only allow construct it
+	//			// by one of its constructor not by other operators.
+	//			return false;
+	//		}
+
+	//		auto tranformFunction = castingInfo.castingFunction;
+	//		tranformFunction->pushParam(secondOperand);
+	//		assigments.emplace_back(make_pair(pVariable, ExecutableUnitRef(tranformFunction)));
+	//		accurative += castingInfo.accurative;
+	//		return true;
+	//	}
+
+	//	// second, try to initialize composite object
+	//	// composite object can only initialize by a dynamic array
+	//	if (secondOperand->getType() != EXP_UNIT_ID_DYNAMIC_FUNC) {
+	//		return false;
+	//	}
+
+	//	auto paramCollector = dynamic_cast<DynamicParamFunction*>(secondOperand.get());
+
+	//	constexpr int lackOfInitialValueAccurative = 10;
+	//	ScriptType refVoidType(getTypeManager()->getBasicTypes().TYPE_VOID | DATA_TYPE_POINTER_MASK, "ref void");
+
+	//	auto scope = currentScope();
+	//	auto applyTranformTypeUnit = [scope, this, &assigments, &accurative, &refVoidType](ExecutableUnitRef& memberVariableUnit, ExecutableUnitRef& paramUnit) -> bool {
+	//		auto pCXMemberOperand = dynamic_cast<CXOperand*>(memberVariableUnit.get());
+	//		if (!pCXMemberOperand) {
+	//			// cannot applied assigment for non variable unit
+	//			return false;
+	//		}
+	//		Variable* memberVariable = pCXMemberOperand->getVariable();
+	//		auto& argumentType = memberVariable->getDataType();
+	//		auto& paramType = paramUnit->getReturnType();
+
+	//		if (!breakCompositeConstructor(memberVariableUnit, paramUnit, assigments, accurative)) {
+	//			// cannot find matching constructor, and cannot find matching composite assigment
+	//			// then try to another matching type for given types
+	//			ExecutableUnitRef tranformUnitRef;
+
+	//			int memberAccurative;
+	//			// ...then first check copy constructor for data type of member of struct
+	//			auto copyConstructor = applyConstructor(memberVariableUnit, paramUnit, &memberAccurative);
+	//			// has copy constructor for corressponding argument's types?...
+	//			if (copyConstructor) {
+	//				tranformUnitRef.reset(copyConstructor);
+	//			}
+	//			else if (hasConstructor(argumentType.iType())) {
+	//				// has constructor but cannot find the matching one for given param unit
+	//				;
+	//			}
+	//			else {
+	//				ParamCastingInfo paramCastingInfo;
+	//				bool res = false;
+	//				if (argumentType.origin() == paramType.origin()) {
+	//					if ((!paramType.isSemiRefType() || argumentType.isSemiRefType()) &&
+	//						findMatchingLevel1(argumentType, paramType, refVoidType, paramCastingInfo)) {
+	//						res = true;
+	//					}
+	//				}
+	//				else if (findMatchingLevel2(argumentType, paramType, paramCastingInfo)) {
+	//					res = true;
+	//				}
+	//				if (res) {
+	//					if (!(paramCastingInfo.castingFunction)) {
+	//						checkUnitForExcludingDestructor(this, paramUnit);
+	//						tranformUnitRef = paramUnit;
+	//					}
+	//					else {
+	//						tranformUnitRef = paramCastingInfo.castingFunction;
+	//					}
+	//					memberAccurative = paramCastingInfo.accurative;
+	//				}
+	//			}
+	//			// check if there is no available unit can convert from data type of parameter unit to
+	//			// data type of member in struct
+	//			if (!tranformUnitRef) {
+	//				setErrorText("cannot convert from type '" + paramType.sType() + "' to type '" + argumentType.sType() + "'");
+	//				return false;
+	//			}
+	//			accurative += memberAccurative;
+	//			assigments.emplace_back(make_pair(memberVariable, tranformUnitRef));
+	//		}
+
+	//		return true;
+	//	};
+
+	//	// check if data type of variable is a struct
+	//	auto pStruct = getStruct(param1Type.iType());
+	//	if (pStruct) {
+	//		MemberInfo memberInfo;
+	//		string memberName;
+	//		bool res = pStruct->getMemberFirst(&memberName, &memberInfo);
+	//		auto& params = paramCollector->getParams();
+	//		auto iter = params.begin();
+
+	//		// break assigment for each member of the struct
+	//		while (res && iter != params.end()) {
+	//			auto& paramUnit = *iter;
+	//			auto& argumentType = memberInfo.type;
+	//			auto& paramType = paramUnit->getReturnType();
+
+	//			// create a variable that hold member offset in struct...
+	//			auto memberVariable = scope->registMemberVariable(pVariable, pVariable->getName() + "." + memberName);
+	//			memberVariable->setDataType(argumentType);
+	//			memberVariable->setOffset(memberInfo.offset);
+
+	//			CXOperand* pCXMemberOperand = new CXOperand(scope, memberVariable, memberVariable->getDataType());
+	//			ExecutableUnitRef memberVariableRef(pCXMemberOperand);
+
+	//			if (!applyTranformTypeUnit(memberVariableRef, paramUnit)) {
+	//				return false;
+	//			}
+
+	//			res = pStruct->getMemberNext(&memberName, &memberInfo);
+	//			iter++;
+	//		}
+
+	//		while (res) {
+	//			auto& argumentType = memberInfo.type;
+
+	//			// create a variable that hold member offset in struct...
+	//			auto memberVariable = scope->registMemberVariable(pVariable, pVariable->getName() + "." + memberName);
+	//			memberVariable->setDataType(argumentType);
+	//			memberVariable->setOffset(memberInfo.offset);
+
+	//			// run default constructor for the left member if it has
+	//			auto defaultConstructorId = getDefaultConstructor(argumentType.iType());
+	//			if (defaultConstructorId >= 0) {
+	//				auto defaultConstructor = scope->generateDefaultAutoOperator(defaultConstructorId, memberVariable);
+	//				assigments.emplace_back(make_pair(memberVariable, defaultConstructor));
+	//			}
+
+	//			res = pStruct->getMemberNext(&memberName, &memberInfo);
+	//			iter++;
+
+	//			accurative += lackOfInitialValueAccurative;
+	//		}
+
+	//		return true;
+	//	}
+	//	// check if data type of variable is a static array
+	//	if (param1Type.iType() & DATA_TYPE_ARRAY_MASK) {
+	//		auto arrayInfo = (StaticArrayInfo*)getTypeInfo(param1Type.origin());
+	//		if (arrayInfo == nullptr) {
+	//			return false;
+	//		}
+	//		auto argumentType = ScriptType::buildScriptType(this, arrayInfo->elmType, arrayInfo->refLevel);
+
+	//		int elmIdx = 0;
+	//		int elmOffset = 0;
+	//		auto& elmCount = arrayInfo->elmCount;
+
+	//		auto& params = paramCollector->getParams();
+	//		for (auto it = params.begin(); it != params.end() && elmIdx < elmCount; it++, elmIdx++) {
+	//			auto& paramUnit = *it;
+	//			auto& paramType = paramUnit->getReturnType();
+
+	//			// create a variable that hold member offset in array...
+	//			auto memberVariable = scope->registMemberVariable(pVariable, pVariable->getName() + "[" + std::to_string(elmIdx) + "]");
+	//			memberVariable->setDataType(argumentType);
+	//			memberVariable->setOffset(elmOffset);
+
+	//			CXOperand* pCXMemberOperand = new CXOperand(scope, memberVariable, memberVariable->getDataType());
+	//			ExecutableUnitRef memberVariableRef(pCXMemberOperand);
+
+	//			if (!applyTranformTypeUnit(memberVariableRef, paramUnit)) {
+	//				return false;
+	//			}
+
+	//			elmOffset += arrayInfo->elmSize;
+	//		}
+
+	//		auto defaultConstructorId = getDefaultConstructor(argumentType.iType());
+
+	//		// run default constructor for the left elements if it has
+	//		if (defaultConstructorId >= 0) {
+	//			for (; elmIdx < elmCount; elmIdx++) {
+	//				// create a variable that hold member offset in array...
+	//				auto memberVariable = scope->registMemberVariable(pVariable, pVariable->getName() + "[" + std::to_string(elmIdx) + "]");
+	//				memberVariable->setDataType(argumentType);
+	//				memberVariable->setOffset(elmOffset);
+
+	//				auto defaultConstructor = scope->generateDefaultAutoOperator(defaultConstructorId, memberVariable);
+	//				assigments.emplace_back(make_pair(memberVariable, defaultConstructor));
+	//				elmOffset += arrayInfo->elmSize;
+	//			}
+	//		}
+	//		if (elmIdx < elmCount) {
+	//			accurative += (elmCount - elmIdx) * lackOfInitialValueAccurative;
+	//		}
+
+	//		return true;
+	//	}
+
+	//	return false;
+	//}
 
 	bool ScriptCompiler::registFunctionOperator(int type, int functionId) {
 		auto functionFactory = getFunctionFactory(functionId);
@@ -1698,7 +2044,7 @@ namespace ffscript {
 
 			FunctionRegisterHelper fb(this);
 			int f = fb.registFunction(SYSTEM_FUNCTION_COPY_CONSTRUCTOR, copyArgs, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RuntimeFunctionInfo*, RuntimeFunctionInfo*>(runtimeFunctionInfoCopyConstructor), this), true);
-			if (!registCopyConstructor(iType, f)) {
+			if (!registBinaryConstructor(iType, f)) {
 				throw exception("Cannot register copy constructor for function object");
 			}
 

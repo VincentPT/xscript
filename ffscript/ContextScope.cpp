@@ -181,55 +181,55 @@ namespace ffscript {
 		return loopScope->parse(text, end);
 	}
 
-	bool ContextScope::tryApplyConstructorForDeclarationExpression(Variable* pVariable, std::list<ExpUnitRef>& unitList, const ScriptType* expectedReturnType, EExpressionResult& eResult) {
-		ScriptCompiler* scriptCompiler = getCompiler();
-		ScopedCompilingScope autoScope(scriptCompiler, this);
-		ExpressionParser parser(getCompiler());
+	//bool ContextScope::tryApplyConstructorForDeclarationExpression(Variable* pVariable, std::list<ExpUnitRef>& unitList, const ScriptType* expectedReturnType, EExpressionResult& eResult) {
+	//	ScriptCompiler* scriptCompiler = getCompiler();
+	//	ScopedCompilingScope autoScope(scriptCompiler, this);
+	//	ExpressionParser parser(getCompiler());
 
-		eResult = E_SUCCESS;
+	//	eResult = E_SUCCESS;
 
-		std::list<ExpressionRef> expList;
-		bool res = parser.compile(unitList, expList);
-		if (res == false) {
-			eResult = E_TYPE_UNKNOWN;
-			return false;
-		}
+	//	std::list<ExpressionRef> expList;
+	//	bool res = parser.compile(unitList, expList);
+	//	if (res == false) {
+	//		eResult = E_TYPE_UNKNOWN;
+	//		return false;
+	//	}
 
-		if (expList.size() > 1) {
-			scriptCompiler->setErrorText("multi expression cannot begin by a declaration expresion");
-			eResult = E_FAIL;
-			return false;
-		}
+	//	if (expList.size() > 1) {
+	//		scriptCompiler->setErrorText("multi expression cannot begin by a declaration expresion");
+	//		eResult = E_FAIL;
+	//		return false;
+	//	}
 
-		CandidateCollectionRef candidates = std::make_shared<CandidateCollection>();
-		eResult = parser.link(expList.front().get(), candidates);
+	//	CandidateCollectionRef candidates = std::make_shared<CandidateCollection>();
+	//	eResult = parser.link(expList.front().get(), candidates);
 
-		if (eResult != E_SUCCESS) {
-			return false;
-		}
-		if (candidates->size() == 0) {
-			scriptCompiler->setErrorText("unknown error");
-			eResult = E_TYPE_UNKNOWN;
-			return false;
-		}
-		auto& firstCandidate = candidates->front();
-		ExecutableUnitRef& param2 = firstCandidate;
+	//	if (eResult != E_SUCCESS) {
+	//		return false;
+	//	}
+	//	if (candidates->size() == 0) {
+	//		scriptCompiler->setErrorText("unknown error");
+	//		eResult = E_TYPE_UNKNOWN;
+	//		return false;
+	//	}
+	//	auto& firstCandidate = candidates->front();
+	//	ExecutableUnitRef& param2 = firstCandidate;
 
-		auto& param1Type = pVariable->getDataType();
-		auto& param2Type = param2->getReturnType();
+	//	auto& param1Type = pVariable->getDataType();
+	//	auto& param2Type = param2->getReturnType();
 
-		ExecutableUnitRef param1 = ExecutableUnitRef(new CXOperand(this, pVariable, param1Type));
-		
-		//try to find copy contructor for current types
-		auto constructorFunc = scriptCompiler->applyConstructor(param1, param2);
+	//	ExecutableUnitRef param1 = ExecutableUnitRef(new CXOperand(this, pVariable, param1Type));
+	//	
+	//	//try to find copy contructor for current types
+	//	auto constructorFunc = scriptCompiler->applyConstructor(param1, param2);
 
-		if (constructorFunc) {
-			putCommandUnit(ExecutableUnitRef(constructorFunc));
+	//	if (constructorFunc) {
+	//		putCommandUnit(ExecutableUnitRef(constructorFunc));
 
-			return true;
-		}
-		return false;
-	}
+	//		return true;
+	//	}
+	//	return false;
+	//}
 
 	const wchar_t* ContextScope::parse(const wchar_t* text, const wchar_t* end) {
 		const wchar_t* c;

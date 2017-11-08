@@ -62,7 +62,7 @@ namespace ffscriptUT
 			objRef++;
 		}
 
-		static void IntegerConstructor(int& objRef, int  a) {
+		static void IntegerConstructor(int& objRef, int&  a) {
 			objRef = a + 1;
 		}
 
@@ -348,8 +348,8 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int>(&IntegerConstructor);
-			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
+			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
@@ -382,8 +382,8 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int>(&IntegerConstructor);
-			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
+			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
@@ -417,8 +417,8 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int>(&IntegerConstructor);
-			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
+			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
@@ -454,8 +454,8 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int>(&IntegerConstructor);
-			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
+			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
@@ -493,8 +493,8 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int>(&IntegerConstructor);
-			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
+			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
@@ -529,8 +529,8 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int>(&IntegerConstructor);
-			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
+			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);

@@ -49,6 +49,6 @@ namespace ffscript {
 		void applyExitScopeCommand();
 		Function* checkAndGenerateDestructor(ScriptCompiler* scriptCompiler, const ScriptType& type);
 		int checkAndGenerateDestructors(ScriptCompiler* scriptCompiler, ExecutableUnit* exeUnit, std::list<FunctionRef>& destructors);
-		bool tryApplyConstructorForDeclarationExpression(Variable* pVariable, std::list<ExpUnitRef>& unitList, const ScriptType* expectedReturnType, EExpressionResult& eResult);
+		/*bool tryApplyConstructorForDeclarationExpression(Variable* pVariable, std::list<ExpUnitRef>& unitList, const ScriptType* expectedReturnType, EExpressionResult& eResult);*/
 	};
 }

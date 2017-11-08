@@ -151,7 +151,8 @@ namespace ffscript {
 		bool registConstructor(int type, int functionId);
 		int getDefaultConstructor(int type);
 		std::shared_ptr<list<CandidateInfo>> getConstructor(int rootType, const ExecutableUnitRef& paramUnit);
-		std::shared_ptr<list<CandidateInfo>> getCopyConstructor(int rootType, const ExecutableUnitRef& paramUnit);
+		int getBinaryConstructor(int rootType, const ScriptType& paramType);
+		std::shared_ptr<list<CandidateInfo>> getBinaryConstructor(int rootType, const ExecutableUnitRef& paramUnit);
 		void getConstructors(int iType, list<OverLoadingItem*>& overloadingItems) const;
 		bool registDestructor(int type, int functionId);
 		int getDestructor(int type);
@@ -168,15 +169,21 @@ namespace ffscript {
 		FunctionRef applyParamToCandidate(const CandidateInfo& item, std::list<ExecutableUnitRef>& params);
 		static CandidateInfo* selectSingleCandidate(const std::shared_ptr<list<CandidateInfo>>& candidates);
 		ExecutableUnitRef findBoolOperatorForType(int type, const ExecutableUnitRef& paramUnit, int* pAccurative = nullptr);
-		Function* applyConstructor(ExecutableUnitRef& variableUnit, ExecutableUnitRef& argUnit, int* pAccurative = nullptr);
+		Function* applyConstructor(const ExecutableUnitRef& variableUnit, const  ExecutableUnitRef& argUnit, int* pAccurative = nullptr);
 		bool hasConstructor(int iType) const;
 		bool convertToRef(ExecutableUnitRef& param);
 
 		// return
-		bool breakCompositeAssigment(const ExecutableUnitRef& variableUnit,
+		bool breakCompositeConstructor(const ExecutableUnitRef& variableUnit,
 			const ExecutableUnitRef& secondOperand, list<pair<Variable*,
 			ExecutableUnitRef>>& assigments, int& accurative);
+
+		bool breakCompositeAssigment(const ExecutableUnitRef& variableUnit,
+			const ExecutableUnitRef& secondOperand, list<pair<Variable*,
+			ExecutableUnitRef>>&assigments, int& accurative);
+
 		FunctionRef applyConstructorForCompisiteType(const ExecutableUnitRef& xOperand, const DynamicParamFunctionRef& secondOperand, bool& hasNoError);
+		FunctionRef applyAssigmentForCompisiteType(const ExecutableUnitRef& xOperand, const DynamicParamFunctionRef& secondOperand, bool& hasNoError);
 		bool findMatchingComposite(const ScriptType& argumentType, const ExecutableUnitRef& unit, ParamCastingInfo& paramInfo);
 
 		bool registFunctionOperator(int type, int functionId);
@@ -207,7 +214,7 @@ namespace ffscript {
 	protected:
 		int registArrayType(const ScriptType& elmType, const std::vector<int>& dimensions);
 		bool registDefaultConstructor(int type, int functionId);
-		bool registCopyConstructor(int type, int functionId);
+		bool registBinaryConstructor(int type, int functionId);
 	public:
 		inline static bool isCommandBreakSign(wchar_t c) {		
 			return c == ';';
