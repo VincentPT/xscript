@@ -14,7 +14,7 @@ class DFunction2;
 		className(); \
 		virtual ~className(); \
 		virtual void execute(); \
-		virtual void buildCommandText()
+		virtual void buildCommandText(std::list<std::string>& strCommands)
 
 #define END_INSTRUCTION_COMMAND_DECLARE(className) }
 
@@ -25,14 +25,11 @@ namespace ffscript {
 
 	class InstructionCommand
 	{
-		std::string _commandText;
 	public:
 		InstructionCommand();
 		virtual ~InstructionCommand();
 		virtual void execute() = 0;
-		virtual void buildCommandText() = 0;
-		void setCommandText(const std::string& commandText);
-		const std::string& toString();
+		virtual void buildCommandText(std::list<std::string>& strCommands) = 0;
 	};
 
 	class TargetedCommand : public InstructionCommand
@@ -254,7 +251,7 @@ public:
 	public:
 		BreakCommand();
 		virtual ~BreakCommand();
-		virtual void buildCommandText();
+		virtual void buildCommandText(std::list<std::string>& strCommands);
 	};
 
 	///////////////////////////////////////////////////
@@ -263,7 +260,7 @@ public:
 	public:
 		ExitScriptFuntionAtReturn();
 		virtual ~ExitScriptFuntionAtReturn();
-		virtual void buildCommandText();
+		virtual void buildCommandText(std::list<std::string>& strCommands);
 		virtual void execute();
 		void setCommandData(int indexPreventDestructorRun);
 	};

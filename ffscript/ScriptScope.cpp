@@ -168,11 +168,12 @@ namespace ffscript {
 		return operatorFunction;
 	}
 
-	void ScriptScope::applyDefaultConstructor(const ScriptType& type, Function* constructor){
+	OperatorBuidInfo* ScriptScope::applyDefaultConstructor(const ScriptType& type, Function* constructor){
 		auto getConstructorFunction = std::bind(&ScriptCompiler::getDefaultConstructor, _scriptCompiler, std::placeholders::_1);
 		auto constructorBuildInfoBlockRef = generateConstructBuildInfo();
 		OperatorBuidInfo* constructorBuildInfo = applyConstructBuildInfo(constructor);
 		checkAutoOperatorForChildren(getCompiler(), getConstructorFunction, type, 0, &(constructorBuildInfo->buildItems));
+		return constructorBuildInfo;
 	}
 
 	//void ScriptScope::checkVariableToRunConstructorNonRecursive(Variable* pVariable, Function* constructor) {

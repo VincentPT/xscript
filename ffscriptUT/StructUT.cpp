@@ -671,9 +671,9 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			Assert::AreEqual(objRes->a->a, 1, L"program can run but return wrong value");
-			Assert::AreEqual(objRes->a->b, 2, L"program can run but return wrong value");
-			Assert::AreEqual(objRes->iVal, 3, L"program can run but return wrong value");
+			Assert::AreEqual(1, objRes->a->a, L"program can run but return wrong value");
+			Assert::AreEqual(2, objRes->a->b, L"program can run but return wrong value");
+			Assert::AreEqual(3, objRes->iVal, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructComplex03)

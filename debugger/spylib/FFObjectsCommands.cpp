@@ -2,6 +2,8 @@
 #include "spylib_interfaces.h"
 #include "expressionunit.h"
 #include <iostream>
+#include <InstructionCommand.h>
+#include <Program.h>
 
 #include "json.hpp"
 using json = nlohmann::json;
@@ -89,4 +91,51 @@ ReturnData readUnitNode(void* objectAddres) {
 	memcpy_s(returnData.customData, returnData.sizeOfCustomData, jsonStr.c_str(), jsonStr.size());
 
 	return returnData;
+}
+
+ReturnData readCommandList(CommandPointer cmdStart, CommandPointer cmdEnd) {
+	list<string> commandTexts;	
+
+	for (auto it = cmdStart; it != cmdEnd; it++) {
+		(*it)->buildCommandText(commandTexts);
+	}
+
+	size_t bufferSize = 0;
+	for (auto it = commandTexts.begin(); it != commandTexts.end(); it++) {
+		bufferSize += it->size() + 1;
+	}
+
+	size_t rawSize = bufferSize + sizeof(StringBufferArray) - sizeof(StringBufferArray::data);
+	StringBufferArray* rawData = (StringBufferArray*)malloc(rawSize);
+	rawData->elmCount = (int)commandTexts.size();
+	rawData->size = (unsigned int)bufferSize;
+	char* c = rawData->data;
+
+	for (auto it = commandTexts.begin(); it != commandTexts.end(); it++) {
+		auto& str = *it;
+		memcpy_s(c, str.size(), str.c_str(), str.size());
+
+		c += str.size();
+		*c = 0;
+		c++;
+	}
+
+	ReturnData returnData;
+
+	// set custom data to an allocated buffer, spy client should be responsible to free the memory after using
+	returnData.customData = (char*)rawData;
+	returnData.sizeOfCustomData = (int)rawSize;
+
+	return returnData;
+}
+
+ReturnData readCommandList(void* objectAddres) {
+	auto command = (InstructionCommand*) objectAddres;
+	return readCommandList(&command, &command + 1);
+}
+
+ReturnData readProgramCommand(void* objectAddres) {
+	auto program = (Program*)objectAddres;	
+
+	return readCommandList(program->getFirstCommand(), program->getEndCommand());
 }

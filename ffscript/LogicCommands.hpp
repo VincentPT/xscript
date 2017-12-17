@@ -1,5 +1,6 @@
 #pragma once
 #include "CommandTree.h"
+#include <sstream>
 
 namespace ffscript {
 	template <class T>
@@ -46,7 +47,14 @@ namespace ffscript {
 				*resultValueRef = (fVal2(paramValueRef2) != 0);
 			}
 		}
-		virtual void buildCommandText() {}
+		virtual void buildCommandText(std::list<std::string>& strCommands) {
+			_commandParam1->buildCommandText(strCommands);
+			_commandParam2->buildCommandText(strCommands);
+
+			std::stringstream ss;
+			ss << "and ([" << _commandParam1->getTargetOffset() << "], [" << _commandParam1->getTargetOffset() << "])";
+			strCommands.emplace_back(ss.str());
+		}
 	};
 
 	////////////////////////////////////////////////////
@@ -74,6 +82,13 @@ namespace ffscript {
 			}
 		}
 
-		virtual void buildCommandText() {}
+		virtual void buildCommandText(std::list<std::string>& strCommands) {
+			_commandParam1->buildCommandText(strCommands);
+			_commandParam2->buildCommandText(strCommands);
+
+			std::stringstream ss;
+			ss << "or ([" << _commandParam1->getTargetOffset() << "], [" << _commandParam1->getTargetOffset() << "])";
+			strCommands.emplace_back(ss.str());
+		}
 	};
 }

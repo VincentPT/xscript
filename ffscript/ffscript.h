@@ -205,6 +205,7 @@ namespace ffscript {
 
 #pragma pack(pop)
 
+#define INDEPENDENT_CONSTRUCTOR (-1)
 typedef unsigned int MaskType;
 #define UMASK_NONE 0
 #define UMASK_DEFAULT_CTOR 1

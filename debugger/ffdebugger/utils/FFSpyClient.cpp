@@ -173,7 +173,6 @@ int readCustomObject(FFSpyClient* buzzSpyClient, CustomCommandId customCmdId, co
 }
 
 int FFSpyClient::readUnitList(void* address, std::list<std::string>& unitNames) {
-
 	auto handleReadUnitListResult = [&unitNames](StringBufferArray*& stringBufferArray) {
 		int stringCount = stringBufferArray->elmCount;
 		char* c = stringBufferArray->data;
@@ -194,4 +193,34 @@ int FFSpyClient::readUnitNode(void* address, std::string& unitNodeJS) {
 	};
 
 	return readCustomObject<char*>(this, (CustomCommandId)UserCommandId::READ_EXPRESSION_NODE + _predefinedBase, handleReadUnitListResult, address);
+}
+
+int FFSpyClient::readProgramCommands(void* address, std::list<std::string>& commands) {
+	auto handleCommandListResult = [&commands](StringBufferArray*& stringBufferArray) {
+		int stringCount = stringBufferArray->elmCount;
+		char* c = stringBufferArray->data;
+		for (int i = 0; i < stringCount; i++) {
+			string str = c;
+			c += str.size() + 1;
+
+			commands.emplace_back(str);
+		}
+	};
+
+	return readCustomObject<StringBufferArray*>(this, (CustomCommandId)UserCommandId::READ_PROGRAM_COMMAND + _predefinedBase, handleCommandListResult, address);
+}
+
+int FFSpyClient::readCommands(void* address, std::list<std::string>& commands) {
+	auto handleCommandListResult = [&commands](StringBufferArray*& stringBufferArray) {
+		int stringCount = stringBufferArray->elmCount;
+		char* c = stringBufferArray->data;
+		for (int i = 0; i < stringCount; i++) {
+			string str = c;
+			c += str.size() + 1;
+
+			commands.emplace_back(str);
+		}
+	};
+
+	return readCustomObject<StringBufferArray*>(this, (CustomCommandId)UserCommandId::READ_COMMAND_LIST + _predefinedBase, handleCommandListResult, address);
 }

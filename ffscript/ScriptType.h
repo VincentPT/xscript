@@ -20,6 +20,7 @@ namespace ffscript {
 		bool isFunctionType() const;
 		bool isUnkownType() const;
 		int refLevel() const;
+		int semiRefLevel() const;
 		ScriptType makeRef() const;
 		ScriptType makeSemiRef() const;
 		ScriptType deRef() const;

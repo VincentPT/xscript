@@ -31,6 +31,8 @@ extern "C" {
 	SPYLIB_API int loadPredefinedFunctions(void* context, FSetPredefinedFunction fx, CustomCommandId cmdBase) {
 		fx(context, (CustomCommandId)UserCommandId::READ_UNIT_LIST, readUnitList);
 		fx(context, (CustomCommandId)UserCommandId::READ_EXPRESSION_NODE, readUnitNode);
+		fx(context, (CustomCommandId)UserCommandId::READ_COMMAND_LIST, readCommandList);
+		fx(context, (CustomCommandId)UserCommandId::READ_PROGRAM_COMMAND, readProgramCommand);
 		return 0;
 	}
 }

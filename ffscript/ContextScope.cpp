@@ -711,23 +711,25 @@ namespace ffscript {
 
 		auto function = (Function*)exeUnit;
 		//only generate destructor for function has not ExcludeFromDestructor in mask
-		if (((unsigned int) function->getMask() & (unsigned int)UMASK_EXCLUDEFROMDESTRUCTOR) == 0) {
-			auto& type = function->getReturnType();
-			auto destructor = checkAndGenerateDestructor(scriptCompiler, type);
-			if (destructor != nullptr) {
-				destructors.push_back(FunctionRef(destructor));
+		if (exeUnit->getType() != EXP_UNIT_ID_DEREF) {
+			if (((unsigned int)function->getMask() & (unsigned int)UMASK_EXCLUDEFROMDESTRUCTOR) == 0) {
+				auto& type = function->getReturnType();
+				auto destructor = checkAndGenerateDestructor(scriptCompiler, type);
+				if (destructor != nullptr) {
+					destructors.push_back(FunctionRef(destructor));
 
-				//the variable for this node will be update later
-				auto pVariable = registTempVariable(exeUnit, -1);
+					//the variable for this node will be update later
+					auto pVariable = registTempVariable(exeUnit, -1);
 
-				pVariable->setDataType(type);
-				ExecutableUnitRef returnUnit = std::make_shared<CXOperand>(this, pVariable, pVariable->getDataType());
+					pVariable->setDataType(type);
+					ExecutableUnitRef returnUnit = std::make_shared<CXOperand>(this, pVariable, pVariable->getDataType());
 
-				if (!scriptCompiler->convertToRef(returnUnit)) {
-					return 1;
+					if (!scriptCompiler->convertToRef(returnUnit)) {
+						return 1;
+					}
+
+					destructor->pushParam(returnUnit);
 				}
-
-				destructor->pushParam(returnUnit);
 			}
 		}
 #if OPTIMIZE_CTOR_CALL

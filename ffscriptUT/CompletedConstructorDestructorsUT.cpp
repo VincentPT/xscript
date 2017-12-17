@@ -1514,5 +1514,274 @@ namespace ffscriptUT
 			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
 			Assert::AreEqual(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
+
+		static void constructPoint(void* p, int x, int y) {
+			*(int*)p = *(int*)p + x;
+			*((int*)p + 1) = *((int*)p + 1) + y;
+		}
+		
+		TEST_METHOD(CompositeTypeInParametersUT3)
+		{
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			ExcutionCounter intConstructorCounter, intDestructorCounter;
+			CopyConstructorCounter intCopyConstructorCounter(scriptCompiler->getTypeSize(basicType->TYPE_INT));
+			registerConstructor(&intConstructorCounter, basicType->TYPE_INT);
+			registerDestructor(&intDestructorCounter, basicType->TYPE_INT);
+			registerCopyConstructor(&intCopyConstructorCounter, basicType->TYPE_INT);
+
+			intConstructorCounter.setDataSize(sizeof(int));
+
+			ScriptType typeInt(basicType->TYPE_INT, "int");
+
+			StructClass* pStructPoint = new StructClass(scriptCompiler, "Point2i");
+			pStructPoint->addMember(typeInt, "x");
+			pStructPoint->addMember(typeInt, "y");
+			int iPoint = scriptCompiler->registStruct(pStructPoint);
+			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+
+			DFunction2* constructFunction = new CdeclFunction2<void, void*, int, int>(constructPoint);
+			int functionId = scriptCompiler->registFunction("constructPoint", "ref Point2i, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constructFunction, scriptCompiler));
+			Assert::IsTrue(functionId >= 0, L"Register function for copy constructor failed");
+
+			bool blRes = scriptCompiler->registConstructor(iPoint, functionId);
+			Assert::IsTrue(blRes, L"Register copy constructor failed");
+
+			const wchar_t scriptCode[] =
+				L"int foo(Point2i p) {"
+				L" return p.x + p.y;"
+				L"}"
+				L"int foo() {"
+				L"    return foo({1,2});"
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			functionId = scriptCompiler->findFunction("foo", {});
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			int*iRes = (int*)scriptTask.getTaskResult();
+
+			Assert::AreEqual(3, *iRes, L"default construtor for children is not run");
+
+			Assert::AreEqual(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+		}
+
+		TEST_METHOD(CompositeTypeInParametersUT3_1)
+		{
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			ExcutionCounter intConstructorCounter, intDestructorCounter;
+			CopyConstructorCounter intCopyConstructorCounter(scriptCompiler->getTypeSize(basicType->TYPE_INT));
+			registerConstructor(&intConstructorCounter, basicType->TYPE_INT);
+			registerDestructor(&intDestructorCounter, basicType->TYPE_INT);
+			registerCopyConstructor(&intCopyConstructorCounter, basicType->TYPE_INT);
+
+			intConstructorCounter.setDataSize(sizeof(int));
+
+			ScriptType typeInt(basicType->TYPE_INT, "int");
+
+			StructClass* pStructPoint = new StructClass(scriptCompiler, "Point2i");
+			pStructPoint->addMember(typeInt, "x");
+			pStructPoint->addMember(typeInt, "y");
+			int iPoint = scriptCompiler->registStruct(pStructPoint);
+			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+
+			DFunction2* constructFunction = new CdeclFunction2<void, void*, int, int>(constructPoint);
+			int functionId = scriptCompiler->registFunction("constructPoint", "ref Point2i, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constructFunction, scriptCompiler));
+			Assert::IsTrue(functionId >= 0, L"Register function for copy constructor failed");
+
+			bool blRes = scriptCompiler->registConstructor(iPoint, functionId);
+			Assert::IsTrue(blRes, L"Register copy constructor failed");
+
+			const wchar_t scriptCode[] =
+				L"int foo(Point2i& p) {"
+				L" return p.x + p.y;"
+				L"}"
+				L"int foo() {"
+				L"    return foo({1,2});"
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			functionId = scriptCompiler->findFunction("foo", {});
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			int*iRes = (int*)scriptTask.getTaskResult();
+
+			Assert::AreEqual(3, *iRes, L"default construtor for children is not run");
+
+			Assert::AreEqual(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+		}
+
+		TEST_METHOD(CompositeTypeInParametersUT3_2_PreTest)
+		{
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			ScriptType typeInt(basicType->TYPE_INT, "int");
+
+			StructClass* pStructPoint = new StructClass(scriptCompiler, "Point2i");
+			pStructPoint->addMember(typeInt.makeSemiRef(), "x");
+			pStructPoint->addMember(typeInt, "y");
+			int iPoint = scriptCompiler->registStruct(pStructPoint);
+			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+
+			const wchar_t scriptCode[] =
+				L"int foo() {"
+				L"    int n = 1;"
+				L"    Point2i p;"
+				L"    p.x = &n;"
+				L"    return p.x;"
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			int functionId = scriptCompiler->findFunction("foo", {});
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			int*iRes = (int*)scriptTask.getTaskResult();
+
+			Assert::AreEqual(1, *iRes, L"accessing member in struct does not works properly");
+		}
+
+		TEST_METHOD(CompositeTypeInParametersUT3_2)
+		{
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			ExcutionCounter intConstructorCounter, intDestructorCounter;
+			CopyConstructorCounter intCopyConstructorCounter(scriptCompiler->getTypeSize(basicType->TYPE_INT));
+			registerConstructor(&intConstructorCounter, basicType->TYPE_INT);
+			registerDestructor(&intDestructorCounter, basicType->TYPE_INT);
+			registerCopyConstructor(&intCopyConstructorCounter, basicType->TYPE_INT);
+
+			intConstructorCounter.setDataSize(sizeof(int));
+
+			ScriptType typeInt(basicType->TYPE_INT, "int");
+
+			StructClass* pStructPoint = new StructClass(scriptCompiler, "Point2i");
+			pStructPoint->addMember(typeInt.makeSemiRef(), "x");
+			pStructPoint->addMember(typeInt, "y");
+			int iPoint = scriptCompiler->registStruct(pStructPoint);
+			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");			
+			
+			const wchar_t scriptCode[] =
+				L"int foo(Point2i p) {"
+				L" return p.x + p.y;"
+				L"}"
+				L"int foo() {"
+				L"    return foo({1,2});"
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			int functionId = scriptCompiler->findFunction("foo", {});
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			int*iRes = (int*)scriptTask.getTaskResult();
+
+			Assert::AreEqual(3, *iRes, L"constructor for ref type does not work properly");
+/*
+			Assert::AreEqual(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");*/
+		}
+
+		TEST_METHOD(CompositeTypeInParametersUT4)
+		{
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			ExcutionCounter intConstructorCounter, intDestructorCounter;
+			CopyConstructorCounter intCopyConstructorCounter(scriptCompiler->getTypeSize(basicType->TYPE_INT));
+			registerConstructor(&intConstructorCounter, basicType->TYPE_INT);
+			registerDestructor(&intDestructorCounter, basicType->TYPE_INT);
+			registerCopyConstructor(&intCopyConstructorCounter, basicType->TYPE_INT);
+
+			intConstructorCounter.setDataSize(sizeof(int));
+
+			const wchar_t scriptCode[] =
+				L"int test() {"
+				L" return 1;" /* copy integer constructor will be call to construct int object from 1 */
+				L"}"
+				L"void foo() {"
+				L"    int x = test();" /* destructor will be called for x, destructor for return object from test will not be called */
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			int functionId = scriptCompiler->findFunction("foo", {});
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+
+			Assert::AreEqual(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			Assert::AreEqual(1, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			Assert::AreEqual(1, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+		}
+
+		TEST_METHOD(CompositeTypeInParametersUT5)
+		{
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			ExcutionCounter intConstructorCounter, intDestructorCounter;
+			CopyConstructorCounter intCopyConstructorCounter(scriptCompiler->getTypeSize(basicType->TYPE_INT));
+			registerConstructor(&intConstructorCounter, basicType->TYPE_INT);
+			registerDestructor(&intDestructorCounter, basicType->TYPE_INT);
+			registerCopyConstructor(&intCopyConstructorCounter, basicType->TYPE_INT);
+
+			intConstructorCounter.setDataSize(sizeof(int));
+
+			const wchar_t scriptCode[] =
+				L"int test() {"
+				L" int i = 1;" /* copy constructor of integer will be call here*/
+				L" ref int pi = ref(i);"
+				L" return *pi;" /* copy constructor of integer will be called here*/
+				L"}"
+				L"void foo() {"
+				L"    int x = test();" /* destructor will be called for x, destructor for return object from test will not be called */
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			int functionId = scriptCompiler->findFunction("foo", {});
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+
+			Assert::AreEqual(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			Assert::AreEqual(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+		}
 	};
 }

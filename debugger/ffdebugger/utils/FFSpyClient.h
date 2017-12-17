@@ -24,4 +24,6 @@ public:
 	
 	int readUnitList(void* address, std::list<std::string>& unitNames);
 	int readUnitNode(void* address, std::string& unitNodeJS);
+	int readProgramCommands(void* address, std::list<std::string>& commands);
+	int readCommands(void* address, std::list<std::string>& commands);
 };

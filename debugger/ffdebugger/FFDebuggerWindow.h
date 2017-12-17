@@ -76,6 +76,8 @@ public:
 	FFDrawObj* readObject(void* address, int type);
 	FFDrawObj* readUnitList(void* desireReadObjectAddress);
 	FFDrawObj* readUnitNode(void* desireReadObjectAddress);
+	FFDrawObj* readProgramCommands(void* desireReadObjectAddress);
+	FFDrawObj* readCommands(void* desireReadObjectAddress);
 };
 
 typedef std::shared_ptr<FFDebuggerWindow> FFDebuggerWindowRef;

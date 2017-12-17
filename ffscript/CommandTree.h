@@ -11,7 +11,6 @@ namespace ffscript {
 		virtual ~FunctionCommand();
 		virtual int pushCommandParam(TargetedCommand* command) = 0;
 		virtual TargetedCommand* popCommandParam() = 0;
-		void buildCommandText();
 		virtual void setCommand(TargetedCommand* command);
 		TargetedCommand* getCommand() const;
 	};
@@ -24,6 +23,7 @@ namespace ffscript {
 		virtual int pushCommandParam(TargetedCommand* command);
 		virtual TargetedCommand* popCommandParam();
 		virtual void execute();
+		void buildCommandText(std::list<std::string>& strCommands);
 	};
 
 	////////////////////////////////////////////////////
@@ -36,6 +36,7 @@ namespace ffscript {
 		virtual int pushCommandParam(TargetedCommand* command);
 		virtual TargetedCommand* popCommandParam();
 		virtual void execute();
+		void buildCommandText(std::list<std::string>& strCommands);
 	};
 
 	////////////////////////////////////////////////////
@@ -49,6 +50,7 @@ namespace ffscript {
 		virtual int pushCommandParam(TargetedCommand* command);
 		virtual TargetedCommand* popCommandParam();
 		virtual void execute();
+		void buildCommandText(std::list<std::string>& strCommands);
 	};
 
 	////////////////////////////////////////////////////
@@ -64,6 +66,7 @@ namespace ffscript {
 		virtual TargetedCommand* popCommandParam();
 		virtual void execute();
 		int getParamCap() const;
+		void buildCommandText(std::list<std::string>& strCommands);
 	};
 
 	////////////////////////////////////////////////////
@@ -82,6 +85,7 @@ namespace ffscript {
 	public:
 		LogicAndCommand();
 		virtual void execute();
+		void buildCommandText(std::list<std::string>& strCommands);
 	};
 
 	////////////////////////////////////////////////////
@@ -89,6 +93,7 @@ namespace ffscript {
 	public:
 		LogicOrCommand();
 		virtual void execute();
+		void buildCommandText(std::list<std::string>& strCommands);
 	};
 	
 	////////////////////////////////////////////////////
@@ -107,10 +112,12 @@ protected:
 	TargetedCommand* _mainCommand;
 	std::shared_ptr<DFunction> _afterExecuteFunc;
 	std::shared_ptr<DFunction> _beforeExecuteFunc;
+	std::string _beforeExecuteCommandName;
+	std::string _afterExecuteCommandName;
 public:
 	void setCommand(TargetedCommand* mainCommand);
-	void setBeforeTrigger(const std::shared_ptr<DFunction>& beforeExecuted);
-	void setAfterTrigger(const std::shared_ptr<DFunction>& afterExecuted);
+	void setBeforeTrigger(const std::shared_ptr<DFunction>& beforeExecuted, const std::string& commandName);
+	void setAfterTrigger(const std::shared_ptr<DFunction>& afterExecuted, const std::string& commandName);
 	END_INSTRUCTION_COMMAND_DECLARE(ConditionalCommand);
 
 	////////////////////////////////////////////////////

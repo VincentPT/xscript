@@ -1644,13 +1644,13 @@ namespace ffscript {
 					}
 					else */if (param1Type.origin() == param2Type.origin() && param1Type.refLevel() == param2Type.refLevel()/* && param2Type.isSemiRefType()*/) {
 						//default assigment operator for all types
-						if (!param1Type.isSemiRefType()) {
+						if (!param1Type.semiRefLevel()) {
 							if (!scriptCompiler->convertToRef(param1)) {
 								return nullptr;
 							}
 						}
 						FixParamFunction<2>* defaultOperatorUnit;
-						if (param2Type.isSemiRefType()) {
+						if (param2Type.isSemiRefType() && param2Type.semiRefLevel() >= param1Type.semiRefLevel()) {
 							defaultOperatorUnit = new FixParamFunction<2>(DEFAULT_COPY_OPERATOR, EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR_REF, FUNCTION_PRIORITY_ASSIGNMENT, param2Type);
 						}
 						else {
@@ -1826,17 +1826,17 @@ namespace ffscript {
 					CConstOperand<int>* param2New = new CConstOperand<int>(memberInfo->offset, typeInt);
 					ExecutableUnitRef param2NewRef(param2New);
 
-					//auto defaultOperatorUnit1 = new FixParamFunction<2>(".", EXP_UNIT_ID_MEMBER_ACCESS, FUNCTION_PRIORITY_MEMBER_ACCESS, memberType);
-					//defaultOperatorUnit1->pushParam(param1);
-					//defaultOperatorUnit1->pushParam(param2NewRef);
-					//defaultOperatorUnit1->setNative((DFunction2Ref)(new MemberAccessCommand1(returnSize)));
+					/*auto defaultOperatorUnit1 = new FixParamFunction<2>(".", EXP_UNIT_ID_MEMBER_ACCESS, FUNCTION_PRIORITY_MEMBER_ACCESS, memberType);
+					defaultOperatorUnit1->pushParam(param1);
+					defaultOperatorUnit1->pushParam(param2NewRef);
+					defaultOperatorUnit1->setNative((DFunction2Ref)(new MemberAccessCommand1(sizeof(void*))));
+					defaultOperatorUnit1->setMask(UMASK_EXCLUDEFROMDESTRUCTOR);*/
 
-					//auto defaultOperatorUnit2 = new FixParamFunction<2>(".", EXP_UNIT_ID_MEMBER_ACCESS, FUNCTION_PRIORITY_MEMBER_ACCESS, memberType.makeRef());
 					auto defaultOperatorUnit2 = new FixParamFunction<2>(".", EXP_UNIT_ID_MEMBER_ACCESS, FUNCTION_PRIORITY_MEMBER_ACCESS, memberType.makeSemiRef());
 					defaultOperatorUnit2->pushParam(param1);
 					defaultOperatorUnit2->pushParam(param2NewRef);
 					defaultOperatorUnit2->setNative((DFunction2Ref)(new MemberAccessCommand2()));
-
+					
 					//defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit1));
 					defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit2));
 					continue;
@@ -1871,11 +1871,6 @@ namespace ffscript {
 
 		return defaultOperators;
 	}
-	
-	struct CandidatePathInfo {
-		CandidateInfo candidate;
-		std::vector<ExecutableUnitRef>* paramPath;
-	};
 
 	template<class T>
 	T* makeRef(const T& val) {
@@ -1977,170 +1972,170 @@ namespace ffscript {
 		return std::make_pair(it->paramPath, it->candidate.totalAccurative);
 	}
 
-	CandidateCollectionRef filterCandidate(ScriptCompiler* scriptCompiler,
-		const string& functionName, int functionType,
-		const list<OverLoadingItem>* overloadingFuncs,
-		const std::vector<CandidateCollectionRef>& candidatesForParams, EExpressionResult& eResult) {
+	//CandidateCollectionRef filterCandidate(ScriptCompiler* scriptCompiler,
+	//	const string& functionName, int functionType,
+	//	const list<OverLoadingItem>* overloadingFuncs,
+	//	const std::vector<CandidateCollectionRef>& candidatesForParams, EExpressionResult& eResult) {
 
-		int n = (int)candidatesForParams.size();
-		ParamCastingInfo paramInfoTemp;
-		paramInfoTemp.accurative = 0;
-		paramInfoTemp.castingFunction = nullptr;
+	//	int n = (int)candidatesForParams.size();
+	//	ParamCastingInfo paramInfoTemp;
+	//	paramInfoTemp.accurative = 0;
+	//	paramInfoTemp.castingFunction = nullptr;
 
-		list<CandidateInfo> overloadingCandidatesOrigin;
+	//	list<CandidateInfo> overloadingCandidatesOrigin;
 
-		//filter overloading functions by number of parameter
-		for (auto it = overloadingFuncs->begin(); it != overloadingFuncs->end(); ++it) {
-			if ((*it).paramTypes.size() == (size_t)n) {
-				const OverLoadingItem& item = *it;
+	//	//filter overloading functions by number of parameter
+	//	for (auto it = overloadingFuncs->begin(); it != overloadingFuncs->end(); ++it) {
+	//		if ((*it).paramTypes.size() == (size_t)n) {
+	//			const OverLoadingItem& item = *it;
 
-				CandidateInfo candidateInfo;
-				overloadingCandidatesOrigin.push_back(candidateInfo);
-				CandidateInfo& candidateInfoRef = overloadingCandidatesOrigin.back();
-				candidateInfoRef.item = &item;
-				candidateInfoRef.paramCasting.resize(n, paramInfoTemp);
-			}
-		}
+	//			CandidateInfo candidateInfo;
+	//			overloadingCandidatesOrigin.push_back(candidateInfo);
+	//			CandidateInfo& candidateInfoRef = overloadingCandidatesOrigin.back();
+	//			candidateInfoRef.item = &item;
+	//			candidateInfoRef.paramCasting.resize(n, paramInfoTemp);
+	//		}
+	//	}
 
-		ScriptType refVoidType(scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID | DATA_TYPE_POINTER_MASK, "ref void");
-		int overloadingSize = (int)overloadingCandidatesOrigin.size();
+	//	ScriptType refVoidType(scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID | DATA_TYPE_POINTER_MASK, "ref void");
+	//	int overloadingSize = (int)overloadingCandidatesOrigin.size();
 
-		std::list<std::vector<ExecutableUnitRef>> paramPaths;
-		listPaths<ExecutableUnitRef, CandidateCollection, ExecutableUnitRef>(candidatesForParams, paramPaths);
+	//	std::list<std::vector<ExecutableUnitRef>> paramPaths;
+	//	listPaths<ExecutableUnitRef, CandidateCollection, ExecutableUnitRef>(candidatesForParams, paramPaths);
 
-		std::map<int, CandidatePathInfo> candidateMap;
-		for (auto pit = paramPaths.begin(); pit != paramPaths.end(); pit++) {
-			auto& path = *pit;
-			//prevent following expression to be executed by a native assigment function
-			// int b = 1;
-			// ref int a = b;
-			//but it will be processed by default assignment operator
-			if (functionType == EXP_UNIT_ID_OPERATOR_ASSIGNMENT && path.size() == 2) {
-				auto& param1Type = path[0]->getReturnType();
-				auto& param2Type = path[1]->getReturnType();
+	//	std::map<int, CandidatePathInfo> candidateMap;
+	//	for (auto pit = paramPaths.begin(); pit != paramPaths.end(); pit++) {
+	//		auto& path = *pit;
+	//		//prevent following expression to be executed by a native assigment function
+	//		// int b = 1;
+	//		// ref int a = b;
+	//		//but it will be processed by default assignment operator
+	//		if (functionType == EXP_UNIT_ID_OPERATOR_ASSIGNMENT && path.size() == 2) {
+	//			auto& param1Type = path[0]->getReturnType();
+	//			auto& param2Type = path[1]->getReturnType();
 
-				if (path[0]->getType() == EXP_UNIT_ID_XOPERAND && param2Type.origin() == param1Type.origin() && param1Type.refLevel() != param2Type.refLevel()) {
-					//continue
-					//following assigment is not allow
-					//ref int b;
-					//int a;
-					//b = a;
-					continue;
-				}
-			}
+	//			if (path[0]->getType() == EXP_UNIT_ID_XOPERAND && param2Type.origin() == param1Type.origin() && param1Type.refLevel() != param2Type.refLevel()) {
+	//				//continue
+	//				//following assigment is not allow
+	//				//ref int b;
+	//				//int a;
+	//				//b = a;
+	//				continue;
+	//			}
+	//		}
 
-			list<CandidateInfo> overloadingCandidates = overloadingCandidatesOrigin;
-			for (int i = 0; i < n; i++) {
-				auto& param = path[i];
-				auto& paramType = param->getReturnType();
-				auto it = overloadingCandidates.begin();
-				decltype(it) itTemp;
+	//		list<CandidateInfo> overloadingCandidates = overloadingCandidatesOrigin;
+	//		for (int i = 0; i < n; i++) {
+	//			auto& param = path[i];
+	//			auto& paramType = param->getReturnType();
+	//			auto it = overloadingCandidates.begin();
+	//			decltype(it) itTemp;
 
-				while (it != overloadingCandidates.end()) {
-					auto& argumentType = *(it->item->paramTypes[i]);
-					if (scriptCompiler->findMatchingComposite(argumentType, param, it->paramCasting.at(i))) {
-						++it;
-					}
-					else if (scriptCompiler->findMatching(refVoidType, argumentType, paramType, it->paramCasting.at(i), overloadingSize == 1)) {
-						++it;
-					}
-					else {
-						itTemp = it;
-						++it;
-						overloadingCandidates.erase(itTemp);
-					}
-				}
-			}
+	//			while (it != overloadingCandidates.end()) {
+	//				auto& argumentType = *(it->item->paramTypes[i]);
+	//				if (scriptCompiler->findMatchingComposite(argumentType, param, it->paramCasting.at(i))) {
+	//					++it;
+	//				}
+	//				else if (scriptCompiler->findMatching(refVoidType, argumentType, paramType, it->paramCasting.at(i), overloadingSize == 1)) {
+	//					++it;
+	//				}
+	//				else {
+	//					itTemp = it;
+	//					++it;
+	//					overloadingCandidates.erase(itTemp);
+	//				}
+	//			}
+	//		}
 
-			//copy candidate to map but no duplicate candidate(function) id
-			for (auto cit = overloadingCandidates.begin(); cit != overloadingCandidates.end(); cit++) {
-				CandidatePathInfo candidate;
-				candidate.candidate = *cit;
-				candidate.paramPath = &path;
-				auto it = candidateMap.insert(std::make_pair(candidate.candidate.item->functionId, candidate));
-				CandidatePathInfo& insertedCandidate = it.first->second;
-				//if the canidate id is exits, compare accurative to choose the best one
-				if (it.second == false) {
-					//calcuate total accurative for each
-					int acc1 = insertedCandidate.candidate.totalAccurative;
-					int acc2 = 0;
-					for (int j = 0; j < n; j++) {
-						acc2 += candidate.candidate.paramCasting.at(j).accurative;
-					}
-					//the better found, so we repelace it
-					if (acc1 > acc2) {
-						candidate.candidate.totalAccurative = acc2;
-						it.first->second = candidate;
-					}
-				}
-				else {
-					int acc1 = 0;
-					for (int j = 0; j < n; j++) {
-						acc1 += insertedCandidate.candidate.paramCasting.at(j).accurative;
-					}
-					insertedCandidate.candidate.totalAccurative = acc1;
-				}
-			}
-		}
+	//		//copy candidate to map but no duplicate candidate(function) id
+	//		for (auto cit = overloadingCandidates.begin(); cit != overloadingCandidates.end(); cit++) {
+	//			CandidatePathInfo candidate;
+	//			candidate.candidate = *cit;
+	//			candidate.paramPath = &path;
+	//			auto it = candidateMap.insert(std::make_pair(candidate.candidate.item->functionId, candidate));
+	//			CandidatePathInfo& insertedCandidate = it.first->second;
+	//			//if the canidate id is exits, compare accurative to choose the best one
+	//			if (it.second == false) {
+	//				//calcuate total accurative for each
+	//				int acc1 = insertedCandidate.candidate.totalAccurative;
+	//				int acc2 = 0;
+	//				for (int j = 0; j < n; j++) {
+	//					acc2 += candidate.candidate.paramCasting.at(j).accurative;
+	//				}
+	//				//the better found, so we repelace it
+	//				if (acc1 > acc2) {
+	//					candidate.candidate.totalAccurative = acc2;
+	//					it.first->second = candidate;
+	//				}
+	//			}
+	//			else {
+	//				int acc1 = 0;
+	//				for (int j = 0; j < n; j++) {
+	//					acc1 += insertedCandidate.candidate.paramCasting.at(j).accurative;
+	//				}
+	//				insertedCandidate.candidate.totalAccurative = acc1;
+	//			}
+	//		}
+	//	}
 
-		//now we have all candidate, we remove duplicate by function id
-		//but if two function return the same type, it is an ambious call.
-		//so, now we check ambious call
-		for (auto it = candidateMap.begin(); it != candidateMap.end(); it++) {
-			FunctionFactory* fp1 = scriptCompiler->getFunctionFactory(it->first);
-			auto jt = it;
-			for (++jt; jt != candidateMap.end(); jt++) {
+	//	//now we have all candidate, we remove duplicate by function id
+	//	//but if two function return the same type, it is an ambious call.
+	//	//so, now we check ambious call
+	//	for (auto it = candidateMap.begin(); it != candidateMap.end(); it++) {
+	//		FunctionFactory* fp1 = scriptCompiler->getFunctionFactory(it->first);
+	//		auto jt = it;
+	//		for (++jt; jt != candidateMap.end(); jt++) {
 
-				FunctionFactory* fp2 = scriptCompiler->getFunctionFactory(jt->first);
-				if (fp1->getReturnType() == fp2->getReturnType()) {
-					eResult = E_TYPE_AMBIOUS_CALL;
-					scriptCompiler->setErrorText("ambious call for function " + functionName);
-					return nullptr;
-				}
-			}
-		}
-		vector<std::pair<const int, CandidatePathInfo>*> candidateElems(candidateMap.size());
-		auto elmIt = candidateElems.begin();
-		for (auto it = candidateMap.begin(); it != candidateMap.end(); it++) {
-			*elmIt++ = &(*it);
-		}
-		std::sort(candidateElems.begin(), candidateElems.end(),
-			[](std::pair<const int, CandidatePathInfo>* elm1, std::pair<const int, CandidatePathInfo>* elm2) {
-			return elm1->second.candidate.totalAccurative < elm2->second.candidate.totalAccurative;
-		});
+	//			FunctionFactory* fp2 = scriptCompiler->getFunctionFactory(jt->first);
+	//			if (fp1->getReturnType() == fp2->getReturnType()) {
+	//				eResult = E_TYPE_AMBIOUS_CALL;
+	//				scriptCompiler->setErrorText("ambious call for function " + functionName);
+	//				return nullptr;
+	//			}
+	//		}
+	//	}
+	//	vector<std::pair<const int, CandidatePathInfo>*> candidateElems(candidateMap.size());
+	//	auto elmIt = candidateElems.begin();
+	//	for (auto it = candidateMap.begin(); it != candidateMap.end(); it++) {
+	//		*elmIt++ = &(*it);
+	//	}
+	//	std::sort(candidateElems.begin(), candidateElems.end(),
+	//		[](std::pair<const int, CandidatePathInfo>* elm1, std::pair<const int, CandidatePathInfo>* elm2) {
+	//		return elm1->second.candidate.totalAccurative < elm2->second.candidate.totalAccurative;
+	//	});
 
-		//everything is ok now, it's time to build candidates		
-		CandidateCollectionRef functionCandidates = std::make_shared<CandidateCollection>();
-		for (auto it = candidateElems.begin(); it != candidateElems.end(); it++) {
-			FunctionFactory* fp = scriptCompiler->getFunctionFactory((*it)->first);
-			Function* f = fp->build(fp->getName());
-			CandidatePathInfo& candidate = (*it)->second;
+	//	//everything is ok now, it's time to build candidates		
+	//	CandidateCollectionRef functionCandidates = std::make_shared<CandidateCollection>();
+	//	for (auto it = candidateElems.begin(); it != candidateElems.end(); it++) {
+	//		FunctionFactory* fp = scriptCompiler->getFunctionFactory((*it)->first);
+	//		Function* f = fp->build(fp->getName());
+	//		CandidatePathInfo& candidate = (*it)->second;
 
-			std::vector<ExecutableUnitRef>& paramPath = *(candidate.paramPath);
-			ParamCastingList& paramCastingList = candidate.candidate.paramCasting;			
-			
-			auto& argTypes = candidate.candidate.item->paramTypes;
+	//		std::vector<ExecutableUnitRef>& paramPath = *(candidate.paramPath);
+	//		ParamCastingList& paramCastingList = candidate.candidate.paramCasting;			
+	//		
+	//		auto& argTypes = candidate.candidate.item->paramTypes;
 
-			for (int i = 0; i < n; i++) {
-				FunctionRef& castingF = paramCastingList[i].castingFunction;
-				ExecutableUnitRef& param = paramPath[i];
-				if (castingF == nullptr) {
-					f->pushParam(param);
-				}
-				else {
-					auto paramTemp = param;
-					applyCasting(paramTemp, castingF);
-					paramTemp->setReturnType(*argTypes[i]);
+	//		for (int i = 0; i < n; i++) {
+	//			FunctionRef& castingF = paramCastingList[i].castingFunction;
+	//			ExecutableUnitRef& param = paramPath[i];
+	//			if (castingF == nullptr) {
+	//				f->pushParam(param);
+	//			}
+	//			else {
+	//				auto paramTemp = param;
+	//				applyCasting(paramTemp, castingF);
+	//				paramTemp->setReturnType(*argTypes[i]);
 
-					f->pushParam(paramTemp);
-				}
-			}
+	//				f->pushParam(paramTemp);
+	//			}
+	//		}
 
-			functionCandidates->push_back(ExecutableUnitRef(f));
-		}
+	//		functionCandidates->push_back(ExecutableUnitRef(f));
+	//	}
 
-		return functionCandidates;
-	}
+	//	return functionCandidates;
+	//}
 
 	CandidateCollectionRef filterCandidate(ScriptCompiler* scriptCompiler,
 		const string& functionName, int functionType,
@@ -2153,7 +2148,7 @@ namespace ffscript {
 			return nullptr;
 		}
 
-		return filterCandidate(scriptCompiler, functionName, functionType, overloadingFuncs, candidatesForParams, eResult);
+		return scriptCompiler->filterCandidate(functionName, functionType, overloadingFuncs, candidatesForParams, eResult);
 	}	
 
 	EExpressionResult checkCandidates(ScriptCompiler* scriptCompiler, const FunctionRef& function, const CandidateCollectionRef& candidates) {
@@ -3068,7 +3063,7 @@ namespace ffscript {
 				}
 			}
 
-			functionCandidates = filterCandidate(scriptCompiler, function->getName(), function->getType(), &candidatesInfo, candidatesForParams, eResult);
+			functionCandidates = scriptCompiler->filterCandidate(function->getName(), function->getType(), &candidatesInfo, candidatesForParams, eResult);
 			if (functionCandidates.get() == nullptr && dynamicFunctionCandidates.size()) {
 				functionCandidates = std::make_shared<CandidateCollection>();
 			}

@@ -838,7 +838,6 @@ namespace ffscriptUT
 			Assert::IsTrue(*(getVaribleRef<int>(*pX)) == (x = 1), (L"resutlt of '" + functionString1 + L"' is wrong").c_str());
 		}
 
-
 		//test run two lines of code
 		TEST_METHOD(Expression2PlainCode20)
 		{

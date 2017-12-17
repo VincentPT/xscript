@@ -37,18 +37,21 @@ namespace ffscript {
 			auto pVariable = registTempVariable(constructorUnit.get(), -1);
 			pCXOperand->setVariable(pVariable);
 
-			auto typeVoid = scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID;
-			if (constructorUnit->getReturnType().iType() == typeVoid) {
-				auto fwdConstructorUnitRef = make_shared<FwdConstrutorUnit>(constructorUnit);
-				fwdConstructorUnitRef->setReturnType(expectedType);
-				//// set it excludedded from destructor to prevent the data of variable is destroyed
-				//fwdConstructorUnitRef->setMask(fwdConstructorUnitRef->getMask() | UMASK_EXCLUDEFROMDESTRUCTOR);
+			candidateUnitRef = constructorUnit;
 
-				candidateUnitRef = fwdConstructorUnitRef;
+			//auto typeVoid = scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID;
+			//if (constructorUnit->getReturnType().iType() == typeVoid) {
+			//	auto fwdConstructorUnitRef = make_shared<FwdConstrutorUnit>(constructorUnit);
+			//	fwdConstructorUnitRef->setReturnType(expectedType);
+			//	//// set it excludedded from destructor to prevent the data of variable is destroyed
+			//	//fwdConstructorUnitRef->setMask(fwdConstructorUnitRef->getMask() | UMASK_EXCLUDEFROMDESTRUCTOR);
 
-				pVariable = nullptr;
-			}
-			else if (constructorUnit->getReturnType() != expectedType) {
+			//	candidateUnitRef = fwdConstructorUnitRef;
+
+			//	pVariable = nullptr;
+			//}
+			//else 
+			if (constructorUnit->getReturnType() != expectedType) {
 				// throw exception here
 				throw exception("return type of the constructor must be void");
 			}

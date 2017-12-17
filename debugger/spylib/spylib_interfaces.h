@@ -4,6 +4,8 @@
 enum class UserCommandId : unsigned short {
 	READ_UNIT_LIST = 0,
 	READ_EXPRESSION_NODE,
+	READ_PROGRAM_COMMAND,
+	READ_COMMAND_LIST,	
 
 	// this must be placed at the end
 	PRE_DEFINED_COMMAND_COUNT,

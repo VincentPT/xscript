@@ -37,7 +37,7 @@ namespace ffscript {
 			parents.push_front(pVariable);
 			pMemberVariableTmp = dynamic_cast<MemberVariable*>(pVariable);
 		}
-		int offset;
+		int offset = 0;
 
 		vector<MemberVariableAccessor*>* accessors = new vector<MemberVariableAccessor*>();
 
@@ -52,16 +52,16 @@ namespace ffscript {
 
 		for (auto var : parents) {
 			auto& type = var->getDataType();
-			offset = var->getOffset();
+			offset = var->getOffset() - offset;
 
 			accessors->push_back(new MVOffsetAccessor(offset));
 
-			if (type.isRefType()) {
+			if (type.isRefType() || type.isRefType()) {
 				accessors->push_back(new MVPointerAccessor());
 			}
 		}
 
-		offset = pMemberVariable->getOffset();
+		offset = pMemberVariable->getOffset() - offset;
 		accessors->push_back(new MVOffsetAccessor(offset));
 		return accessors;
 	}
@@ -185,8 +185,9 @@ namespace ffscript {
 		else {
 			runNativeFuncFunc->setCommandData(returnOffset, beginParamOffset, nativeFunction);
 		}
+		runNativeFuncFunc->setFunctionName(expFunctionUnit->getName());
 		originCommand = runNativeFuncFunc;
-		functionCommandTree->setCommand(originCommand);
+		functionCommandTree->setCommand(originCommand);		
 	}
 
 	void ExpUnitExecutor::extractParamScriptFunction(ScriptCompiler* scriptCompiler, FunctionCommand* functionCommandTree, ScriptFunction* scriptFunction, int beginParamOffset, int returnOffset) {
@@ -476,7 +477,7 @@ namespace ffscript {
 		runNativeFuncFunc->setCommandData(returnOffset, beginParamOffset, nativeFunction);
 		runNativeFuncFunc->initAssitInfo(n, assitParamsInfo);
 		runNativeFuncFunc->setParamsType(scriptTypes, typeNames, sizes);
-
+		runNativeFuncFunc->setFunctionName(expFunctionUnit->getName());
 		originCommand = runNativeFuncFunc;
 
 		functionCommandTree->setCommand(originCommand);
@@ -1051,14 +1052,15 @@ namespace ffscript {
 				if ( (operatorType & UMASK_DEFAULT_CTOR) || (operatorType & UMASK_CONSTRUCTOR) || (operatorType & UMASK_CONSTRUCT_FACTOR)) {
 					TriggerCommand* triggerCommand = new TriggerCommand();
 					triggerCommand->setCommand(assitFunction);
-
-					auto constructorTrigger = std::make_shared<CdeclFunction<void, int>>(afterCallConstructor);
+					
 					auto userBlockRef = dynamic_pointer_cast<ObjectBlock<OperatorBuidInfo>>(node->getUserData());
 					OperatorBuidInfo* buildInfo = (OperatorBuidInfo*)userBlockRef->getDataRef();
-
-					//push constructor index to function afterCallConstructor
-					constructorTrigger->pushParam((void*)(size_t)buildInfo->operatorIndex);
-					triggerCommand->setAfterTrigger(constructorTrigger);
+					if (buildInfo->operatorIndex >= 0) {
+						auto constructorTrigger = std::make_shared<CdeclFunction<void, int>>(afterCallConstructor);
+						//push constructor index to function afterCallConstructor
+						constructorTrigger->pushParam((void*)(size_t)buildInfo->operatorIndex);
+						triggerCommand->setAfterTrigger(constructorTrigger, "setctor(" + std::to_string(buildInfo->operatorIndex) + ")");
+					}
 
 					if (buildInfo->buildItems.size()) {
 						TargetedCommand* pushParamRefOffset = nullptr;
@@ -1104,7 +1106,7 @@ namespace ffscript {
 						delete constructorCommandTree;
 
 						auto runChildConstructors = std::make_shared<BeforeConstructorCall>(pushParamRefOffset, beginParamOffset);
-						triggerCommand->setBeforeTrigger(runChildConstructors);
+						triggerCommand->setBeforeTrigger(runChildConstructors, "runctors(TBD)");
 
 						//set param to build constructor for children member
 						auto codeUpdateLater = CodeUpdater::getInstance(getScope());
@@ -1133,7 +1135,7 @@ namespace ffscript {
 						//push constructor index to function beforeCallDestructor
 						destructorTrigger->pushParam((void*)(size_t)buildInfo->operatorIndex);
 						//set condition command
-						triggerCommand->setBeforeTrigger(destructorTrigger);
+						triggerCommand->setBeforeTrigger(destructorTrigger, "checkctor(" + std::to_string(buildInfo->operatorIndex) + ")");
 					}
 					else {
 						triggerCommand = new TriggerCommand();
@@ -1143,7 +1145,7 @@ namespace ffscript {
 
 					if (buildInfo->buildItems.size()) {
 						auto runChilddestructors = std::make_shared<BeforeConstructorCall>(nullptr, beginParamOffset);
-						triggerCommand->setAfterTrigger(runChilddestructors);
+						triggerCommand->setAfterTrigger(runChilddestructors, "rundtors(TBD)");
 
 						//set param to build constructor for children member
 						auto codeUpdateLater = CodeUpdater::getInstance(getScope());

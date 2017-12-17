@@ -63,6 +63,22 @@ namespace ffscript {
 		}
 		return iLevel;
 	}
+
+	int ScriptType::semiRefLevel() const {
+		int iLevel = 0;
+		
+		const char* s = _sType.c_str();
+		const char* c = s + _sType.size();
+		char temp[] = SEMIREF_SIGN;
+
+		while (c >= s) {
+			c = trimRight(s, c);
+			if (c < s || *c != temp[0]) break;
+
+			iLevel++;
+		}
+		return iLevel;
+	}
 	
 	ScriptType ScriptType::makeRef() const {
 		return ScriptType(_iType | DATA_TYPE_POINTER_MASK, POINTER_SIGN " " + _sType);

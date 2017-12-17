@@ -47,6 +47,11 @@ namespace ffscript {
 		int maxParam;
 	};
 	
+	struct CandidatePathInfo {
+		CandidateInfo candidate;
+		std::vector<ExecutableUnitRef>* paramPath;
+	};
+	
 	class ScriptCompiler
 	{
 		typedef map<uint64_t, int> TypeCompatibilityMap;
@@ -181,6 +186,10 @@ namespace ffscript {
 		bool breakCompositeAssigment(const ExecutableUnitRef& variableUnit,
 			const ExecutableUnitRef& secondOperand, list<pair<Variable*,
 			ExecutableUnitRef>>&assigments, int& accurative);
+
+		CandidateCollectionRef filterCandidate(const string& functionName, int functionType,
+			const list<OverLoadingItem>* overloadingFuncs,
+			const std::vector<CandidateCollectionRef>& candidatesForParams, EExpressionResult& eResult);
 
 		FunctionRef applyConstructorForCompisiteType(const ExecutableUnitRef& xOperand, const DynamicParamFunctionRef& secondOperand, bool& hasNoError);
 		FunctionRef applyAssigmentForCompisiteType(const ExecutableUnitRef& xOperand, const DynamicParamFunctionRef& secondOperand, bool& hasNoError);

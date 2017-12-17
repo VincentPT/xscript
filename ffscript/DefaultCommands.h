@@ -15,7 +15,7 @@ namespace ffscript {
 	public:
 		DefaultAssigmentCommand(int returnOffset, int blockSize/*, int offset1, int offset2*/);
 		virtual ~DefaultAssigmentCommand();
-		void buildCommandText();
+		void buildCommandText(std::list<std::string>& strCommands);
 		virtual void execute();
 		virtual int pushCommandParam(TargetedCommand* command);
 	};
@@ -30,7 +30,7 @@ namespace ffscript {
 	public:
 		DefaultAssigmentCommandForSemiRef(int returnOffset, int blockSize/*, int offset1, int offset2*/);
 		virtual ~DefaultAssigmentCommandForSemiRef();
-		void buildCommandText();
+		void buildCommandText(std::list<std::string>& strCommands);
 		virtual void execute();
 		virtual int pushCommandParam(TargetedCommand* command);
 	};
@@ -98,6 +98,16 @@ namespace ffscript {
 		int _typeSize;
 	public:
 		DeRefCommand(int typeSize);
+		void call(void* pReturnVal, void* param[]);
+		DFunction2* clone();
+	};
+
+	//class for deref a pointer and return r-value
+	class DeRefCommand2 : public DFunction2 {
+	private:
+		int _typeSize;
+	public:
+		DeRefCommand2(int typeSize);
 		void call(void* pReturnVal, void* param[]);
 		DFunction2* clone();
 	};
@@ -177,7 +187,7 @@ namespace ffscript {
 	public:
 		ElementAccessCommand3(int arrayOffset, int returnOffset, int elmSize, bool isAddress);
 		virtual ~ElementAccessCommand3();
-		void buildCommandText();
+		void buildCommandText(std::list<std::string>& strCommands);
 		virtual void execute();
 		void setCommand1(TargetedCommand* command);
 		void setCommand2(TargetedCommand* command);
@@ -193,7 +203,7 @@ namespace ffscript {
 	public:
 		ElementAccessForGlobalCommand(void* arrayData, int returnOffset, int elmSize);
 		virtual ~ElementAccessForGlobalCommand();
-		void buildCommandText();
+		void buildCommandText(std::list<std::string>& strCommands);
 		virtual void execute();
 		void setIndexCommand(TargetedCommand* command);
 	};

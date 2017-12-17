@@ -61,7 +61,7 @@ namespace ffscript {
 		Variable* findTempVariable(CommandUnit* parentUnit);
 		CommandUnit* checkVariableToRunConstructor(Variable* pVariable);
 		Function* generateDefaultAutoOperator(int operatorId, Variable* obj);
-		void applyDefaultConstructor(const ScriptType& type, Function* constructor);
+		OperatorBuidInfo* applyDefaultConstructor(const ScriptType& type, Function* constructor);
 		/*void checkVariableToRunConstructorNonRecursive(Variable* pVariable, Function* constructor);*/
         void applyConstructorDestructor(const ExecutableUnitRef& variableUnit, Function* constructor);
 		bool applyDestructor(const ExecutableUnitRef& variableUnit);

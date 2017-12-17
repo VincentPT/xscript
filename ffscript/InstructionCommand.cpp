@@ -9,6 +9,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include <Utils.h>
+
 //#include "CppUnitTest.h"
 //using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -18,18 +20,7 @@ namespace ffscript {
 
 	InstructionCommand::~InstructionCommand(){
 	}
-
-	void InstructionCommand::setCommandText(const std::string& commandText) {
-		_commandText = commandText;
-	}
-
-	const std::string& InstructionCommand::toString() {
-		//if (_commandText.empty()) {
-			buildCommandText();
-		//}
-		return _commandText;
-	}
-
+	
 	///
 	///
 	///
@@ -67,8 +58,8 @@ namespace ffscript {
 		}
 	}
 
-	void EnterContextScope::buildCommandText() {
-		setCommandText("allocate " + std::to_string(_scopeDataSize + _scopeCodeSize));
+	void EnterContextScope::buildCommandText(std::list<std::string>& strCommands) {
+		strCommands.emplace_back("allocate(" + std::to_string(_scopeDataSize + _scopeCodeSize) + ") - enter scope");
 	}
 
 	void EnterContextScope::execute() {
@@ -116,8 +107,8 @@ namespace ffscript {
 		}
 	}
 
-	void ExitContextScope::buildCommandText() {
-		setCommandText("unallocate " + std::to_string(_scopeDataSize + _scopeCodeSize));
+	void ExitContextScope::buildCommandText(std::list<std::string>& strCommands) {		
+		strCommands.emplace_back("unallocate(" + std::to_string(_scopeDataSize + _scopeCodeSize) + ") - exit scope");
 	}
 
 	void ExitContextScope::execute() {
@@ -151,20 +142,10 @@ namespace ffscript {
 		setTargetOffset(targetOffset);
 	}
 
-	template< typename T >
-	std::string int_to_hex(T i)
-	{
-		std::stringstream stream;
-		stream << "0x"
-			<< std::setfill('0') << std::setw(sizeof(T) * 2)
-			<< std::hex << i;
-		return stream.str();
-	}
-
-	void PushParamRef::buildCommandText() {		
+	void PushParamRef::buildCommandText(std::list<std::string>& strCommands) {		
 		std::stringstream ss;
-		ss << "lea " << int_to_hex((size_t)_param) << " " << getTargetOffset();
-		setCommandText(ss.str());
+		ss << "lea(" << int_to_hex((size_t)_param) << ", [" << getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void PushParamRef::execute() {
@@ -181,10 +162,10 @@ namespace ffscript {
 		setTargetOffset(targetOffset);
 	}
 
-	void PushParamRefOffset::buildCommandText() {		
+	void PushParamRefOffset::buildCommandText(std::list<std::string>& strCommands) {		
 		std::stringstream ss;
-		ss << "lea [" << _sourceOffset << "] " << getTargetOffset();
-		setCommandText(ss.str());
+		ss << "lea ([" << _sourceOffset << "], [" << getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void PushParamRefOffset::execute() {
@@ -207,10 +188,10 @@ namespace ffscript {
 		return _param;
 	}
 
-	void PushParam::buildCommandText() {		
+	void PushParam::buildCommandText(std::list<std::string>& strCommands) {		
 		std::stringstream ss;
-		ss << "mov " << int_to_hex((size_t)_param) << " " << getTargetOffset() << " " << getTargetSize();
-		setCommandText(ss.str());
+		ss << "write (" << int_to_hex((size_t)_param) << ", " << getTargetSize() << ", [" << getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void PushParam::execute() {
@@ -233,10 +214,10 @@ namespace ffscript {
 		setTargetOffset(targetOffset);
 	}
 
-	void PushParamOffset::buildCommandText() {		
+	void PushParamOffset::buildCommandText(std::list<std::string>& strCommands) {		
 		std::stringstream ss;
-		ss << "mov " << _sourceOffset << " " << getTargetOffset() << " " << getTargetSize();
-		setCommandText(ss.str());
+		ss << "write ([" << _sourceOffset << "], " << getTargetSize() << ", [" << getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void PushParamOffset::execute() {
@@ -255,10 +236,10 @@ namespace ffscript {
 		setTargetOffset(targetOffsetRef);
 	}
 
-	void CopyDataToRef::buildCommandText() {		
+	void CopyDataToRef::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		ss << "mov " << _sourceOffset << " [" << getTargetOffset() << "] " << getTargetSize();
-		setCommandText(ss.str());
+		ss << "write ([" << _sourceOffset << "], " << getTargetSize() << ", |[" << getTargetOffset() << "]|)";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void CopyDataToRef::execute() {
@@ -282,10 +263,10 @@ namespace ffscript {
 		setTargetSize(resultSize);
 	}
 
-	void RetreiveScriptFunctionResult::buildCommandText() {
+	void RetreiveScriptFunctionResult::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		ss << "pop " << getTargetSize() << " " << getTargetOffset();
-		setCommandText(ss.str());
+		ss << "write ([<TBD>], " << getTargetSize() << ", [" << getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void RetreiveScriptFunctionResult::execute() {
@@ -318,10 +299,10 @@ namespace ffscript {
 		_targetFunction = targetFunction;
 	}
 
-	void CallNativeFuntion::buildCommandText() {
+	void CallNativeFuntion::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		ss << "call " << _functionName << " " << getTargetOffset() << " " << _beginParamOffset;
-		setCommandText(ss.str());
+		ss << "invoke (" << _functionName << ", [" << _beginParamOffset << "], [" << getTargetOffset() << "])" ;
+		strCommands.emplace_back(ss.str());
 	}	
 
 	void CallNativeFuntion::execute() {
@@ -355,10 +336,10 @@ namespace ffscript {
 		_paramSize = paramSize;
 	}
 
-	void FunctionForwarder::buildCommandText() {
+	void FunctionForwarder::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		ss << "forward call " << getTargetOffset() << " " << _beginParamOffset;
-		setCommandText(ss.str());
+		ss << "call ([" << _funtionInfoOffset << "], [" << _beginParamOffset << "]," << _paramSize << ", [" << getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void FunctionForwarder::execute() {
@@ -400,8 +381,8 @@ namespace ffscript {
 		_pairs = pairs;
 	}
 
-	void CallNativeFuntionWithAssitInfo::buildCommandText() {
-		CallNativeFuntion::buildCommandText();
+	void CallNativeFuntionWithAssitInfo::buildCommandText(std::list<std::string>& strCommands) {
+		CallNativeFuntion::buildCommandText(strCommands);
 	}
 
 	void CallNativeFuntionWithAssitInfo::execute() {
@@ -448,8 +429,8 @@ namespace ffscript {
 		}
 	}
 
-	void CallDynamicFuntion::buildCommandText() {
-		CallNativeFuntionWithAssitInfo::buildCommandText();
+	void CallDynamicFuntion::buildCommandText(std::list<std::string>& strCommands) {
+		CallNativeFuntionWithAssitInfo::buildCommandText(strCommands);
 	}
 
 	void CallDynamicFuntion::setParamsType(int* scriptTypes, char** typeNames, int* sizes) {
@@ -519,10 +500,10 @@ namespace ffscript {
 		_targetFunction = targetFunction;
 	}
 
-	void CallScriptFuntion::buildCommandText() {
+	void CallScriptFuntion::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		ss << "call " << _functionName << " " << _beginParamOffset;
-		setCommandText(ss.str());
+		ss << "invoke (" << _functionName << ", [" << _beginParamOffset << "], " << _paramSize << ", [" << getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void CallScriptFuntion::execute() {
@@ -571,10 +552,10 @@ namespace ffscript {
 		_targetFunction = targetFunction;
 	}
 
-	void CallScriptFuntion2::buildCommandText() {
+	void CallScriptFuntion2::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		ss << "call " << _functionName << " " << _beginParamOffset;
-		setCommandText(ss.str());
+		ss << "invoke (" << _functionName << ", [" << _beginParamOffset << "], " << _paramSize << ", [" << getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
 	}
 
 	int inline getReturnOffset(Context* context) {
@@ -651,10 +632,10 @@ namespace ffscript {
 		_targetCommand = targetCommand;
 	}
 
-	void Jump::buildCommandText() {
+	void Jump::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		ss << "jump " << " " << int_to_hex((size_t)(_targetCommand + 1));
-		setCommandText(ss.str());
+		ss << "jmp(" << int_to_hex((size_t)(_targetCommand + 1)) << ")";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void Jump::execute() {
@@ -670,10 +651,10 @@ namespace ffscript {
 		_targetCommandTrue = targetCommand;
 	}
 
-	void JumpIf::buildCommandText() {
+	void JumpIf::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		ss << "jump " << _conditionOffset << " " <<  int_to_hex((size_t)(_targetCommandTrue + 1));
-		setCommandText(ss.str());
+		ss << "jmp([" << _conditionOffset << "], " <<  int_to_hex((size_t)(_targetCommandTrue + 1)) << ")";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void JumpIf::execute() {
@@ -694,10 +675,10 @@ namespace ffscript {
 		_targetCommandFalse = targetCommand;
 	}
 
-	void JumpIfElse::buildCommandText() {
+	void JumpIfElse::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		ss << "jump " << _conditionOffset << " " << int_to_hex((size_t)(_targetCommandTrue + 1)) << " " << int_to_hex((size_t)(_targetCommandFalse + 1));
-		setCommandText(ss.str());
+		ss << "jmp([" << _conditionOffset << "], " << int_to_hex((size_t)(_targetCommandTrue + 1)) << ", " << int_to_hex((size_t)(_targetCommandFalse + 1)) << ")";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void JumpIfElse::execute() {
@@ -717,8 +698,14 @@ namespace ffscript {
 	ExitScriptFuntionAtReturn::ExitScriptFuntionAtReturn() : _indexPreventDestructorRun(-1) {}
 	ExitScriptFuntionAtReturn::~ExitScriptFuntionAtReturn() {}
 
-	void ExitScriptFuntionAtReturn::buildCommandText() {
-		setCommandText("exit function");
+	void ExitScriptFuntionAtReturn::buildCommandText(std::list<std::string>& strCommands) {
+		if (_indexPreventDestructorRun >= 0) {
+			strCommands.emplace_back("ignore_dtor(" + std::to_string(_indexPreventDestructorRun) + ")");
+		}
+
+		MultipleCommand::buildCommandText(strCommands);
+		
+		//strCommands.emplace_back("return()");
 	}
 
 	void ExitScriptFuntionAtReturn::setCommandData(int indexPreventDestructorRun) {
@@ -738,8 +725,8 @@ namespace ffscript {
 	ExitFunctionAtTheEnd::ExitFunctionAtTheEnd() {}
 	ExitFunctionAtTheEnd::~ExitFunctionAtTheEnd() {}
 	
-	void ExitFunctionAtTheEnd::buildCommandText() {		
-		setCommandText("exit function");
+	void ExitFunctionAtTheEnd::buildCommandText(std::list<std::string>& strCommands) {		
+		strCommands.emplace_back("return()");
 	}
 
 	void ExitFunctionAtTheEnd::execute() {
@@ -756,7 +743,11 @@ namespace ffscript {
 		return _commands;
 	}
 
-	void MultipleCommand::buildCommandText() {}
+	void MultipleCommand::buildCommandText(std::list<std::string>& strCommands) {
+		for (auto it = _commands.begin(); it != _commands.end(); it++) {
+			(*it)->buildCommandText(strCommands);
+		}
+	}
 
 	void MultipleCommand::execute() {
 		for (auto it = _commands.begin(); it != _commands.end(); it++) {
@@ -767,10 +758,8 @@ namespace ffscript {
 	/////////////////////////////////////////////////////////////////////////////////////
 	BreakCommand::BreakCommand() {}
 	BreakCommand::~BreakCommand() {}
-	void BreakCommand::buildCommandText() {
-		std::stringstream ss;
-		ss << "break";
-		setCommandText(ss.str());
+	void BreakCommand::buildCommandText(std::list<std::string>& strCommands) {
+		MultipleCommand::execute();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -780,10 +769,12 @@ namespace ffscript {
 		_loopCommand = loopCommand;
 	}
 
-	void ContinueCommand::buildCommandText() {
+	void ContinueCommand::buildCommandText(std::list<std::string>& strCommands) {
+		MultipleCommand::buildCommandText(strCommands);
+
 		std::stringstream ss;
-		ss << "continue " << int_to_hex((size_t)(_loopCommand + 1));
-		setCommandText(ss.str());
+		ss << "jmp(" << int_to_hex((size_t)(_loopCommand + 1)) << ")";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void ContinueCommand::execute() {
@@ -811,10 +802,28 @@ namespace ffscript {
 		setTargetOffset(targetOffset);
 	}
 
-	void PushMemberVariableParam::buildCommandText() {
+	void PushMemberVariableParam::buildCommandText(std::list<std::string>& strCommands) {
+		MemberVariableAccessor* accessor, *accessorTmp;
+		for (auto it = _accessors->begin(); it != _accessors->end(); it++) {
+			accessor = *it;
+			if (accessorTmp = dynamic_cast<MVContextAccessor*>(accessor)) {
+				strCommands.emplace_back("lea([current_offset()], REGISTER)");
+			}
+			else if(accessorTmp = dynamic_cast<MVGlobalAccessor*>(accessor)) {
+				std::stringstream ss;
+				ss << "lea(" << int_to_hex(((MVGlobalAccessor*)accessor)->access(nullptr)) << ", REGISTER)";
+				strCommands.emplace_back("lea([current_offset()], REGISTER)");
+			}
+			else if (accessorTmp = dynamic_cast<MVOffsetAccessor*>(accessor)) {
+				strCommands.emplace_back("add(REGISTER, " + std::to_string(((MVOffsetAccessor*)accessor)->_offset) + ")");
+			}
+			else if (accessorTmp = dynamic_cast<MVPointerAccessor*>(accessor)) {
+				strCommands.emplace_back("mov([REGISTER],REGISTER )");
+			}
+		}
+
 		std::stringstream ss;
-		ss << "mov member variable " << getTargetOffset() << " " << getTargetSize();
-		setCommandText(ss.str());
+		ss << "write(REGISTER, [" << getTargetOffset() << "])";
 	}
 
 	void PushMemberVariableParam::execute() {
@@ -850,10 +859,31 @@ namespace ffscript {
 		setTargetOffset(targetOffset);
 	}
 
-	void PushMemberVariableParamRef::buildCommandText() {
+	void PushMemberVariableParamRef::buildCommandText(std::list<std::string>& strCommands) {
+		Context* context = Context::getCurrent();
+		MemberVariableAccessor* accessor, *accessorTmp;
+		for (auto it = _accessors->begin(); it != _accessors->end(); it++) {
+			accessor = *it;
+			if (accessorTmp = dynamic_cast<MVContextAccessor*>(accessor)) {
+				strCommands.emplace_back("lea([current_offset()], REGISTER)");
+			}
+			else if (accessorTmp = dynamic_cast<MVGlobalAccessor*>(accessor)) {
+				std::stringstream ss;
+				ss << "lea(" << int_to_hex(((MVGlobalAccessor*)accessor)->access(nullptr)) << ", REGISTER)";
+				strCommands.emplace_back("lea([current_offset()], REGISTER)");
+			}
+			else if (accessorTmp = dynamic_cast<MVOffsetAccessor*>(accessor)) {
+				strCommands.emplace_back("add(REGISTER, " + std::to_string(((MVOffsetAccessor*)accessor)->_offset) + ")");
+			}
+			else if (accessorTmp = dynamic_cast<MVPointerAccessor*>(accessor)) {
+				strCommands.emplace_back("mov([REGISTER],REGISTER )");
+			}
+		}
+
 		std::stringstream ss;
-		ss << "lea member variable " << getTargetOffset();
-		setCommandText(ss.str());
+		ss << "lea(REGISTER, [" << getTargetOffset() << "])";
+
+		strCommands.emplace_back(ss.str());
 	}
 
 	void PushMemberVariableParamRef::execute() {
@@ -887,10 +917,10 @@ namespace ffscript {
 		_destDataOffset = destDataOffset;
 	}
 
-	void CallCreateLambda::buildCommandText() {
+	void CallCreateLambda::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		ss << "create lambda";
-		setCommandText(ss.str());
+		ss << "lamda(" << int_to_hex((size_t)_anoynymousTargetFunction) << ", [" << _srcDataOffset << "], " << _dataSize << getTargetOffset() << ")";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void CallCreateLambda::execute() {		

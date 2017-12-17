@@ -14,6 +14,7 @@ namespace ffscript {
 	};
 
 	class MVGlobalAccessor : public MemberVariableAccessor {
+	public:
 		void* _address;
 	public:
 		MVGlobalAccessor(void* address);
@@ -21,10 +22,11 @@ namespace ffscript {
 	};
 
 	class MVOffsetAccessor : public MemberVariableAccessor {
+	public:
 		int _offset;
 	public:
 		MVOffsetAccessor(int offset);
-		void* access(void* address);
+		void* access(void* address);		
 	};
 
 	class MVPointerAccessor : public MemberVariableAccessor {

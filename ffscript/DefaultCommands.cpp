@@ -20,15 +20,16 @@ namespace ffscript {
 
 	DefaultAssigmentCommand::~DefaultAssigmentCommand() {}
 
-	void DefaultAssigmentCommand::buildCommandText() {
+	void DefaultAssigmentCommand::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		_command1->buildCommandText();
-		_command2->buildCommandText();
-		ss << _command1->toString() << std::endl;
-		ss << _command2->toString() << std::endl;
-		ss << "copy [" << _command1->getTargetOffset() << "] [" << _command2->getTargetOffset() << "]";
+		_command1->buildCommandText(strCommands);
+		_command2->buildCommandText(strCommands);
+		ss << "write(|[" << _command1->getTargetOffset() << "]|, " << _blockSize << ", [" << _command2->getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
 
-		setCommandText(ss.str());
+		ss.clear();
+		ss << "lea([" << getTargetOffset() << "|[" << _command1->getTargetOffset() << "]|";
+		strCommands.emplace_back(ss.str());
 	}
 
 	void DefaultAssigmentCommand::execute() {
@@ -73,15 +74,13 @@ namespace ffscript {
 
 	DefaultAssigmentCommandForSemiRef::~DefaultAssigmentCommandForSemiRef() {}
 
-	void DefaultAssigmentCommandForSemiRef::buildCommandText() {
+	void DefaultAssigmentCommandForSemiRef::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		_command1->buildCommandText();
-		_command2->buildCommandText();
-		ss << _command1->toString() << std::endl;
-		ss << _command2->toString() << std::endl;
-		ss << "copy [" << _command1->getTargetOffset() << "] [" << _command2->getTargetOffset() << "]";
+		_command1->buildCommandText(strCommands);
+		_command2->buildCommandText(strCommands);
+		ss << "write(|[" << _command1->getTargetOffset() << "]|, " << _blockSize << ", |[" << _command2->getTargetOffset() << "]|)";
 
-		setCommandText(ss.str());
+		strCommands.emplace_back(ss.str());
 	}
 
 	void DefaultAssigmentCommandForSemiRef::execute() {
@@ -224,7 +223,6 @@ namespace ffscript {
 
 	void DeRefCommand::call(void* pReturnVal, void* params[]) {
 		char* pVal = (char*)params[0];
-		int index = (int)(size_t)params[1];
 
 		//copy data to address of return value
 		memcpy_s(pReturnVal, _typeSize, pVal, _typeSize);
@@ -232,6 +230,22 @@ namespace ffscript {
 
 	DFunction2* DeRefCommand::clone() {
 		return new DeRefCommand(_typeSize);
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	DeRefCommand2::DeRefCommand2(int typeSize) : _typeSize(typeSize) {
+	}
+
+	void DeRefCommand2::call(void* pReturnVal, void* params[]) {
+		void** ppVal = (void**)params[0];
+		auto pVal = *ppVal;
+
+		//copy data to address of return value
+		memcpy_s(pReturnVal, _typeSize, pVal, _typeSize);
+	}
+
+	DFunction2* DeRefCommand2::clone() {
+		return new DeRefCommand2(_typeSize);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -563,7 +577,7 @@ namespace ffscript {
 		}
 	}
 
-	void ElementAccessCommand3::buildCommandText() {
+	void ElementAccessCommand3::buildCommandText(std::list<std::string>& strCommands) {
 
 	}
 
@@ -615,7 +629,7 @@ namespace ffscript {
 			delete _indexCommand;
 		}
 	}
-	void ElementAccessForGlobalCommand::buildCommandText() {}
+	void ElementAccessForGlobalCommand::buildCommandText(std::list<std::string>& strCommands) {}
 
 	void ElementAccessForGlobalCommand::execute() {
 		auto context = Context::getCurrent();

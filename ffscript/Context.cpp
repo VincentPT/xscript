@@ -243,7 +243,7 @@ namespace ffscript {
 			if (_allocatedStack.getSize() != stackLevel
 #ifndef THROW_EXCEPTION_ON_ERROR
 				|| _isError
-#endif
+#endif 
 				)
 			{
 				break;

@@ -37,6 +37,8 @@ FFDrawObj* FFDebuggerWindow::readObject(void* desireReadObjectAddress, int type)
 	static ReadObjectFunc readObjectFuncs[] = {
 		&FFDebuggerWindow::readUnitList,
 		&FFDebuggerWindow::readUnitNode,
+		&FFDebuggerWindow::readProgramCommands,
+		&FFDebuggerWindow::readCommands,
 	};
 
 	FFDrawObj* pNewObjectCreated = (this->*readObjectFuncs[type])(desireReadObjectAddress);
@@ -66,5 +68,29 @@ FFDrawObj* FFDebuggerWindow::readUnitNode(void* desireReadObjectAddress) {
 	cout << "Expression Unit Node:" << endl;
 	cout << unitNodeJS << endl;
 
+	return nullptr;
+}
+
+FFDrawObj* FFDebuggerWindow::readProgramCommands(void* desireReadObjectAddress) {
+	list<string> commands;
+	_spyClient->readProgramCommands(desireReadObjectAddress, commands);
+
+	cout << "begin program code:" << std::endl;
+	for (auto it = commands.begin(); it != commands.end(); it++) {
+		cout << *it << std::endl;
+	}
+	cout << "end program code:" << std::endl;
+	return nullptr;
+}
+
+FFDrawObj* FFDebuggerWindow::readCommands(void* desireReadObjectAddress) {
+	list<string> commands;
+	_spyClient->readCommands(desireReadObjectAddress, commands);
+
+	cout << "begin commands:" << std::endl;
+	for (auto it = commands.begin(); it != commands.end(); it++) {
+		cout << *it << std::endl;
+	}
+	cout << "end commands:" << std::endl;
 	return nullptr;
 }

@@ -130,7 +130,7 @@ void FFDebuggerApp::onClipboardTextChanged(const std::string& text) {
 				"ffscript::Function *",
 				"const ffscript::Function *",
 				"ffscript::DynamicParamFunction *",
-				"const ffscript::DynamicParamFunction *",
+				"const ffscript::DynamicParamFunction *"
 			};
 
 			constexpr int ffscriptNodeTypeCount = sizeof(ffscriptNodeTypes)/sizeof(ffscriptNodeTypes[0]);
@@ -140,6 +140,10 @@ void FFDebuggerApp::onClipboardTextChanged(const std::string& text) {
 			static map<string, int> supportedTypes = {
 				{ "std::list<std::shared_ptr<ffscript::ExpUnit>,std::allocator<std::shared_ptr<ffscript::ExpUnit> > > *", (int)UserCommandId::READ_UNIT_LIST},
 				{ "const std::list<std::shared_ptr<ffscript::ExpUnit>,std::allocator<std::shared_ptr<ffscript::ExpUnit> > > *", (int)UserCommandId::READ_UNIT_LIST },
+				{ "ffscript::Program *", (int)UserCommandId::READ_PROGRAM_COMMAND },
+				{ "const ffscript::Program *", (int)UserCommandId::READ_PROGRAM_COMMAND },
+				{ "ffscript::InstructionCommand *", (int)UserCommandId::READ_COMMAND_LIST },
+				{ "const ffscript::InstructionCommand *", (int)UserCommandId::READ_COMMAND_LIST },
 			};
 
 			if (initialize == false) {
@@ -159,8 +163,18 @@ void FFDebuggerApp::onClipboardTextChanged(const std::string& text) {
 						break;
 					}
 				}
+				if (type == -1) {
+					if (stype.find("ffscript::InstructionCommand * *") != string::npos) {
+						;
+					}
+					else if (stype.find("ffscript::InstructionCommand *") != string::npos) {
+						type = (int)UserCommandId::READ_COMMAND_LIST;
+					}
+				}
 			}
-
+			else {
+				type = it->second;
+			}
 			if (type != -1) {
 				auto spaceIdx = value.find(' ');
 				// there is must be a space between address and object information

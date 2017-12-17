@@ -6,6 +6,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include "Utils.h"
+
 namespace ffscript {
 
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -24,14 +26,13 @@ namespace ffscript {
 		return _command;
 	}
 
-	void FunctionCommand::buildCommandText() {
-		_command->buildCommandText();
-		setCommandText(_command->toString());
-	}
-
 	/////////////////////////////////////////////////////////////////////////////////////
 	FunctionCommand0P::FunctionCommand0P() {}
 	FunctionCommand0P::~FunctionCommand0P(){}
+
+	void FunctionCommand0P::buildCommandText(std::list<std::string>& strCommands) {
+		_command->buildCommandText(strCommands);
+	}
 
 	void FunctionCommand0P::execute() {		
 		_command->execute();
@@ -51,6 +52,11 @@ namespace ffscript {
 		if (_commandParam) {
 			delete _commandParam;
 		}
+	}
+
+	void FunctionCommand1P::buildCommandText(std::list<std::string>& strCommands) {
+		_commandParam->buildCommandText(strCommands);
+		_command->buildCommandText(strCommands);
 	}
 
 	void FunctionCommand1P::execute() {
@@ -80,6 +86,12 @@ namespace ffscript {
 		if (_commandParam2) {
  			delete _commandParam2;
 		}
+	}
+
+	void FunctionCommand2P::buildCommandText(std::list<std::string>& strCommands) {
+		_commandParam1->buildCommandText(strCommands);
+		_commandParam2->buildCommandText(strCommands);
+		_command->buildCommandText(strCommands);
 	}
 
 	void FunctionCommand2P::execute() {
@@ -128,6 +140,17 @@ namespace ffscript {
 			}
 			free(_commandParams);
 		}
+	}
+
+	void FunctionCommandNP::buildCommandText(std::list<std::string>& strCommands) {
+		TargetedCommand** command = _commandParams;
+		TargetedCommand** end = command + _nParam;
+
+		while (command < end) {
+			(*command)->buildCommandText(strCommands);
+			command++;
+		}
+		_command->buildCommandText(strCommands);
 	}
 
 	void FunctionCommandNP::execute() {
@@ -188,6 +211,15 @@ namespace ffscript {
 	/////////////////////////////////////////////////////////////////////////////////////
 	LogicAndCommand::LogicAndCommand() {}
 
+	void LogicAndCommand::buildCommandText(std::list<std::string>& strCommands) {
+		_commandParam1->buildCommandText(strCommands);
+		_commandParam2->buildCommandText(strCommands);
+
+		std::stringstream ss;
+		ss << "and ([" << _commandParam1->getTargetOffset() << "], [" << _commandParam1->getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
+	}
+
 	void LogicAndCommand::execute() {
 		_commandParam1->execute();
 
@@ -210,6 +242,15 @@ namespace ffscript {
 
 	/////////////////////////////////////////////////////////////////////////////////////
 	LogicOrCommand::LogicOrCommand() {}
+
+	void LogicOrCommand::buildCommandText(std::list<std::string>& strCommands) {
+		_commandParam1->buildCommandText(strCommands);
+		_commandParam2->buildCommandText(strCommands);
+
+		std::stringstream ss;
+		ss << "or ([" << _commandParam1->getTargetOffset() << "], [" << _commandParam1->getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
+	}
 
 	void LogicOrCommand::execute() {
 		_commandParam1->execute();
@@ -241,14 +282,13 @@ namespace ffscript {
 		if (_elseUnit) delete _elseUnit;
 	}
 	
-	void ConditionalCommand::buildCommandText() {
+	void ConditionalCommand::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		_conditionUnit->buildCommandText();
-		_ifUnit->buildCommandText();
-		_elseUnit->buildCommandText();
+		_conditionUnit->buildCommandText(strCommands);
+		_ifUnit->buildCommandText(strCommands);
+		_elseUnit->buildCommandText(strCommands);
 
-		ss << _conditionUnit->toString() << " ? " << _ifUnit->toString() << ":" << _elseUnit->toString();
-		setCommandText(ss.str());
+		ss << "select([" << _conditionUnit->getTargetOffset() << "], " << int_to_hex((size_t)(_ifUnit)) << ", " << int_to_hex((size_t)(_elseUnit)) << ")";
 	}
 
 	void ConditionalCommand::setCommandData(TargetedCommand* conditionUnit, TargetedCommand* ifUnit, TargetedCommand* elseUnit) {
@@ -285,23 +325,30 @@ namespace ffscript {
 		}
 	}
 
-	void TriggerCommand::buildCommandText() {		
-		if (_mainCommand) {
-			_mainCommand->buildCommandText();
-			setCommandText(_mainCommand->toString());
-		}		
+	void TriggerCommand::buildCommandText(std::list<std::string>& strCommands) {		
+		if (_beforeExecuteFunc) {
+			strCommands.push_back(_beforeExecuteCommandName);
+		}
+
+		_mainCommand->buildCommandText(strCommands);
+
+		if (_afterExecuteFunc) {
+			strCommands.push_back(_afterExecuteCommandName);
+		}
 	}
 
 	void TriggerCommand::setCommand(TargetedCommand* mainCommand) {
 		_mainCommand = mainCommand;
 	}
 
-	void TriggerCommand::setBeforeTrigger(const std::shared_ptr<DFunction>& beforeExecute) {
+	void TriggerCommand::setBeforeTrigger(const std::shared_ptr<DFunction>& beforeExecute, const std::string& commandName) {
 		_beforeExecuteFunc = beforeExecute;
+		_beforeExecuteCommandName = commandName;
 	}
 
-	void TriggerCommand::setAfterTrigger(const std::shared_ptr<DFunction>& afterExecute) {
+	void TriggerCommand::setAfterTrigger(const std::shared_ptr<DFunction>& afterExecute, const std::string& commandName) {
 		_afterExecuteFunc = afterExecute;
+		_afterExecuteCommandName = commandName;
 	}
 
 	void TriggerCommand::execute() {
@@ -322,8 +369,8 @@ namespace ffscript {
 	ConditionTriggerCommand::~ConditionTriggerCommand() {
 	}
 
-	void ConditionTriggerCommand::buildCommandText() {
-		TriggerCommand::buildCommandText();
+	void ConditionTriggerCommand::buildCommandText(std::list<std::string>& strCommands) {
+		TriggerCommand::buildCommandText(strCommands);
 	}
 
 	void ConditionTriggerCommand::execute() {
