@@ -36,6 +36,19 @@ namespace ffscript {
 	{
 	}
 
+	UserFunctionFactory::UserFunctionFactory(ScriptCompiler* scriptCompiler, const char* returnType, int paramSize) : _paramSize(0) {
+		this->setReturnType(ScriptType::parseType(scriptCompiler, returnType));
+	}
+
+	UserFunctionFactory::~UserFunctionFactory() {}
+
+	Function* UserFunctionFactory::createFunction(const std::string& name, int id) {
+		DynamicParamFunction* function = new DynamicParamFunction(name, EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, getReturnType());
+		function->setNative(createNative());
+		function->setMaxParam(_paramSize);
+		return function;
+	}
+
 	//string functions
 	template <class T>
 	size_t stringLength(const T& s) {
