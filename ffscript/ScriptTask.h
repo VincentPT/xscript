@@ -6,6 +6,7 @@ namespace ffscript {
 
 	class Context;
 	class Program;
+	struct FunctionInfo;
 
 	class ScriptTask
 	{
@@ -13,6 +14,11 @@ namespace ffscript {
 		int _resultSize;
 		int _allocatedSize;
 		Program* _program;
+
+		// cached data
+		int _functionId;
+		FunctionInfo* _functionInfo;
+		CodeSegmentEntry* _functionCode;
 	public:
 		ScriptTask(Program* program);
 		virtual ~ScriptTask();

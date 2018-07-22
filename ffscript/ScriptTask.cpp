@@ -8,7 +8,9 @@ namespace ffscript {
 
 	static const int s_returnOffset = SCRIPT_FUNCTION_RETURN_STORAGE_OFFSET;
 
-	ScriptTask::ScriptTask(Program* program) : _program(program), _scriptContext(nullptr), _allocatedSize(0) {
+	ScriptTask::ScriptTask(Program* program) : _program(program), _scriptContext(nullptr), _allocatedSize(0),
+		_functionInfo(nullptr), _functionCode(nullptr), _functionId(-1)
+	{
 	}
 
 	ScriptTask::~ScriptTask(){
@@ -34,27 +36,31 @@ namespace ffscript {
 		{
 			_scriptContext->scopeUnallocate(_allocatedSize, 0);
 		}
-
 		Program* program = _program;
-		FunctionInfo* functionInfo = program->getFunctionInfo(functionId);
-		if (functionInfo == nullptr) {
+
+		if (_functionId != functionId) {
+			_functionId = functionId;
+
+			_functionInfo = program->getFunctionInfo(functionId);
+			_functionCode = program->getFunctionPlainCode(functionId);
+		}
+
+		if (_functionInfo == nullptr) {
+			return;
+		}
+		if (_functionCode == nullptr) {
 			return;
 		}
 
-		CodeSegmentEntry* functionCode = program->getFunctionPlainCode(functionId);
-		if (functionCode == nullptr) {
-			return;
-		}
-
-		_resultSize = functionInfo->returnStorageSize;
-		int paramOffset = s_returnOffset + functionInfo->returnStorageSize;
-		if (paramBuffer != nullptr && functionInfo->paramDataSize > 0) {
-			_scriptContext->write(paramOffset, paramBuffer->getBuffer(), functionInfo->paramDataSize);
+		_resultSize = _functionInfo->returnStorageSize;
+		int paramOffset = s_returnOffset + _functionInfo->returnStorageSize;
+		if (paramBuffer != nullptr && _functionInfo->paramDataSize > 0) {
+			_scriptContext->write(paramOffset, paramBuffer->getBuffer(), _functionInfo->paramDataSize);
 		}
 
 		_scriptContext->setCurrentCommand(program->getEndCommand() - 1);
 		_scriptContext->setEndCommand(program->getEndCommand());
-		_allocatedSize = _resultSize + functionInfo->paramDataSize;
+		_allocatedSize = _resultSize + _functionInfo->paramDataSize;
 		_scriptContext->scopeAllocate(_allocatedSize, 0);
 
 #if USE_DIRECT_COPY_FOR_RETURN
@@ -64,13 +70,13 @@ namespace ffscript {
 		CallScriptFuntion2 callScriptCommand;
 #endif
 		
-		callScriptCommand.setCommandData(s_returnOffset, paramOffset, functionInfo->paramDataSize);		
+		callScriptCommand.setCommandData(s_returnOffset, paramOffset, _functionInfo->paramDataSize);		
 #else
 		CallScriptFuntion callScriptCommand;
 		callScriptCommand.setCommandData(_resultSize, paramOffset, functionInfo->paramDataSize);
 #endif
 		
-		callScriptCommand.setTargetCommand(functionCode->first);
+		callScriptCommand.setTargetCommand(_functionCode->first);
 		callScriptCommand.execute();
 
 #if !USE_FUNCTION_TREE
