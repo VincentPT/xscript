@@ -283,6 +283,7 @@
     <ClInclude Include="CompilerSuite.h" />
     <ClInclude Include="CompositeConstrutorUnit.h" />
     <ClInclude Include="ConditionalOperator.h" />
+    <ClInclude Include="DefaultPreprocessor.h" />
     <ClInclude Include="FFScriptArray.hpp" />
     <ClInclude Include="FFStack.h" />
     <ClInclude Include="ffutil.hpp" />
@@ -293,6 +294,7 @@
     <ClInclude Include="LogicCommands.hpp" />
     <ClInclude Include="OperatorObject.h" />
     <ClInclude Include="OverloadingRules.h" />
+    <ClInclude Include="Preprocessor.h" />
     <ClInclude Include="ScopedCompilingScope.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="ContextScope.h" />
@@ -364,11 +366,13 @@
     <ClCompile Include="CompilerSuite.cpp" />
     <ClCompile Include="CompositeConstrutorUnit.cpp" />
     <ClCompile Include="ConditionalOperator.cpp" />
+    <ClCompile Include="DefaultPreprocessor.cpp" />
     <ClCompile Include="FuncLibrary.cpp" />
     <ClCompile Include="FwdCompositeConstrutorUnit.cpp" />
     <ClCompile Include="InternalCompilerSuite.cpp" />
     <ClCompile Include="OperatorObject.cpp" />
     <ClCompile Include="OverloadingRules.cpp" />
+    <ClCompile Include="Preprocessor.cpp" />
     <ClCompile Include="ScopedCompilingScope.cpp" />
     <ClCompile Include="Context.cpp" />
     <ClCompile Include="ContextScope.cpp" />

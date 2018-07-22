@@ -274,6 +274,12 @@
     <ClInclude Include="FwdCompositeConstrutorUnit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Preprocessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultPreprocessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -454,6 +460,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FwdCompositeConstrutorUnit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Preprocessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultPreprocessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

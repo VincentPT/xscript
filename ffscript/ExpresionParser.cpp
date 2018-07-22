@@ -463,6 +463,11 @@ namespace ffscript {
 			else if (*c >= '0'&& *c <= '9') {
 				*s1++ = *c;
 			}
+			else if (*c == '\n') {
+				c = trimLeft(c, end);
+				c--;
+				continue;
+			}
 			else if (c < end && !ScriptCompiler::isCommandBreakSign(*c)) {
 				*s2++ = *c;
 			}

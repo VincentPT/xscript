@@ -101,6 +101,9 @@ namespace ffscript {
 		static const std::string k_struct("struct");
 
 		d = trimLeft(text, end);
+		if (d == end) {
+			return d;
+		}
 		c = lastCharInToken(d, end);
 
 		//token 1 is expected as a data type
@@ -150,6 +153,9 @@ namespace ffscript {
 
 			d = this->detectKeyword(c, end);
 			if (d != nullptr) {
+				if (d == end) {
+					break;
+				}
 				c = d + 1;
 				continue;
 			}
