@@ -34,7 +34,14 @@ namespace ffscript{
 		Program* program = new Program();
 		_pCompiler->bindProgram(program);
 
-		if (_globalScopeRef->parse(codeStart, codeEnd) == nullptr) {
+		if (_preprocessor) {
+			auto newCode = _preprocessor->preprocess(codeStart, codeEnd);
+
+			if (_globalScopeRef->parse(newCode->c_str(), newCode->c_str() + newCode->size()) == nullptr) {
+				return nullptr;
+			}
+		}
+		else if (_globalScopeRef->parse(codeStart, codeEnd) == nullptr) {
 			return nullptr;
 		}
 
@@ -86,5 +93,13 @@ namespace ffscript{
 
 	ScriptCompilerRef& CompilerSuite::getCompiler() {
 		return _pCompiler;
+	}
+
+	void CompilerSuite::setPreprocessor(const PreprocessorRef& preprocessor) {
+		_preprocessor = preprocessor;
+	}
+
+	const PreprocessorRef CompilerSuite::getPreprocessor() const {
+		return _preprocessor;
 	}
 }

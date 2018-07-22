@@ -20,7 +20,11 @@ namespace ffscript {
 		*ctemp = 0;
 
 		return std::string(stemp);
-	}	
+	}
+
+	std::wstring convertToWstring(const std::string& s) {
+		return std::wstring (s.begin(), s.end());
+	}
 
 	SimpleVariantArray* createParamArray(int paramSize) {
 		int sizeNeed = sizeof(SimpleVariantArray) + (paramSize - 1) * sizeof(SimpleVariantArray::elems[0]);

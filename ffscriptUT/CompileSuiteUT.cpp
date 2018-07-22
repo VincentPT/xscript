@@ -3,7 +3,7 @@
 #include <CompilerSuite.h>
 #include <ScriptTask.h>
 #include <Utils.h>
-
+#include <DefaultPreprocessor.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
@@ -174,6 +174,170 @@ namespace ffscriptUT
 			int n = 10;
 			ScriptParamBuffer paramBuffer(n);
 			
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, &paramBuffer);
+			int* funcRes = (int*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == n*n, L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(ScriptHasBreakLines_1)
+		{
+			GlobalScopeRef rootScope;
+			Program* program;
+			TypeManagerRef typeManagerRef;
+			int functionId = -1;
+			{
+				CompilerSuite compiler;
+				//the code does not contain any global scope'code and only a variable
+				//so does not need global memory
+				compiler.initialize(8);
+				rootScope = compiler.getGlobalScope();
+				auto scriptCompiler = rootScope->getCompiler();
+
+				const wchar_t* scriptCode =
+					L"int square(int n) {\n"
+					L"	return n * n;\n"
+					L"}\n"
+					;
+
+				program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+				Assert::IsNotNull(program, (L"compie program failed: " + convertToWstring(scriptCompiler->getLastError())).c_str());
+
+				typeManagerRef = compiler.getTypeManager();
+				functionId = scriptCompiler->findFunction("square", "int");
+			}
+
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'square'");
+
+			int n = 10;
+			ScriptParamBuffer paramBuffer(n);
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, &paramBuffer);
+			int* funcRes = (int*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == n*n, L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(ScriptHasBreakLines_2)
+		{
+			GlobalScopeRef rootScope;
+			Program* program;
+			TypeManagerRef typeManagerRef;
+			int functionId = -1;
+			{
+				CompilerSuite compiler;
+				//the code does not contain any global scope'code and only a variable
+				//so does not need global memory
+				compiler.initialize(8);
+				rootScope = compiler.getGlobalScope();
+				auto scriptCompiler = rootScope->getCompiler();
+
+				const wchar_t* scriptCode =
+					L"int square(int\n n) {\n"
+					L"	return n \n* n;\n"
+					L"}\n"
+					;
+
+				program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+				Assert::IsNotNull(program, (L"compie program failed: " + convertToWstring(scriptCompiler->getLastError())).c_str());
+
+				typeManagerRef = compiler.getTypeManager();
+				functionId = scriptCompiler->findFunction("square", "int");
+			}
+
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'square'");
+
+			int n = 10;
+			ScriptParamBuffer paramBuffer(n);
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, &paramBuffer);
+			int* funcRes = (int*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == n*n, L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(ApplyPreprocessor1)
+		{
+			GlobalScopeRef rootScope;
+			Program* program;
+			TypeManagerRef typeManagerRef;
+			int functionId = -1;
+			{
+				CompilerSuite compiler;
+				//the code does not contain any global scope'code and only a variable
+				//so does not need global memory
+				compiler.initialize(8);
+				rootScope = compiler.getGlobalScope();
+				auto scriptCompiler = rootScope->getCompiler();
+
+				const wchar_t* scriptCode =
+					L"int square(int\n n) {\n"
+					L"	return n \n* n;\n"
+					L"}\n"
+					;
+
+				compiler.setPreprocessor(std::make_shared<DefaultPreprocessor>());
+				program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+				Assert::IsNotNull(program, (L"compie program failed: " + convertToWstring(scriptCompiler->getLastError())).c_str());
+
+				typeManagerRef = compiler.getTypeManager();
+				functionId = scriptCompiler->findFunction("square", "int");
+			}
+
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'square'");
+
+			int n = 10;
+			ScriptParamBuffer paramBuffer(n);
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, &paramBuffer);
+			int* funcRes = (int*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == n*n, L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(ApplyPreprocessor2)
+		{
+			GlobalScopeRef rootScope;
+			Program* program;
+			TypeManagerRef typeManagerRef;
+			int functionId = -1;
+			{
+				CompilerSuite compiler;
+				//the code does not contain any global scope'code and only a variable
+				//so does not need global memory
+				compiler.initialize(8);
+				rootScope = compiler.getGlobalScope();
+				auto scriptCompiler = rootScope->getCompiler();
+
+				const wchar_t* scriptCode =
+					L"//comment in global scope\n"
+					L"int square(int\n n) {\n"
+					L"  //comment in function scope\n"
+					L"	return n * n;// square expression\n"
+					L"}\n"
+					;
+
+				compiler.setPreprocessor(std::make_shared<DefaultPreprocessor>());
+				program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+				Assert::IsNotNull(program, (L"compie program failed: " + convertToWstring(scriptCompiler->getLastError())).c_str());
+
+				typeManagerRef = compiler.getTypeManager();
+				functionId = scriptCompiler->findFunction("square", "int");
+			}
+
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'square'");
+
+			int n = 10;
+			ScriptParamBuffer paramBuffer(n);
+
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();

@@ -55,6 +55,7 @@ namespace ffscript {
 
 	std::string convertToAscii(const wchar_t* ws, size_t n);
 	std::string convertToAscii(const wchar_t* ws);
+	std::wstring convertToWstring(const std::string& s);
 
 	template< typename T >
 	std::string int_to_hex(T i)

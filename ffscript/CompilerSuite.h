@@ -12,6 +12,7 @@
 #include "FunctionRegisterHelper.h"
 #include "BasicType.h"
 #include "ExpUnitExecutor.h"
+#include "Preprocessor.h"
 
 namespace ffscript {
 	class CompilerSuite
@@ -19,6 +20,7 @@ namespace ffscript {
 	protected:
 		ScriptCompilerRef _pCompiler;
 		GlobalScopeRef _globalScopeRef;
+		PreprocessorRef _preprocessor;
 	public:
 		CompilerSuite();
 		virtual void initialize(int globalMemSize);
@@ -29,5 +31,7 @@ namespace ffscript {
 		const GlobalScopeRef& getGlobalScope() const;
 		const TypeManagerRef& getTypeManager() const;
 		ScriptCompilerRef& getCompiler();
+		void setPreprocessor(const PreprocessorRef& preprocessor);
+		const PreprocessorRef getPreprocessor() const;
 	};
 }
