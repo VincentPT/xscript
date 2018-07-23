@@ -330,7 +330,7 @@ namespace ffscript {
 				*c == '[' || *c == ']' ||				
 				*c == ' ' || *c == '	' ||
 				ScriptCompiler::isCommandBreakSign(*c) || c == end ||
-				*c == ',' || *c == '\"')
+				*c == ',' || *c == '\"' || *c == '\n')
 			{
 				if (s1 - sToken1 > 0)
 				{
@@ -463,11 +463,11 @@ namespace ffscript {
 			else if (*c >= '0'&& *c <= '9') {
 				*s1++ = *c;
 			}
-			else if (*c == '\n') {
-				c = trimLeft(c, end);
-				c--;
-				continue;
-			}
+			//else if (*c == '\n') {
+			//	c = trimLeft(c, end);
+			//	c--;
+			//	continue;
+			//}
 			else if (c < end && !ScriptCompiler::isCommandBreakSign(*c)) {
 				*s2++ = *c;
 			}

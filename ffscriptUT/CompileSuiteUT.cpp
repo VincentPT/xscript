@@ -261,6 +261,84 @@ namespace ffscriptUT
 			Assert::IsTrue(*funcRes == n*n, L"program can run but return wrong value");
 		}
 
+		TEST_METHOD(ScriptHasBreakLines_3)
+		{
+			GlobalScopeRef rootScope;
+			Program* program;
+			TypeManagerRef typeManagerRef;
+			int functionId = -1;
+			{
+				CompilerSuite compiler;
+				//the code does not contain any global scope'code and only a variable
+				//so does not need global memory
+				compiler.initialize(8);
+				rootScope = compiler.getGlobalScope();
+				auto scriptCompiler = rootScope->getCompiler();
+
+				const wchar_t* scriptCode =
+					L"int square(int\n nn) {\n"
+					L"	return n\nn * nn;\n"
+					L"}\n"
+					;
+
+				program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+				Assert::IsNull(program, L"compie program should fail");
+			}
+		}
+
+		TEST_METHOD(ScriptHasBreakLines_4)
+		{
+			GlobalScopeRef rootScope;
+			Program* program;
+			TypeManagerRef typeManagerRef;
+			int functionId = -1;
+			{
+				CompilerSuite compiler;
+				//the code does not contain any global scope'code and only a variable
+				//so does not need global memory
+				compiler.initialize(8);
+				rootScope = compiler.getGlobalScope();
+				auto scriptCompiler = rootScope->getCompiler();
+
+				const wchar_t* scriptCode =
+					L"int square(i\nnt nn) {\n"
+					L"	return nn * nn;\n"
+					L"}\n"
+					;
+
+				program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+				Assert::IsNull(program, L"compie program should fail");
+			}
+		}
+
+		TEST_METHOD(ScriptHasBreakLines_5)
+		{
+			GlobalScopeRef rootScope;
+			Program* program;
+			TypeManagerRef typeManagerRef;
+			int functionId = -1;
+			{
+				CompilerSuite compiler;
+				//the code does not contain any global scope'code and only a variable
+				//so does not need global memory
+				compiler.initialize(8);
+				rootScope = compiler.getGlobalScope();
+				auto scriptCompiler = rootScope->getCompiler();
+
+				const wchar_t* scriptCode =
+					L"int squa\nre(int nn) {\n"
+					L"	return nn * nn;\n"
+					L"}\n"
+					;
+
+				program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+				Assert::IsNull(program, L"compie program should fail");
+			}
+		}
+
 		TEST_METHOD(ApplyPreprocessor1)
 		{
 			GlobalScopeRef rootScope;
@@ -343,6 +421,48 @@ namespace ffscriptUT
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
 			Assert::IsTrue(*funcRes == n*n, L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(ApplyPreprocessor3)
+		{
+			GlobalScopeRef rootScope;
+			Program* program;
+			TypeManagerRef typeManagerRef;
+			int functionId = -1;
+			
+			CompilerSuite compiler;
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"//comment in global scope\n"
+				L"int square(int\n"
+				L" n) {\n"
+				L"  //comment in function scope\n"
+				L"	return n * n;// square expression\n"
+				L"}\n"
+				;
+
+			compiler.setPreprocessor(std::make_shared<DefaultPreprocessor>());
+			program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+			Assert::IsNotNull(program, (L"compie program failed: " + convertToWstring(scriptCompiler->getLastError())).c_str());
+
+			auto preprocessor = compiler.getPreprocessor();
+			Assert::AreEqual(-1, preprocessor->getOriginalLine(-1), L"line original map failed");
+			Assert::AreEqual(-1, preprocessor->getOriginalLine(-2), L"line original map failed");
+
+			Assert::AreEqual(0, preprocessor->getOriginalLine(0), L"line original map failed");
+			Assert::AreEqual(1, preprocessor->getOriginalLine(1), L"line original map failed");
+			Assert::AreEqual(1, preprocessor->getOriginalLine(14), L"line original map failed");
+			Assert::AreEqual(1, preprocessor->getOriginalLine(15), L"line original map failed");
+			Assert::AreEqual(2, preprocessor->getOriginalLine(21), L"line original map failed");
+			Assert::AreEqual(3, preprocessor->getOriginalLine(22), L"line original map failed");
+			Assert::AreEqual(3, preprocessor->getOriginalLine(24), L"line original map failed");
+			Assert::AreEqual(4, preprocessor->getOriginalLine(30), L"line original map failed");
 		}
 	};
 }
