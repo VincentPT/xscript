@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Utils.h"
 #include <string>
+#include <fstream>
+#include <codecvt>
 
 namespace ffscript {
 	std::string convertToAscii(const wchar_t* ws, size_t n) {
@@ -86,5 +88,29 @@ namespace ffscript {
 
 	void addParam(SimpleVariantArray* pArray, const wchar_t* val, TypeManager* typeManager) {
 		addParam(pArray, val, typeManager->getBasicTypes().TYPE_WSTRING);
+	}
+
+
+	std::wstring readCodeFromStream(std::wistream& wss) {
+		std::wstring wstr;
+		std::wstring line;
+		while (std::getline(wss, line))
+		{
+			wstr += line;
+			wstr.append(1, L'\n');
+		}
+
+		if (wstr.size()) {
+			wstr.erase(wstr.size() - 1);
+		}
+
+		return wstr;
+	}
+
+	std::wstring readCodeFromUtf8File(const char* filename) {
+		std::wifstream wif(filename);
+		wif.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+
+		return readCodeFromStream(wif);
 	}
 }

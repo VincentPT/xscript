@@ -4,6 +4,7 @@
 #include "ffscript.h"
 #include "TypeManager.h"
 #include <string>
+#include <istream>
 
 namespace ffscript {
 
@@ -56,6 +57,8 @@ namespace ffscript {
 	std::string convertToAscii(const wchar_t* ws, size_t n);
 	std::string convertToAscii(const wchar_t* ws);
 	std::wstring convertToWstring(const std::string& s);
+	std::wstring readCodeFromStream(std::wistream&);
+	std::wstring readCodeFromUtf8File(const char*);
 
 	template< typename T >
 	std::string int_to_hex(T i)
