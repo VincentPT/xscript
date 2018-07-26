@@ -47,6 +47,7 @@ namespace ffscript {
 		int TYPE_SYSTEMARRAY;
 		int TYPE_ELEMENT_INFO;
 		int TYPE_NULL;
+		int TYPE_RAWSTRING;
 	public:
 		BasicTypes();
 		~BasicTypes();
@@ -167,6 +168,22 @@ namespace ffscript {
 			this->setReturnType(returnType);
 			_nativeFunction = (DFunction2Ref)(new CdeclFunction2<TD, TS>(ConversionFactoryBoolTo::convert));
 		}
+		Function* createFunction(const std::string& name, int id) {
+			NativeFunction* pFunction = new CastingFunction(name);
+			pFunction->setNative(_nativeFunction);
+			return pFunction;
+		}
+	};
+
+	class ConvertToStringFactory : public FunctionFactory {
+	protected:
+		DFunction2Ref _nativeFunction;
+	public:
+		ConvertToStringFactory(ScriptCompiler* scriptCompiler, DFunction2Ref nativeFunction, const ScriptType& returnType) :FunctionFactory("String", scriptCompiler) {
+			this->setReturnType(returnType);
+			_nativeFunction = nativeFunction;
+		}
+
 		Function* createFunction(const std::string& name, int id) {
 			NativeFunction* pFunction = new CastingFunction(name);
 			pFunction->setNative(_nativeFunction);

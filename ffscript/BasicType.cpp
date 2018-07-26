@@ -7,6 +7,7 @@
 #include "BasicOperators.hpp"
 #include "ScriptType.h"
 #include "function\CdeclFunction.hpp"
+#include "Utils.h"
 
 namespace ffscript {
 	static BasicTypes* s_basicType = nullptr;
@@ -47,6 +48,7 @@ namespace ffscript {
 		TYPE_WSTRING = scriptCompiler->registType("wstring");
 		TYPE_SYSTEMARRAY = scriptCompiler->registType("array");
 		TYPE_NULL = scriptCompiler->registType(SYSTEM_NULL_TYPE);
+		TYPE_RAWSTRING = scriptCompiler->registType("String");
 		int theadType = scriptCompiler->registType("hthread");
 
 		ScriptType typeVoid(TYPE_VOID, "void");
@@ -67,6 +69,7 @@ namespace ffscript {
 		scriptCompiler->setTypeSize(TYPE_SYSTEMARRAY, sizeof(DynamicArray));
 		scriptCompiler->setTypeSize(TYPE_NULL, sizeof(void*));
 		scriptCompiler->setTypeSize(theadType, sizeof(void*));
+		scriptCompiler->setTypeSize(TYPE_RAWSTRING, sizeof(RawString));
 
 		//register simple variant array struct
 		StructClass* elemStruct = new StructClass(scriptCompiler, "_SimpleVariant");
@@ -88,6 +91,78 @@ namespace ffscript {
 		TYPE_ELEMENT_INFO = scriptCompiler->registStruct(elementInfoStruct);
 	}
 
+	RawString ToString(bool val) {
+		if (val) {
+			RawString rawString = allocSimpleArray<RawChar>(4);
+			rawString.elms[0] = 't';
+			rawString.elms[1] = 'r';
+			rawString.elms[2] = 'u';
+			rawString.elms[3] = 'e';
+
+			return rawString;
+		}
+		
+		RawString rawString = allocSimpleArray<RawChar>(5);
+
+		rawString.elms[0] = 'f';
+		rawString.elms[1] = 'a';
+		rawString.elms[2] = 'l';
+		rawString.elms[3] = 's';
+		rawString.elms[4] = 'e';
+
+		return rawString;
+	}
+
+	RawString ToString(int val) {
+		RawChar buffer[12];
+		swprintf(buffer, L"%d", val);
+
+		RawString rawString = allocSimpleArray<RawChar>(wcslen(buffer));
+		memcpy(rawString.elms, buffer, rawString.size * sizeof(RawChar));
+
+		return rawString;
+	}
+
+	RawString ToString(const long long& val) {
+		RawChar buffer[64];
+		swprintf(buffer, L"%lld", val);
+
+		RawString rawString = allocSimpleArray<RawChar>(wcslen(buffer));
+		memcpy(rawString.elms, buffer, rawString.size * sizeof(RawChar));
+
+		return rawString;
+	}
+
+	RawString ToString(const float& val) {
+		RawChar buffer[15];
+		swprintf(buffer, L"%f", val);
+
+		RawString rawString = allocSimpleArray<RawChar>(wcslen(buffer));
+		memcpy(rawString.elms, buffer, rawString.size * sizeof(RawChar));
+
+		return rawString;
+	}
+
+	RawString ToString(const double& val) {
+		RawChar buffer[64];
+		swprintf(buffer, L"%f", val);
+
+		RawString rawString = allocSimpleArray<RawChar>(wcslen(buffer));
+		memcpy(rawString.elms, buffer, rawString.size * sizeof(RawChar));
+
+		return rawString;
+	}
+
+	//template <class T>
+	//DFunction2Ref createStringNativeFunc(CdeclFunction2<RawString, T>::FuncType f) {
+	//	return std::make_shared<CdeclFunction2<RawString, T>>(f);
+	//}
+
+	template <class T>
+	DFunction2Ref createStringNativeFunc(RawString (*f)(T)) {
+		return std::make_shared<CdeclFunction2<RawString, T>>(f);
+	}
+
 	void BasicTypes::registerBasicTypeCastFunctions(ScriptCompiler* scriptCompiler, FunctionRegisterHelper& fb) {
 		ScriptType typeVoid(TYPE_VOID, "void");
 		ScriptType typeInt(TYPE_INT, "int");
@@ -95,6 +170,7 @@ namespace ffscript {
 		ScriptType typeFloat(TYPE_FLOAT, "float");
 		ScriptType typeDouble(TYPE_DOUBLE, "double");
 		ScriptType typeBool(TYPE_BOOL, "bool");
+		ScriptType typeString(TYPE_RAWSTRING, "String");
 
 		fb.registFunction("int", S_LONG_T, new ConversionFactoryR<int, LONG_T>(scriptCompiler, typeInt) , true);
 		fb.registFunction("int", "float", new ConversionFactoryR<int, float>(scriptCompiler, typeInt), true);
@@ -120,6 +196,12 @@ namespace ffscript {
 		fb.registFunction("bool", S_LONG_T, new ConversionFactoryToBoolR<LONG_T>(scriptCompiler, typeBool), true);
 		fb.registFunction("bool", "float", new ConversionFactoryToBoolR<float>(scriptCompiler, typeBool), true);
 		fb.registFunction("bool", "double", new ConversionFactoryToBoolR<double>(scriptCompiler, typeBool), true);
+
+		fb.registFunction("String", "bool", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<bool>(ToString), typeString));
+		fb.registFunction("String", "int", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<bool>(ToString), typeString));
+		fb.registFunction("String", "long&", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<const long long&>(ToString), typeString));
+		fb.registFunction("String", "float&", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<const float&>(ToString), typeString));
+		fb.registFunction("String", "double&", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<const double&>(ToString), typeString));
 		
 		//float -> double, int -> long : 500
 		//int -> double, float -> long : 550
@@ -163,6 +245,12 @@ namespace ffscript {
 		scriptCompiler->registerTypeConversionAccurative(TYPE_BOOL, TYPE_LONG, 1050);		
 		scriptCompiler->registerTypeConversionAccurative(TYPE_BOOL, TYPE_FLOAT, 1100);		
 		scriptCompiler->registerTypeConversionAccurative(TYPE_BOOL, TYPE_DOUBLE, 1150);
+
+		scriptCompiler->registerTypeConversionAccurative(TYPE_BOOL, TYPE_RAWSTRING, 10000);
+		scriptCompiler->registerTypeConversionAccurative(TYPE_INT, TYPE_RAWSTRING, 10000);
+		scriptCompiler->registerTypeConversionAccurative(TYPE_LONG, TYPE_RAWSTRING, 10000);
+		scriptCompiler->registerTypeConversionAccurative(TYPE_FLOAT, TYPE_RAWSTRING, 10000);
+		scriptCompiler->registerTypeConversionAccurative(TYPE_DOUBLE, TYPE_RAWSTRING, 10000);
 	}
 
 	ConstOperandBase* createBoolConsant(bool cosnt_val) {

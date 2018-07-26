@@ -73,6 +73,107 @@ namespace ffscriptUT
 			Assert::IsTrue(*funcRes == 3, L"program can run but return wrong value");
 		}
 
+		TEST_METHOD(CompileSimpleProgram3)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"void main() {"
+				L"	String s;"
+				L"}"
+				;
+
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+			int functionId = scriptCompiler->findFunction("main", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'main'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+		}
+
+		TEST_METHOD(CompileSimpleProgram4)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"void main() {"
+				L"	String s = \"123\";"
+				L"}"
+				;
+
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+			int functionId = scriptCompiler->findFunction("main", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'main'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+		}
+
+		TEST_METHOD(CompileSimpleProgram5)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"void main() {"
+				L"	String s = L\"123\";"
+				L"}"
+				;
+
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+			int functionId = scriptCompiler->findFunction("main", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'main'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+		}
+
+		TEST_METHOD(CompileSimpleProgram6)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"void main() {"
+				L"	String s = L\"123\";"
+				L"	String r = s;"
+				L"}"
+				;
+
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+			int functionId = scriptCompiler->findFunction("main", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'main'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+		}
+
 		TEST_METHOD(ProgramIndependent1)
 		{
 			GlobalScopeRef rootScope;			

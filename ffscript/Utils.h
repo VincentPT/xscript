@@ -54,6 +54,42 @@ namespace ffscript {
 		return c;
 	}
 
+	template <class T>
+	SimpleArray<T> newSimpleArray(int size) {
+		SimpleArray<T> arr;
+		arr.size = size;
+		arr.elms = new T[size];
+
+		return arr;
+	}
+
+	template <class T>
+	SimpleArray<T> allocSimpleArray(int size) {
+		SimpleArray<T> arr;
+		arr.size = size;
+		arr.elms = (T*)malloc(size * sizeof(T));
+
+		return arr;
+	}
+
+	template <typename T>
+	void deleteSimpleArray(SimpleArray<T>& arr) {
+		if (arr.elms) {
+			delete[] arr.elms;
+			arr.elms = nullptr;
+		}
+		arr.size = 0;
+	}
+
+	template <typename T>
+	void freeSimpleArray(SimpleArray<T>& arr) {
+		if (arr.elms) {
+			free(arr.elms);
+			arr.elms = nullptr;
+		}
+		arr.size = 0;
+	}
+
 	std::string convertToAscii(const wchar_t* ws, size_t n);
 	std::string convertToAscii(const wchar_t* ws);
 	std::wstring convertToWstring(const std::string& s);

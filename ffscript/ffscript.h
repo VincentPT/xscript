@@ -203,6 +203,9 @@ namespace ffscript {
 		int elmCount;
 	};
 
+	typedef wchar_t RawChar;
+	typedef SimpleArray<RawChar> RawString;
+
 #pragma pack(pop)
 
 #define INDEPENDENT_CONSTRUCTOR (-1)
