@@ -10,10 +10,6 @@
 #include "ConditionalOperator.h"
 #include "RefFunction.h"
 #include "DefaultCommands.h"
-#include "Utils.h"
-
-#include <locale>
-#include <codecvt>
 
 //#include "CppUnitTest.h"
 //using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -95,41 +91,6 @@ namespace ffscript {
 
 	SimpleVariantArray* dynamicFunctionGateway(SimpleVariantArray* pArray) {
 		return pArray;
-	}
-
-	void defaultConstructor(RawString& s) {
-		s.elms = nullptr;
-		s.size = 0;
-	}
-
-	void constantConstructor(RawString& rawString, const std::wstring& ws) {
-		if (ws.size() == 0) {
-			defaultConstructor(rawString);
-		}
-		else {
-			rawString = allocSimpleArray<RawChar>((int)ws.size());
-			memcpy(rawString.elms, ws.c_str(), ws.size() * sizeof(RawChar));
-		}
-	}
-
-	void constantConstructor(RawString& rawString, const std::string& s) {
-		if (s.size() == 0) {
-			defaultConstructor(rawString);
-		}
-		else {
-			wstring ws = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t>{}.from_bytes(s);
-			constantConstructor(rawString, ws);
-		}
-	}
-
-	void constantConstructor(RawString& rawString, const RawString& s) {
-		if (s.size == 0) {
-			defaultConstructor(rawString);
-		}
-		else {
-			rawString = allocSimpleArray<RawChar>(s.size);
-			memcpy(rawString.elms, s.elms, s.size * sizeof(RawChar));
-		}
 	}
 
 	void importBasicfunction(FunctionRegisterHelper& fb) {
@@ -667,23 +628,6 @@ namespace ffscript {
 		fb.registFunction("length", "string", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new CdeclFunction2<int, const std::string&>(stringLength<std::string>), scriptCompiler), true);
 		importCoreFunctions(fb);
 #pragma endregion
-
-		int iTypeString = scriptCompiler->getTypeManager()->getBasicTypes().TYPE_RAWSTRING;
-
-		int ctor = fb.registFunction("defaultConstructor", "ref String", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RawString&>(defaultConstructor), scriptCompiler));
-		int dtor = fb.registFunction("freeRawString", "ref String", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RawString&>(freeSimpleArray<RawChar>), scriptCompiler));
-
-		scriptCompiler->registDestructor(iTypeString, dtor);
-		scriptCompiler->registConstructor(iTypeString, ctor);
-
-		ctor = fb.registFunction("constantConstructor", "ref String, string&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RawString&, const std::string&>(constantConstructor), scriptCompiler));
-		scriptCompiler->registConstructor(iTypeString, ctor);
-
-		ctor = fb.registFunction("constantConstructor", "ref String, wstring&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RawString&, const std::wstring&>(constantConstructor), scriptCompiler));
-		scriptCompiler->registConstructor(iTypeString, ctor);
-
-		ctor = fb.registFunction("constantConstructor", "ref String, String&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RawString&, const RawString&>(constantConstructor), scriptCompiler));
-		scriptCompiler->registConstructor(iTypeString, ctor);
 	}
 
 	void importCoreFunctions(FunctionRegisterHelper& fb) {

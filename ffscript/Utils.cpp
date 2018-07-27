@@ -51,6 +51,15 @@ namespace ffscript {
 		}
 	}
 
+	RawString allocRawString(int size) {
+		RawString rws;
+		rws.size = size;
+		// allocate memory to contain characters and also null character
+		rws.elms = (RawChar*)malloc((size + 1) * sizeof(RawChar));
+
+		return rws;
+	}
+
 	template <typename T>
 	void addParam(SimpleVariantArray* pArray, const T& val, int type) {
 		SimpleVariant& aVariant = pArray->elems[pArray->size];

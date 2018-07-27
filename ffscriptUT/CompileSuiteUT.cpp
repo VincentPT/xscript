@@ -4,6 +4,7 @@
 #include <ScriptTask.h>
 #include <Utils.h>
 #include <DefaultPreprocessor.h>
+#include <RawStringLib.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
@@ -82,6 +83,10 @@ namespace ffscriptUT
 			compiler.initialize(8);
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			auto scriptCompiler = rootScope->getCompiler();
+			
+			includeRawStringToCompiler(scriptCompiler);
+			// if not call bellow code, the RawString library will be remove when compile the program
+			scriptCompiler->beginUserLib();
 
 			const wchar_t* scriptCode =
 				L"void main() {"
@@ -107,6 +112,9 @@ namespace ffscriptUT
 			compiler.initialize(8);
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			auto scriptCompiler = rootScope->getCompiler();
+			includeRawStringToCompiler(scriptCompiler);
+			// if not call bellow code, the RawString library will be remove when compile the program
+			scriptCompiler->beginUserLib();
 
 			const wchar_t* scriptCode =
 				L"void main() {"
@@ -132,6 +140,9 @@ namespace ffscriptUT
 			compiler.initialize(8);
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			auto scriptCompiler = rootScope->getCompiler();
+			includeRawStringToCompiler(scriptCompiler);
+			// if not call bellow code, the RawString library will be remove when compile the program
+			scriptCompiler->beginUserLib();
 
 			const wchar_t* scriptCode =
 				L"void main() {"
@@ -157,6 +168,9 @@ namespace ffscriptUT
 			compiler.initialize(8);
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			auto scriptCompiler = rootScope->getCompiler();
+			includeRawStringToCompiler(scriptCompiler);
+			// if not call bellow code, the RawString library will be remove when compile the program
+			scriptCompiler->beginUserLib();
 
 			const wchar_t* scriptCode =
 				L"void main() {"

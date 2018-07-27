@@ -90,6 +90,10 @@ namespace ffscript {
 		arr.size = 0;
 	}
 
+	RawString allocRawString(int size);
+
+#define freeRawString freeSimpleArray<RawChar>
+
 	std::string convertToAscii(const wchar_t* ws, size_t n);
 	std::string convertToAscii(const wchar_t* ws);
 	std::wstring convertToWstring(const std::string& s);
