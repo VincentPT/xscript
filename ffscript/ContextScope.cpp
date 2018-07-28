@@ -777,11 +777,11 @@ namespace ffscript {
 		int iRes = 0;
 		for (auto it = _commandBuilder.begin(); it != _commandBuilder.end();) {
 			CommandUnitRef& commandUnit = *it;
-			ExecutableUnitRef& exeUnit = dynamic_pointer_cast<ExecutableUnit>(commandUnit);
+			ExecutableUnit* exeUnit = dynamic_cast<ExecutableUnit*>(commandUnit.get());
 
 			if (exeUnit) {
 				std::list<FunctionRef> destructors;
-				iRes = checkAndGenerateDestructors(scriptCompiler, (Function*)exeUnit.get(), destructors);
+				iRes = checkAndGenerateDestructors(scriptCompiler, (Function*)exeUnit, destructors);
 				if (iRes) {
 					break;
 				}
