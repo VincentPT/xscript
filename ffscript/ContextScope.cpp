@@ -15,6 +15,7 @@
 #include "Program.h"
 #include "RefFunction.h"
 #include "ScopedCompilingScope.h"
+#include "DestructorContextScope.h"
 
 namespace ffscript {
 	extern std::string key_while;
@@ -627,11 +628,24 @@ namespace ffscript {
 		}
 
 		int childrenBaseOffset = getBaseOffset() + getDataSize();
-
+		
 		const ScopeRefList& children = getChildren();
+
 		for (auto it = children.begin(); it != children.end(); ++it) {
 			auto& scope = *it;
-			scope->setBaseOffset(childrenBaseOffset);
+
+			DestructorContextScope* destructorScope = dynamic_cast<DestructorContextScope*>(scope.get());
+			if (destructorScope) {
+				auto excutor =  (ExpUnitExecutor*)updateLaterMan->findUpdateInfo(destructorScope->getDestructorParentUnit());
+				auto destructorCommandSize = excutor->getLocalSize();
+				// to prevent the sub scope overwrite data to its parent command
+				// it must has the base offset seperate from memory of the command
+				destructorScope->setBaseOffset(childrenBaseOffset + destructorCommandSize);
+			}
+			else {
+				scope->setBaseOffset(childrenBaseOffset);
+			}
+
 			if (scope->extractCode(program) == false) return false;
 		}
 
@@ -773,6 +787,7 @@ namespace ffscript {
 	int ContextScope::correctAndOptimize(Program* program) {
 		ScriptCompiler* scriptCompiler = getCompiler();
 		ScopeRefList childrenBackup = getChildren();
+		auto updateMan = CodeUpdater::getInstance(this);
 
 		int iRes = 0;
 		for (auto it = _commandBuilder.begin(); it != _commandBuilder.end();) {
@@ -791,8 +806,11 @@ namespace ffscript {
 					//the destructors command will not overwrite their data to current scope
 					//and they can use data of current context to execute their code
 
-					ContextScope* subScope = new ContextScope(this, _functionScope);
+					DestructorContextScope* subScope = new DestructorContextScope(this, _functionScope);
 					subScope->setLoopScope(_loopScope);
+					subScope->setDestructorParentUnit(exeUnit);
+					// note to later task that this command unit need to map with excutor object
+					updateMan->setUpdateInfo(exeUnit, nullptr);
 
 					//apply enter scope command
 					EnterScopeBuilder* enterScope = new EnterScopeBuilder(subScope);
@@ -808,6 +826,7 @@ namespace ffscript {
 					//insert command after current command to run the scope automatically
 					auto jumpToSubScope = std::make_shared<JumpToSubScopeCommandBuilder>(subScope);
 					_commandBuilder.insert(it, jumpToSubScope);
+					
 					continue;
 				}
 			}

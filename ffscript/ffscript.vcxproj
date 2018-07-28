@@ -284,6 +284,7 @@
     <ClInclude Include="CompositeConstrutorUnit.h" />
     <ClInclude Include="ConditionalOperator.h" />
     <ClInclude Include="DefaultPreprocessor.h" />
+    <ClInclude Include="DestructorContextScope.h" />
     <ClInclude Include="FFScriptArray.hpp" />
     <ClInclude Include="FFStack.h" />
     <ClInclude Include="ffutil.hpp" />
@@ -368,6 +369,7 @@
     <ClCompile Include="CompositeConstrutorUnit.cpp" />
     <ClCompile Include="ConditionalOperator.cpp" />
     <ClCompile Include="DefaultPreprocessor.cpp" />
+    <ClCompile Include="DestructorContextScope.cpp" />
     <ClCompile Include="FuncLibrary.cpp" />
     <ClCompile Include="FwdCompositeConstrutorUnit.cpp" />
     <ClCompile Include="InternalCompilerSuite.cpp" />
