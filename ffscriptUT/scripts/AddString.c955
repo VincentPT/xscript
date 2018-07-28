@@ -1,0 +1,8 @@
+String createSampleString() {
+    String s = "simple string";
+    return s;
+}
+
+String addString() {
+    return "this is a " + createSampleString();
+}

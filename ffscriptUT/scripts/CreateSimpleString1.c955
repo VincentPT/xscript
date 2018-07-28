@@ -1,0 +1,4 @@
+String createSampleString() {
+    String s = "Simple String";
+    return s;
+}

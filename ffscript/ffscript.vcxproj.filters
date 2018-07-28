@@ -283,6 +283,9 @@
     <ClInclude Include="RawStringLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DestructorContextScope.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -472,6 +475,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RawStringLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DestructorContextScope.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

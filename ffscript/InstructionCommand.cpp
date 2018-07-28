@@ -144,7 +144,7 @@ namespace ffscript {
 
 	void PushParamRef::buildCommandText(std::list<std::string>& strCommands) {		
 		std::stringstream ss;
-		ss << "lea(" << int_to_hex((size_t)_param) << ", [" << getTargetOffset() << "])";
+		ss << "lea (" << int_to_hex((size_t)_param) << ", [" << getTargetOffset() << "])";
 		strCommands.emplace_back(ss.str());
 	}
 
@@ -155,7 +155,9 @@ namespace ffscript {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
-	PushParamRefOffset::PushParamRefOffset() : _sourceOffset(0), TargetedCommand(0, sizeof(void*)) {}
+	PushParamRefOffset::PushParamRefOffset() : _sourceOffset(0), TargetedCommand(0, sizeof(void*)) {
+		_sourceOffset = 0;
+	}
 	PushParamRefOffset::~PushParamRefOffset() {}
 	void PushParamRefOffset::setCommandData(int sourceOffset, int targetOffset) {
 		_sourceOffset = sourceOffset;
@@ -807,12 +809,12 @@ namespace ffscript {
 		for (auto it = _accessors->begin(); it != _accessors->end(); it++) {
 			accessor = *it;
 			if (accessorTmp = dynamic_cast<MVContextAccessor*>(accessor)) {
-				strCommands.emplace_back("lea([current_offset()], REGISTER)");
+				strCommands.emplace_back("lea ([current_offset()], REGISTER)");
 			}
 			else if(accessorTmp = dynamic_cast<MVGlobalAccessor*>(accessor)) {
 				std::stringstream ss;
 				ss << "lea(" << int_to_hex(((MVGlobalAccessor*)accessor)->access(nullptr)) << ", REGISTER)";
-				strCommands.emplace_back("lea([current_offset()], REGISTER)");
+				strCommands.emplace_back("lea ([current_offset()], REGISTER)");
 			}
 			else if (accessorTmp = dynamic_cast<MVOffsetAccessor*>(accessor)) {
 				strCommands.emplace_back("add(REGISTER, " + std::to_string(((MVOffsetAccessor*)accessor)->_offset) + ")");
@@ -865,12 +867,12 @@ namespace ffscript {
 		for (auto it = _accessors->begin(); it != _accessors->end(); it++) {
 			accessor = *it;
 			if (accessorTmp = dynamic_cast<MVContextAccessor*>(accessor)) {
-				strCommands.emplace_back("lea([current_offset()], REGISTER)");
+				strCommands.emplace_back("lea ([current_offset()], REGISTER)");
 			}
 			else if (accessorTmp = dynamic_cast<MVGlobalAccessor*>(accessor)) {
 				std::stringstream ss;
-				ss << "lea(" << int_to_hex(((MVGlobalAccessor*)accessor)->access(nullptr)) << ", REGISTER)";
-				strCommands.emplace_back("lea([current_offset()], REGISTER)");
+				ss << "lea (" << int_to_hex(((MVGlobalAccessor*)accessor)->access(nullptr)) << ", REGISTER)";
+				strCommands.emplace_back("lea ([current_offset()], REGISTER)");
 			}
 			else if (accessorTmp = dynamic_cast<MVOffsetAccessor*>(accessor)) {
 				strCommands.emplace_back("add(REGISTER, " + std::to_string(((MVOffsetAccessor*)accessor)->_offset) + ")");
@@ -881,7 +883,7 @@ namespace ffscript {
 		}
 
 		std::stringstream ss;
-		ss << "lea(REGISTER, [" << getTargetOffset() << "])";
+		ss << "lea (REGISTER, [" << getTargetOffset() << "])";
 
 		strCommands.emplace_back(ss.str());
 	}

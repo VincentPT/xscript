@@ -259,7 +259,7 @@ namespace ffscript {
 		if (rws.size == 0) {
 			constantConstructor(rwNew, s);
 		}
-		if (s.size() == 0) {
+		else if (s.size() == 0) {
 			constantConstructor(rwNew, rws);
 		}
 		else {
@@ -276,7 +276,7 @@ namespace ffscript {
 		if (rws.size == 0) {
 			constantConstructor(rwNew, s);
 		}
-		if (s.size() == 0) {
+		else if (s.size() == 0) {
 			constantConstructor(rwNew, rws);
 		}
 		else {

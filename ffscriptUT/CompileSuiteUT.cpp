@@ -6,6 +6,8 @@
 #include <DefaultPreprocessor.h>
 #include <RawStringLib.h>
 
+#include "Utils.h"
+
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
@@ -578,6 +580,72 @@ namespace ffscriptUT
 			Assert::AreEqual(3, preprocessor->getOriginalLine(22), L"line original map failed");
 			Assert::AreEqual(3, preprocessor->getOriginalLine(24), L"line original map failed");
 			Assert::AreEqual(4, preprocessor->getOriginalLine(30), L"line original map failed");
+		}
+
+		shared_ptr<Program> loadProgram(GlobalScopeRef& rootScope, const char* file,
+			const char* functionName, const char* params, int& functionId) {
+			shared_ptr<Program> program;
+			
+			CompilerSuite compiler;
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+			// include String library and ...
+			includeRawStringToCompiler(scriptCompiler);
+			// ... make it as system lib
+			scriptCompiler->beginUserLib();
+
+			auto script = readCodeFromUtf8File(file);
+
+			compiler.setPreprocessor(std::make_shared<DefaultPreprocessor>());
+			program = shared_ptr<Program>(compiler.compileProgram(script.c_str(), script.c_str() + script.size()));
+
+			Assert::IsNotNull(program.get(), (L"compie program failed: " + convertToWstring(scriptCompiler->getLastError())).c_str());
+
+			functionId = scriptCompiler->findFunction(functionName, "");
+			Assert::IsTrue(functionId >= 0, (L"cannot find function '" + convertToWstring(functionName) + L"'").c_str());
+
+			return program; 
+		}
+
+		TEST_METHOD(CreateSimpleString1)
+		{
+			GlobalScopeRef rootScope;
+			int functionId;
+			char* functionName = "createSampleString";
+			auto program = loadProgram(rootScope, "CreateSimpleString1.c955", functionName, "", functionId);
+			auto scriptCompiler = rootScope->getCompiler();
+
+			ScriptTask scriptTask(program.get());
+			scriptTask.runFunction(functionId, nullptr);
+
+			RawString* rws = (RawString*)scriptTask.getTaskResult();
+
+			int cmpRes = memcmp(rws->elms, L"Simple String", (rws->size + 1)* sizeof(RawChar));
+			Assert::AreEqual(0, cmpRes);
+
+			freeRawString(*rws);
+		}
+
+		TEST_METHOD(CreateSimpleString2)
+		{
+			GlobalScopeRef rootScope;
+			int functionId;
+			char* functionName = "addString";
+			auto program = loadProgram(rootScope, "AddString.c955", functionName, "", functionId);
+			auto scriptCompiler = rootScope->getCompiler();
+
+			ScriptTask scriptTask(program.get());
+			scriptTask.runFunction(functionId, nullptr);
+
+			RawString* rws = (RawString*)scriptTask.getTaskResult();
+
+			int cmpRes = memcmp(rws->elms, L"this is a simple string", (rws->size + 1) * sizeof(RawChar));
+			Assert::AreEqual(0, cmpRes);
+
+			freeRawString(*rws);
 		}
 	};
 }
