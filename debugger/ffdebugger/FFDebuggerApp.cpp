@@ -53,6 +53,8 @@ void FFDebuggerApp::setup()
 	firstWindow->setTitle("buzz");
 
 	setupCliboard();
+
+	defaultNativeWindow->hide();
 }
 
 void FFDebuggerApp::setupCliboard() {
@@ -76,9 +78,10 @@ void FFDebuggerApp::keyDown( KeyEvent event )
 {
 /*	if( event.getChar() == 'f' )
 		setFullScreen( ! isFullScreen() );
-	else */
+	else 
 	if( event.getChar() == 'q' )
 		createNewWindow();
+		*/
 }
 
 void FFDebuggerApp::update() {
