@@ -28,7 +28,7 @@ namespace ffscript {
 		strCommands.emplace_back(ss.str());
 
 		ss.clear();
-		ss << "lea([" << getTargetOffset() << "|[" << _command1->getTargetOffset() << "]|";
+		ss << "lea ([" << getTargetOffset() << "|[" << _command1->getTargetOffset() << "]|";
 		strCommands.emplace_back(ss.str());
 	}
 
@@ -337,8 +337,8 @@ namespace ffscript {
 		_currentScopeCodeSize = currentScope->getScopeSize() - currentScope->getDataSize();
 		int beginOffset = currentScope->getBaseOffset() + currentScope->getScopeSize();
 
-		EnterContextScope* enterOperatorConext = new EnterContextScope();
-		constructorItems.push_back(enterOperatorConext);
+		EnterContextScope* enterOperatorContext = new EnterContextScope();
+		constructorItems.push_back(enterOperatorContext);
 
 		InstructionCommand* itemConstructor;
 		for (auto it = operatorInfoList.begin(); it != operatorInfoList.end(); it++) {
@@ -373,7 +373,7 @@ namespace ffscript {
 			_itemOffsets.push_back(buildItemInfo.itemOffset);
 		}
 
-		enterOperatorConext->setScopeInfo(0, maxReturnSize + maxParamSize, 0);
+		enterOperatorContext->setScopeInfo(0, maxReturnSize + maxParamSize, 0);
 
 		ExitContextScope* exitOperatorConext = new ExitContextScope();
 		exitOperatorConext->setScopeInfo(0, maxReturnSize + maxParamSize);
