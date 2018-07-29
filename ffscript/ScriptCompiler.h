@@ -191,8 +191,8 @@ namespace ffscript {
 			const list<OverLoadingItem>* overloadingFuncs,
 			const std::vector<CandidateCollectionRef>& candidatesForParams, EExpressionResult& eResult);
 
-		FunctionRef applyConstructorForCompisiteType(const ExecutableUnitRef& xOperand, const DynamicParamFunctionRef& secondOperand, bool& hasNoError);
-		FunctionRef applyAssigmentForCompisiteType(const ExecutableUnitRef& xOperand, const DynamicParamFunctionRef& secondOperand, bool& hasNoError);
+		FunctionRef applyConstructorForCompisiteType(const ExecutableUnitRef& xOperand, const ExecutableUnitRef& secondOperand, bool& hasNoError);
+		FunctionRef applyAssigmentForCompisiteType(const ExecutableUnitRef& xOperand, const ExecutableUnitRef& secondOperand, bool& hasNoError);
 		bool findMatchingComposite(const ScriptType& argumentType, const ExecutableUnitRef& unit, ParamCastingInfo& paramInfo);
 
 		bool registFunctionOperator(int type, int functionId);

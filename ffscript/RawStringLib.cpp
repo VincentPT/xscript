@@ -17,11 +17,6 @@
 #include <codecvt>
 
 namespace ffscript {
-	template <class T>
-	DFunction2Ref createStringNativeFunc(RawString(*f)(T)) {
-		return std::make_shared<CdeclFunction2<RawString, T>>(f);
-	}
-
 	template <class Rt, class T1, class T2>
 	DFunction2* createBinaryOperatorCdecl(Rt(_cdecl *f)(T1, T2)) {
 		return new CdeclFunction2<Rt, T1, T2>(f);
@@ -203,7 +198,7 @@ namespace ffscript {
 	}
 
 	RawString ToString(const float& val) {
-		RawChar buffer[15];
+		RawChar buffer[64];
 		swprintf(buffer, L"%f", val);
 
 		RawString rawString = allocRawString((int)wcslen(buffer));

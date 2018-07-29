@@ -1251,7 +1251,7 @@ namespace ffscript {
 	/// check ability of assigning a dynamic array to a struct and apply a new function t o
 	/// allow assign each member of struct to a parameter unit of second operand unit
 	///
-	FunctionRef ScriptCompiler::applyConstructorForCompisiteType(const ExecutableUnitRef& firstParamUnit, const DynamicParamFunctionRef& secondOperand, bool& hasNoError) {		
+	FunctionRef ScriptCompiler::applyConstructorForCompisiteType(const ExecutableUnitRef& firstParamUnit, const ExecutableUnitRef& secondOperand, bool& hasNoError) {
 		ScriptType typeVoid(getTypeManager()->getBasicTypes().TYPE_VOID, "void");
 		FunctionRef assignmentCompositeUnit;
 
@@ -1273,7 +1273,7 @@ namespace ffscript {
 		return assignmentCompositeUnit;
 	}
 
-	FunctionRef ScriptCompiler::applyAssigmentForCompisiteType(const ExecutableUnitRef& firstParamUnit, const DynamicParamFunctionRef& secondOperand, bool& hasNoError) {
+	FunctionRef ScriptCompiler::applyAssigmentForCompisiteType(const ExecutableUnitRef& firstParamUnit, const ExecutableUnitRef& secondOperand, bool& hasNoError) {
 		ScriptType typeVoid(getTypeManager()->getBasicTypes().TYPE_VOID, "void");
 		FunctionRef assignmentCompositeUnit;
 

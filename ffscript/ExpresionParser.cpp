@@ -2985,7 +2985,7 @@ namespace ffscript {
 							int variantArrayType = basicType.TYPE_VARIANTARRAY;
 							if (variantArrayType == dataType2.iType() || variantArrayType == dataType2.origin()) {							
 								bool hasNoError;
-								auto functionRef = scriptCompiler->applyConstructorForCompisiteType(pExeUnit1, dynamic_pointer_cast<DynamicParamFunction>(pExeUnit2), hasNoError);
+								auto functionRef = scriptCompiler->applyConstructorForCompisiteType(pExeUnit1, pExeUnit2, hasNoError);
 								if (!hasNoError) {
 									eResult = E_TYPE_CONVERSION_ERROR;
 									scriptCompiler->setErrorText("different type and different number of element for struct assigment does not allow");

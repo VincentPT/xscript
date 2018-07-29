@@ -11,6 +11,7 @@
 #include "ControllerExecutor.h"
 #include "ContextScope.h"
 #include "StructClass.h"
+#include "ScopedCompilingScope.h"
 
 #include <string>
 
@@ -148,7 +149,6 @@ namespace ffscript {
 		/* int sum(int a, int b)*/
 
 		c = text;
-
 		while (c < end) {
 
 			d = this->detectKeyword(c, end);
@@ -205,10 +205,50 @@ namespace ffscript {
 						break;
 					}
 				}
-				/*if (type != DATA_TYPE_UNKNOWN)
-					pVariable->setDataType(type);*/
+				else if (!type.isUnkownType()) {
+					pVariable = registVariable(token1);
+					pVariable->setDataType(type);
+				} 
 
-				c = parseExpression(e, end);
+				// begin replace
+				// begin remove
+				// c = parseExpression(e, end);
+				// end remove
+				// begin add
+				std::list<ExpUnitRef> unitList;
+				{
+					ScopedCompilingScope autoScope(scriptCompiler, this);
+					ExpressionParser parser(getCompiler());
+					EExpressionResult eResult = E_FAIL;
+					c = parser.readExpression(d, end, eResult, unitList);
+
+					if (eResult != E_SUCCESS || c == nullptr) {
+						return nullptr;
+					}
+					if (unitList.size() == 0) {
+						scriptCompiler->setErrorText("incompleted expression");
+						return nullptr;
+					}
+					if (unitList.size() >= 2) {
+						auto it = unitList.begin();
+						auto& firstUnit = *it++;
+						auto& secondtUnit = *it++;
+						if (firstUnit->getType() == EXP_UNIT_ID_XOPERAND && secondtUnit->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
+							auto xOperand = unitList.front();
+							MaskType mask = (xOperand->getMask() | UMASK_DECLAREINEXPRESSION);
+							firstUnit->setMask(mask);
+
+							auto operatorEntry = scriptCompiler->findPredefinedOperator(DEFAULT_COPY_OPERATOR);
+							auto defaultAssigmentUnit = new DynamicParamFunction(operatorEntry->name, operatorEntry->operatorType, operatorEntry->priority, operatorEntry->maxParam);
+							secondtUnit.reset(defaultAssigmentUnit);
+						}
+					}
+				}
+				if (parseExpressionInternal(unitList) != E_SUCCESS) {
+					c = nullptr;
+				}
+				// end add
+				// end replace
 				if (c == nullptr) {
 					//parse expression failed
 					break;

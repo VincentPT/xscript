@@ -35,7 +35,17 @@ namespace ffscript {
 	}
 
 	void GlobalScope::runGlobalCode() {
+		int constructorCount = this->getConstructorCommandCount();
+		int dataSize = getDataSize();
+		int codeSize = getScopeSize() - dataSize;
+
+		_staticContextRef->pushContext(constructorCount);
+		_staticContextRef->scopeAllocate(dataSize, codeSize);
+
 		_staticContextRef->run();
+
+		_staticContextRef->scopeUnallocate(dataSize, codeSize);
+		_staticContextRef->popContext();
 	}
 
 	int GlobalScope::registScriptFunction(const std::string& name, const ScriptType& returnType, const std::vector<ScriptType>& paramTypes) {

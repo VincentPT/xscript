@@ -395,7 +395,7 @@ namespace ffscript {
 							if (unitList.size() >= 2) {
 								auto it = unitList.begin();
 								auto& firstUnit = *it++;
-								auto& secondtUnit = *it++;								
+								auto& secondtUnit = *it++;
 								if (firstUnit->getType() == EXP_UNIT_ID_XOPERAND && secondtUnit->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
 									auto xOperand = unitList.front();
 									MaskType mask = (xOperand->getMask() | UMASK_DECLAREINEXPRESSION);

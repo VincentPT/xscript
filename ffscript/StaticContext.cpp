@@ -21,6 +21,9 @@ namespace ffscript {
 	}
 
 	void StaticContext::run() {
+		auto currentContext = Context::getCurrent();
+		Context::makeCurrent(this);
+
 		for (auto it = _globalComands.begin(); it != _globalComands.end(); ++it) {
 			(*(*it))->execute();
 #ifndef THROW_EXCEPTION_ON_ERROR
@@ -30,5 +33,7 @@ namespace ffscript {
 			}
 #endif
 		}
+
+		Context::makeCurrent(currentContext);
 	}
 }

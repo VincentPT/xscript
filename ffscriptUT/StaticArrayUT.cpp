@@ -453,5 +453,34 @@ namespace ffscriptUT
 
 			Assert::AreEqual(1, *iRes);
 		}
+
+		TEST_METHOD(StaticArray1DInitializeUT2)
+		{
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			const wchar_t scriptCode[] =
+				L"array<int,3> ret = {1, 2};"
+				L"int foo() {"
+				L"	int res = ret[0];"
+				L"	return res;"
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			int functionId = scriptCompiler->findFunction("foo", {});
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+
+			rootScope->runGlobalCode();
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			int* iRes = (int*)scriptTask.getTaskResult();
+
+			Assert::AreEqual(1, *iRes);
+		}
 	};
 }

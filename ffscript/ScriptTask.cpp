@@ -36,6 +36,8 @@ namespace ffscript {
 		{
 			_scriptContext->scopeUnallocate(_allocatedSize, 0);
 		}
+		Context::makeCurrent(_scriptContext);
+
 		Program* program = _program;
 
 		if (_functionId != functionId) {
