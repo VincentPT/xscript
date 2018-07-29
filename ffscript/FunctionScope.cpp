@@ -11,18 +11,18 @@ namespace ffscript {
 	FunctionScope::FunctionScope(ScriptScope* parent, const std::string& name, const ScriptType& returnType) :
 		ContextScope(parent, this),
 		_name(name),
-		_returnType(returnType) {		
+		_returnType(returnType) {
 	}
 
-	FunctionScope::~FunctionScope(){
+	FunctionScope::~FunctionScope() {
+	}
+
+	const ScriptType& FunctionScope::getReturnType() const {
+		return _returnType;
 	}
 
 	const wchar_t* FunctionScope::parseFunctionParameters(const wchar_t* text, const wchar_t* end, std::vector<ScriptType>& paramTypes) {
 		const wchar_t* c;
-		const wchar_t* d;
-		std::string token1;
-		ScriptType type;
-		Variable* pVariable;
 
 		c = trimLeft(text, end);
 		if (*c != '(') return nullptr;
@@ -32,6 +32,23 @@ namespace ffscript {
 			return ++c;
 		}
 
+		list<Variable*> registeredVariables;
+		c = parseFunctionParametersInternal(c, end, paramTypes, registeredVariables);
+		if (c == nullptr) {
+			for (auto it = registeredVariables.begin(); it != registeredVariables.end(); it++) {
+				removeVariable(*it);
+			}
+		}
+		return c;
+	}
+
+	const wchar_t* FunctionScope::parseFunctionParametersInternal(const wchar_t* c, const wchar_t* end,
+		std::vector<ScriptType>& paramTypes, list<Variable*>& registeredVariables) {
+		const wchar_t* d;
+		std::string token1;
+		ScriptType type;
+
+		Variable* pVariable;
 		paramTypes.clear();
 		decltype(c) e;
 		while (c < end) {
@@ -49,7 +66,7 @@ namespace ffscript {
 			paramTypes.push_back(type);
 
 			if (c == d) {
-				pVariable = registVariable();				
+				pVariable = registVariable();
 			}
 			else {
 				token1 = convertToAscii(d, c - d);
@@ -62,6 +79,10 @@ namespace ffscript {
 			pVariable->setDataType(type);
 			pVariable->setGroupType(VariableGroupType::FuntionParameter);
 
+			// add variable to list then use to rollback
+			// in case any error occurs
+			registeredVariables.push_back(pVariable);
+
 			c = trimLeft(c, end);
 			if (*c == ')') {
 				c++;
@@ -71,7 +92,7 @@ namespace ffscript {
 				c = lastCharInToken(c, end);
 				token1.resize(c - e);
 				token1.assign(e, c);
-				getCompiler()->setErrorText("invalid function parameter '" + token1  + "'");
+				getCompiler()->setErrorText("invalid function parameter '" + token1 + "'");
 				c = nullptr;
 				break;
 			}
@@ -82,6 +103,14 @@ namespace ffscript {
 	}
 
 	const wchar_t* FunctionScope::parse(const wchar_t* text, const wchar_t* end) {
+		std::vector<ScriptType> paramTypes;
+		const wchar_t* c = parseHeader(text, end, paramTypes);
+		if (c == nullptr) return nullptr;
+
+		return parseBody(c, end, _returnType, paramTypes);
+	}
+
+	const wchar_t* FunctionScope::parseHeader(const wchar_t* text, const wchar_t* end, std::vector<ScriptType>& paramTypes) {
 		const wchar_t* c;
 
 		//register auto variable to store return value
@@ -93,16 +122,15 @@ namespace ffscript {
 #else
 		returnDataStorage->setDataType(_returnType);
 #endif
-
-		std::vector<ScriptType> paramTypes;
-		paramTypes.reserve(8);
 		c = parseFunctionParameters(text, end, paramTypes);
 
 		if (c == nullptr) {
+			// rollback register variable for return data
+			removeVariable(returnDataStorage);
 			return nullptr;
 		}
 
-		return parseBody(c, end, _returnType, paramTypes);
+		return c;
 	}
 
 	const wchar_t* FunctionScope::parseBody(const wchar_t* text, const wchar_t* end, const ScriptType& returnType, const std::vector<ScriptType>& paramTypes) {

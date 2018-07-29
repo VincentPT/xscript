@@ -55,6 +55,7 @@ namespace ffscript {
 		Variable* findVariable(const std::string&);
 		Variable* registVariable(const std::string&);
 		Variable* registVariable();
+		void removeVariable(Variable*);
 		Variable* registTempVariable(CommandUnit* parentUnit, int offset);
 		Variable* applyTemporaryVariableFor(CommandUnit* parentUnit, Variable* pVariable);
 		bool deleteTempVariable(CommandUnit* parentUnit);

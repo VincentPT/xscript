@@ -47,6 +47,22 @@ namespace ffscript {
 		return &(_varibles.back());
 	}
 
+	void ScriptScope::removeVariable(Variable* v) {
+		if (v->getName() == "") {
+		}
+		else {
+			_variableNameMap.erase(v->getName());
+		}
+
+		for (auto it = _varibles.begin(); it != _varibles.end(); it++) {
+			auto& variable = *it;
+			if (v == &variable) {
+				_varibles.erase(it);
+				break;
+			}
+		}
+	}
+
 	Variable* ScriptScope::registTempVariable(CommandUnit* parentUnit, int offset) {
 		auto it = _variableUnitMap.insert(std::make_pair(parentUnit, nullptr));
 		if (it.second) {

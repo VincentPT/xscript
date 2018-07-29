@@ -20,12 +20,15 @@ namespace ffscript {
 		int getFunctionId() const;
 		const std::string& getName() const;
 		virtual bool updateCodeForControllerCommands(Program* program);
+		const ScriptType& getReturnType() const;
 	public:
 		const wchar_t* parseFunctionParameters(const wchar_t* text, const wchar_t* end, std::vector<ScriptType>& paramTypes);
 		virtual const wchar_t* parse(const wchar_t* text, const wchar_t* end);
+		virtual const wchar_t* parseHeader(const wchar_t* text, const wchar_t* end, std::vector<ScriptType>& paramTypes);
+		const wchar_t* parseBody(const wchar_t* text, const wchar_t* end, const ScriptType& returnType, const std::vector<ScriptType>& paramTypes);
 		virtual bool extractCode(Program* program);
 	protected:
-		const wchar_t* parseBody(const wchar_t* text, const wchar_t* end, const ScriptType& returnType, const std::vector<ScriptType>& paramTypes);
+		const wchar_t* parseFunctionParametersInternal(const wchar_t* text, const wchar_t* end, std::vector<ScriptType>& paramTypes, list<Variable*>& registeredVariables);
 	};
 
 	class AnonymousFunctionScope : public FunctionScope {

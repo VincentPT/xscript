@@ -225,10 +225,18 @@ namespace ffscript {
 				}
 				else if (*c == '(') {
 					FunctionScope* functionScope = new FunctionScope(this, token1, type);
-					if ((c = functionScope->parse(d, end))) {
-						// try parse expression in global scope
-						continue;
+					std::vector<ScriptType> paramTypes;
+					// try to parse the text as a function header ...
+					if ((c = functionScope->parseHeader(d, end, paramTypes))) {
+						// ...if success, continue to parse body function
+						if ((c = functionScope->parseBody(c, end, functionScope->getReturnType(), paramTypes))) {
+							// parse the body success
+							continue;
+						}
+						// parse the body failed
+						break;
 					}
+					// ...if not success, try to parse the text as an expression
 					c = parseExpression(e, end);
 					if (c == nullptr) {
 						break;
