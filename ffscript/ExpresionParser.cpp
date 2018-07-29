@@ -547,7 +547,13 @@ namespace ffscript {
 							pExpUnit = new CConstOperand<__int64>(sign * _wtoll(sToken), "long");
 						}
 						else {
-							pExpUnit = new CConstOperand<int>(sign * _wtoi(sToken), "int");
+							auto lVal = _wtoll(sToken);
+							if (lVal > 0xFFFFFFFFll) {
+								pExpUnit = new CConstOperand<__int64>(sign * _wtoll(sToken), "long");
+							}
+							else {
+								pExpUnit = new CConstOperand<int>(sign * _wtoi(sToken), "int");
+							}
 						}
 					}
 				}
