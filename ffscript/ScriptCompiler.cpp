@@ -877,17 +877,17 @@ namespace ffscript {
 			return false;
 		}
 
-		auto theFunction = createFunctionFromId(functionId);
+		auto theFunction = FunctionRef(createFunctionFromId(functionId));
 		if (!theFunction) {
 			return false;
 		}
-
-		if (argumentType != theFunction->getReturnType()) {
+		auto& rt = theFunction->getReturnType();
+		if (argumentType != rt) {
 			return false;
 		}
 
 		paramInfo.accurative = findConversionAccurative(paramType.iType(), argumentType.iType());
-		paramInfo.castingFunction.reset(theFunction);
+		paramInfo.castingFunction = theFunction;
 
 		return true;
 	}
