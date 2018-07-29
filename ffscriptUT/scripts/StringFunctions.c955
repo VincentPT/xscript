@@ -1,0 +1,37 @@
+String createSampleString() {
+    String s = "simple string";
+    return s;
+}
+
+String addString1() {
+    return "this is a " + createSampleString();
+}
+
+///////////////////// convert to string test cases //////////////////////////
+String convertToString1() {
+    bool val = false;
+    String s = "bool value:" + String(val);
+    return s;
+}
+
+String convertToString2() {
+    int val = 123;
+    String s = "integer value:";
+    return s + val;
+}
+
+
+String convertToString3() {
+    float val = 1.0;
+    return "float value:" + val;
+}
+
+String convertToString4() {
+    long val = 1234567890987654321;
+    return L"long value:" + val;
+}
+
+String convertToString5() {
+    double val = 28.0;
+    return L"the temperature is " + val + " degree";
+}

@@ -629,12 +629,12 @@ namespace ffscriptUT
 			freeRawString(*rws);
 		}
 
-		TEST_METHOD(CreateSimpleString2)
+		TEST_METHOD(AddString1)
 		{
 			GlobalScopeRef rootScope;
 			int functionId;
-			char* functionName = "addString";
-			auto program = loadProgram(rootScope, "AddString.c955", functionName, "", functionId);
+			char* functionName = "addString1";
+			auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
 			auto scriptCompiler = rootScope->getCompiler();
 
 			ScriptTask scriptTask(program.get());
@@ -643,6 +643,101 @@ namespace ffscriptUT
 			RawString* rws = (RawString*)scriptTask.getTaskResult();
 
 			int cmpRes = memcmp(rws->elms, L"this is a simple string", (rws->size + 1) * sizeof(RawChar));
+			Assert::AreEqual(0, cmpRes);
+
+			freeRawString(*rws);
+		}
+
+		TEST_METHOD(ConvertToString1)
+		{
+			GlobalScopeRef rootScope;
+			int functionId;
+			char* functionName = "convertToString1";
+			auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
+			auto scriptCompiler = rootScope->getCompiler();
+
+			ScriptTask scriptTask(program.get());
+			scriptTask.runFunction(functionId, nullptr);
+
+			RawString* rws = (RawString*)scriptTask.getTaskResult();
+
+			int cmpRes = memcmp(rws->elms, L"bool value:false", (rws->size + 1) * sizeof(RawChar));
+			Assert::AreEqual(0, cmpRes);
+
+			freeRawString(*rws);
+		}
+
+		TEST_METHOD(ConvertToString2)
+		{
+			GlobalScopeRef rootScope;
+			int functionId;
+			char* functionName = "convertToString2";
+			auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
+			auto scriptCompiler = rootScope->getCompiler();
+
+			ScriptTask scriptTask(program.get());
+			scriptTask.runFunction(functionId, nullptr);
+
+			RawString* rws = (RawString*)scriptTask.getTaskResult();
+
+			int cmpRes = memcmp(rws->elms, L"integer value:123", (rws->size + 1) * sizeof(RawChar));
+			Assert::AreEqual(0, cmpRes);
+
+			freeRawString(*rws);
+		}
+
+		TEST_METHOD(ConvertToString3)
+		{
+			GlobalScopeRef rootScope;
+			int functionId;
+			char* functionName = "convertToString3";
+			auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
+			auto scriptCompiler = rootScope->getCompiler();
+
+			ScriptTask scriptTask(program.get());
+			scriptTask.runFunction(functionId, nullptr);
+
+			RawString* rws = (RawString*)scriptTask.getTaskResult();
+
+			int cmpRes = wcsncmp(rws->elms, L"float value:1.0", 15);
+			Assert::AreEqual(0, cmpRes);
+
+			freeRawString(*rws);
+		}
+
+		TEST_METHOD(ConvertToString4)
+		{
+			GlobalScopeRef rootScope;
+			int functionId;
+			char* functionName = "convertToString4";
+			auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
+			auto scriptCompiler = rootScope->getCompiler();
+
+			ScriptTask scriptTask(program.get());
+			scriptTask.runFunction(functionId, nullptr);
+
+			RawString* rws = (RawString*)scriptTask.getTaskResult();
+
+			int cmpRes = wcscmp(rws->elms, L"long value:1234567890987654321");
+			Assert::AreEqual(0, cmpRes);
+
+			freeRawString(*rws);
+		}
+
+		TEST_METHOD(ConvertToString5)
+		{
+			GlobalScopeRef rootScope;
+			int functionId;
+			char* functionName = "convertToString5";
+			auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
+			auto scriptCompiler = rootScope->getCompiler();
+
+			ScriptTask scriptTask(program.get());
+			scriptTask.runFunction(functionId, nullptr);
+
+			RawString* rws = (RawString*)scriptTask.getTaskResult();
+
+			int cmpRes = wcscmp(rws->elms, L"the temperature is 28.000000 degree");
 			Assert::AreEqual(0, cmpRes);
 
 			freeRawString(*rws);
