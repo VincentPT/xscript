@@ -549,10 +549,10 @@ namespace ffscript {
 						else {
 							auto lVal = _wtoll(sToken);
 							if (lVal > 0xFFFFFFFFll) {
-								pExpUnit = new CConstOperand<__int64>(sign * _wtoll(sToken), "long");
+								pExpUnit = new CConstOperand<__int64>(sign * lVal, "long");
 							}
 							else {
-								pExpUnit = new CConstOperand<int>(sign * _wtoi(sToken), "int");
+								pExpUnit = new CConstOperand<int>(sign * (int)lVal, "int");
 							}
 						}
 					}
