@@ -286,6 +286,12 @@
     <ClInclude Include="DestructorContextScope.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="function\CdeclFunction3.hpp">
+      <Filter>Header Files\Function</Filter>
+    </ClInclude>
+    <ClInclude Include="function\MemberTypeInfo.hpp">
+      <Filter>Header Files\Function</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

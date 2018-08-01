@@ -289,7 +289,9 @@
     <ClInclude Include="FFStack.h" />
     <ClInclude Include="ffutil.hpp" />
     <ClInclude Include="FuncLibrary.h" />
+    <ClInclude Include="function\CdeclFunction3.hpp" />
     <ClInclude Include="function\MemberFunction2Ref.hpp" />
+    <ClInclude Include="function\MemberTypeInfo.hpp" />
     <ClInclude Include="FwdCompositeConstrutorUnit.h" />
     <ClInclude Include="InternalCompilerSuite.h" />
     <ClInclude Include="LogicCommands.hpp" />

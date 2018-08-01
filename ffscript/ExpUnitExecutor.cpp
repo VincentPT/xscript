@@ -181,13 +181,18 @@ namespace ffscript {
 				}
 			}
 			else {
+				auto functionUnit = dynamic_cast<Function*>(node.get());
+				int n = functionUnit->getChildCount();
+				int paramSize = 0;
+				int i;
+				for (i = 0; i < n; i++) {
+					ExecutableUnitRef& paramUnit = functionUnit->getChild(i);
+					paramSize += scriptCompiler->getTypeSizeInStack(paramUnit->getReturnType().iType());
+				}
+				moveLocalOffset(paramSize);
+
 				NativeFunction* expFunctionUnit = dynamic_cast<NativeFunction*>(node.get());
 				if (expFunctionUnit) {
-					int n = expFunctionUnit->getChildCount();
-					moveLocalOffset(n * sizeof(void*));
-
-					int i;
-
 					//because for float and double params, we cannot direct pass them to the native function
 					//we can only pass interger params directly
 					//so we use param reference to pass to the function instead of direct value
@@ -200,24 +205,24 @@ namespace ffscript {
 
 					const BasicTypes& basicTypes = scriptCompiler->getTypeManager()->getBasicTypes();
 					//if (basicTypes) {
-						for (i = 0; i < n; i++) {
-							ExecutableUnitRef& paramUnit = expFunctionUnit->getChild(i);
-							typeSize = scriptCompiler->getTypeSize(paramUnit->getReturnType());
-							if (paramUnit->getReturnType().iType() == basicTypes.TYPE_FLOAT ||
-								paramUnit->getReturnType().iType() == basicTypes.TYPE_DOUBLE ||
-								typeSize > sizeof(void*)) {
-								//additionalParamSize += sizeof(void*);
-								additionalParamSize += typeSize;
-								realParamCount++;
-							}
-						}
-						if (realParamCount) {
-							moveLocalOffset(additionalParamSize);
-							MemoryBlock* memoryBlock = new BufferBlock(realParamCount * 2 * sizeof(int));
-							_memoryBlocks.push_back(MemoryBlockRef(memoryBlock));
+						//for (i = 0; i < n; i++) {
+						//	ExecutableUnitRef& paramUnit = expFunctionUnit->getChild(i);
+						//	typeSize = scriptCompiler->getTypeSize(paramUnit->getReturnType());
+						//	if (paramUnit->getReturnType().iType() == basicTypes.TYPE_FLOAT ||
+						//		paramUnit->getReturnType().iType() == basicTypes.TYPE_DOUBLE ||
+						//		typeSize > sizeof(void*)) {
+						//		//additionalParamSize += sizeof(void*);
+						//		additionalParamSize += typeSize;
+						//		realParamCount++;
+						//	}
+						//}
+						//if (realParamCount) {
+						//	moveLocalOffset(additionalParamSize);
+						//	MemoryBlock* memoryBlock = new BufferBlock(realParamCount * 2 * sizeof(int));
+						//	_memoryBlocks.push_back(MemoryBlockRef(memoryBlock));
 
-							assitParamsInfo = (int*)memoryBlock->getDataRef();							
-						}
+						//	assitParamsInfo = (int*)memoryBlock->getDataRef();							
+						//}
 					//}
 
 					//int realParamOffset = beginParamOffset + (function->getParamsDataSize() - realParamsSize + additionalParamSize);
@@ -227,24 +232,24 @@ namespace ffscript {
 					for (i = 0; i < n; i++) {
 						ExecutableUnitRef& paramUnit = expFunctionUnit->getChild(i);
 						typeSize = scriptCompiler->getTypeSize(paramUnit->getReturnType());
-						if (paramUnit->getReturnType().iType() == basicTypes.TYPE_FLOAT ||
-							paramUnit->getReturnType().iType() == basicTypes.TYPE_DOUBLE ||
-							typeSize > sizeof(void*)) {
-							convert2Code(scriptCompiler, paramUnit, additionalParamOffset);
+						//if (paramUnit->getReturnType().iType() == basicTypes.TYPE_FLOAT ||
+						//	paramUnit->getReturnType().iType() == basicTypes.TYPE_DOUBLE ||
+						//	typeSize > sizeof(void*)) {
+						//	convert2Code(scriptCompiler, paramUnit, additionalParamOffset);
 
-							//move adress of real param to current param offset
-							//or we can call this is a making reference process
-							assitParamsInfo[j++] = additionalParamOffset;
-							assitParamsInfo[j++] = currentOffset;
+						//	//move adress of real param to current param offset
+						//	//or we can call this is a making reference process
+						//	assitParamsInfo[j++] = additionalParamOffset;
+						//	assitParamsInfo[j++] = currentOffset;
 
-							additionalParamOffset += typeSize;
+						//	additionalParamOffset += typeSize;
 
-							currentOffset += sizeof(void*);
-						}
-						else {
+						//	currentOffset += sizeof(void*);
+						//}
+						//else {
 							convert2Code(scriptCompiler, paramUnit, currentOffset);
-							currentOffset += sizeof(void*);// scriptCompiler->getTypeSizeInStack(paramUnit->getReturnType());
-						}
+							currentOffset += scriptCompiler->getTypeSizeInStack(paramUnit->getReturnType().iType());
+						//}
 					}
 
 					const DFunction2Ref& nativeFunction = expFunctionUnit->getNative();
@@ -264,16 +269,6 @@ namespace ffscript {
 				}
 				else {
 					ScriptFunction* scriptFunction = dynamic_cast<ScriptFunction*>(node.get());
-
-					int n = scriptFunction->getChildCount();
-					int paramSize = 0;
-					int i;
-					for (i = 0; i < n; i++) {
-						ExecutableUnitRef& paramUnit = scriptFunction->getChild(i);						
-						paramSize += scriptCompiler->getTypeSizeInStack(paramUnit->getReturnType().iType());
-					}
-
-					moveLocalOffset(paramSize);
 
 					//follow is offset of params			
 					for (i = 0; i < n; i++) {
