@@ -39,4 +39,14 @@ namespace ffscript {
 		ScriptCompiler* getSriptCompiler() const;
 	};
 
+
+	template <class Rt, class... Types>
+	DFunction2* createFunctionCdecl1(Rt(_cdecl *f)(Types...)) {
+		return new CdeclFunction2<Rt, Types...>(f);
+	}
+
+	template <class Rt, class... Types>
+	FunctionFactory* createUserFunctionCdecl1(ScriptCompiler* scriptCompiler, const char* rt, Rt(_cdecl *f)(Types...)) {
+		return new BasicFunctionFactory<sizeof...(Types)>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, rt, createFunctionCdecl1<Rt, Types...>(f), scriptCompiler);
+	}
 }
