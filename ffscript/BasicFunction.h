@@ -30,6 +30,16 @@ namespace ffscript {
 	};
 
 
+	class DefaultUserFunctionFactory : public UserFunctionFactory
+	{
+		DFunction2Ref _nativeFunction;
+	public:
+		DefaultUserFunctionFactory(DFunction2Ref nativeFunction, ScriptCompiler* scriptCompiler, const char* returnType, int paramSize);
+		virtual ~DefaultUserFunctionFactory();
+		DFunction2Ref createNative();
+	};
+
+
 	Function* createMultiplicative(const std::string& name, int id);	
 
 	///////////////////////////////////////////////

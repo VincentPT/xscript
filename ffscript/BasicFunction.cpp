@@ -49,6 +49,18 @@ namespace ffscript {
 		return function;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	DefaultUserFunctionFactory::DefaultUserFunctionFactory(DFunction2Ref nativeFunction, ScriptCompiler* scriptCompiler, const char* returnType, int paramSize) :
+		_nativeFunction(nativeFunction),
+		UserFunctionFactory(scriptCompiler, returnType, paramSize) {}
+
+	DefaultUserFunctionFactory::~DefaultUserFunctionFactory() {}
+
+	DFunction2Ref DefaultUserFunctionFactory::createNative() {
+		return _nativeFunction;
+	}
+
 	//string functions
 	template <class T>
 	size_t stringLength(const T& s) {

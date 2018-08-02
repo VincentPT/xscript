@@ -13,9 +13,6 @@
 #include "Utils.h"
 #include <algorithm>
 
-#include <locale>
-#include <codecvt>
-
 namespace ffscript {
 	///////////////////////////// Raw String constructors //////////////////////////////////////////////
 	void defaultConstructor(RawString& s) {
