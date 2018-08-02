@@ -298,7 +298,6 @@
     <ClInclude Include="OperatorObject.h" />
     <ClInclude Include="OverloadingRules.h" />
     <ClInclude Include="Preprocessor.h" />
-    <ClInclude Include="RawStringLib.h" />
     <ClInclude Include="ScopedCompilingScope.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="ContextScope.h" />
@@ -378,7 +377,6 @@
     <ClCompile Include="OperatorObject.cpp" />
     <ClCompile Include="OverloadingRules.cpp" />
     <ClCompile Include="Preprocessor.cpp" />
-    <ClCompile Include="RawStringLib.cpp" />
     <ClCompile Include="ScopedCompilingScope.cpp" />
     <ClCompile Include="Context.cpp" />
     <ClCompile Include="ContextScope.cpp" />
