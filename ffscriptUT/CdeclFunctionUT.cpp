@@ -3,6 +3,7 @@
 #include <functional>
 #include "function\CdeclFunction.hpp"
 #include "function\CdeclFunction2.hpp"
+#include "function\CdeclFunction3.hpp"
 #include "TemplateForTest.hpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -714,5 +715,106 @@ namespace ffscriptUT
 			Assert::AreEqual(cdeclFoof(fixedParam, p2, p3), returnVal);
 		}
 #endif
+		static double sum(int a, float b) {
+			return (double)(a + b);
+		}
+
+#pragma pack(push)
+#pragma pack(1)
+		struct SampleStruct {
+			int a;
+			double b;
+		};
+#pragma pack(pop)
+
+		static void sum2(SampleStruct a, int b) {
+			a.b += b;
+		}
+
+		static void sum21(SampleStruct a, int b, SampleStruct& c) {
+			c.b = a.b + b;
+		}
+
+		TEST_METHOD(testCdeclunction3_0)
+		{
+			typedef MemberTypeInfo<0, sizeof(void*), int, SampleStruct, float> AMemberTypeInfo;
+			int offset = 0;
+			Assert::AreEqual(offset, AMemberTypeInfo::getOffset<0>());
+
+			offset += sizeof(void*);
+			Assert::AreEqual(offset, AMemberTypeInfo::getOffset<1>());
+
+			offset += 2 * sizeof(void*);
+			Assert::AreEqual(offset, AMemberTypeInfo::getOffset<2>());
+
+			offset += sizeof(void*);
+
+			Assert::AreEqual((int)sizeof(void*), AMemberTypeInfo::getSize<0>());
+			Assert::AreEqual((int)(2 * sizeof(void*)), AMemberTypeInfo::getSize<1>());
+			Assert::AreEqual((int)sizeof(void*), AMemberTypeInfo::getSize<2>());
+			Assert::AreEqual(32, AMemberTypeInfo::totalSize());
+		}
+
+		TEST_METHOD(testCdeclunction3_1)
+		{
+			int p1 = 123;
+			float p2 = 456.0f;
+			CCdelFunction3<double, int, float> cdelFunction(sum);
+			DFunction2* nativeFunction2 = &cdelFunction;
+
+			char paramData[sizeof(void*) * 2];
+			// argument 1
+			*((int*)&paramData[0]) = p1;
+			// argument 2
+			*((float*)&paramData[sizeof(void*)]) = p2;
+
+			double returnVal;
+
+			nativeFunction2->call(&returnVal, (void**)&paramData[0]);
+			Assert::AreEqual(sum(p1 , p2), returnVal);
+		}
+
+		TEST_METHOD(testCdeclunction3_2)
+		{
+			SampleStruct p1 = { 456, 789.0f };
+			int p2 = 123;
+			CCdelFunction3<void, SampleStruct, int> cdelFunction(sum2);
+			DFunction2* nativeFunction2 = &cdelFunction;
+
+			char paramData[sizeof(void*) * 3];
+			// argument 1
+			*((SampleStruct*)&paramData[0]) = p1;
+			// argument 2
+			*((int*)&paramData[2 * sizeof(void*)]) = p2;
+			nativeFunction2->call(nullptr, (void**)&paramData[0]);
+		}
+
+		TEST_METHOD(testCdeclunction3_3)
+		{
+			SampleStruct p1 = { 456, 789.0f };
+			int p2 = 123;
+			SampleStruct p3;
+
+			typedef CCdelFunction3<void, SampleStruct, int, SampleStruct*> AFunc;
+
+			AFunc cdelFunction((AFunc::Fx)sum21);
+
+			DFunction2* nativeFunction2 = &cdelFunction;
+
+			char paramData[sizeof(void*) * 4];
+			// argument 1
+			*((SampleStruct*)&paramData[0]) = p1;
+			// argument 2
+			*((int*)&paramData[2 * sizeof(void*)]) = p2;
+			// argument 3
+			*((SampleStruct**)&paramData[3 * sizeof(void*)]) = &p3;
+
+			nativeFunction2->call(nullptr, (void**)&paramData[0]);
+
+			SampleStruct p31;
+			sum21(p1, p2, p31);
+
+			Assert::AreEqual(p31.b, p3.b);
+		}
 	};
 }
