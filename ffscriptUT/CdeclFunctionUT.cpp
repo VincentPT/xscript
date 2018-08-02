@@ -744,15 +744,16 @@ namespace ffscriptUT
 			offset += sizeof(void*);
 			Assert::AreEqual(offset, AMemberTypeInfo::getOffset<1>());
 
-			offset += 2 * sizeof(void*);
-			Assert::AreEqual(offset, AMemberTypeInfo::getOffset<2>());
+			constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
+			offset += alignedSizeOfStruct;
 
+			Assert::AreEqual(offset, AMemberTypeInfo::getOffset<2>());
 			offset += sizeof(void*);
 
 			Assert::AreEqual((int)sizeof(void*), AMemberTypeInfo::getSize<0>());
-			Assert::AreEqual((int)(2 * sizeof(void*)), AMemberTypeInfo::getSize<1>());
+			Assert::AreEqual(alignedSizeOfStruct, AMemberTypeInfo::getSize<1>());
 			Assert::AreEqual((int)sizeof(void*), AMemberTypeInfo::getSize<2>());
-			Assert::AreEqual(32, AMemberTypeInfo::totalSize());
+			Assert::AreEqual(offset, AMemberTypeInfo::totalSize());
 		}
 
 		TEST_METHOD(testCdeclunction3_1)
@@ -781,11 +782,13 @@ namespace ffscriptUT
 			CCdelFunction3<void, SampleStruct, int> cdelFunction(sum2);
 			DFunction2* nativeFunction2 = &cdelFunction;
 
-			char paramData[sizeof(void*) * 3];
+			constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
+
+			char paramData[sizeof(void*) + alignedSizeOfStruct];
 			// argument 1
 			*((SampleStruct*)&paramData[0]) = p1;
 			// argument 2
-			*((int*)&paramData[2 * sizeof(void*)]) = p2;
+			*((int*)&paramData[alignedSizeOfStruct]) = p2;
 			nativeFunction2->call(nullptr, (void**)&paramData[0]);
 		}
 
@@ -794,6 +797,7 @@ namespace ffscriptUT
 			SampleStruct p1 = { 456, 789.0f };
 			int p2 = 123;
 			SampleStruct p3;
+			constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
 
 			typedef CCdelFunction3<void, SampleStruct, int, SampleStruct*> AFunc;
 
@@ -801,13 +805,13 @@ namespace ffscriptUT
 
 			DFunction2* nativeFunction2 = &cdelFunction;
 
-			char paramData[sizeof(void*) * 4];
+			char paramData[sizeof(void*) * 2 + alignedSizeOfStruct];
 			// argument 1
 			*((SampleStruct*)&paramData[0]) = p1;
 			// argument 2
-			*((int*)&paramData[2 * sizeof(void*)]) = p2;
+			*((int*)&paramData[alignedSizeOfStruct]) = p2;
 			// argument 3
-			*((SampleStruct**)&paramData[3 * sizeof(void*)]) = &p3;
+			*((SampleStruct**)&paramData[alignedSizeOfStruct + sizeof(void*)]) = &p3;
 
 			nativeFunction2->call(nullptr, (void**)&paramData[0]);
 
