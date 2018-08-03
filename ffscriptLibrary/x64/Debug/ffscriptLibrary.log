@@ -1,7 +1,4 @@
-﻿  GeometryLib.cpp
-  Generating Code...
-  Compiling...
-  RawStringLib.cpp
+﻿  RawStringLib.cpp
 e:\projects\ffscript\ffscriptlibrary\rawstringlib.cpp(165): warning C4996: 'swprintf': function has been changed to conform with the ISO C standard, adding an extra character count parameter. To use the traditional Microsoft version, set _CRT_NON_CONFORMING_SWPRINTFS.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(1820): note: see declaration of 'swprintf'
 e:\projects\ffscript\ffscriptlibrary\rawstringlib.cpp(175): warning C4996: 'swprintf': function has been changed to conform with the ISO C standard, adding an extra character count parameter. To use the traditional Microsoft version, set _CRT_NON_CONFORMING_SWPRINTFS.
@@ -11,5 +8,6 @@ e:\projects\ffscript\ffscriptlibrary\rawstringlib.cpp(185): warning C4996: 'swpr
 e:\projects\ffscript\ffscriptlibrary\rawstringlib.cpp(195): warning C4996: 'swprintf': function has been changed to conform with the ISO C standard, adding an extra character count parameter. To use the traditional Microsoft version, set _CRT_NON_CONFORMING_SWPRINTFS.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_wstdio.h(1820): note: see declaration of 'swprintf'
   MathLib.cpp
+  GeometryLib.cpp
   Generating Code...
   ffscriptLibrary.vcxproj -> E:\Projects\ffscript\x64\Debug\ffscriptLibrary.lib

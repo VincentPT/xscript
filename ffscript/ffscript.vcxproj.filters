@@ -289,6 +289,9 @@
     <ClInclude Include="function\MemberTypeInfo.hpp">
       <Filter>Header Files\Function</Filter>
     </ClInclude>
+    <ClInclude Include="function\FunctionHelper.hpp">
+      <Filter>Header Files\Function</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

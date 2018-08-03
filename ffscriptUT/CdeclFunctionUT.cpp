@@ -820,5 +820,29 @@ namespace ffscriptUT
 
 			Assert::AreEqual(p31.b, p3.b);
 		}
+
+
+		static double foo(int& p1, double p2) {
+			return p1 + p2;
+		}
+
+		TEST_METHOD(testCdeclunction3_new_1)
+		{
+			double p2 = 789;
+			int p1 = 123;
+			CCdelFunction3<double, int&, double> cdelFunction(foo);
+			DFunction2* nativeFunction2 = &cdelFunction;
+
+			char paramData[sizeof(void*) + sizeof(double)];
+			// argument 1
+			*((int**)&paramData[0]) = &p1;
+			// argument 2
+			*((double*)&paramData[sizeof(void*)]) = p2;
+
+			double ret;
+			nativeFunction2->call(&ret, (void**)&paramData[0]);
+
+			Assert::AreEqual(foo(p1, p2), ret);
+		}
 	};
 }

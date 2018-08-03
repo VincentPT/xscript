@@ -290,6 +290,7 @@
     <ClInclude Include="ffutil.hpp" />
     <ClInclude Include="FuncLibrary.h" />
     <ClInclude Include="function\CdeclFunction3.hpp" />
+    <ClInclude Include="function\FunctionHelper.hpp" />
     <ClInclude Include="function\MemberFunction2Ref.hpp" />
     <ClInclude Include="function\MemberTypeInfo.hpp" />
     <ClInclude Include="FwdCompositeConstrutorUnit.h" />

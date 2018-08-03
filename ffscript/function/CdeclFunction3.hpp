@@ -12,8 +12,10 @@ namespace Cdel3 {
 #define DECLARE_CLASS_INVOKER_T(Ret, ...)\
 	class Invoke<Ret, __VA_ARGS__> {\
 	private:\
-	typedef Ret(*Fx)(__VA_ARGS__);\
+	typedef void* Fx;\
 	typedef MemberTypeInfo<0, sizeof(void*), __VA_ARGS__> Helper;\
+	typedef correct_types<__VA_ARGS__> RATs;\
+	typedef typename correct_types<Ret>::T RRT;\
 	public:\
 		Fx _fx;\
 	public:\
@@ -26,6 +28,7 @@ namespace Cdel3 {
 	private:\
 	typedef void(*Fx)(__VA_ARGS__);\
 	typedef MemberTypeInfo<0, sizeof(void*), __VA_ARGS__> Helper;\
+	typedef correct_types<__VA_ARGS__> RATs;\
 	public:\
 		Fx _fx;\
 	public:\
@@ -87,6 +90,10 @@ namespace Cdel3 {
 	template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
 	DECLARE_CLASS_INVOKER_T(Ret, T1, T2, T3, T4, T5, T6, T7, T8);
 
+	//template <>
+	//void InvokeVoid<>::operator()(void* pRet, char* args) {
+	//	_fx();
+	//}
 
 	template <class T>
 	void InvokeVoid<T>::operator()(void* pRet, char* args) {
@@ -95,40 +102,40 @@ namespace Cdel3 {
 
 	template <class T1, class T2>
 	void InvokeVoid<T1, T2>::operator()(void* pRet, char* args) {
-		_fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]));
+		_fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]));
 	}
 
 	template <class T1, class T2, class T3>
 	void InvokeVoid<T1, T2, T3>::operator()(void* pRet, char* args) {
-		_fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]));
+		_fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]));
 	}
 
 	template <class T1, class T2, class T3, class T4>
 	void InvokeVoid<T1, T2, T3, T4>::operator()(void* pRet, char* args) {
-		_fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]));
+		_fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]));
 	}
 
 	template <class T1, class T2, class T3, class T4, class T5>
 	void InvokeVoid<T1, T2, T3, T4, T5>::operator()(void* pRet, char* args) {
-		_fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
+		_fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
 			*((T5*)&args[Helper::getOffset<4>()]));
 	}
 
 	template <class T1, class T2, class T3, class T4, class T5, class T6>
 	void InvokeVoid<T1, T2, T3, T4, T5, T6>::operator()(void* pRet, char* args) {
-		_fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
+		_fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
 			*((T5*)&args[Helper::getOffset<4>()]), *((T6*)&args[Helper::getOffset<5>()]));
 	}
 
 	template <class T1, class T2, class T3, class T4, class T5, class T6, class T7>
 	void InvokeVoid<T1, T2, T3, T4, T5, T6, T7>::operator()(void* pRet, char* args) {
-		_fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
+		_fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
 			*((T5*)&args[Helper::getOffset<4>()]), *((T6*)&args[Helper::getOffset<5>()]), *((T7*)&args[Helper::getOffset<6>()]));
 	}
 
 	template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
 	void InvokeVoid<T1, T2, T3, T4, T5, T6, T7, T8>::operator()(void* pRet, char* args) {
-		_fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
+		_fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
 			*((T5*)&args[Helper::getOffset<4>()]), *((T6*)&args[Helper::getOffset<5>()]), *((T7*)&args[Helper::getOffset<6>()]), *((T8*)&args[Helper::getOffset<7>()]));
 	}
 
@@ -137,47 +144,57 @@ namespace Cdel3 {
 	/// implementation of invoke type t
 	///
 	////////////////////////////////////////////////////////////////////////////////////////////////
+	template <class Ret>
+	void Invoke<Ret>::operator()(Ret* pRet, char* args) {
+		*pRet = _fx();
+	}
+
 	template <class Ret, class T>
 	void Invoke<Ret, T>::operator()(Ret* pRet, char* args) {
-		*pRet = (*((T*)&args[0]));
+		typedef RRT(*Fx)(RATs::T);
+		*((RRT*)pRet) = ((Fx)_fx)(*((RATs::T*)&args[0]));
 	}
 
 	template <class Ret, class T1, class T2>
 	void Invoke<Ret, T1, T2>::operator()(Ret* pRet, char* args) {
-		*pRet = _fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]));
+		typedef RRT(*Fx)(RATs::T, RATs::sub::T);
+		*((RRT*)pRet) = ((Fx)_fx)(*((RATs::T*)&args[0]), *((RATs::sub::T*)&args[Helper::getOffset<1>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3>
 	void Invoke<Ret, T1, T2, T3>::operator()(Ret* pRet, char* args) {
-		*pRet = _fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]));
+		typedef RRT(*Fx)(RATs::T, RATs::sub::T, RATs::sub::sub::T);
+
+		*((RRT*)pRet) = ((Fx)_fx)(*((RATs::T*)&args[0]), *((RATs::sub::T*)&args[Helper::getOffset<1>()]),
+			*((RATs::sub::sub::T*)&args[Helper::getOffset<2>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3, class T4>
 	void Invoke<Ret, T1, T2, T3, T4>::operator()(Ret* pRet, char* args) {
-		*pRet = _fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]));
+		*pRet = _fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3, class T4, class T5>
 	void Invoke<Ret, T1, T2, T3, T4, T5>::operator()(Ret* pRet, char* args) {
-		*pRet = _fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
+		*pRet = _fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
 			*((T5*)&args[Helper::getOffset<4>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6>
 	void Invoke<Ret, T1, T2, T3, T4, T5, T6>::operator()(Ret* pRet, char* args) {
-		*pRet = _fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
+		*pRet = _fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
 			*((T5*)&args[Helper::getOffset<4>()]), *((T6*)&args[Helper::getOffset<5>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
 	void Invoke<Ret, T1, T2, T3, T4, T5, T6, T7>::operator()(Ret* pRet, char* args) {
-		*pRet = _fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
+		*pRet = _fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
 			*((T5*)&args[Helper::getOffset<4>()]), *((T6*)&args[Helper::getOffset<5>()]), *((T7*)&args[Helper::getOffset<6>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
 	void Invoke<Ret, T1, T2, T3, T4, T5, T6, T7, T8>::operator()(Ret* pRet, char* args) {
-		*pRet = _fx(*((T1*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
+		*pRet = _fx(*((RATs::T*)&args[0]), *((T2*)&args[Helper::getOffset<1>()]), *((T3*)&args[Helper::getOffset<2>()]), *((T4*)&args[Helper::getOffset<3>()]),
 			*((T5*)&args[Helper::getOffset<4>()]), *((T6*)&args[Helper::getOffset<5>()]), *((T7*)&args[Helper::getOffset<6>()]), *((T8*)&args[Helper::getOffset<7>()]));
 	}
 }
@@ -198,7 +215,7 @@ public:
 		_invoker( (Ret*) pReturnVal, (char*)params);
 	}
 	DFunction2* clone() {
-		auto funcObj = new CCdelFunction3<Ret, Types...>(_invoker._fx);
+		auto funcObj = new CCdelFunction3<Ret, Types...>((CCdelFunction3<Ret, Types...>::Fx)_invoker._fx);
 		return funcObj;
 	}
 };

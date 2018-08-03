@@ -199,6 +199,7 @@
     <ClCompile Include="ExpressionLinkUT.cpp" />
     <ClCompile Include="ExpressionUT.cpp" />
     <ClCompile Include="FFScriptArrayUT.cpp" />
+    <ClCompile Include="FunctionHelperUT.cpp" />
     <ClCompile Include="FuntionPointerUT.cpp">
       <SubType>
       </SubType>
