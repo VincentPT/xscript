@@ -4,12 +4,8 @@
 #include "function\CdeclFunction2.hpp"
 #include "function\MemberFunction2.hpp"
 #include "BasicFunctionFactory.hpp"
-#include "Internal.h"
 #include "DynamicFunctionFactory.h"
 #include "BasicType.h"
-#include "ConditionalOperator.h"
-#include "RefFunction.h"
-#include "DefaultCommands.h"
 #include "Utils.h"
 #include <algorithm>
 

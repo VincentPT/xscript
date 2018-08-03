@@ -49,9 +49,27 @@ namespace ffscript {
 	}
 
 	template <class Rt, class... Types>
+	DFunction2* createFunctionCdecl1FromVoidPtr(void* ptr) {
+		typedef CdeclFunction2<Rt, Types...> FObjType;
+		return new FObjType((FObjType::FuncType)ptr);
+	}
+
+	template <class Rt, class... Types>
 	DFunction2* createFunctionCdecl2(Rt(_cdecl *f)(Types...)) {
 		return new CCdelFunction3<Rt, Types...>(f);
 	}
+
+	template <class Rt, class... Types>
+	DFunction2* createFunctionCdecl2FromVoidPtr(void* ptr) {
+		typedef CCdelFunction3<Rt, Types...> FObjType;
+		return new FObjType((FObjType::Fx)ptr);
+	}
+
+	template <class Rt, class... Types>
+	void* fpToVoidPtr(Rt(_cdecl *f)(Types...)) {
+		return f;
+	}
+
 
 	template <class Rt, class... Types>
 	FunctionFactory* createUserFunctionCdecl1(ScriptCompiler* scriptCompiler, const char* rt, Rt(_cdecl *f)(Types...)) {

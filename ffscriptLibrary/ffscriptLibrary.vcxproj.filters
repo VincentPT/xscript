@@ -30,6 +30,12 @@
     <ClInclude Include="MathLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeometryLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MathLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryLib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

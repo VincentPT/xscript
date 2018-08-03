@@ -131,12 +131,15 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Geometry.h" />
+    <ClInclude Include="GeometryLib.h" />
     <ClInclude Include="MathLib.h" />
     <ClInclude Include="RawStringLib.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GeometryLib.cpp" />
     <ClCompile Include="MathLib.cpp" />
     <ClCompile Include="RawStringLib.cpp" />
     <ClCompile Include="stdafx.cpp">
