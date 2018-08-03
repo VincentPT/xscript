@@ -28,6 +28,21 @@ namespace ffscript {
 		return _conditionExpression;
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	///
+	/// parse while scope
+	/// convert:
+	/// while(expression) {
+	///     ...
+    /// }
+	/// to:
+	/// if(expression) {
+	///     begin_while:
+	///     ...
+	///     if(expression) goto begin_while;
+	/// }
+	///
+	///////////////////////////////////////////////////////////////////////////////
 	const wchar_t* LoopScope::parse(const wchar_t* text, const wchar_t* end) {
 		const wchar_t* c;
 		c = trimLeft(text, end);
@@ -35,6 +50,8 @@ namespace ffscript {
 
 		ContextScope* parent = (ContextScope*)getParent();
 
+		// the first condition command will be used to check if
+		// the instruction command can jump to while scope or not
 		c = parent->parseCondition(c, end);
 		if (c == nullptr) {
 			return nullptr;
@@ -44,27 +61,37 @@ namespace ffscript {
 		auto updateLaterMan = CodeUpdater::getInstance(this);
 		updateLaterMan->setUpdateInfo(conditionUnitIter->get(), nullptr);
 
+		// build if command from the condition command
 		IfCommandBuilder* loopCondition = new IfCommandBuilder(this);
 		loopCondition->setConditionExpression(conditionUnitIter->get());
 		parent->putCommandUnit(loopCondition);
 
+		// parse while scope as a context scope
 		c = ContextScope::parse(c, end);
 
+		// get last command in the context scope is always
+		// the exit scope command
 		CommandConstRefIter lastComandInScope = getLastExpression();
 
 		if (c != nullptr) {
 			CommandUnitRef lastLoopCommand = *lastComandInScope;
 
+			// remove the exit scope command
 			remove(lastComandInScope);
 
+			// parse the condition again to create condition at the end of while
+			// after parse condition command is also insert at the end of the scope
 			parseCondition(conditionText, end);
 			conditionUnitIter = getLastExpression();
 			_conditionExpression = conditionUnitIter->get();
 			updateLaterMan->setUpdateInfo(conditionUnitIter->get(), nullptr);
-
+			// build the loop command base on condition command
 			LoopCommandBuilder* loopCommand = new LoopCommandBuilder(this);
 
+			// put the loop command (eventually, will be a if command)
 			putCommandUnit(loopCommand);
+
+			// put the exit scope command again at the end of while scope
 			putCommandUnit(lastLoopCommand);
 		}
 
