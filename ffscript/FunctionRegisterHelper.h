@@ -56,12 +56,12 @@ namespace ffscript {
 
 	template <class Rt, class... Types>
 	DFunction2* createFunctionCdecl2(Rt(_cdecl *f)(Types...)) {
-		return new CCdelFunction3<Rt, Types...>(f);
+		return new CdelFunction3<Rt, Types...>(f);
 	}
 
 	template <class Rt, class... Types>
 	DFunction2* createFunctionCdecl2FromVoidPtr(void* ptr) {
-		typedef CCdelFunction3<Rt, Types...> FObjType;
+		typedef CdelFunction3<Rt, Types...> FObjType;
 		return new FObjType((FObjType::Fx)ptr);
 	}
 

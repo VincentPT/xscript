@@ -61,24 +61,10 @@ namespace FT {
 		static constexpr bool value = sizeof(T1) > sizeof(void*) ? false : no_exceed_uts<Ts...>::value;
 	};
 
-	// int& (*)(int, float) => must use CdeclFunction3
-	// void (*)(int&, float) => must use CdeclFunction3
-	// void (*)(int, char) => should use CdeclFunction2
-	// void (*)(int, char*) => should use CdeclFunction2
-
 	template <typename... Types>
 	constexpr bool isCdel2Applicable() {
 		return no_exceed_uts<Types...>::value == false &&
 			has_type<float, Types...>::value == false &&
 			has_type<double, Types...>::value == false;
-	}
-
-	template <typename Ret, typename... Types>
-	DFunction2* createFunction(Ret(*f)(Types...) ) {
-		if (isCdel2Applicable<Types...>()) {
-			return new CdeclInvoker2<Ret, Types...>(f);
-		}
-
-		return new CCdeclInvoker3<Ret, Types...>(f);
 	}
 }

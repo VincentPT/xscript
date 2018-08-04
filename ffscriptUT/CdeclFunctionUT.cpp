@@ -760,7 +760,7 @@ namespace ffscriptUT
 		{
 			int p1 = 123;
 			float p2 = 456.0f;
-			CCdelFunction3<double, int, float> cdelFunction(sum);
+			CdelFunction3<double, int, float> cdelFunction(sum);
 			DFunction2* nativeFunction2 = &cdelFunction;
 
 			char paramData[sizeof(void*) * 2];
@@ -779,7 +779,7 @@ namespace ffscriptUT
 		{
 			SampleStruct p1 = { 456, 789.0f };
 			int p2 = 123;
-			CCdelFunction3<void, SampleStruct, int> cdelFunction(sum2);
+			CdelFunction3<void, SampleStruct, int> cdelFunction(sum2);
 			DFunction2* nativeFunction2 = &cdelFunction;
 
 			constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
@@ -799,7 +799,7 @@ namespace ffscriptUT
 			SampleStruct p3;
 			constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
 
-			typedef CCdelFunction3<void, SampleStruct, int, SampleStruct*> AFunc;
+			typedef CdelFunction3<void, SampleStruct, int, SampleStruct*> AFunc;
 
 			AFunc cdelFunction((AFunc::Fx)sum21);
 
@@ -826,11 +826,19 @@ namespace ffscriptUT
 			return p1 + p2;
 		}
 
+		static void doNothing1() {
+
+		}
+
+		static int doNothing2() {
+			return 123;
+		}
+
 		TEST_METHOD(testCdeclunction3_new_1)
 		{
 			double p2 = 789;
 			int p1 = 123;
-			CCdelFunction3<double, int&, double> cdelFunction(foo);
+			CdelFunction3<double, int&, double> cdelFunction(foo);
 			DFunction2* nativeFunction2 = &cdelFunction;
 
 			char paramData[sizeof(void*) + sizeof(double)];
@@ -843,6 +851,22 @@ namespace ffscriptUT
 			nativeFunction2->call(&ret, (void**)&paramData[0]);
 
 			Assert::AreEqual(foo(p1, p2), ret);
+		}
+
+		TEST_METHOD(testCdeclunction3_new_2)
+		{	CdelFunction3<void> cdelFunction(doNothing1);
+			DFunction2* nativeFunction2 = &cdelFunction;
+			nativeFunction2->call(nullptr, nullptr);
+		}
+
+		TEST_METHOD(testCdeclunction3_new_3)
+		{
+			CdelFunction3<int> cdelFunction(doNothing2);
+			DFunction2* nativeFunction2 = &cdelFunction;
+
+			int ret;
+			nativeFunction2->call(&ret, nullptr);
+			Assert::AreEqual(doNothing2(), ret);
 		}
 	};
 }

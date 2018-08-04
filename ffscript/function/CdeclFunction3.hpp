@@ -12,32 +12,32 @@ namespace Cdel3 {
 #define DECLARE_CLASS_INVOKER_T(Ret, ...)\
 	class Invoke<Ret, __VA_ARGS__> {\
 	private:\
-	typedef void* Fx;\
 	typedef MemberTypeInfo<0, sizeof(void*), __VA_ARGS__> Helper;\
 	typedef correct_types<__VA_ARGS__> RATs;\
 	typedef typename correct_types<Ret>::T RRT;\
 	public:\
-		Fx _fx;\
+		typedef Ret(*Fp)(__VA_ARGS__);\
+		Fp _fx;\
 	public:\
-		Invoke(Fx fx) : _fx(fx) {}\
+		Invoke(Fp fx) : _fx(fx) {}\
 		void operator()(Ret* pRet, char* args);\
 	}
 
 #define DECLARE_CLASS_INVOKER_VOID(...) \
 	class InvokeVoid<__VA_ARGS__> {\
 	private:\
-	typedef void(*Fx)(__VA_ARGS__);\
 	typedef MemberTypeInfo<0, sizeof(void*), __VA_ARGS__> Helper;\
 	typedef correct_types<__VA_ARGS__> RATs;\
 	public:\
-		Fx _fx;\
+		typedef void(*Fp)(__VA_ARGS__);\
+		Fp _fx;\
 	public:\
-		InvokeVoid(Fx fx) : _fx(fx) {}\
+		InvokeVoid(Fp fx) : _fx(fx) {}\
 		void operator()(void* pRet, char* args);\
 	}
 
-	template <>
-	DECLARE_CLASS_INVOKER_VOID();
+	//template <>
+	//DECLARE_CLASS_INVOKER_VOID();
 
 	template <class T>
 	DECLARE_CLASS_INVOKER_VOID(T);
@@ -94,6 +94,17 @@ namespace Cdel3 {
 	//void InvokeVoid<>::operator()(void* pRet, char* args) {
 	//	_fx();
 	//}
+
+	struct InvokeVoidN0 {
+	public:
+		typedef void(*Fp)();
+		Fp _fx;
+	public:
+		InvokeVoidN0(Fp fx) : _fx(fx) {}
+		void operator()(void* pRet, char* args) {
+			_fx();
+		}
+	};
 
 	template <class T>
 	void InvokeVoid<T>::operator()(void* pRet, char* args) {
@@ -202,20 +213,21 @@ namespace Cdel3 {
 using namespace Cdel3;
 
 template <class Ret, class...Types>
-class CCdelFunction3 : public DFunction2 {
+class CdelFunction3 : public DFunction2 {
 public:
 	typedef Ret(*Fx)(Types...);
 private:
-	typedef typename std::conditional<std::is_void<Ret>::value, InvokeVoid<Types...>, Invoke<Ret, Types...>>::type MyInvoker;
+	typedef typename std::conditional<sizeof...(Types) != 0, InvokeVoid<Types...>, InvokeVoidN0>::type MyInvokerVoid;
+	typedef typename std::conditional<std::is_void<Ret>::value, MyInvokerVoid, Invoke<Ret, Types...>>::type MyInvoker;
 	MyInvoker _invoker;
 public:
-	CCdelFunction3(Fx fx) : _invoker(fx) {}
+	CdelFunction3(Fx fx) : _invoker(fx) {}
 
 	void call(void* pReturnVal, void* params[]) {
 		_invoker( (Ret*) pReturnVal, (char*)params);
 	}
 	DFunction2* clone() {
-		auto funcObj = new CCdelFunction3<Ret, Types...>((CCdelFunction3<Ret, Types...>::Fx)_invoker._fx);
+		auto funcObj = new CdelFunction3<Ret, Types...>(_invoker._fx);
 		return funcObj;
 	}
 };

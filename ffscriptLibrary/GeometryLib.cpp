@@ -91,8 +91,8 @@ namespace ffscript {
 		helper.registPredefinedOperators("+", "Point&,Point&", "Point", createFunctionCdecl1<Point, const Point&, const Point&>(operator+));
 		helper.registPredefinedOperators("-", "Point&,Point&", "Point", createFunctionCdecl1<Point, const Point&, const Point&>(operator-));
 
-		// use direct non-reference float type in native function must use CCdelFunction3
-		// when use CCdelFunction3 we cannot use reference object, so we need to use const Point*
+		// use direct non-reference float type in native function must use CdelFunction3
+		// when use CdelFunction3 we cannot use reference object, so we need to use const Point*
 		// instead of const Point&
 		helper.registPredefinedOperators("*", "Point&,float", "Point",
 			createFunctionCdecl2FromVoidPtr<Point, const Point*, float>
