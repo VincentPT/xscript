@@ -3,9 +3,6 @@
 #include "FunctionRegisterHelper.h"
 #include "FunctionFactory.h"
 
-#define make_native(RT, T1, T2, func) new CdeclFunction2<RT, T1, T2>(func)
-
-
 namespace ffscript {
 	class FunctionFactoryCdecl : public FunctionFactory
 	{

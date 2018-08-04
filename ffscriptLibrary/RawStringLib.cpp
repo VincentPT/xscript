@@ -6,6 +6,7 @@
 #include "BasicFunctionFactory.hpp"
 #include "DynamicFunctionFactory.h"
 #include "BasicType.h"
+#include "BasicFunction.h"
 #include "Utils.h"
 #include <algorithm>
 
@@ -170,7 +171,7 @@ namespace ffscript {
 		return rawString;
 	}
 
-	RawString ToString(const long long& val) {
+	RawString ToString(long long val) {
 		RawChar buffer[64];
 		swprintf(buffer, L"%lld", val);
 
@@ -180,7 +181,7 @@ namespace ffscript {
 		return rawString;
 	}
 
-	RawString ToString(const float& val) {
+	RawString ToString(float val) {
 		RawChar buffer[64];
 		swprintf(buffer, L"%f", val);
 
@@ -190,7 +191,7 @@ namespace ffscript {
 		return rawString;
 	}
 
-	RawString ToString(const double& val) {
+	RawString ToString(double val) {
 		RawChar buffer[64];
 		swprintf(buffer, L"%f", val);
 
@@ -362,27 +363,27 @@ namespace ffscript {
 		ScriptType typeString(iTypeString, "String");
 
 		// register constructors and destructor
-		int ctor = fb.registFunction("defaultConstructor", "ref String", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RawString&>(defaultConstructor), scriptCompiler));
-		int dtor = fb.registFunction("freeRawString", "ref String", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RawString&>(freeRawString), scriptCompiler));
+		int ctor = fb.registFunction("defaultConstructor", "ref String", createUserFunctionFactoryCdecl<void, RawString&>(scriptCompiler, "void", defaultConstructor));
+		int dtor = fb.registFunction("freeRawString", "ref String", createUserFunctionFactoryCdecl<void, RawString&>(scriptCompiler, "void", freeRawString));
 
 		scriptCompiler->registDestructor(iTypeString, dtor);
 		scriptCompiler->registConstructor(iTypeString, ctor);
 
-		ctor = fb.registFunction("constantConstructor", "ref String, string&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RawString&, const std::string&>(constantConstructor), scriptCompiler));
+		ctor = fb.registFunction("constantConstructor", "ref String, string&", createUserFunctionFactoryCdecl<void, RawString&, const std::string&>(scriptCompiler, "void", constantConstructor));
 		scriptCompiler->registConstructor(iTypeString, ctor);
 
-		ctor = fb.registFunction("constantConstructor", "ref String, wstring&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RawString&, const std::wstring&>(constantConstructor), scriptCompiler));
+		ctor = fb.registFunction("constantConstructor", "ref String, wstring&", createUserFunctionFactoryCdecl<void, RawString&, const std::wstring&>(scriptCompiler, "void", constantConstructor));
 		scriptCompiler->registConstructor(iTypeString, ctor);
 
-		ctor = fb.registFunction("constantConstructor", "ref String, String&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RawString&, const RawString&>(constantConstructor), scriptCompiler));
+		ctor = fb.registFunction("constantConstructor", "ref String, String&", createUserFunctionFactoryCdecl<void, RawString&, const RawString&>(scriptCompiler, "void", constantConstructor));
 		scriptCompiler->registConstructor(iTypeString, ctor);
 
 		// register conversion operators
 		fb.registFunction("String", "bool", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<bool>(ToString), typeString));
 		fb.registFunction("String", "int", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<int>(ToString), typeString));
-		fb.registFunction("String", "long&", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<const long long&>(ToString), typeString));
-		fb.registFunction("String", "float&", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<const float&>(ToString), typeString));
-		fb.registFunction("String", "double&", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<const double&>(ToString), typeString));
+		fb.registFunction("String", "long", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<long long>(ToString), typeString));
+		fb.registFunction("String", "float", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<float>(ToString), typeString));
+		fb.registFunction("String", "double", new ConvertToStringFactory(scriptCompiler, createStringNativeFunc<double>(ToString), typeString));
 
 		// conversion accurative help engine choose the best overloading function for given arguments
 		scriptCompiler->registerTypeConversionAccurative(basicTypes.TYPE_BOOL, basicTypes.TYPE_RAWSTRING, 10000);
@@ -405,11 +406,11 @@ namespace ffscript {
 		fb.registPredefinedOperators("==", "String&,String&", "bool", createFunctionCdecl<bool, const RawString&, const RawString&>(operator==));
 		fb.registPredefinedOperators("!=", "String&,String&", "bool", createFunctionCdecl<bool, const RawString&, const RawString&>(operator!=));
 
-		fb.registFunction("compare", "String&,string&", createUserFunctionCdecl<int, const RawString&, const std::string&>(scriptCompiler, "int", constantCompare));
-		fb.registFunction("compare", "string&,String&", createUserFunctionCdecl<int, const std::string&, const RawString&>(scriptCompiler, "int", constantCompare));
-		fb.registFunction("compare", "String&,wstring&", createUserFunctionCdecl<int, const RawString&, const std::wstring&>(scriptCompiler, "int", constantCompare));
-		fb.registFunction("compare", "wstring&,String&", createUserFunctionCdecl<int, const std::wstring&, const RawString&>(scriptCompiler, "int", constantCompare));
-		fb.registFunction("compare", "String&,String&", createUserFunctionCdecl<int, const RawString&, const RawString&>(scriptCompiler, "int", constantCompare));
+		fb.registFunction("compare", "String&,string&", createUserFunctionFactoryCdecl<int, const RawString&, const std::string&>(scriptCompiler, "int", constantCompare));
+		fb.registFunction("compare", "string&,String&", createUserFunctionFactoryCdecl<int, const std::string&, const RawString&>(scriptCompiler, "int", constantCompare));
+		fb.registFunction("compare", "String&,wstring&", createUserFunctionFactoryCdecl<int, const RawString&, const std::wstring&>(scriptCompiler, "int", constantCompare));
+		fb.registFunction("compare", "wstring&,String&", createUserFunctionFactoryCdecl<int, const std::wstring&, const RawString&>(scriptCompiler, "int", constantCompare));
+		fb.registFunction("compare", "String&,String&", createUserFunctionFactoryCdecl<int, const RawString&, const RawString&>(scriptCompiler, "int", constantCompare));
 
 		// register other operators
 		fb.registPredefinedOperators("=", "String&,string&", "void", createFunctionCdecl<void, RawString&, const std::string&>(assignStringConst));
@@ -431,14 +432,14 @@ namespace ffscript {
 		fb.registPredefinedOperators("+", "String&,int", "String", createFunctionCdecl<RawString, const RawString&, int>(operator+));
 		fb.registPredefinedOperators("+", "int,String&", "String", createFunctionCdecl<RawString, int, const RawString&>(operator+));
 
-		fb.registPredefinedOperators("+", "String&,long&", "String", createFunctionCdecl<RawString, const RawString&, const long long&> (operator+));
-		fb.registPredefinedOperators("+", "long&,String&", "String", createFunctionCdecl<RawString, const long long&, const RawString&>(operator+));
+		fb.registPredefinedOperators("+", "String&,long", "String", createFunctionCdecl<RawString, const RawString&, long long> (operator+));
+		fb.registPredefinedOperators("+", "long,String&", "String", createFunctionCdecl<RawString, long long, const RawString&>(operator+));
 
-		fb.registPredefinedOperators("+", "String&,float&", "String", createFunctionCdecl<RawString, const RawString&, const float&>(operator+));
-		fb.registPredefinedOperators("+", "float&,String&", "String", createFunctionCdecl<RawString, const float&, const RawString&>(operator+));
+		fb.registPredefinedOperators("+", "String&,float", "String", createFunctionCdecl<RawString, const RawString&, float>(operator+));
+		fb.registPredefinedOperators("+", "float,String&", "String", createFunctionCdecl<RawString, float, const RawString&>(operator+));
 
-		fb.registPredefinedOperators("+", "String&,double&", "String", createFunctionCdecl<RawString, const RawString&, const double&>(operator+));
-		fb.registPredefinedOperators("+", "double&,String&", "String", createFunctionCdecl<RawString, const double&, const RawString&>(operator+));
+		fb.registPredefinedOperators("+", "String&,double", "String", createFunctionCdecl<RawString, const RawString&, double>(operator+));
+		fb.registPredefinedOperators("+", "double,String&", "String", createFunctionCdecl<RawString, double, const RawString&>(operator+));
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		fb.registPredefinedOperators("+", "string&,bool", "String", createFunctionCdecl<RawString, const string&, bool>(addConstantWithVal));
@@ -447,14 +448,14 @@ namespace ffscript {
 		fb.registPredefinedOperators("+", "string&,int", "String", createFunctionCdecl<RawString, const string&, int>(addConstantWithVal));
 		fb.registPredefinedOperators("+", "int,string&", "String", createFunctionCdecl<RawString, int, const string&>(addValWithConsant));
 
-		fb.registPredefinedOperators("+", "string&,long&", "String", createFunctionCdecl<RawString, const string&, const long long&>(addConstantWithVal));
-		fb.registPredefinedOperators("+", "long&,string&", "String", createFunctionCdecl<RawString, const long long&, const string&>(addValWithConsant));
+		fb.registPredefinedOperators("+", "string&,long", "String", createFunctionCdecl<RawString, const string&, long long>(addConstantWithVal));
+		fb.registPredefinedOperators("+", "long,string&", "String", createFunctionCdecl<RawString, long long, const string&>(addValWithConsant));
 
-		fb.registPredefinedOperators("+", "string&,float&", "String", createFunctionCdecl<RawString, const string&, const float&>(addConstantWithVal));
-		fb.registPredefinedOperators("+", "float&,string&", "String", createFunctionCdecl<RawString, const float&, const string&>(addValWithConsant));
+		fb.registPredefinedOperators("+", "string&,float", "String", createFunctionCdecl<RawString, const string&, float>(addConstantWithVal));
+		fb.registPredefinedOperators("+", "float,string&", "String", createFunctionCdecl<RawString, float, const string&>(addValWithConsant));
 
-		fb.registPredefinedOperators("+", "string&,double&", "String", createFunctionCdecl<RawString, const string&, const double&>(addConstantWithVal));
-		fb.registPredefinedOperators("+", "double&,string&", "String", createFunctionCdecl<RawString, const double&, const string&>(addValWithConsant));
+		fb.registPredefinedOperators("+", "string&,double", "String", createFunctionCdecl<RawString, const string&, double>(addConstantWithVal));
+		fb.registPredefinedOperators("+", "double,string&", "String", createFunctionCdecl<RawString, double, const string&>(addValWithConsant));
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		fb.registPredefinedOperators("+", "wstring&,bool", "String", createFunctionCdecl<RawString, const wstring&, bool>(addConstantWithVal));
@@ -463,13 +464,13 @@ namespace ffscript {
 		fb.registPredefinedOperators("+", "wstring&,int", "String", createFunctionCdecl<RawString, const wstring&, int>(addConstantWithVal));
 		fb.registPredefinedOperators("+", "int,wstring&", "String", createFunctionCdecl<RawString, int, const wstring&>(addValWithConsant));
 
-		fb.registPredefinedOperators("+", "wstring&,long&", "String", createFunctionCdecl<RawString, const wstring&, const long long&>(addConstantWithVal));
-		fb.registPredefinedOperators("+", "long&,wstring&", "String", createFunctionCdecl<RawString, const long long&, const wstring&>(addValWithConsant));
+		fb.registPredefinedOperators("+", "wstring&,long", "String", createFunctionCdecl<RawString, const wstring&, long long>(addConstantWithVal));
+		fb.registPredefinedOperators("+", "long,wstring&", "String", createFunctionCdecl<RawString, long long, const wstring&>(addValWithConsant));
 
-		fb.registPredefinedOperators("+", "wstring&,float&", "String", createFunctionCdecl<RawString, const wstring&, const float&>(addConstantWithVal));
-		fb.registPredefinedOperators("+", "float&,wstring&", "String", createFunctionCdecl<RawString, const float&, const wstring&>(addValWithConsant));
+		fb.registPredefinedOperators("+", "wstring&,float", "String", createFunctionCdecl<RawString, const wstring&, float>(addConstantWithVal));
+		fb.registPredefinedOperators("+", "float,wstring&", "String", createFunctionCdecl<RawString, float, const wstring&>(addValWithConsant));
 
-		fb.registPredefinedOperators("+", "wstring&,double&", "String", createFunctionCdecl<RawString, const wstring&, const double&>(addConstantWithVal));
-		fb.registPredefinedOperators("+", "double&,wstring&", "String", createFunctionCdecl<RawString, const double&, const wstring&>(addValWithConsant));
+		fb.registPredefinedOperators("+", "wstring&,double", "String", createFunctionCdecl<RawString, const wstring&, double>(addConstantWithVal));
+		fb.registPredefinedOperators("+", "double,wstring&", "String", createFunctionCdecl<RawString, double, const wstring&>(addValWithConsant));
 	}
 }

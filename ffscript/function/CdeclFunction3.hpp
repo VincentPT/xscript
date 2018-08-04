@@ -118,7 +118,7 @@ namespace Cdel3 {
 	template <class T>
 	void InvokeVoid<T>::operator()(void* pRet, char* args) {
 		typedef void(*Fx)(RRATs<0>);
-		((Fx)_fx)(*((T*)&args[0]));
+		((Fx)_fx)(*((RRATs<0>*)&args[0]));
 	}
 
 	template <class T1, class T2>

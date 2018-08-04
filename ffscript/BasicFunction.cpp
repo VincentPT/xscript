@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "BasicFunction.h"
 #include "expressionunit.h"
-#include "function\CdeclFunction2.hpp"
-#include "function\MemberFunction2.hpp"
 #include "BasicFunctionFactory.hpp"
 #include "Internal.h"
 #include "DynamicFunctionFactory.h"
@@ -33,7 +31,7 @@ namespace ffscript {
 	{
 	}
 
-	UserFunctionFactory::UserFunctionFactory(ScriptCompiler* scriptCompiler, const char* returnType, int paramSize) : _paramSize(0) {
+	UserFunctionFactory::UserFunctionFactory(ScriptCompiler* scriptCompiler, const char* returnType, int paramSize) : _paramSize(paramSize) {
 		this->setReturnType(ScriptType::parseType(scriptCompiler, returnType));
 	}
 

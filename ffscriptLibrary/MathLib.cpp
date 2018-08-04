@@ -11,16 +11,10 @@
 #include <math.h>
 
 namespace ffscript {
-#define CREATE_MATH_FUNCTION(fx, ...) DFunction2Ref(createFunctionCdecl<__VA_ARGS__>(fx))
 #define REGIST_MATH_FUNCTION1(helper, nativeFunc, scriptFunc, returnType, ...) \
 	helper.registFunction(\
 		scriptFunc, #__VA_ARGS__,\
-		new DefaultUserFunctionFactory(\
-			CREATE_MATH_FUNCTION(nativeFunc, returnType, __VA_ARGS__),\
-			helper.getSriptCompiler(), \
-			#returnType,\
-			ArgumentFunctionCounter<__VA_ARGS__>::count\
-		)\
+		createUserFunctionFactoryCdecl<returnType,__VA_ARGS__>(helper.getSriptCompiler(), #returnType, nativeFunc)\
 	)
 
 #define REGIST_MATH_FUNCTION2(helper, func, returnType, ...) REGIST_MATH_FUNCTION1(helper, func, #func, returnType, __VA_ARGS__)
@@ -99,8 +93,7 @@ namespace ffscript {
 		REGIST_MATH_FUNCTION2(helper, abs, double, double);
 		REGIST_MATH_FUNCTION2(helper, abs, float, float);
 		REGIST_MATH_FUNCTION2(helper, abs, int, int);
-		helper.registFunction("abs", "long", new DefaultUserFunctionFactory(
-			CREATE_MATH_FUNCTION(abs, long long, long long),
-			helper.getSriptCompiler(), "long", 1));
+		helper.registFunction("abs", "long",
+			createUserFunctionFactoryCdecl<long long, long long>(helper.getSriptCompiler(), "long", abs));
 	}
 }

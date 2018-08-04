@@ -1,6 +1,6 @@
 #pragma once
 #include "ffscript.h"
-
+#include "FunctionRegisterHelper.h"
 #include <string>
 
 namespace ffscript {
@@ -8,7 +8,7 @@ namespace ffscript {
 
 	template <class T>
 	DFunction2Ref createStringNativeFunc(RawString(*f)(T)) {
-		return std::make_shared<CdeclFunction2<RawString, T>>(f);
+		return createFunctionCdeclRef<RawString, T>(f);
 	}
 
 	void includeRawStringToCompiler(ScriptCompiler* scriptCompiler);

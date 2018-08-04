@@ -2,7 +2,6 @@
 #include "ffscript.h"
 #include <list>
 
-#include "function/CdeclFunction2.hpp"
 #include "function/CdeclFunction3.hpp"
 
 class DFunction2;
@@ -76,8 +75,8 @@ namespace ffscript {
 	}
 
 	template <class Rt, class... Types>
-	FunctionFactory* createUserFunctionCdecl(ScriptCompiler* scriptCompiler, const char* rt, Rt(_cdecl *f)(Types...)) {
-		return new BasicFunctionFactory<sizeof...(Types)>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, rt, createFunctionCdecl<Rt, Types...>(f), scriptCompiler);
+	FunctionFactory* createUserFunctionFactoryCdecl(ScriptCompiler* scriptCompiler, const char* rt, Rt(_cdecl *f)(Types...)) {
+		return new DefaultUserFunctionFactory(createFunctionCdeclRef<Rt, Types...>(f), scriptCompiler, rt, sizeof...(Types));
 	}
 
 	template <class ...Args>

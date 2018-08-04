@@ -12,6 +12,7 @@
 #include "Utility.hpp"
 #include "FwdCompositeConstrutorUnit.h"
 #include "CompositeConstrutorUnit.h"
+#include "FunctionRegisterHelper.h"
 
 #define TYPE_CONVERSION_MAKE_KEY(source, target)  (((uint64_t)(source) << 32) | target)
 
@@ -2483,7 +2484,7 @@ namespace ffscript {
 			copyArgs.append("&");
 
 			FunctionRegisterHelper fb(this);
-			int f = fb.registFunction(SYSTEM_FUNCTION_COPY_CONSTRUCTOR, copyArgs, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RuntimeFunctionInfo*, RuntimeFunctionInfo*>(runtimeFunctionInfoCopyConstructor), this), true);
+			int f = fb.registFunction(SYSTEM_FUNCTION_COPY_CONSTRUCTOR, copyArgs, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", createFunctionCdecl<void, RuntimeFunctionInfo*, RuntimeFunctionInfo*>(runtimeFunctionInfoCopyConstructor), this), true);
 			if (!registBinaryConstructor(iType, f)) {
 				throw exception("Cannot register copy constructor for function object");
 			}
@@ -2493,7 +2494,7 @@ namespace ffscript {
 			copyArgs.append(", " SYSTEM_NULL_TYPE);
 
 			f = fb.registFunction("_initize_by_null", copyArgs, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void",
-				new CdeclFunction2<void, RuntimeFunctionInfo*, void*>(runtimeFunctionInfoConstructByNull), this), true);
+				createFunctionCdecl<void, RuntimeFunctionInfo*, void*>(runtimeFunctionInfoConstructByNull), this), true);
 			if (!registConstructor(iType, f)) {
 				throw exception("Cannot register initliaze constructor to null for function object");
 			}
