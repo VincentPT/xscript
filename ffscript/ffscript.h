@@ -70,25 +70,12 @@ typedef unsigned char byte;
 
 #pragma region ffscript types
 
-#ifdef _WIN64
-typedef __int64 LONG_P;
-typedef const __int64 LONG_CP;
-#define S_LONG_P "long"
-#define S_LONG_CP "long"
-#else
-typedef __int64& LONG_P;
-typedef const __int64& LONG_CP;
-#define S_LONG_P "long&"
-#define S_LONG_CP "long&"
-#endif
-
-typedef __int64 LONG_T;
-#define S_LONG_T "long"
-
 #pragma endregion
 
 class DFunction;
 class DFunction2;
+
+#include "function/CdeclFunction3.hpp"
 
 namespace ffscript {
 	class InstructionCommand;
@@ -102,6 +89,9 @@ namespace ffscript {
 	typedef std::list<InstructionCommand*> CommandList;
 	typedef std::list<std::shared_ptr<InstructionCommand>> ScopeAutoRunList;
 	typedef std::pair< CommandPointer, CommandPointer > CodeSegmentEntry;
+
+	template <class Ret, class... Types>
+	using FunctionT = typename FT::CdelFunction3<Ret, Types...>;
 
 	typedef void* THREAD_HANDLE;
 	

@@ -11,7 +11,7 @@
 #include <math.h>
 
 namespace ffscript {
-#define CREATE_MATH_FUNCTION(fx, ...) DFunction2Ref(createFunctionCdecl2<__VA_ARGS__>(fx))
+#define CREATE_MATH_FUNCTION(fx, ...) DFunction2Ref(createFunctionCdecl<__VA_ARGS__>(fx))
 #define REGIST_MATH_FUNCTION1(helper, nativeFunc, scriptFunc, returnType, ...) \
 	helper.registFunction(\
 		scriptFunc, #__VA_ARGS__,\

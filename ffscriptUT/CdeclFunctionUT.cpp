@@ -8,6 +8,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
+using namespace FT;
 
 namespace ffscriptUT
 {
@@ -739,15 +740,15 @@ namespace ffscriptUT
 		{
 			typedef MemberTypeInfo<0, sizeof(void*), int, SampleStruct, float> AMemberTypeInfo;
 			int offset = 0;
-			Assert::AreEqual(offset, AMemberTypeInfo::getOffset<0>());
+			Assert::AreEqual(offset, AMemberTypeInfo::offset<0>());
 
 			offset += sizeof(void*);
-			Assert::AreEqual(offset, AMemberTypeInfo::getOffset<1>());
+			Assert::AreEqual(offset, AMemberTypeInfo::offset<1>());
 
 			constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
 			offset += alignedSizeOfStruct;
 
-			Assert::AreEqual(offset, AMemberTypeInfo::getOffset<2>());
+			Assert::AreEqual(offset, AMemberTypeInfo::offset<2>());
 			offset += sizeof(void*);
 
 			Assert::AreEqual((int)sizeof(void*), AMemberTypeInfo::getSize<0>());

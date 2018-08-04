@@ -88,52 +88,19 @@ namespace ffscript {
 		rayStruct->addMember(typePoint, "dir");
 		auto iTypeRay = scriptCompiler->registStruct(rayStruct);
 
-		helper.registPredefinedOperators("+", "Point&,Point&", "Point", createFunctionCdecl1<Point, const Point&, const Point&>(operator+));
-		helper.registPredefinedOperators("-", "Point&,Point&", "Point", createFunctionCdecl1<Point, const Point&, const Point&>(operator-));
-
-		// use direct non-reference float type in native function must use CdelFunction3
-		// when use CdelFunction3 we cannot use reference object, so we need to use const Point*
-		// instead of const Point&
-		helper.registPredefinedOperators("*", "Point&,float", "Point",
-			createFunctionCdecl2FromVoidPtr<Point, const Point*, float>
-			(
-				fpToVoidPtr<Point, const Point&, float>(operator*)
-				)
-		);
-		helper.registPredefinedOperators("/", "Point&,float", "Point",
-			createFunctionCdecl2FromVoidPtr<Point, const Point*, float>
-			(
-				fpToVoidPtr<Point, const Point&, float>(operator/)
-				)
-		);
+		helper.registPredefinedOperators("+", "Point&,Point&", "Point", createFunctionCdecl<Point, const Point&, const Point&>(operator+));
+		helper.registPredefinedOperators("-", "Point&,Point&", "Point", createFunctionCdecl<Point, const Point&, const Point&>(operator-));
+		helper.registPredefinedOperators("*", "Point&,float", "Point",createFunctionCdecl<Point, const Point&, float>(operator*));
+		helper.registPredefinedOperators("/", "Point&,float", "Point", createFunctionCdecl<Point, const Point&, float>(operator/));
 		
-		helper.registPredefinedOperators("+=", "Point&,Point&", "Point&",
-			createFunctionCdecl1FromVoidPtr<const Point*, Point&, const Point&>(
-				fpToVoidPtr<const Point&, Point&, const Point&>(operator+=)
-				)
-		);
-		helper.registPredefinedOperators("-=", "Point&,Point&", "Point&",
-			createFunctionCdecl1FromVoidPtr<const Point*, Point&, const Point&>(
-				fpToVoidPtr<const Point&, Point&, const Point&>(operator-=)
-				)
-		);
-
-		helper.registPredefinedOperators("*=", "Point&,float", "&Point",
-			createFunctionCdecl2FromVoidPtr<Point*, Point*, float>
-			(
-				fpToVoidPtr<const Point&, Point&, float>(operator*=)
-				)
-		);
-		helper.registPredefinedOperators("/=", "Point&,float", "&Point",
-			createFunctionCdecl2FromVoidPtr<Point*, Point*, float>
-			(
-				fpToVoidPtr<const Point&, Point&, float>(operator/=)
-				)
-		);
+		helper.registPredefinedOperators("+=", "Point&,Point&", "Point&", createFunctionCdecl<const Point&, Point&, const Point&>(operator+=));
+		helper.registPredefinedOperators("-=", "Point&,Point&", "Point&", createFunctionCdecl<const Point&, Point&, const Point&>(operator-=));
+		helper.registPredefinedOperators("*=", "Point&,float", "&Point", createFunctionCdecl<const Point&, Point&, float>(operator*=));
+		helper.registPredefinedOperators("/=", "Point&,float", "&Point", createFunctionCdecl<const Point&, Point&, float>(operator/=));
 
 		// dot product
-		helper.registPredefinedOperators("*", "Point&,Point&", "float", createFunctionCdecl1<float, const Point&, const Point&>(operator*));
+		helper.registPredefinedOperators("*", "Point&,Point&", "float", createFunctionCdecl<float, const Point&, const Point&>(operator*));
 		// reverser direction
-		helper.registPredefinedOperators("-", "Point&", "Point", createFunctionCdecl1<Point, const Point&>(operator-));
+		helper.registPredefinedOperators("-", "Point&", "Point", createFunctionCdecl<Point, const Point&>(operator-));
 	}
 }

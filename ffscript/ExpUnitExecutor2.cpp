@@ -771,7 +771,7 @@ namespace ffscript {
 				functionCommandTree = new CommandT<int, int>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_LONG) {
-				functionCommandTree = new CommandT<int, LONG_T>(param1IsRef, param2IsRef);
+				functionCommandTree = new CommandT<int, long long>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_DOUBLE) {
 				functionCommandTree = new CommandT<int, double>(param1IsRef, param2IsRef);
@@ -785,19 +785,19 @@ namespace ffscript {
 		}
 		else if (paramType1 == basicTypes.TYPE_LONG) {
 			if (paramType2 == basicTypes.TYPE_INT) {
-				functionCommandTree = new CommandT<LONG_T, int>(param1IsRef, param2IsRef);
+				functionCommandTree = new CommandT<long long, int>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_LONG) {
-				functionCommandTree = new CommandT<LONG_T, LONG_T>(param1IsRef, param2IsRef);
+				functionCommandTree = new CommandT<long long, long long>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_DOUBLE) {
-				functionCommandTree = new CommandT<LONG_T, double>(param1IsRef, param2IsRef);
+				functionCommandTree = new CommandT<long long, double>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_FLOAT) {
-				functionCommandTree = new CommandT<LONG_T, float>(param1IsRef, param2IsRef);
+				functionCommandTree = new CommandT<long long, float>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_BOOL) {
-				functionCommandTree = new CommandT<LONG_T, char>(param1IsRef, param2IsRef);
+				functionCommandTree = new CommandT<long long, char>(param1IsRef, param2IsRef);
 			}
 		}
 		else if (paramType1 == basicTypes.TYPE_DOUBLE) {
@@ -805,7 +805,7 @@ namespace ffscript {
 				functionCommandTree = new CommandT<double, int>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_LONG) {
-				functionCommandTree = new CommandT<double, LONG_T>(param1IsRef, param2IsRef);
+				functionCommandTree = new CommandT<double, long long>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_DOUBLE) {
 				functionCommandTree = new CommandT<double, double>(param1IsRef, param2IsRef);
@@ -822,7 +822,7 @@ namespace ffscript {
 				functionCommandTree = new CommandT<float, int>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_LONG) {
-				functionCommandTree = new CommandT<float, LONG_T>(param1IsRef, param2IsRef);
+				functionCommandTree = new CommandT<float, long long>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_DOUBLE) {
 				functionCommandTree = new CommandT<float, double>(param1IsRef, param2IsRef);
@@ -839,7 +839,7 @@ namespace ffscript {
 				functionCommandTree = new CommandT<char, int>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_LONG) {
-				functionCommandTree = new CommandT<char, LONG_T>(param1IsRef, param2IsRef);
+				functionCommandTree = new CommandT<char, long long>(param1IsRef, param2IsRef);
 			}
 			else if (paramType2 == basicTypes.TYPE_DOUBLE) {
 				functionCommandTree = new CommandT<char, double>(param1IsRef, param2IsRef);

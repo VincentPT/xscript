@@ -97,30 +97,30 @@ namespace ffscript {
 		ScriptType typeDouble(TYPE_DOUBLE, "double");
 		ScriptType typeBool(TYPE_BOOL, "bool");
 
-		fb.registFunction("int", S_LONG_T, new ConversionFactoryR<int, LONG_T>(scriptCompiler, typeInt) , true);
-		fb.registFunction("int", "float", new ConversionFactoryR<int, float>(scriptCompiler, typeInt), true);
-		fb.registFunction("int", "double", new ConversionFactoryR<int, double>(scriptCompiler, typeInt), true);
+		fb.registFunction("int", "long", new ConversionFactory<int, long long>(scriptCompiler, typeInt) , true);
+		fb.registFunction("int", "float", new ConversionFactory<int, float>(scriptCompiler, typeInt), true);
+		fb.registFunction("int", "double", new ConversionFactory<int, double>(scriptCompiler, typeInt), true);
 		fb.registFunction("int", "bool", new ConversionFactoryBoolTo<int>(scriptCompiler, typeInt), true);
 
-		fb.registFunction(S_LONG_T, "int", new ConversionFactory<LONG_T, int>(scriptCompiler, typeLong), true);
-		fb.registFunction(S_LONG_T, "double", new ConversionFactoryR<LONG_T, double&>(scriptCompiler, typeLong), true);
-		fb.registFunction(S_LONG_T, "float", new ConversionFactoryR<LONG_T, float&>(scriptCompiler, typeLong), true);
-		fb.registFunction(S_LONG_T, "bool", new ConversionFactoryBoolTo<LONG_T>(scriptCompiler, typeLong), true);
+		fb.registFunction("long", "int", new ConversionFactory<long long, int>(scriptCompiler, typeLong), true);
+		fb.registFunction("long", "double", new ConversionFactory<long long, double&>(scriptCompiler, typeLong), true);
+		fb.registFunction("long", "float", new ConversionFactory<long long, float&>(scriptCompiler, typeLong), true);
+		fb.registFunction("long", "bool", new ConversionFactoryBoolTo<long long>(scriptCompiler, typeLong), true);
 
 		fb.registFunction("float", "int", new ConversionFactory<float, int>(scriptCompiler, typeFloat), true);
-		fb.registFunction("float", S_LONG_T, new ConversionFactoryR<float, LONG_T>(scriptCompiler, typeFloat), true);
-		fb.registFunction("float", "double", new ConversionFactoryR<float,double>(scriptCompiler, typeFloat), true);
+		fb.registFunction("float", "long", new ConversionFactory<float, long long>(scriptCompiler, typeFloat), true);
+		fb.registFunction("float", "double", new ConversionFactory<float,double>(scriptCompiler, typeFloat), true);
 		fb.registFunction("float", "bool", new ConversionFactoryBoolTo<float>(scriptCompiler, typeFloat), true);
 
 		fb.registFunction("double", "int", new ConversionFactory<double, int>(scriptCompiler, typeDouble), true);
-		fb.registFunction("double", S_LONG_T, new ConversionFactoryR<double, LONG_T>(scriptCompiler, typeDouble), true);
-		fb.registFunction("double", "float", new ConversionFactoryR<double, float>(scriptCompiler, typeDouble), true);
+		fb.registFunction("double", "long", new ConversionFactory<double, long long>(scriptCompiler, typeDouble), true);
+		fb.registFunction("double", "float", new ConversionFactory<double, float>(scriptCompiler, typeDouble), true);
 		fb.registFunction("double", "bool", new ConversionFactoryBoolTo<double>(scriptCompiler, typeDouble), true);
 
 		fb.registFunction("bool", "int", new ConversionFactoryToBool<int>(scriptCompiler, typeBool), true);
-		fb.registFunction("bool", S_LONG_T, new ConversionFactoryToBoolR<LONG_T>(scriptCompiler, typeBool), true);
-		fb.registFunction("bool", "float", new ConversionFactoryToBoolR<float>(scriptCompiler, typeBool), true);
-		fb.registFunction("bool", "double", new ConversionFactoryToBoolR<double>(scriptCompiler, typeBool), true);
+		fb.registFunction("bool", "long", new ConversionFactoryToBool<long long>(scriptCompiler, typeBool), true);
+		fb.registFunction("bool", "float", new ConversionFactoryToBool<float>(scriptCompiler, typeBool), true);
+		fb.registFunction("bool", "double", new ConversionFactoryToBool<double>(scriptCompiler, typeBool), true);
 		
 		// conversion accurative for each conversion operator
 		//float -> double, int -> long : 500
@@ -199,20 +199,20 @@ namespace ffscript {
 	CastingFunction::~CastingFunction() {}
 
 	/////////////////////////////////////////////////////////////////////////////////////
-	CastingFunctionR::CastingFunctionR(FunctionRef refFunction, const std::string& name) :
-		FixParamFunction<1>(name, EXP_UNIT_ID_OPERATOR_CAST, FUNCTION_PRIORITY_USER_FUNCTION, name) {
-		_refFunction = refFunction;
-	}
-	CastingFunctionR::~CastingFunctionR() {}
+	//CastingFunctionR::CastingFunctionR(FunctionRef refFunction, const std::string& name) :
+	//	FixParamFunction<1>(name, EXP_UNIT_ID_OPERATOR_CAST, FUNCTION_PRIORITY_USER_FUNCTION, name) {
+	//	_refFunction = refFunction;
+	//}
+	//CastingFunctionR::~CastingFunctionR() {}
 
-	int CastingFunctionR::pushParam(ExecutableUnitRef pExeUnit) {
-		if (_refFunction == nullptr) {
-			return -1;
-		}
-		int res = _refFunction->pushParam(pExeUnit);
-		if (res == 0) {
-			res = FixParamFunction<1>::pushParam(_refFunction);
-		}
-		return res;
-	}
+	//int CastingFunctionR::pushParam(ExecutableUnitRef pExeUnit) {
+	//	if (_refFunction == nullptr) {
+	//		return -1;
+	//	}
+	//	int res = _refFunction->pushParam(pExeUnit);
+	//	if (res == 0) {
+	//		res = FixParamFunction<1>::pushParam(_refFunction);
+	//	}
+	//	return res;
+	//}
 }

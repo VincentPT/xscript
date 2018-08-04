@@ -11,21 +11,28 @@ public: \
 	} \
 	inline void call(void* pReturnVal, void* params[]); \
 }
+namespace FT {
+	template<typename T>
+	struct make_pointer {
+		typedef typename std::remove_reference<T>::type* ptr_type;
+	};
 
-template<typename T>
-struct make_pointer {
-	typedef typename std::remove_reference<T>::type* ptr_type;
-};
+	template<typename... Types>
+	struct correct_types;
 
-template<typename... Types>
-struct correct_types;
+	template<>
+	struct correct_types<> {};
 
-template<>
-struct correct_types<> {};
+	template<typename T1, typename... Types>
+	struct correct_types<T1, Types...> {
+		typedef correct_types<Types...> sub;
+		typedef typename make_pointer<T1>::ptr_type ptr_type;
+		typedef typename std::conditional<std::is_reference<T1>::value, ptr_type, T1>::type T;
+	};
 
-template<typename T1, typename... Types>
-struct correct_types<T1, Types...> {
-	typedef correct_types<Types...> sub;
-	typedef typename make_pointer<T1>::ptr_type ptr_type;
-	typedef typename std::conditional<std::is_reference<T1>::value, ptr_type, T1>::type T;
-};
+	template<typename T>
+	struct real_type {
+		typedef typename make_pointer<T>::ptr_type ptr_type;
+		typedef typename std::conditional<std::is_reference<T>::value, ptr_type, T>::type T;
+	};
+}

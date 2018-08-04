@@ -11,9 +11,6 @@
 #include "RefFunction.h"
 #include "DefaultCommands.h"
 
-//#include "CppUnitTest.h"
-//using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-
 #include "BasicOperators.hpp"
 
 using namespace ffscript::basic::operators;
@@ -63,8 +60,8 @@ namespace ffscript {
 
 	//string functions
 	template <class T>
-	size_t stringLength(const T& s) {
-		return s.length();
+	int stringLength(const T& s) {
+		return (int)s.length();
 	}
 
 	void* assignStruct(void* struct1, void* struct2, int size1, int size2) {
@@ -108,536 +105,536 @@ namespace ffscript {
 	void importBasicfunction(FunctionRegisterHelper& fb) {
 
 #pragma region integer operators only
-		fb.registPredefinedOperators("+", "int,int", "int", make_native(int, int, int, add));
-		fb.registPredefinedOperators("-", "int,int", "int", make_native(int, int, int, sub));
-		fb.registPredefinedOperators("*", "int,int", "int", make_native(int, int, int, mul));
-		fb.registPredefinedOperators("/", "int,int", "int", make_native(int, int, int, div));
-		fb.registPredefinedOperators("%", "int,int", "int", make_native(int, int, int, mod));
+		fb.registPredefinedOperators("+", "int,int", "int", createFunctionCdecl<int, int, int>(add));
+		fb.registPredefinedOperators("-", "int,int", "int", createFunctionCdecl<int, int, int>(sub));
+		fb.registPredefinedOperators("*", "int,int", "int", createFunctionCdecl<int, int, int>(mul));
+		fb.registPredefinedOperators("/", "int,int", "int", createFunctionCdecl<int, int, int>(div));
+		fb.registPredefinedOperators("%", "int,int", "int", createFunctionCdecl<int, int, int>(mod));
 		//negative operator
 		
 		//assigment operator
-		//fb.registPredefinedOperators("=", "int&,int", "int", make_native(int, int&, int, assign));
+		//fb.registPredefinedOperators("=", "int&,int", "int", createFunctionCdecl<int, int&, int, assign));
 		//bitwises
-		fb.registPredefinedOperators("&", "int,int", "int", make_native(int, int, int, and));
-		fb.registPredefinedOperators("|", "int,int", "int", make_native(int, int, int, or));
-		fb.registPredefinedOperators("^", "int,int", "int", make_native(int, int, int, xor));
-		fb.registPredefinedOperators("<<", "int,int", "int", make_native(int, int, int, shiftLeft));
-		fb.registPredefinedOperators(">>", "int,int", "int", make_native(int, int, int, shiftRight));
+		fb.registPredefinedOperators("&", "int,int", "int", createFunctionCdecl<int, int, int>(and));
+		fb.registPredefinedOperators("|", "int,int", "int", createFunctionCdecl<int, int, int>(or));
+		fb.registPredefinedOperators("^", "int,int", "int", createFunctionCdecl<int, int, int>(xor));
+		fb.registPredefinedOperators("<<", "int,int", "int", createFunctionCdecl<int, int, int>(shiftLeft));
+		fb.registPredefinedOperators(">>", "int,int", "int", createFunctionCdecl<int, int, int>(shiftRight));
 		//pre-post fix operators
-		fb.registPredefinedOperators("neg", "int", "int", new CdeclFunction2<int, int>(neg));
-		fb.registPredefinedOperators("~", "int", "int", new CdeclFunction2<int, int>(not));
-		fb.registPredefinedOperators("post_fix_increase", "int&", "int", new CdeclFunction2<int, int&>(post_inc));
-		fb.registPredefinedOperators("++", "int&", "int", new CdeclFunction2<int, int&>(pre_inc));
-		fb.registPredefinedOperators("post_fix_decrease", "int&", "int", new CdeclFunction2<int, int&>(post_dec));
-		fb.registPredefinedOperators("--", "int&", "int", new CdeclFunction2<int, int&>(pre_dec));
+		fb.registPredefinedOperators("neg", "int", "int", createFunctionCdecl<int, int>(neg));
+		fb.registPredefinedOperators("~", "int", "int", createFunctionCdecl<int, int>(not));
+		fb.registPredefinedOperators("post_fix_increase", "int&", "int", createFunctionCdecl<int, int&>(post_inc));
+		fb.registPredefinedOperators("++", "int&", "int", createFunctionCdecl<int, int&>(pre_inc));
+		fb.registPredefinedOperators("post_fix_decrease", "int&", "int", createFunctionCdecl<int, int&>(post_dec));
+		fb.registPredefinedOperators("--", "int&", "int", createFunctionCdecl<int, int&>(pre_dec));
 		//compound operators
-		fb.registPredefinedOperators("+=", "int&,int", "void", new CdeclFunction2<void, int&, int>(add_comp));
-		fb.registPredefinedOperators("-=", "int&,int", "void", new CdeclFunction2<void, int&, int>(sub_comp));
-		fb.registPredefinedOperators("*=", "int&,int", "void", new CdeclFunction2<void, int&, int>(mul_comp));
-		fb.registPredefinedOperators("/=", "int&,int", "void", new CdeclFunction2<void, int&, int>(div_comp));
-		fb.registPredefinedOperators("%=", "int&,int", "void", new CdeclFunction2<void, int&, int>(mod_comp));
-		fb.registPredefinedOperators("&=", "int&,int", "void", new CdeclFunction2<void, int&, int>(and_comp));
-		fb.registPredefinedOperators("|=", "int&,int", "void", new CdeclFunction2<void, int&, int>(or_comp));
-		fb.registPredefinedOperators("^=", "int&,int", "void", new CdeclFunction2<void, int&, int>(xor_comp));
-		fb.registPredefinedOperators("<<=", "int&,int", "void", new CdeclFunction2<void, int&, int>(shiftLeft_comp));
-		fb.registPredefinedOperators(">>=", "int&,int", "void", new CdeclFunction2<void, int&, int>(shiftRight_comp));
+		fb.registPredefinedOperators("+=", "int&,int", "void", createFunctionCdecl<void, int&, int>(add_comp));
+		fb.registPredefinedOperators("-=", "int&,int", "void", createFunctionCdecl<void, int&, int>(sub_comp));
+		fb.registPredefinedOperators("*=", "int&,int", "void", createFunctionCdecl<void, int&, int>(mul_comp));
+		fb.registPredefinedOperators("/=", "int&,int", "void", createFunctionCdecl<void, int&, int>(div_comp));
+		fb.registPredefinedOperators("%=", "int&,int", "void", createFunctionCdecl<void, int&, int>(mod_comp));
+		fb.registPredefinedOperators("&=", "int&,int", "void", createFunctionCdecl<void, int&, int>(and_comp));
+		fb.registPredefinedOperators("|=", "int&,int", "void", createFunctionCdecl<void, int&, int>(or_comp));
+		fb.registPredefinedOperators("^=", "int&,int", "void", createFunctionCdecl<void, int&, int>(xor_comp));
+		fb.registPredefinedOperators("<<=", "int&,int", "void", createFunctionCdecl<void, int&, int>(shiftLeft_comp));
+		fb.registPredefinedOperators(">>=", "int&,int", "void", createFunctionCdecl<void, int&, int>(shiftRight_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", "int,int", "bool", new CdeclFunction2<bool, int, int>(operators::less));
-		fb.registPredefinedOperators("<=", "int,int", "bool", new CdeclFunction2<bool, int, int>(operators::less_or_equal));
-		fb.registPredefinedOperators(">", "int,int", "bool", new CdeclFunction2<bool, int, int>(operators::great));
-		fb.registPredefinedOperators(">=", "int,int", "bool", new CdeclFunction2<bool, int, int>(operators::great_or_equal));
-		fb.registPredefinedOperators("==", "int,int", "bool", new CdeclFunction2<bool, int, int>(operators::equal));
-		fb.registPredefinedOperators("!=", "int,int", "bool", new CdeclFunction2<bool, int, int>(operators::not_equal));
+		fb.registPredefinedOperators("<", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::less));
+		fb.registPredefinedOperators("<=", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::less_or_equal));
+		fb.registPredefinedOperators(">", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::great));
+		fb.registPredefinedOperators(">=", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::great_or_equal));
+		fb.registPredefinedOperators("==", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::equal));
+		fb.registPredefinedOperators("!=", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "int,int", "bool", new CdeclFunction2<bool, int, int>(logic_and));
-		fb.registPredefinedOperators("||", "int,int", "bool", new CdeclFunction2<bool, int, int>(logic_or));
-		fb.registPredefinedOperators("!", "int", "bool", new CdeclFunction2<bool, int>(logic_not));
+		fb.registPredefinedOperators("&&", "int,int", "bool", createFunctionCdecl<bool, int, int>(logic_and));
+		fb.registPredefinedOperators("||", "int,int", "bool", createFunctionCdecl<bool, int, int>(logic_or));
+		fb.registPredefinedOperators("!", "int", "bool", createFunctionCdecl<bool, int>(logic_not));
 #pragma endregion
 
 #pragma region long operators only
-		fb.registPredefinedOperators("+", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, add));
-		fb.registPredefinedOperators("-", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, sub));
-		fb.registPredefinedOperators("*", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, mul));
-		fb.registPredefinedOperators("/", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, div));
-		fb.registPredefinedOperators("%", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, mod));
+		fb.registPredefinedOperators("+", "long,long", "long", createFunctionCdecl<long long, long long, long long>(add));
+		fb.registPredefinedOperators("-", "long,long", "long", createFunctionCdecl<long long, long long, long long>(sub));
+		fb.registPredefinedOperators("*", "long,long", "long", createFunctionCdecl<long long, long long, long long>(mul));
+		fb.registPredefinedOperators("/", "long,long", "long", createFunctionCdecl<long long, long long, long long>(div));
+		fb.registPredefinedOperators("%", "long,long", "long", createFunctionCdecl<long long, long long, long long>(mod));
 		//negative operator
 
 		//assigment operator
-		//fb.registPredefinedOperators("=", S_LONG_T "&" "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_T&, LONG_CP, assign));
+		//fb.registPredefinedOperators("=", "long,long", "long", createFunctionCdecl<long long, long long, long long, assign));
 		//bitwises
-		fb.registPredefinedOperators("&", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, and));
-		fb.registPredefinedOperators("|", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, or ));
-		fb.registPredefinedOperators("^", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, xor));
-		fb.registPredefinedOperators("<<", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, shiftLeft));
-		fb.registPredefinedOperators(">>", S_LONG_CP "," S_LONG_CP, S_LONG_T, make_native(LONG_T, LONG_CP, LONG_CP, shiftRight));
+		fb.registPredefinedOperators("&", "long,long", "long", createFunctionCdecl<long long, long long, long long>(and));
+		fb.registPredefinedOperators("|", "long,long", "long", createFunctionCdecl<long long, long long, long long>(or));
+		fb.registPredefinedOperators("^", "long,long", "long", createFunctionCdecl<long long, long long, long long>(xor));
+		fb.registPredefinedOperators("<<", "long,long", "long", createFunctionCdecl<long long, long long, long long>(shiftLeft));
+		fb.registPredefinedOperators(">>", "long,long", "long", createFunctionCdecl<long long, long long, long long>(shiftRight));
 		//pre-post fix operators
-		fb.registPredefinedOperators("neg",					S_LONG_CP, S_LONG_T, new CdeclFunction2<LONG_T, LONG_CP>(neg));
-		fb.registPredefinedOperators("~",					S_LONG_CP, S_LONG_T, new CdeclFunction2<LONG_T, LONG_CP>(not));
-		fb.registPredefinedOperators("post_fix_increase", S_LONG_T "&", S_LONG_T, new CdeclFunction2<LONG_T, LONG_T&>(post_inc));
-		fb.registPredefinedOperators("++", S_LONG_T "&", S_LONG_T, new CdeclFunction2<LONG_T, LONG_T&>(pre_inc));
-		fb.registPredefinedOperators("post_fix_decrease", S_LONG_T "&", S_LONG_T, new CdeclFunction2<LONG_T, LONG_T&>(post_dec));
-		fb.registPredefinedOperators("--", S_LONG_T "&", S_LONG_T, new CdeclFunction2<LONG_T, LONG_T&>(pre_dec));
+		fb.registPredefinedOperators("neg",					"long", "long", createFunctionCdecl<long long, long long>(neg));
+		fb.registPredefinedOperators("~",					"long", "long", createFunctionCdecl<long long, long long>(not));
+		fb.registPredefinedOperators("post_fix_increase", "long&", "long", createFunctionCdecl<long long, long long&>(post_inc));
+		fb.registPredefinedOperators("++", "long&", "long", createFunctionCdecl<long long, long long&>(pre_inc));
+		fb.registPredefinedOperators("post_fix_decrease", "long&", "long", createFunctionCdecl<long long, long long&>(post_dec));
+		fb.registPredefinedOperators("--", "long&", "long", createFunctionCdecl<long long, long long&>(pre_dec));
 		//compound operators
-		fb.registPredefinedOperators("+=", S_LONG_T "&" "," S_LONG_CP, "void", new CdeclFunction2<void, LONG_T&, LONG_CP>(add_comp));
-		fb.registPredefinedOperators("-=", S_LONG_T "&" "," S_LONG_CP, "void", new CdeclFunction2<void, LONG_T&, LONG_CP>(sub_comp));
-		fb.registPredefinedOperators("*=", S_LONG_T "&" "," S_LONG_CP, "void", new CdeclFunction2<void, LONG_T&, LONG_CP>(mul_comp));
-		fb.registPredefinedOperators("/=", S_LONG_T "&" "," S_LONG_CP, "void", new CdeclFunction2<void, LONG_T&, LONG_CP>(div_comp));
-		fb.registPredefinedOperators("%=", S_LONG_T "&" "," S_LONG_CP, "void", new CdeclFunction2<void, LONG_T&, LONG_CP>(mod_comp));
-		fb.registPredefinedOperators("&=", S_LONG_T "&" "," S_LONG_CP, "void", new CdeclFunction2<void, LONG_T&, LONG_CP>(and_comp));
-		fb.registPredefinedOperators("|=", S_LONG_T "&" "," S_LONG_CP, "void", new CdeclFunction2<void, LONG_T&, LONG_CP>(or_comp));
-		fb.registPredefinedOperators("^=", S_LONG_T "&" "," S_LONG_CP, "void", new CdeclFunction2<void, LONG_T&, LONG_CP>(xor_comp));
-		fb.registPredefinedOperators("<<=", S_LONG_T "&" "," S_LONG_CP, "void", new CdeclFunction2<void, LONG_T&, LONG_CP>(shiftLeft_comp));
-		fb.registPredefinedOperators(">>=", S_LONG_T "&" "," S_LONG_CP, "void", new CdeclFunction2<void, LONG_T&, LONG_CP>(shiftRight_comp));
+		fb.registPredefinedOperators("+=", "long&,long", "void", createFunctionCdecl<void, long long&, long long>(add_comp));
+		fb.registPredefinedOperators("-=", "long&,long", "void", createFunctionCdecl<void, long long&, long long>(sub_comp));
+		fb.registPredefinedOperators("*=", "long&,long", "void", createFunctionCdecl<void, long long&, long long>(mul_comp));
+		fb.registPredefinedOperators("/=", "long&,long", "void", createFunctionCdecl<void, long long&, long long>(div_comp));
+		fb.registPredefinedOperators("%=", "long&,long", "void", createFunctionCdecl<void, long long&, long long>(mod_comp));
+		fb.registPredefinedOperators("&=", "long&,long", "void", createFunctionCdecl<void, long long&, long long>(and_comp));
+		fb.registPredefinedOperators("|=", "long&,long", "void", createFunctionCdecl<void, long long&, long long>(or_comp));
+		fb.registPredefinedOperators("^=", "long&,long", "void", createFunctionCdecl<void, long long&, long long>(xor_comp));
+		fb.registPredefinedOperators("<<=", "long&,long", "void", createFunctionCdecl<void, long long&, long long>(shiftLeft_comp));
+		fb.registPredefinedOperators(">>=", "long&,long", "void", createFunctionCdecl<void, long long&, long long>(shiftRight_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", S_LONG_CP "," S_LONG_CP, "bool", new CdeclFunction2<bool, LONG_CP, LONG_CP>(operators::less));
-		fb.registPredefinedOperators("<=", S_LONG_CP "," S_LONG_CP, "bool", new CdeclFunction2<bool, LONG_CP, LONG_CP>(less_or_equal));
-		fb.registPredefinedOperators(">", S_LONG_CP "," S_LONG_CP, "bool", new CdeclFunction2<bool, LONG_CP, LONG_CP>(great));
-		fb.registPredefinedOperators(">=", S_LONG_CP "," S_LONG_CP, "bool", new CdeclFunction2<bool, LONG_CP, LONG_CP>(great_or_equal));
-		fb.registPredefinedOperators("==", S_LONG_CP "," S_LONG_CP, "bool", new CdeclFunction2<bool, LONG_CP, LONG_CP>(equal));
-		fb.registPredefinedOperators("!=", S_LONG_CP "," S_LONG_CP, "bool", new CdeclFunction2<bool, LONG_CP, LONG_CP>(not_equal));
+		fb.registPredefinedOperators("<", "long,long", "bool", createFunctionCdecl<bool, long long, long long>(operators::less));
+		fb.registPredefinedOperators("<=", "long,long", "bool", createFunctionCdecl<bool, long long, long long>(less_or_equal));
+		fb.registPredefinedOperators(">", "long,long", "bool", createFunctionCdecl<bool, long long, long long>(great));
+		fb.registPredefinedOperators(">=", "long,long", "bool", createFunctionCdecl<bool, long long, long long>(great_or_equal));
+		fb.registPredefinedOperators("==", "long,long", "bool", createFunctionCdecl<bool, long long, long long>(equal));
+		fb.registPredefinedOperators("!=", "long,long", "bool", createFunctionCdecl<bool, long long, long long>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", S_LONG_CP "," S_LONG_CP, "bool", new CdeclFunction2<bool, LONG_CP, LONG_CP>(logic_and));
-		fb.registPredefinedOperators("||", S_LONG_CP "," S_LONG_CP, "bool", new CdeclFunction2<bool, LONG_CP, LONG_CP>(logic_or));
-		fb.registPredefinedOperators("!", S_LONG_CP, "bool", new CdeclFunction2<bool, LONG_CP>(logic_not));
+		fb.registPredefinedOperators("&&", "long,long", "bool", createFunctionCdecl<bool, long long, long long>(logic_and));
+		fb.registPredefinedOperators("||", "long,long", "bool", createFunctionCdecl<bool, long long, long long>(logic_or));
+		fb.registPredefinedOperators("!", "long", "bool", createFunctionCdecl<bool, long long>(logic_not));
 #pragma endregion
 
 #pragma region float operators only
-		fb.registPredefinedOperators("+", "float&,float&", "float", make_native(float, const float&, const float&, add));
-		fb.registPredefinedOperators("-", "float&,float&", "float", make_native(float, const float&, const float&, sub));
-		fb.registPredefinedOperators("*", "float&,float&", "float", make_native(float, const float&, const float&, mul));
-		fb.registPredefinedOperators("/", "float&,float&", "float", make_native(float, const float&, const float&, div));
+		fb.registPredefinedOperators("+", "float,float", "float", createFunctionCdecl<float, float, float>(add));
+		fb.registPredefinedOperators("-", "float,float", "float", createFunctionCdecl<float, float, float>(sub));
+		fb.registPredefinedOperators("*", "float,float", "float", createFunctionCdecl<float, float, float>(mul));
+		fb.registPredefinedOperators("/", "float,float", "float", createFunctionCdecl<float, float, float>(div));
 
 		//assigment operator
-		//fb.registPredefinedOperators("=", "float&,float&", "float", make_native(float, float&, const float&, assign));
+		//fb.registPredefinedOperators("=", "float&,float", "float", createFunctionCdecl<float, float&, float>(assign));
 		//pre-post fix operators
-		fb.registPredefinedOperators("neg", "float&", "float", new CdeclFunction2<float, const float&>(neg));
-		fb.registPredefinedOperators("post_fix_increase", "float&", "float", new CdeclFunction2<float, float&>(post_inc));
-		fb.registPredefinedOperators("++", "float&", "float", new CdeclFunction2<float, float&>(pre_inc));
-		fb.registPredefinedOperators("post_fix_decrease", "float&", "float", new CdeclFunction2<float, float&>(post_dec));
-		fb.registPredefinedOperators("--", "float&", "float", new CdeclFunction2<float, float&>(pre_dec));
+		fb.registPredefinedOperators("neg", "float", "float", createFunctionCdecl<float, float>(neg));
+		fb.registPredefinedOperators("post_fix_increase", "float&", "float", createFunctionCdecl<float, float&>(post_inc));
+		fb.registPredefinedOperators("++", "float&", "float", createFunctionCdecl<float, float&>(pre_inc));
+		fb.registPredefinedOperators("post_fix_decrease", "float&", "float", createFunctionCdecl<float, float&>(post_dec));
+		fb.registPredefinedOperators("--", "float&", "float", createFunctionCdecl<float, float&>(pre_dec));
 		//compound operators
-		fb.registPredefinedOperators("+=", "float&,float&", "void", new CdeclFunction2<void, float&, const float&>(add_comp));
-		fb.registPredefinedOperators("-=", "float&,float&", "void", new CdeclFunction2<void, float&, const float&>(sub_comp));
-		fb.registPredefinedOperators("*=", "float&,float&", "void", new CdeclFunction2<void, float&, const float&>(mul_comp));
-		fb.registPredefinedOperators("/=", "float&,float&", "void", new CdeclFunction2<void, float&, const float&>(div_comp));
+		fb.registPredefinedOperators("+=", "float&, float", "void", createFunctionCdecl<void, float&, float>(add_comp));
+		fb.registPredefinedOperators("-=", "float&, float", "void", createFunctionCdecl<void, float&, float>(sub_comp));
+		fb.registPredefinedOperators("*=", "float&, float", "void", createFunctionCdecl<void, float&, float>(mul_comp));
+		fb.registPredefinedOperators("/=", "float&, float", "void", createFunctionCdecl<void, float&, float>(div_comp));
 
 		//comparision operators
-		fb.registPredefinedOperators("<", "float&,float&", "bool", new CdeclFunction2<bool, const float&, const float&>(operators::less));
-		fb.registPredefinedOperators("<=", "float&,float&", "bool", new CdeclFunction2<bool, const float&, const float&>(less_or_equal));
-		fb.registPredefinedOperators(">", "float&,float&", "bool", new CdeclFunction2<bool, const float&, const float&>(great));
-		fb.registPredefinedOperators(">=", "float&,float&", "bool", new CdeclFunction2<bool, const float&, const float&>(great_or_equal));
-		fb.registPredefinedOperators("==", "float&,float&", "bool", new CdeclFunction2<bool, const float&, const float&>(equal));
-		fb.registPredefinedOperators("!=", "float&,float&", "bool", new CdeclFunction2<bool, const float&, const float&>(not_equal));
+		fb.registPredefinedOperators("<", "float, float", "bool", createFunctionCdecl<bool, float, float>(operators::less));
+		fb.registPredefinedOperators("<=", "float, float", "bool", createFunctionCdecl<bool, float, float>(less_or_equal));
+		fb.registPredefinedOperators(">", "float, float", "bool", createFunctionCdecl<bool, float, float>(great));
+		fb.registPredefinedOperators(">=", "float, float", "bool", createFunctionCdecl<bool, float, float>(great_or_equal));
+		fb.registPredefinedOperators("==", "float, float", "bool", createFunctionCdecl<bool, float, float>(equal));
+		fb.registPredefinedOperators("!=", "float, float", "bool", createFunctionCdecl<bool, float, float>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "float&,float&", "bool", new CdeclFunction2<bool, const float&, const float&>(logic_and));
-		fb.registPredefinedOperators("||", "float&,float&", "bool", new CdeclFunction2<bool, const float&, const float&>(logic_or));
-		fb.registPredefinedOperators("!", "float&", "bool", new CdeclFunction2<bool, const float&>(logic_not));
+		fb.registPredefinedOperators("&&", "float, float", "bool", createFunctionCdecl<bool, float, float>(logic_and));
+		fb.registPredefinedOperators("||", "float, float", "bool", createFunctionCdecl<bool, float, float>(logic_or));
+		fb.registPredefinedOperators("!", "float", "bool", createFunctionCdecl<bool, float>(logic_not));
 #pragma endregion
 
 #pragma region double operators only
-		fb.registPredefinedOperators("+", "double&,double&", "double", make_native(double, const double&, const double&, add));
-		fb.registPredefinedOperators("-", "double&,double&", "double", make_native(double, const double&, const double&, sub));
-		fb.registPredefinedOperators("*", "double&,double&", "double", make_native(double, const double&, const double&, mul));
-		fb.registPredefinedOperators("/", "double&,double&", "double", make_native(double, const double&, const double&, div));
+		fb.registPredefinedOperators("+", "double,double", "double", createFunctionCdecl<double, double, double>(add));
+		fb.registPredefinedOperators("-", "double,double", "double", createFunctionCdecl<double, double, double>(sub));
+		fb.registPredefinedOperators("*", "double,double", "double", createFunctionCdecl<double, double, double>(mul));
+		fb.registPredefinedOperators("/", "double,double", "double", createFunctionCdecl<double, double, double>(div));
 
 		//assigment operator
-		//fb.registPredefinedOperators("=", "double&,double&", "double", make_native(double, double&, const double&, assign));
+		//fb.registPredefinedOperators("=", "double&,double", "double", createFunctionCdecl<double, double&, double>(assign));
 		//pre-post fix operators
-		fb.registPredefinedOperators("neg", "double&", "double", new CdeclFunction2<double, const double&>(neg));
-		fb.registPredefinedOperators("post_fix_increase", "double&", "double", new CdeclFunction2<double, double&>(post_inc));
-		fb.registPredefinedOperators("++", "double&", "double", new CdeclFunction2<double, double&>(pre_inc));
-		fb.registPredefinedOperators("post_fix_decrease", "double&", "double", new CdeclFunction2<double, double&>(post_dec));
-		fb.registPredefinedOperators("--", "double&", "double", new CdeclFunction2<double, double&>(pre_dec));
+		fb.registPredefinedOperators("neg", "double", "double", createFunctionCdecl<double, double>(neg));
+		fb.registPredefinedOperators("post_fix_increase", "double&", "double", createFunctionCdecl<double, double&>(post_inc));
+		fb.registPredefinedOperators("++", "double&", "double", createFunctionCdecl<double, double&>(pre_inc));
+		fb.registPredefinedOperators("post_fix_decrease", "double&", "double", createFunctionCdecl<double, double&>(post_dec));
+		fb.registPredefinedOperators("--", "double&", "double", createFunctionCdecl<double, double&>(pre_dec));
 		//compound operators
-		fb.registPredefinedOperators("+=", "double&,double&", "void", new CdeclFunction2<void, double&, const double&>(add_comp));
-		fb.registPredefinedOperators("-=", "double&,double&", "void", new CdeclFunction2<void, double&, const double&>(sub_comp));
-		fb.registPredefinedOperators("*=", "double&,double&", "void", new CdeclFunction2<void, double&, const double&>(mul_comp));
-		fb.registPredefinedOperators("/=", "double&,double&", "void", new CdeclFunction2<void, double&, const double&>(div_comp));
+		fb.registPredefinedOperators("+=", "double&,double", "void", createFunctionCdecl<void, double&, double>(add_comp));
+		fb.registPredefinedOperators("-=", "double&,double", "void", createFunctionCdecl<void, double&, double>(sub_comp));
+		fb.registPredefinedOperators("*=", "double&,double", "void", createFunctionCdecl<void, double&, double>(mul_comp));
+		fb.registPredefinedOperators("/=", "double&,double", "void", createFunctionCdecl<void, double&, double>(div_comp));
 
 		//comparision operators
-		fb.registPredefinedOperators("<", "double&,double&", "bool", new CdeclFunction2<bool, const double&, const double&>(operators::less));
-		fb.registPredefinedOperators("<=", "double&,double&", "bool", new CdeclFunction2<bool, const double&, const double&>(less_or_equal));
-		fb.registPredefinedOperators(">", "double&,double&", "bool", new CdeclFunction2<bool, const double&, const double&>(great));
-		fb.registPredefinedOperators(">=", "double&,double&", "bool", new CdeclFunction2<bool, const double&, const double&>(great_or_equal));
-		fb.registPredefinedOperators("==", "double&,double&", "bool", new CdeclFunction2<bool, const double&, const double&>(equal));
-		fb.registPredefinedOperators("!=", "double&,double&", "bool", new CdeclFunction2<bool, const double&, const double&>(not_equal));
+		fb.registPredefinedOperators("<", "double,double", "bool", createFunctionCdecl<bool, double, double>(operators::less));
+		fb.registPredefinedOperators("<=", "double,double", "bool", createFunctionCdecl<bool, double, double>(less_or_equal));
+		fb.registPredefinedOperators(">", "double,double", "bool", createFunctionCdecl<bool, double, double>(great));
+		fb.registPredefinedOperators(">=", "double,double", "bool", createFunctionCdecl<bool, double, double>(great_or_equal));
+		fb.registPredefinedOperators("==", "double,double", "bool", createFunctionCdecl<bool, double, double>(equal));
+		fb.registPredefinedOperators("!=", "double,double", "bool", createFunctionCdecl<bool, double, double>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "double&,double&", "bool", new CdeclFunction2<bool, const double&, const double&>(logic_and));
-		fb.registPredefinedOperators("||", "double&,double&", "bool", new CdeclFunction2<bool, const double&, const double&>(logic_or));
-		fb.registPredefinedOperators("!", "double&", "bool", new CdeclFunction2<bool, const double&>(logic_not));
+		fb.registPredefinedOperators("&&", "double,double", "bool", createFunctionCdecl<bool, double, double>(logic_and));
+		fb.registPredefinedOperators("||", "double,double", "bool", createFunctionCdecl<bool, double, double>(logic_or));
+		fb.registPredefinedOperators("!", "double", "bool", createFunctionCdecl<bool, double>(logic_not));
 #pragma endregion
 
 #pragma region bool operators only
 		//assigment operator
-		//fb.registPredefinedOperators("=", "bool&,bool", "bool", make_native(bool, bool&, bool, assign));
+		//fb.registPredefinedOperators("=", "bool&,bool", "bool", createFunctionCdecl<bool, bool&, bool>(assign));
 		//comparision operators
-		fb.registPredefinedOperators("==", "bool,bool", "bool", new CdeclFunction2<bool, bool, bool>(operators::equal));
-		fb.registPredefinedOperators("!=", "bool,bool", "bool", new CdeclFunction2<bool, bool, bool>(operators::not_equal));
+		fb.registPredefinedOperators("==", "bool,bool", "bool", createFunctionCdecl<bool, bool, bool>(operators::equal));
+		fb.registPredefinedOperators("!=", "bool,bool", "bool", createFunctionCdecl<bool, bool, bool>(operators::not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "bool,bool", "bool", new CdeclFunction2<bool, bool, bool>(logic_and));
-		fb.registPredefinedOperators("||", "bool,bool", "bool", new CdeclFunction2<bool, bool, bool>(logic_or));
-		fb.registPredefinedOperators("!", "bool", "bool", new CdeclFunction2<bool, bool>(logic_not));
+		fb.registPredefinedOperators("&&", "bool,bool", "bool", createFunctionCdecl<bool, bool, bool>(logic_and));
+		fb.registPredefinedOperators("||", "bool,bool", "bool", createFunctionCdecl<bool, bool, bool>(logic_or));
+		fb.registPredefinedOperators("!", "bool", "bool", createFunctionCdecl<bool, bool>(logic_not));
 #pragma endregion
 
 #pragma region integer and long operators
-		fb.registPredefinedOperators("+", "int," S_LONG_CP, S_LONG_T, make_native(LONG_T, int, LONG_CP, add));
-		fb.registPredefinedOperators("-", "int," S_LONG_CP, S_LONG_T, make_native(LONG_T, int, LONG_CP, sub));
-		fb.registPredefinedOperators("*", "int," S_LONG_CP, S_LONG_T, make_native(LONG_T, int, LONG_CP, mul));
-		fb.registPredefinedOperators("/", "int," S_LONG_CP, S_LONG_T, make_native(LONG_T, int, LONG_CP, div));
-		fb.registPredefinedOperators("%", "int," S_LONG_CP, S_LONG_T, make_native(LONG_T, int, LONG_CP, mod));
+		fb.registPredefinedOperators("+", "int,long", "long", createFunctionCdecl<long long, int, long long>(add));
+		fb.registPredefinedOperators("-", "int,long", "long", createFunctionCdecl<long long, int, long long>(sub));
+		fb.registPredefinedOperators("*", "int,long", "long", createFunctionCdecl<long long, int, long long>(mul));
+		fb.registPredefinedOperators("/", "int,long", "long", createFunctionCdecl<long long, int, long long>(div));
+		fb.registPredefinedOperators("%", "int,long", "long", createFunctionCdecl<long long, int, long long>(mod));
 		//assigment operator
-		fb.registPredefinedOperators("=", "int&," S_LONG_CP, "int", make_native(int, int&, LONG_CP, assign));
+		fb.registPredefinedOperators("=", "int&,long", "int", createFunctionCdecl<int, int&, long long>(assign));
 		//bitwises
-		fb.registPredefinedOperators("&", "int," S_LONG_CP, S_LONG_T, make_native(LONG_T, int, LONG_CP, and));
-		fb.registPredefinedOperators("|", "int," S_LONG_CP, S_LONG_T, make_native(LONG_T, int, LONG_CP, or ));
-		fb.registPredefinedOperators("^", "int," S_LONG_CP, S_LONG_T, make_native(LONG_T, int, LONG_CP, xor));
-		fb.registPredefinedOperators("<<", "int," S_LONG_CP, "int", make_native(int, int, LONG_CP, shiftLeft));
-		fb.registPredefinedOperators(">>", "int," S_LONG_CP, "int", make_native(int, int, LONG_CP, shiftRight));
+		fb.registPredefinedOperators("&", "int,long", "long", createFunctionCdecl<long long, int, long long>(and));
+		fb.registPredefinedOperators("|", "int,long", "long", createFunctionCdecl<long long, int, long long>(or));
+		fb.registPredefinedOperators("^", "int,long", "long", createFunctionCdecl<long long, int, long long>(xor));
+		fb.registPredefinedOperators("<<", "int,long", "int", createFunctionCdecl<int, int, long long>(shiftLeft));
+		fb.registPredefinedOperators(">>", "int,long", "int", createFunctionCdecl<int, int, long long>(shiftRight));
 		//compound operators
-		fb.registPredefinedOperators("+=", "int&," S_LONG_CP, "void", new CdeclFunction2<void, int&, LONG_CP>(add_comp));
-		fb.registPredefinedOperators("-=", "int&," S_LONG_CP, "void", new CdeclFunction2<void, int&, LONG_CP>(sub_comp));
-		fb.registPredefinedOperators("*=", "int&," S_LONG_CP, "void", new CdeclFunction2<void, int&, LONG_CP>(mul_comp));
-		fb.registPredefinedOperators("/=", "int&," S_LONG_CP, "void", new CdeclFunction2<void, int&, LONG_CP>(div_comp));
-		fb.registPredefinedOperators("%=", "int&," S_LONG_CP, "void", new CdeclFunction2<void, int&, LONG_CP>(mod_comp));
-		fb.registPredefinedOperators("&=", "int&," S_LONG_CP, "void", new CdeclFunction2<void, int&, LONG_CP>(and_comp));
-		fb.registPredefinedOperators("|=", "int&," S_LONG_CP, "void", new CdeclFunction2<void, int&, LONG_CP>(or_comp));
-		fb.registPredefinedOperators("^=", "int&," S_LONG_CP, "void", new CdeclFunction2<void, int&, LONG_CP>(xor_comp));
-		fb.registPredefinedOperators("<<=", "int&," S_LONG_CP, "void", new CdeclFunction2<void, int&, LONG_CP>(shiftLeft_comp));
-		fb.registPredefinedOperators(">>=", "int&," S_LONG_CP, "void", new CdeclFunction2<void, int&, LONG_CP>(shiftRight_comp));
+		fb.registPredefinedOperators("+=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(add_comp));
+		fb.registPredefinedOperators("-=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(sub_comp));
+		fb.registPredefinedOperators("*=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(mul_comp));
+		fb.registPredefinedOperators("/=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(div_comp));
+		fb.registPredefinedOperators("%=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(mod_comp));
+		fb.registPredefinedOperators("&=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(and_comp));
+		fb.registPredefinedOperators("|=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(or_comp));
+		fb.registPredefinedOperators("^=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(xor_comp));
+		fb.registPredefinedOperators("<<=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(shiftLeft_comp));
+		fb.registPredefinedOperators(">>=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(shiftRight_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", "int," S_LONG_CP, "bool", new CdeclFunction2<bool, int, LONG_CP>(operators::less));
-		fb.registPredefinedOperators("<=", "int," S_LONG_CP, "bool", new CdeclFunction2<bool, int, LONG_CP>(less_or_equal));
-		fb.registPredefinedOperators(">", "int," S_LONG_CP, "bool", new CdeclFunction2<bool, int, LONG_CP>(great));
-		fb.registPredefinedOperators(">=", "int," S_LONG_CP, "bool", new CdeclFunction2<bool, int, LONG_CP>(great_or_equal));
-		fb.registPredefinedOperators("==", "int," S_LONG_CP, "bool", new CdeclFunction2<bool, int, LONG_CP>(equal));
-		fb.registPredefinedOperators("!=", "int," S_LONG_CP, "bool", new CdeclFunction2<bool, int, LONG_CP>(not_equal));
+		fb.registPredefinedOperators("<", "int,long", "bool", createFunctionCdecl<bool, int, long long>(operators::less));
+		fb.registPredefinedOperators("<=", "int,long", "bool", createFunctionCdecl<bool, int, long long>(less_or_equal));
+		fb.registPredefinedOperators(">", "int,long", "bool", createFunctionCdecl<bool, int, long long>(great));
+		fb.registPredefinedOperators(">=", "int,long", "bool", createFunctionCdecl<bool, int, long long>(great_or_equal));
+		fb.registPredefinedOperators("==", "int,long", "bool", createFunctionCdecl<bool, int, long long>(equal));
+		fb.registPredefinedOperators("!=", "int,long", "bool", createFunctionCdecl<bool, int, long long>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "int," S_LONG_CP, "bool", new CdeclFunction2<bool, int, LONG_CP>(logic_and));
-		fb.registPredefinedOperators("||", "int," S_LONG_CP, "bool", new CdeclFunction2<bool, int, LONG_CP>(logic_or));
+		fb.registPredefinedOperators("&&", "int,long", "bool", createFunctionCdecl<bool, int, long long>(logic_and));
+		fb.registPredefinedOperators("||", "int,long", "bool", createFunctionCdecl<bool, int, long long>(logic_or));
 #pragma endregion
 
 #pragma region integer and float operators
-		fb.registPredefinedOperators("+", "int,float&", "float", make_native(float, int, const float&, add));
-		fb.registPredefinedOperators("-", "int,float&", "float", make_native(float, int, const float&, sub));
-		fb.registPredefinedOperators("*", "int,float&", "float", make_native(float, int, const float&, mul));
-		fb.registPredefinedOperators("/", "int,float&", "float", make_native(float, int, const float&, div));
+		fb.registPredefinedOperators("+", "int,float", "float", createFunctionCdecl<float, int, float>(add));
+		fb.registPredefinedOperators("-", "int,float", "float", createFunctionCdecl<float, int, float>(sub));
+		fb.registPredefinedOperators("*", "int,float", "float", createFunctionCdecl<float, int, float>(mul));
+		fb.registPredefinedOperators("/", "int,float", "float", createFunctionCdecl<float, int, float>(div));
 		//assigment operator
-		fb.registPredefinedOperators("=", "int&,float&", "int", make_native(int, int&, const float&, assign));
+		fb.registPredefinedOperators("=", "int&,float", "int", createFunctionCdecl<int, int&, float>(assign));
 		//compound operators
-		fb.registPredefinedOperators("+=", "int&,float&", "void", new CdeclFunction2<void, int&, const float&>(add_comp));
-		fb.registPredefinedOperators("-=", "int&,float&", "void", new CdeclFunction2<void, int&, const float&>(sub_comp));
-		fb.registPredefinedOperators("*=", "int&,float&", "void", new CdeclFunction2<void, int&, const float&>(mul_comp));
-		fb.registPredefinedOperators("/=", "int&,float&", "void", new CdeclFunction2<void, int&, const float&>(div_comp));
+		fb.registPredefinedOperators("+=", "int&,float", "void", createFunctionCdecl<void, int&, float>(add_comp));
+		fb.registPredefinedOperators("-=", "int&,float", "void", createFunctionCdecl<void, int&, float>(sub_comp));
+		fb.registPredefinedOperators("*=", "int&,float", "void", createFunctionCdecl<void, int&, float>(mul_comp));
+		fb.registPredefinedOperators("/=", "int&,float", "void", createFunctionCdecl<void, int&, float>(div_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", "int,float&", "bool", new CdeclFunction2<bool, int, const float&>(operators::less));
-		fb.registPredefinedOperators("<=", "int,float&", "bool", new CdeclFunction2<bool, int, const float&>(operators::less_or_equal));
-		fb.registPredefinedOperators(">", "int,float&", "bool", new CdeclFunction2<bool, int, const float&>(operators::great));
-		fb.registPredefinedOperators(">=", "int,float&", "bool", new CdeclFunction2<bool, int, const float&>(operators::great_or_equal));
-		fb.registPredefinedOperators("==", "int,float&", "bool", new CdeclFunction2<bool, int, const float&>(operators::equal));
-		fb.registPredefinedOperators("!=", "int,float&", "bool", new CdeclFunction2<bool, int, const float&>(operators::not_equal));
+		fb.registPredefinedOperators("<", "int,float", "bool", createFunctionCdecl<bool, int, float>(operators::less));
+		fb.registPredefinedOperators("<=", "int,float", "bool", createFunctionCdecl<bool, int, float>(operators::less_or_equal));
+		fb.registPredefinedOperators(">", "int,float", "bool", createFunctionCdecl<bool, int, float>(operators::great));
+		fb.registPredefinedOperators(">=", "int,float", "bool", createFunctionCdecl<bool, int, float>(operators::great_or_equal));
+		fb.registPredefinedOperators("==", "int,float", "bool", createFunctionCdecl<bool, int, float>(operators::equal));
+		fb.registPredefinedOperators("!=", "int,float", "bool", createFunctionCdecl<bool, int, float>(operators::not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "int,float&", "bool", new CdeclFunction2<bool, int, const float&>(logic_and));
-		fb.registPredefinedOperators("||", "int,float&", "bool", new CdeclFunction2<bool, int, const float&>(logic_or));
+		fb.registPredefinedOperators("&&", "int,float", "bool", createFunctionCdecl<bool, int, float>(logic_and));
+		fb.registPredefinedOperators("||", "int,float", "bool", createFunctionCdecl<bool, int, float>(logic_or));
 #pragma endregion
 
 #pragma region integer and double operators
-		fb.registPredefinedOperators("+", "int,double&", "double", make_native(double, int, const double&, add));
-		fb.registPredefinedOperators("-", "int,double&", "double", make_native(double, int, const double&, sub));
-		fb.registPredefinedOperators("*", "int,double&", "double", make_native(double, int, const double&, mul));
-		fb.registPredefinedOperators("/", "int,double&", "double", make_native(double, int, const double&, div));
+		fb.registPredefinedOperators("+", "int,double", "double", createFunctionCdecl<double, int, double>(add));
+		fb.registPredefinedOperators("-", "int,double", "double", createFunctionCdecl<double, int, double>(sub));
+		fb.registPredefinedOperators("*", "int,double", "double", createFunctionCdecl<double, int, double>(mul));
+		fb.registPredefinedOperators("/", "int,double", "double", createFunctionCdecl<double, int, double>(div));
 		//assigment operator
-		fb.registPredefinedOperators("=", "int&,double&", "int", make_native(int, int&, const double&, assign));
+		fb.registPredefinedOperators("=", "int&,double", "int", createFunctionCdecl<int, int&, double>(assign));
 		//compound operators
-		fb.registPredefinedOperators("+=", "int&,double&", "void", new CdeclFunction2<void, int&, const double&>(add_comp));
-		fb.registPredefinedOperators("-=", "int&,double&", "void", new CdeclFunction2<void, int&, const double&>(sub_comp));
-		fb.registPredefinedOperators("*=", "int&,double&", "void", new CdeclFunction2<void, int&, const double&>(mul_comp));
-		fb.registPredefinedOperators("/=", "int&,double&", "void", new CdeclFunction2<void, int&, const double&>(div_comp));
+		fb.registPredefinedOperators("+=", "int&,double", "void", createFunctionCdecl<void, int&, double>(add_comp));
+		fb.registPredefinedOperators("-=", "int&,double", "void", createFunctionCdecl<void, int&, double>(sub_comp));
+		fb.registPredefinedOperators("*=", "int&,double", "void", createFunctionCdecl<void, int&, double>(mul_comp));
+		fb.registPredefinedOperators("/=", "int&,double", "void", createFunctionCdecl<void, int&, double>(div_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", "int,double&", "bool", new CdeclFunction2<bool, int, const double&>(operators::less));
-		fb.registPredefinedOperators("<=", "int,double&", "bool", new CdeclFunction2<bool, int, const double&>(operators::less_or_equal));
-		fb.registPredefinedOperators(">", "int,double&", "bool", new CdeclFunction2<bool, int, const double&>(operators::great));
-		fb.registPredefinedOperators(">=", "int,double&", "bool", new CdeclFunction2<bool, int, const double&>(operators::great_or_equal));
-		fb.registPredefinedOperators("==", "int,double&", "bool", new CdeclFunction2<bool, int, const double&>(operators::equal));
-		fb.registPredefinedOperators("!=", "int,double&", "bool", new CdeclFunction2<bool, int, const double&>(operators::not_equal));
+		fb.registPredefinedOperators("<", "int,double", "bool", createFunctionCdecl<bool, int, double>(operators::less));
+		fb.registPredefinedOperators("<=", "int,double", "bool", createFunctionCdecl<bool, int, double>(operators::less_or_equal));
+		fb.registPredefinedOperators(">", "int,double", "bool", createFunctionCdecl<bool, int, double>(operators::great));
+		fb.registPredefinedOperators(">=", "int,double", "bool", createFunctionCdecl<bool, int, double>(operators::great_or_equal));
+		fb.registPredefinedOperators("==", "int,double", "bool", createFunctionCdecl<bool, int, double>(operators::equal));
+		fb.registPredefinedOperators("!=", "int,double", "bool", createFunctionCdecl<bool, int, double>(operators::not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "int,double&", "bool", new CdeclFunction2<bool, int, const double&>(logic_and));
-		fb.registPredefinedOperators("||", "int,double&", "bool", new CdeclFunction2<bool, int, const double&>(logic_or));
+		fb.registPredefinedOperators("&&", "int,double", "bool", createFunctionCdecl<bool, int, double>(logic_and));
+		fb.registPredefinedOperators("||", "int,double", "bool", createFunctionCdecl<bool, int, double>(logic_or));
 #pragma endregion
 
 #pragma region integer and bool operators
 		//logic operators
-		fb.registPredefinedOperators("&&", "int,bool", "bool", new CdeclFunction2<bool, int, bool>(logic_and));
-		fb.registPredefinedOperators("||", "int,bool", "bool", new CdeclFunction2<bool, int, bool>(logic_or));
+		fb.registPredefinedOperators("&&", "int,bool", "bool", createFunctionCdecl<bool, int, bool>(logic_and));
+		fb.registPredefinedOperators("||", "int,bool", "bool", createFunctionCdecl<bool, int, bool>(logic_or));
 #pragma endregion
 
 #pragma region long and integer operators
-		fb.registPredefinedOperators("+", S_LONG_CP ",int", S_LONG_T, make_native(LONG_T, LONG_CP, int, add));
-		fb.registPredefinedOperators("-", S_LONG_CP ",int", S_LONG_T, make_native(LONG_T, LONG_CP, int, sub));
-		fb.registPredefinedOperators("*", S_LONG_CP ",int", S_LONG_T, make_native(LONG_T, LONG_CP, int, mul));
-		fb.registPredefinedOperators("/", S_LONG_CP ",int", S_LONG_T, make_native(LONG_T, LONG_CP, int, div));
-		fb.registPredefinedOperators("%", S_LONG_CP ",int", S_LONG_T, make_native(LONG_T, LONG_CP, int, mod));
+		fb.registPredefinedOperators("+", "long,int", "long", createFunctionCdecl<long long, long long, int>(add));
+		fb.registPredefinedOperators("-", "long,int", "long", createFunctionCdecl<long long, long long, int>(sub));
+		fb.registPredefinedOperators("*", "long,int", "long", createFunctionCdecl<long long, long long, int>(mul));
+		fb.registPredefinedOperators("/", "long,int", "long", createFunctionCdecl<long long, long long, int>(div));
+		fb.registPredefinedOperators("%", "long,int", "long", createFunctionCdecl<long long, long long, int>(mod));
 		//assigment operator
-		fb.registPredefinedOperators("=", S_LONG_T "&" ",int", S_LONG_T, make_native(LONG_T, LONG_T&, int, assign));
+		fb.registPredefinedOperators("=", "long&,int", "long", createFunctionCdecl<long long, long long&, int>(assign));
 		//bitwises
-		fb.registPredefinedOperators("&", S_LONG_CP ",int", S_LONG_T, make_native(LONG_T, LONG_CP, int, and));
-		fb.registPredefinedOperators("|", S_LONG_CP ",int", S_LONG_T, make_native(LONG_T, LONG_CP, int, or ));
-		fb.registPredefinedOperators("^", S_LONG_CP ",int", S_LONG_T, make_native(LONG_T, LONG_CP, int, xor));
-		fb.registPredefinedOperators("<<", S_LONG_CP ",int", S_LONG_T, make_native(LONG_T, LONG_CP, int, shiftLeft));
-		fb.registPredefinedOperators(">>", S_LONG_CP ",int", S_LONG_T, make_native(LONG_T, LONG_CP, int, shiftRight));
+		fb.registPredefinedOperators("&", "long,int", "long", createFunctionCdecl<long long, long long, int>(and));
+		fb.registPredefinedOperators("|", "long,int", "long", createFunctionCdecl<long long, long long, int>(or ));
+		fb.registPredefinedOperators("^", "long,int", "long", createFunctionCdecl<long long, long long, int>(xor));
+		fb.registPredefinedOperators("<<", "long,int", "long", createFunctionCdecl<long long, long long, int>(shiftLeft));
+		fb.registPredefinedOperators(">>", "long,int", "long", createFunctionCdecl<long long, long long, int>(shiftRight));
 		//compound operators
-		fb.registPredefinedOperators("+=", S_LONG_T "&" ",int", "void", new CdeclFunction2<void, LONG_T&, int>(add_comp));
-		fb.registPredefinedOperators("-=", S_LONG_T "&" ",int", "void", new CdeclFunction2<void, LONG_T&, int>(sub_comp));
-		fb.registPredefinedOperators("*=", S_LONG_T "&" ",int", "void", new CdeclFunction2<void, LONG_T&, int>(mul_comp));
-		fb.registPredefinedOperators("/=", S_LONG_T "&" ",int", "void", new CdeclFunction2<void, LONG_T&, int>(div_comp));
-		fb.registPredefinedOperators("%=", S_LONG_T "&" ",int", "void", new CdeclFunction2<void, LONG_T&, int>(mod_comp));
-		fb.registPredefinedOperators("&=", S_LONG_T "&" ",int", "void", new CdeclFunction2<void, LONG_T&, int>(and_comp));
-		fb.registPredefinedOperators("|=", S_LONG_T "&" ",int", "void", new CdeclFunction2<void, LONG_T&, int>(or_comp));
-		fb.registPredefinedOperators("^=", S_LONG_T "&" ",int", "void", new CdeclFunction2<void, LONG_T&, int>(xor_comp));
-		fb.registPredefinedOperators("<<=", S_LONG_T "&" ",int", "void", new CdeclFunction2<void, LONG_T&, int>(shiftLeft_comp));
-		fb.registPredefinedOperators(">>=", S_LONG_T "&" ",int", "void", new CdeclFunction2<void, LONG_T&, int>(shiftRight_comp));
+		fb.registPredefinedOperators("+=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(add_comp));
+		fb.registPredefinedOperators("-=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(sub_comp));
+		fb.registPredefinedOperators("*=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(mul_comp));
+		fb.registPredefinedOperators("/=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(div_comp));
+		fb.registPredefinedOperators("%=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(mod_comp));
+		fb.registPredefinedOperators("&=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(and_comp));
+		fb.registPredefinedOperators("|=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(or_comp));
+		fb.registPredefinedOperators("^=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(xor_comp));
+		fb.registPredefinedOperators("<<=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(shiftLeft_comp));
+		fb.registPredefinedOperators(">>=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(shiftRight_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", S_LONG_CP ",int", "bool", new CdeclFunction2<bool, LONG_CP, int>(operators::less));
-		fb.registPredefinedOperators("<=", S_LONG_CP ",int", "bool", new CdeclFunction2<bool, LONG_CP, int>(less_or_equal));
-		fb.registPredefinedOperators(">", S_LONG_CP ",int", "bool", new CdeclFunction2<bool, LONG_CP, int>(great));
-		fb.registPredefinedOperators(">=", S_LONG_CP ",int", "bool", new CdeclFunction2<bool, LONG_CP, int>(great_or_equal));
-		fb.registPredefinedOperators("==", S_LONG_CP ",int", "bool", new CdeclFunction2<bool, LONG_CP, int>(equal));
-		fb.registPredefinedOperators("!=", S_LONG_CP ",int", "bool", new CdeclFunction2<bool, LONG_CP, int>(not_equal));
+		fb.registPredefinedOperators("<", "long,int", "bool", createFunctionCdecl<bool, long long, int>(operators::less));
+		fb.registPredefinedOperators("<=", "long,int", "bool", createFunctionCdecl<bool, long long, int>(less_or_equal));
+		fb.registPredefinedOperators(">", "long,int", "bool", createFunctionCdecl<bool, long long, int>(great));
+		fb.registPredefinedOperators(">=", "long,int", "bool", createFunctionCdecl<bool, long long, int>(great_or_equal));
+		fb.registPredefinedOperators("==", "long,int", "bool", createFunctionCdecl<bool, long long, int>(equal));
+		fb.registPredefinedOperators("!=", "long,int", "bool", createFunctionCdecl<bool, long long, int>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", S_LONG_CP ",int", "bool", new CdeclFunction2<bool, LONG_CP, int>(logic_and));
-		fb.registPredefinedOperators("||", S_LONG_CP ",int", "bool", new CdeclFunction2<bool, LONG_CP, int>(logic_or));
+		fb.registPredefinedOperators("&&", "long,int", "bool", createFunctionCdecl<bool, long long, int>(logic_and));
+		fb.registPredefinedOperators("||", "long,int", "bool", createFunctionCdecl<bool, long long, int>(logic_or));
 #pragma endregion
 
 #pragma region long and float operators
-		fb.registPredefinedOperators("+", S_LONG_CP ",float&", "float", make_native(float, LONG_CP, const float&, add));
-		fb.registPredefinedOperators("-", S_LONG_CP ",float&", "float", make_native(float, LONG_CP, const float&, sub));
-		fb.registPredefinedOperators("*", S_LONG_CP ",float&", "float", make_native(float, LONG_CP, const float&, mul));
-		fb.registPredefinedOperators("/", S_LONG_CP ",float&", "float", make_native(float, LONG_CP, const float&, div));
+		fb.registPredefinedOperators("+", "long,float", "float", createFunctionCdecl<float, long long, float>(add));
+		fb.registPredefinedOperators("-", "long,float", "float", createFunctionCdecl<float, long long, float>(sub));
+		fb.registPredefinedOperators("*", "long,float", "float", createFunctionCdecl<float, long long, float>(mul));
+		fb.registPredefinedOperators("/", "long,float", "float", createFunctionCdecl<float, long long, float>(div));
 		//assigment operator
-		fb.registPredefinedOperators("=", S_LONG_T "&" ",float&", "float", make_native(LONG_T, LONG_T&, const float&, assign));
+		fb.registPredefinedOperators("=", "long&,float", "long", createFunctionCdecl<long long, long long&, float>(assign));
 		//compound operators
-		fb.registPredefinedOperators("+=", S_LONG_T "&" ",float&", "void", new CdeclFunction2<void, LONG_T&, const float&>(add_comp));
-		fb.registPredefinedOperators("-=", S_LONG_T "&" ",float&", "void", new CdeclFunction2<void, LONG_T&, const float&>(sub_comp));
-		fb.registPredefinedOperators("*=", S_LONG_T "&" ",float&", "void", new CdeclFunction2<void, LONG_T&, const float&>(mul_comp));
-		fb.registPredefinedOperators("/=", S_LONG_T "&" ",float&", "void", new CdeclFunction2<void, LONG_T&, const float&>(div_comp));
+		fb.registPredefinedOperators("+=", "long&,float", "void", createFunctionCdecl<void, long long&, float>(add_comp));
+		fb.registPredefinedOperators("-=", "long&,float", "void", createFunctionCdecl<void, long long&, float>(sub_comp));
+		fb.registPredefinedOperators("*=", "long&,float", "void", createFunctionCdecl<void, long long&, float>(mul_comp));
+		fb.registPredefinedOperators("/=", "long&,float", "void", createFunctionCdecl<void, long long&, float>(div_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", S_LONG_CP ",float&", "bool", new CdeclFunction2<bool, LONG_CP, const float&>(operators::less));
-		fb.registPredefinedOperators("<=", S_LONG_CP ",float&", "bool", new CdeclFunction2<bool, LONG_CP, const float&>(less_or_equal));
-		fb.registPredefinedOperators(">", S_LONG_CP ",float&", "bool", new CdeclFunction2<bool, LONG_CP, const float&>(great));
-		fb.registPredefinedOperators(">=", S_LONG_CP ",float&", "bool", new CdeclFunction2<bool, LONG_CP, const float&>(great_or_equal));
-		fb.registPredefinedOperators("==", S_LONG_CP ",float&", "bool", new CdeclFunction2<bool, LONG_CP, const float&>(equal));
-		fb.registPredefinedOperators("!=", S_LONG_CP ",float&", "bool", new CdeclFunction2<bool, LONG_CP, const float&>(not_equal));
+		fb.registPredefinedOperators("<", "long,float", "bool", createFunctionCdecl<bool, long long, float>(operators::less));
+		fb.registPredefinedOperators("<=", "long,float", "bool", createFunctionCdecl<bool, long long, float>(less_or_equal));
+		fb.registPredefinedOperators(">", "long,float", "bool", createFunctionCdecl<bool, long long, float>(great));
+		fb.registPredefinedOperators(">=", "long,float", "bool", createFunctionCdecl<bool, long long, float>(great_or_equal));
+		fb.registPredefinedOperators("==", "long,float", "bool", createFunctionCdecl<bool, long long, float>(equal));
+		fb.registPredefinedOperators("!=", "long,float", "bool", createFunctionCdecl<bool, long long, float>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", S_LONG_CP ",float&", "bool", new CdeclFunction2<bool, LONG_CP, const float&>(logic_and));
-		fb.registPredefinedOperators("||", S_LONG_CP ",float&", "bool", new CdeclFunction2<bool, LONG_CP, const float&>(logic_or));
+		fb.registPredefinedOperators("&&", "long,float", "bool", createFunctionCdecl<bool, long long, float>(logic_and));
+		fb.registPredefinedOperators("||", "long,float", "bool", createFunctionCdecl<bool, long long, float>(logic_or));
 #pragma endregion
 
 #pragma region long and double operators
-		fb.registPredefinedOperators("+", S_LONG_CP ",double&", "double", make_native(double, LONG_CP, const double&, add));
-		fb.registPredefinedOperators("-", S_LONG_CP ",double&", "double", make_native(double, LONG_CP, const double&, sub));
-		fb.registPredefinedOperators("*", S_LONG_CP ",double&", "double", make_native(double, LONG_CP, const double&, mul));
-		fb.registPredefinedOperators("/", S_LONG_CP ",double&", "double", make_native(double, LONG_CP, const double&, div));
+		fb.registPredefinedOperators("+", "long,double", "double", createFunctionCdecl<double, long long, double>(add));
+		fb.registPredefinedOperators("-", "long,double", "double", createFunctionCdecl<double, long long, double>(sub));
+		fb.registPredefinedOperators("*", "long,double", "double", createFunctionCdecl<double, long long, double>(mul));
+		fb.registPredefinedOperators("/", "long,double", "double", createFunctionCdecl<double, long long, double>(div));
 		//assigment operator
-		fb.registPredefinedOperators("=", S_LONG_T "&" ",double&", "double", make_native(LONG_T, LONG_T&, const double&, assign));
+		fb.registPredefinedOperators("=", "long&,double", "double", createFunctionCdecl<long long, long long&, double>(assign));
 		//compound operators
-		fb.registPredefinedOperators("+=", S_LONG_T "&" ",double&", "void", new CdeclFunction2<void, LONG_T&, const double&>(add_comp));
-		fb.registPredefinedOperators("-=", S_LONG_T "&" ",double&", "void", new CdeclFunction2<void, LONG_T&, const double&>(sub_comp));
-		fb.registPredefinedOperators("*=", S_LONG_T "&" ",double&", "void", new CdeclFunction2<void, LONG_T&, const double&>(mul_comp));
-		fb.registPredefinedOperators("/=", S_LONG_T "&" ",double&", "void", new CdeclFunction2<void, LONG_T&, const double&>(div_comp));
+		fb.registPredefinedOperators("+=", "long&,double", "void", createFunctionCdecl<void, long long&, double>(add_comp));
+		fb.registPredefinedOperators("-=", "long&,double", "void", createFunctionCdecl<void, long long&, double>(sub_comp));
+		fb.registPredefinedOperators("*=", "long&,double", "void", createFunctionCdecl<void, long long&, double>(mul_comp));
+		fb.registPredefinedOperators("/=", "long&,double", "void", createFunctionCdecl<void, long long&, double>(div_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", S_LONG_CP ",double&", "bool", new CdeclFunction2<bool, LONG_CP, const double&>(operators::less));
-		fb.registPredefinedOperators("<=", S_LONG_CP ",double&", "bool", new CdeclFunction2<bool, LONG_CP, const double&>(less_or_equal));
-		fb.registPredefinedOperators(">", S_LONG_CP ",double&", "bool", new CdeclFunction2<bool, LONG_CP, const double&>(great));
-		fb.registPredefinedOperators(">=", S_LONG_CP ",double&", "bool", new CdeclFunction2<bool, LONG_CP, const double&>(great_or_equal));
-		fb.registPredefinedOperators("==", S_LONG_CP ",double&", "bool", new CdeclFunction2<bool, LONG_CP, const double&>(equal));
-		fb.registPredefinedOperators("!=", S_LONG_CP ",double&", "bool", new CdeclFunction2<bool, LONG_CP, const double&>(not_equal));
+		fb.registPredefinedOperators("<", "long,double", "bool", createFunctionCdecl<bool, long long, double>(operators::less));
+		fb.registPredefinedOperators("<=", "long,double", "bool", createFunctionCdecl<bool, long long, double>(less_or_equal));
+		fb.registPredefinedOperators(">", "long,double", "bool", createFunctionCdecl<bool, long long, double>(great));
+		fb.registPredefinedOperators(">=", "long,double", "bool", createFunctionCdecl<bool, long long, double>(great_or_equal));
+		fb.registPredefinedOperators("==", "long,double", "bool", createFunctionCdecl<bool, long long, double>(equal));
+		fb.registPredefinedOperators("!=", "long,double", "bool", createFunctionCdecl<bool, long long, double>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", S_LONG_CP ",double&", "bool", new CdeclFunction2<bool, LONG_CP, const double&>(logic_and));
-		fb.registPredefinedOperators("||", S_LONG_CP ",double&", "bool", new CdeclFunction2<bool, LONG_CP, const double&>(logic_or));
+		fb.registPredefinedOperators("&&", "long,double", "bool", createFunctionCdecl<bool, long long, double>(logic_and));
+		fb.registPredefinedOperators("||", "long,double", "bool", createFunctionCdecl<bool, long long, double>(logic_or));
 #pragma endregion
 
 #pragma region long and bool operators
 		//logic operators
-		fb.registPredefinedOperators("&&", S_LONG_CP ",bool", "bool", new CdeclFunction2<bool, LONG_CP, bool>(logic_and));
-		fb.registPredefinedOperators("||", S_LONG_CP ",bool", "bool", new CdeclFunction2<bool, LONG_CP, bool>(logic_or));
+		fb.registPredefinedOperators("&&", "long,bool", "bool", createFunctionCdecl<bool, long long, bool>(logic_and));
+		fb.registPredefinedOperators("||", "long,bool", "bool", createFunctionCdecl<bool, long long, bool>(logic_or));
 #pragma endregion
 
 #pragma region float and integer operators
-		fb.registPredefinedOperators("+", "float&,int", "float", make_native(float, const float&, int, add));
-		fb.registPredefinedOperators("-", "float&,int", "float", make_native(float, const float&, int, sub));
-		fb.registPredefinedOperators("*", "float&,int", "float", make_native(float, const float&, int, mul));
-		fb.registPredefinedOperators("/", "float&,int", "float", make_native(float, const float&, int, div));
+		fb.registPredefinedOperators("+", "float,int", "float", createFunctionCdecl<float, float, int>(add));
+		fb.registPredefinedOperators("-", "float,int", "float", createFunctionCdecl<float, float, int>(sub));
+		fb.registPredefinedOperators("*", "float,int", "float", createFunctionCdecl<float, float, int>(mul));
+		fb.registPredefinedOperators("/", "float,int", "float", createFunctionCdecl<float, float, int>(div));
 		//assigment operator
-		fb.registPredefinedOperators("=", "float&,int", "float", make_native(float, float&, int, assign));
+		fb.registPredefinedOperators("=", "float&,int", "float", createFunctionCdecl<float, float&, int>(assign));
 		//compound operators
-		fb.registPredefinedOperators("+=", "float&,int", "void", new CdeclFunction2<void, float&, int>(add_comp));
-		fb.registPredefinedOperators("-=", "float&,int", "void", new CdeclFunction2<void, float&, int>(sub_comp));
-		fb.registPredefinedOperators("*=", "float&,int", "void", new CdeclFunction2<void, float&, int>(mul_comp));
-		fb.registPredefinedOperators("/=", "float&,int", "void", new CdeclFunction2<void, float&, int>(div_comp));
+		fb.registPredefinedOperators("+=", "float&,int", "void", createFunctionCdecl<void, float&, int>(add_comp));
+		fb.registPredefinedOperators("-=", "float&,int", "void", createFunctionCdecl<void, float&, int>(sub_comp));
+		fb.registPredefinedOperators("*=", "float&,int", "void", createFunctionCdecl<void, float&, int>(mul_comp));
+		fb.registPredefinedOperators("/=", "float&,int", "void", createFunctionCdecl<void, float&, int>(div_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", "float&,int", "bool", new CdeclFunction2<bool, const float&, int>(operators::less));
-		fb.registPredefinedOperators("<=", "float&,int", "bool", new CdeclFunction2<bool, const float&, int>(less_or_equal));
-		fb.registPredefinedOperators(">", "float&,int", "bool", new CdeclFunction2<bool, const float&, int>(great));
-		fb.registPredefinedOperators(">=", "float&,int", "bool", new CdeclFunction2<bool, const float&, int>(great_or_equal));
-		fb.registPredefinedOperators("==", "float&,int", "bool", new CdeclFunction2<bool, const float&, int>(equal));
-		fb.registPredefinedOperators("!=", "float&,int", "bool", new CdeclFunction2<bool, const float&, int>(not_equal));
+		fb.registPredefinedOperators("<", "float,int", "bool", createFunctionCdecl<bool, float, int>(operators::less));
+		fb.registPredefinedOperators("<=", "float,int", "bool", createFunctionCdecl<bool, float, int>(less_or_equal));
+		fb.registPredefinedOperators(">", "float,int", "bool", createFunctionCdecl<bool, float, int>(great));
+		fb.registPredefinedOperators(">=", "float,int", "bool", createFunctionCdecl<bool, float, int>(great_or_equal));
+		fb.registPredefinedOperators("==", "float,int", "bool", createFunctionCdecl<bool, float, int>(equal));
+		fb.registPredefinedOperators("!=", "float,int", "bool", createFunctionCdecl<bool, float, int>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "float&,int", "bool", new CdeclFunction2<bool, const float&, int>(logic_and));
-		fb.registPredefinedOperators("||", "float&,int", "bool", new CdeclFunction2<bool, const float&, int>(logic_or));
+		fb.registPredefinedOperators("&&", "float,int", "bool", createFunctionCdecl<bool, float, int>(logic_and));
+		fb.registPredefinedOperators("||", "float,int", "bool", createFunctionCdecl<bool, float, int>(logic_or));
 #pragma endregion
 
 #pragma region float and long operators
-		fb.registPredefinedOperators("+", "float&," S_LONG_CP, "float", make_native(float, const float&, LONG_CP, add));
-		fb.registPredefinedOperators("-", "float&," S_LONG_CP, "float", make_native(float, const float&, LONG_CP, sub));
-		fb.registPredefinedOperators("*", "float&," S_LONG_CP, "float", make_native(float, const float&, LONG_CP, mul));
-		fb.registPredefinedOperators("/", "float&," S_LONG_CP, "float", make_native(float, const float&, LONG_CP, div));
+		fb.registPredefinedOperators("+", "float,long", "float", createFunctionCdecl<float, float, long long>(add));
+		fb.registPredefinedOperators("-", "float,long", "float", createFunctionCdecl<float, float, long long>(sub));
+		fb.registPredefinedOperators("*", "float,long", "float", createFunctionCdecl<float, float, long long>(mul));
+		fb.registPredefinedOperators("/", "float,long", "float", createFunctionCdecl<float, float, long long>(div));
 		//assigment operator
-		fb.registPredefinedOperators("=", "float&," S_LONG_CP, "float", make_native(float, float&, LONG_CP, assign));
+		fb.registPredefinedOperators("=", "float&,long", "float", createFunctionCdecl<float, float&, long long>(assign));
 		//compound operators
-		fb.registPredefinedOperators("+=", "float&," S_LONG_CP, "void", new CdeclFunction2<void, float&, LONG_CP>(add_comp));
-		fb.registPredefinedOperators("-=", "float&," S_LONG_CP, "void", new CdeclFunction2<void, float&, LONG_CP>(sub_comp));
-		fb.registPredefinedOperators("*=", "float&," S_LONG_CP, "void", new CdeclFunction2<void, float&, LONG_CP>(mul_comp));
-		fb.registPredefinedOperators("/=", "float&," S_LONG_CP, "void", new CdeclFunction2<void, float&, LONG_CP>(div_comp));
+		fb.registPredefinedOperators("+=", "float&,long", "void", createFunctionCdecl<void, float&, long long>(add_comp));
+		fb.registPredefinedOperators("-=", "float&,long", "void", createFunctionCdecl<void, float&, long long>(sub_comp));
+		fb.registPredefinedOperators("*=", "float&,long", "void", createFunctionCdecl<void, float&, long long>(mul_comp));
+		fb.registPredefinedOperators("/=", "float&,long", "void", createFunctionCdecl<void, float&, long long>(div_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", "float&," S_LONG_CP, "bool", new CdeclFunction2<bool, const float&, LONG_CP>(operators::less));
-		fb.registPredefinedOperators("<=", "float&," S_LONG_CP, "bool", new CdeclFunction2<bool, const float&, LONG_CP>(less_or_equal));
-		fb.registPredefinedOperators(">", "float&," S_LONG_CP, "bool", new CdeclFunction2<bool, const float&, LONG_CP>(great));
-		fb.registPredefinedOperators(">=", "float&," S_LONG_CP, "bool", new CdeclFunction2<bool, const float&, LONG_CP>(great_or_equal));
-		fb.registPredefinedOperators("==", "float&," S_LONG_CP, "bool", new CdeclFunction2<bool, const float&, LONG_CP>(equal));
-		fb.registPredefinedOperators("!=", "float&," S_LONG_CP, "bool", new CdeclFunction2<bool, const float&, LONG_CP>(not_equal));
+		fb.registPredefinedOperators("<", "float,long", "bool", createFunctionCdecl<bool, float, long long>(operators::less));
+		fb.registPredefinedOperators("<=", "float,long", "bool", createFunctionCdecl<bool, float, long long>(less_or_equal));
+		fb.registPredefinedOperators(">", "float,long", "bool", createFunctionCdecl<bool, float, long long>(great));
+		fb.registPredefinedOperators(">=", "float,long", "bool", createFunctionCdecl<bool, float, long long>(great_or_equal));
+		fb.registPredefinedOperators("==", "float,long", "bool", createFunctionCdecl<bool, float, long long>(equal));
+		fb.registPredefinedOperators("!=", "float,long", "bool", createFunctionCdecl<bool, float, long long>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "float&," S_LONG_CP, "bool", new CdeclFunction2<bool, const float&, LONG_CP>(logic_and));
-		fb.registPredefinedOperators("||", "float&," S_LONG_CP, "bool", new CdeclFunction2<bool, const float&, LONG_CP>(logic_or));
+		fb.registPredefinedOperators("&&", "float,long", "bool", createFunctionCdecl<bool, float, long long>(logic_and));
+		fb.registPredefinedOperators("||", "float,long", "bool", createFunctionCdecl<bool, float, long long>(logic_or));
 #pragma endregion
 
 #pragma region float and double operators
-		fb.registPredefinedOperators("+", "float&,double&", "double", make_native(double, const float&, const double&, add));
-		fb.registPredefinedOperators("-", "float&,double&", "double", make_native(double, const float&, const double&, sub));
-		fb.registPredefinedOperators("*", "float&,double&", "double", make_native(double, const float&, const double&, mul));
-		fb.registPredefinedOperators("/", "float&,double&", "double", make_native(double, const float&, const double&, div));
+		fb.registPredefinedOperators("+", "float,double", "double", createFunctionCdecl<double, float, double>(add));
+		fb.registPredefinedOperators("-", "float,double", "double", createFunctionCdecl<double, float, double>(sub));
+		fb.registPredefinedOperators("*", "float,double", "double", createFunctionCdecl<double, float, double>(mul));
+		fb.registPredefinedOperators("/", "float,double", "double", createFunctionCdecl<double, float, double>(div));
 		//assigment operator
-		fb.registPredefinedOperators("=", "float&,double&", "float", make_native(float, float&, const double&, assign));
+		fb.registPredefinedOperators("=", "float&,double", "float", createFunctionCdecl<float, float&, double>(assign));
 		//compound operators
-		fb.registPredefinedOperators("+=", "float&,double&", "void", new CdeclFunction2<void, float&, const double&>(add_comp));
-		fb.registPredefinedOperators("-=", "float&,double&", "void", new CdeclFunction2<void, float&, const double&>(sub_comp));
-		fb.registPredefinedOperators("*=", "float&,double&", "void", new CdeclFunction2<void, float&, const double&>(mul_comp));
-		fb.registPredefinedOperators("/=", "float&,double&", "void", new CdeclFunction2<void, float&, const double&>(div_comp));
+		fb.registPredefinedOperators("+=", "float&,double", "void", createFunctionCdecl<void, float&, double>(add_comp));
+		fb.registPredefinedOperators("-=", "float&,double", "void", createFunctionCdecl<void, float&, double>(sub_comp));
+		fb.registPredefinedOperators("*=", "float&,double", "void", createFunctionCdecl<void, float&, double>(mul_comp));
+		fb.registPredefinedOperators("/=", "float&,double", "void", createFunctionCdecl<void, float&, double>(div_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", "float&,double&", "bool", new CdeclFunction2<bool, const float&, const double&>(operators::less));
-		fb.registPredefinedOperators("<=", "float&,double&", "bool", new CdeclFunction2<bool, const float&, const double&>(less_or_equal));
-		fb.registPredefinedOperators(">", "float&,double&", "bool", new CdeclFunction2<bool, const float&, const double&>(great));
-		fb.registPredefinedOperators(">=", "float&,double&", "bool", new CdeclFunction2<bool, const float&, const double&>(great_or_equal));
-		fb.registPredefinedOperators("==", "float&,double&", "bool", new CdeclFunction2<bool, const float&, const double&>(equal));
-		fb.registPredefinedOperators("!=", "float&,double&", "bool", new CdeclFunction2<bool, const float&, const double&>(not_equal));
+		fb.registPredefinedOperators("<", "float,double", "bool", createFunctionCdecl<bool, float, double>(operators::less));
+		fb.registPredefinedOperators("<=", "float,double", "bool", createFunctionCdecl<bool, float, double>(less_or_equal));
+		fb.registPredefinedOperators(">", "float,double", "bool", createFunctionCdecl<bool, float, double>(great));
+		fb.registPredefinedOperators(">=", "float,double", "bool", createFunctionCdecl<bool, float, double>(great_or_equal));
+		fb.registPredefinedOperators("==", "float,double", "bool", createFunctionCdecl<bool, float, double>(equal));
+		fb.registPredefinedOperators("!=", "float,double", "bool", createFunctionCdecl<bool, float, double>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "float&,double&", "bool", new CdeclFunction2<bool, const float&, const double&>(logic_and));
-		fb.registPredefinedOperators("||", "float&,double&", "bool", new CdeclFunction2<bool, const float&, const double&>(logic_or));
+		fb.registPredefinedOperators("&&", "float,double", "bool", createFunctionCdecl<bool, float, double>(logic_and));
+		fb.registPredefinedOperators("||", "float,double", "bool", createFunctionCdecl<bool, float, double>(logic_or));
 #pragma endregion
 
 #pragma region float and bool operators
 		//logic operators
-		fb.registPredefinedOperators("&&", "float&,bool", "bool", new CdeclFunction2<bool, const float&, bool>(logic_and));
-		fb.registPredefinedOperators("||", "float&,bool", "bool", new CdeclFunction2<bool, const float&, bool>(logic_or));
+		fb.registPredefinedOperators("&&", "float,bool", "bool", createFunctionCdecl<bool, float, bool>(logic_and));
+		fb.registPredefinedOperators("||", "float,bool", "bool", createFunctionCdecl<bool, float, bool>(logic_or));
 #pragma endregion
 
 #pragma region double and integer operators
-		fb.registPredefinedOperators("+", "double&,int", "double", make_native(double, const double&, int, add));
-		fb.registPredefinedOperators("-", "double&,int", "double", make_native(double, const double&, int, sub));
-		fb.registPredefinedOperators("*", "double&,int", "double", make_native(double, const double&, int, mul));
-		fb.registPredefinedOperators("/", "double&,int", "double", make_native(double, const double&, int, div));
+		fb.registPredefinedOperators("+", "double,int", "double", createFunctionCdecl<double, double, int>(add));
+		fb.registPredefinedOperators("-", "double,int", "double", createFunctionCdecl<double, double, int>(sub));
+		fb.registPredefinedOperators("*", "double,int", "double", createFunctionCdecl<double, double, int>(mul));
+		fb.registPredefinedOperators("/", "double,int", "double", createFunctionCdecl<double, double, int>(div));
 		//assigment operator
-		fb.registPredefinedOperators("=", "double&,int", "double", make_native(double, double&, int, assign));
+		fb.registPredefinedOperators("=", "double&,int", "double", createFunctionCdecl<double, double&, int>(assign));
 		//compound operators
-		fb.registPredefinedOperators("+=", "double&,int", "void", new CdeclFunction2<void, double&, int>(add_comp));
-		fb.registPredefinedOperators("-=", "double&,int", "void", new CdeclFunction2<void, double&, int>(sub_comp));
-		fb.registPredefinedOperators("*=", "double&,int", "void", new CdeclFunction2<void, double&, int>(mul_comp));
-		fb.registPredefinedOperators("/=", "double&,int", "void", new CdeclFunction2<void, double&, int>(div_comp));
+		fb.registPredefinedOperators("+=", "double&,int", "void", createFunctionCdecl<void, double&, int>(add_comp));
+		fb.registPredefinedOperators("-=", "double&,int", "void", createFunctionCdecl<void, double&, int>(sub_comp));
+		fb.registPredefinedOperators("*=", "double&,int", "void", createFunctionCdecl<void, double&, int>(mul_comp));
+		fb.registPredefinedOperators("/=", "double&,int", "void", createFunctionCdecl<void, double&, int>(div_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", "double&,int", "bool", new CdeclFunction2<bool, const double&, int>(operators::less));
-		fb.registPredefinedOperators("<=", "double&,int", "bool", new CdeclFunction2<bool, const double&, int>(less_or_equal));
-		fb.registPredefinedOperators(">", "double&,int", "bool", new CdeclFunction2<bool, const double&, int>(great));
-		fb.registPredefinedOperators(">=", "double&,int", "bool", new CdeclFunction2<bool, const double&, int>(great_or_equal));
-		fb.registPredefinedOperators("==", "double&,int", "bool", new CdeclFunction2<bool, const double&, int>(equal));
-		fb.registPredefinedOperators("!=", "double&,int", "bool", new CdeclFunction2<bool, const double&, int>(not_equal));
+		fb.registPredefinedOperators("<", "double,int", "bool", createFunctionCdecl<bool, double, int>(operators::less));
+		fb.registPredefinedOperators("<=", "double,int", "bool", createFunctionCdecl<bool, double, int>(less_or_equal));
+		fb.registPredefinedOperators(">", "double,int", "bool", createFunctionCdecl<bool, double, int>(great));
+		fb.registPredefinedOperators(">=", "double,int", "bool", createFunctionCdecl<bool, double, int>(great_or_equal));
+		fb.registPredefinedOperators("==", "double,int", "bool", createFunctionCdecl<bool, double, int>(equal));
+		fb.registPredefinedOperators("!=", "double,int", "bool", createFunctionCdecl<bool, double, int>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "double&,int", "bool", new CdeclFunction2<bool, const double&, int>(logic_and));
-		fb.registPredefinedOperators("||", "double&,int", "bool", new CdeclFunction2<bool, const double&, int>(logic_or));
+		fb.registPredefinedOperators("&&", "double,int", "bool", createFunctionCdecl<bool, double, int>(logic_and));
+		fb.registPredefinedOperators("||", "double,int", "bool", createFunctionCdecl<bool, double, int>(logic_or));
 #pragma endregion
 
 #pragma region double and long operators
-		fb.registPredefinedOperators("+", "double&," S_LONG_CP, "double", make_native(double, const double&, LONG_CP, add));
-		fb.registPredefinedOperators("-", "double&," S_LONG_CP, "double", make_native(double, const double&, LONG_CP, sub));
-		fb.registPredefinedOperators("*", "double&," S_LONG_CP, "double", make_native(double, const double&, LONG_CP, mul));
-		fb.registPredefinedOperators("/", "double&," S_LONG_CP, "double", make_native(double, const double&, LONG_CP, div));
+		fb.registPredefinedOperators("+", "double,long", "double", createFunctionCdecl<double, double, long long>(add));
+		fb.registPredefinedOperators("-", "double,long", "double", createFunctionCdecl<double, double, long long>(sub));
+		fb.registPredefinedOperators("*", "double,long", "double", createFunctionCdecl<double, double, long long>(mul));
+		fb.registPredefinedOperators("/", "double,long", "double", createFunctionCdecl<double, double, long long>(div));
 		//assigment operator
-		fb.registPredefinedOperators("=", "double&," S_LONG_CP, "double", make_native(double, double&, LONG_CP, assign));
+		fb.registPredefinedOperators("=", "double&,long", "double", createFunctionCdecl<double, double&, long long>(assign));
 		//compound operators
-		fb.registPredefinedOperators("+=", "double&," S_LONG_CP, "void", new CdeclFunction2<void, double&, LONG_CP>(add_comp));
-		fb.registPredefinedOperators("-=", "double&," S_LONG_CP, "void", new CdeclFunction2<void, double&, LONG_CP>(sub_comp));
-		fb.registPredefinedOperators("*=", "double&," S_LONG_CP, "void", new CdeclFunction2<void, double&, LONG_CP>(mul_comp));
-		fb.registPredefinedOperators("/=", "double&," S_LONG_CP, "void", new CdeclFunction2<void, double&, LONG_CP>(div_comp));
+		fb.registPredefinedOperators("+=", "double&,long", "void", createFunctionCdecl<void, double&, long long>(add_comp));
+		fb.registPredefinedOperators("-=", "double&,long", "void", createFunctionCdecl<void, double&, long long>(sub_comp));
+		fb.registPredefinedOperators("*=", "double&,long", "void", createFunctionCdecl<void, double&, long long>(mul_comp));
+		fb.registPredefinedOperators("/=", "double&,long", "void", createFunctionCdecl<void, double&, long long>(div_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", "double&," S_LONG_CP, "bool", new CdeclFunction2<bool, const double&, LONG_CP>(operators::less));
-		fb.registPredefinedOperators("<=", "double&," S_LONG_CP, "bool", new CdeclFunction2<bool, const double&, LONG_CP>(less_or_equal));
-		fb.registPredefinedOperators(">", "double&," S_LONG_CP, "bool", new CdeclFunction2<bool, const double&, LONG_CP>(great));
-		fb.registPredefinedOperators(">=", "double&," S_LONG_CP, "bool", new CdeclFunction2<bool, const double&, LONG_CP>(great_or_equal));
-		fb.registPredefinedOperators("==", "double&," S_LONG_CP, "bool", new CdeclFunction2<bool, const double&, LONG_CP>(equal));
-		fb.registPredefinedOperators("!=", "double&," S_LONG_CP, "bool", new CdeclFunction2<bool, const double&, LONG_CP>(not_equal));
+		fb.registPredefinedOperators("<", "double,long", "bool", createFunctionCdecl<bool, double, long long>(operators::less));
+		fb.registPredefinedOperators("<=", "double,long", "bool", createFunctionCdecl<bool, double, long long>(less_or_equal));
+		fb.registPredefinedOperators(">", "double,long", "bool", createFunctionCdecl<bool, double, long long>(great));
+		fb.registPredefinedOperators(">=", "double,long", "bool", createFunctionCdecl<bool, double, long long>(great_or_equal));
+		fb.registPredefinedOperators("==", "double,long", "bool", createFunctionCdecl<bool, double, long long>(equal));
+		fb.registPredefinedOperators("!=", "double,long", "bool", createFunctionCdecl<bool, double, long long>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "double&," S_LONG_CP, "bool", new CdeclFunction2<bool, const double&, LONG_CP>(logic_and));
-		fb.registPredefinedOperators("||", "double&," S_LONG_CP, "bool", new CdeclFunction2<bool, const double&, LONG_CP>(logic_or));
+		fb.registPredefinedOperators("&&", "double,long", "bool", createFunctionCdecl<bool, double, long long>(logic_and));
+		fb.registPredefinedOperators("||", "double,long", "bool", createFunctionCdecl<bool, double, long long>(logic_or));
 #pragma endregion
 
 #pragma region double and float operators
-		fb.registPredefinedOperators("+", "double&,float&", "double", make_native(double, const double&, const float&, add));
-		fb.registPredefinedOperators("-", "double&,float&", "double", make_native(double, const double&, const float&, sub));
-		fb.registPredefinedOperators("*", "double&,float&", "double", make_native(double, const double&, const float&, mul));
-		fb.registPredefinedOperators("/", "double&,float&", "double", make_native(double, const double&, const float&, div));
+		fb.registPredefinedOperators("+", "double,float", "double", createFunctionCdecl<double, double, float>(add));
+		fb.registPredefinedOperators("-", "double,float", "double", createFunctionCdecl<double, double, float>(sub));
+		fb.registPredefinedOperators("*", "double,float", "double", createFunctionCdecl<double, double, float>(mul));
+		fb.registPredefinedOperators("/", "double,float", "double", createFunctionCdecl<double, double, float>(div));
 		//assigment operator
-		fb.registPredefinedOperators("=", "double&,float&", "float", make_native(double, double&, const float&, assign));
+		fb.registPredefinedOperators("=", "double&,float", "float", createFunctionCdecl<double, double&, float>(assign));
 		//compound operators
-		fb.registPredefinedOperators("+=", "double&,float&", "void", new CdeclFunction2<void, double&, const float&>(add_comp));
-		fb.registPredefinedOperators("-=", "double&,float&", "void", new CdeclFunction2<void, double&, const float&>(sub_comp));
-		fb.registPredefinedOperators("*=", "double&,float&", "void", new CdeclFunction2<void, double&, const float&>(mul_comp));
-		fb.registPredefinedOperators("/=", "double&,float&", "void", new CdeclFunction2<void, double&, const float&>(div_comp));
+		fb.registPredefinedOperators("+=", "double&,float", "void", createFunctionCdecl<void, double&, float>(add_comp));
+		fb.registPredefinedOperators("-=", "double&,float", "void", createFunctionCdecl<void, double&, float>(sub_comp));
+		fb.registPredefinedOperators("*=", "double&,float", "void", createFunctionCdecl<void, double&, float>(mul_comp));
+		fb.registPredefinedOperators("/=", "double&,float", "void", createFunctionCdecl<void, double&, float>(div_comp));
 		//comparision operators
-		fb.registPredefinedOperators("<", "double&,float&", "bool", new CdeclFunction2<bool, const double&, const float&>(operators::less));
-		fb.registPredefinedOperators("<=", "double&,float&", "bool", new CdeclFunction2<bool, const double&, const float&>(less_or_equal));
-		fb.registPredefinedOperators(">", "double&,float&", "bool", new CdeclFunction2<bool, const double&, const float&>(great));
-		fb.registPredefinedOperators(">=", "double&,float&", "bool", new CdeclFunction2<bool, const double&, const float&>(great_or_equal));
-		fb.registPredefinedOperators("==", "double&,float&", "bool", new CdeclFunction2<bool, const double&, const float&>(equal));
-		fb.registPredefinedOperators("!=", "double&,float&", "bool", new CdeclFunction2<bool, const double&, const float&>(not_equal));
+		fb.registPredefinedOperators("<", "double,float", "bool", createFunctionCdecl<bool, double, float>(operators::less));
+		fb.registPredefinedOperators("<=", "double,float", "bool", createFunctionCdecl<bool, double, float>(less_or_equal));
+		fb.registPredefinedOperators(">", "double,float", "bool", createFunctionCdecl<bool, double, float>(great));
+		fb.registPredefinedOperators(">=", "double,float", "bool", createFunctionCdecl<bool, double, float>(great_or_equal));
+		fb.registPredefinedOperators("==", "double,float", "bool", createFunctionCdecl<bool, double, float>(equal));
+		fb.registPredefinedOperators("!=", "double,float", "bool", createFunctionCdecl<bool, double, float>(not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "double&,float&", "bool", new CdeclFunction2<bool, const double&, const float&>(logic_and));
-		fb.registPredefinedOperators("||", "double&,float&", "bool", new CdeclFunction2<bool, const double&, const float&>(logic_or));
+		fb.registPredefinedOperators("&&", "double,float", "bool", createFunctionCdecl<bool, double, float>(logic_and));
+		fb.registPredefinedOperators("||", "double,float", "bool", createFunctionCdecl<bool, double, float>(logic_or));
 #pragma endregion
 
 #pragma region bool and integer operators
 		//logic operators
-		fb.registPredefinedOperators("&&", "bool,int", "bool", new CdeclFunction2<bool, bool, int>(logic_and));
-		fb.registPredefinedOperators("||", "bool,int", "bool", new CdeclFunction2<bool, bool, int>(logic_or));
+		fb.registPredefinedOperators("&&", "bool,int", "bool", createFunctionCdecl<bool, bool, int>(logic_and));
+		fb.registPredefinedOperators("||", "bool,int", "bool", createFunctionCdecl<bool, bool, int>(logic_or));
 #pragma endregion
 
 #pragma region bool and long operators
 		//logic operators
-		fb.registPredefinedOperators("&&", "bool," S_LONG_CP, "bool", new CdeclFunction2<bool, bool, LONG_CP>(logic_and));
-		fb.registPredefinedOperators("||", "bool," S_LONG_CP, "bool", new CdeclFunction2<bool, bool, LONG_CP>(logic_or));
+		fb.registPredefinedOperators("&&", "bool,long", "bool", createFunctionCdecl<bool, bool, long long>(logic_and));
+		fb.registPredefinedOperators("||", "bool,long", "bool", createFunctionCdecl<bool, bool, long long>(logic_or));
 #pragma endregion
 
 #pragma region bool and float operators
 		//logic operators
-		fb.registPredefinedOperators("&&", "bool,float&", "bool", new CdeclFunction2<bool, bool, const float&>(logic_and));
-		fb.registPredefinedOperators("||", "bool,float&", "bool", new CdeclFunction2<bool, bool, const float&>(logic_or));
+		fb.registPredefinedOperators("&&", "bool,float", "bool", createFunctionCdecl<bool, bool, float>(logic_and));
+		fb.registPredefinedOperators("||", "bool,float", "bool", createFunctionCdecl<bool, bool, float>(logic_or));
 #pragma endregion
 
 #pragma region bool and double operators
 		//logic operators
-		fb.registPredefinedOperators("&&", "bool,double&", "bool", new CdeclFunction2<bool, bool, const double&>(logic_and));
-		fb.registPredefinedOperators("||", "bool,double&", "bool", new CdeclFunction2<bool, bool, const double&>(logic_or));
+		fb.registPredefinedOperators("&&", "bool,double", "bool", createFunctionCdecl<bool, bool, double>(logic_and));
+		fb.registPredefinedOperators("||", "bool,double", "bool", createFunctionCdecl<bool, bool, double>(logic_or));
 #pragma endregion
 
 #pragma region other operators
 		auto scriptCompiler = fb.getSriptCompiler();
-		fb.registFunction("length", "string", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new CdeclFunction2<int, const std::string&>(stringLength<std::string>), scriptCompiler), true);
+		fb.registFunction("length", "string&", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", createFunctionCdecl<int, const std::string&>(stringLength), scriptCompiler), true);
 		importCoreFunctions(fb);
 #pragma endregion
 	}
@@ -657,18 +654,18 @@ namespace ffscript {
 		scriptCompiler->registConditionalFunction(conditionalOperatorFactory);
 		fb.addFactory(conditionalOperatorFactory);
 
-		fb.registFunction("=", "ref void,ref void,int,int ", new BasicFunctionFactory<4>(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, FUNCTION_PRIORITY_ASSIGNMENT, "ref void", new CdeclFunction2<void*, void*, void*, int, int>(assignStruct), scriptCompiler), true);
+		fb.registFunction("=", "ref void,ref void,int,int ", new BasicFunctionFactory<4>(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, FUNCTION_PRIORITY_ASSIGNMENT, "ref void", createFunctionCdecl<void*, void*, void*, int, int>(assignStruct), scriptCompiler), true);
 
-		auto theNativeFunction1 = new CdeclFunction2<SimpleVariantArray*, SimpleVariantArray*>(dynamicFunctionGateway);
+		auto theNativeFunction1 = createFunctionCdecl<SimpleVariantArray*, SimpleVariantArray*>(dynamicFunctionGateway);
 		auto dynamicFunctionFactory1 = new DynamicFunctionFactory("ref " SYSTEM_ARRAY_STRUCT, theNativeFunction1, scriptCompiler);
 		scriptCompiler->registDynamicFunction(SYSTEM_ARRAY_FUNCTION, dynamicFunctionFactory1);
 		fb.addFactory(dynamicFunctionFactory1);
 
-		//fb.registFunction("=", "ref void,ref " SYSTEM_ARRAY_STRUCT ",int,int", new BasicFunctionFactory<4>(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, FUNCTION_PRIORITY_ASSIGNMENT, "ref void", new CdeclFunction2<void*, void*, SimpleVariantArray*, int, int>(assignArray2Struct1), scriptCompiler), true);
+		//fb.registFunction("=", "ref void,ref " SYSTEM_ARRAY_STRUCT ",int,int", new BasicFunctionFactory<4>(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, FUNCTION_PRIORITY_ASSIGNMENT, "ref void", createFunctionCdecl<void*, void*, SimpleVariantArray*, int, int>(assignArray2Struct1), scriptCompiler), true);
 
 		//register default member access opearator with param void type as return
 		//return type and first parameter will be corrected later(when link)
-		//fb.registFunction(".", "ref void, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_MEMBER_ACCESS, FUNCTION_PRIORITY_MEMBER_ACCESS, "ref void", new CdeclFunction2<void*, char*, int>(memberAccess), scriptCompiler), true);
+		//fb.registFunction(".", "ref void, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_MEMBER_ACCESS, FUNCTION_PRIORITY_MEMBER_ACCESS, "ref void", createFunctionCdecl<void*, char*, int>(memberAccess), scriptCompiler), true);
 
 		//register making ref function
 		fb.registFunction(MAKING_REF_FUNC, "void", new MakeRefFactory(scriptCompiler), true);
@@ -683,20 +680,20 @@ namespace ffscript {
 		fb.addFactory(defaultCopyFunctionFactory);
 
 		//register default constructor/destructor
-		fb.registFunction(DEFAULT_DUMMY_OPERATOR, "ref void", new BasicFunctionFactory<4>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, void*>(dummyOperator), scriptCompiler), true);
+		fb.registFunction(DEFAULT_DUMMY_OPERATOR, "ref void", new BasicFunctionFactory<4>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", createFunctionCdecl<void, void*>(dummyOperator), scriptCompiler), true);
 
 		//register default constructor/destructor for function objects
-		int f1 = fb.registFunction(SYSTEM_FUNCTION_CONSTRUCTOR, "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RuntimeFunctionInfo*>(defaultRuntimeFunctionInfoConstructor), scriptCompiler), true);
-		int f2 = fb.registFunction(SYSTEM_FUNCTION_DESTRUCTOR, "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RuntimeFunctionInfo*>(runtimeFunctionInfoDestructor), scriptCompiler), true);
-		//int f3 = fb.registFunction(SYSTEM_FUNCTION_COPY_CONSTRUCTOR, "ref void, ref void", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, RuntimeFunctionInfo*>(runtimeFunctionInfoCopyConstructor), scriptCompiler), true);
+		int f1 = fb.registFunction(SYSTEM_FUNCTION_CONSTRUCTOR, "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", createFunctionCdecl<void, RuntimeFunctionInfo*>(defaultRuntimeFunctionInfoConstructor), scriptCompiler), true);
+		int f2 = fb.registFunction(SYSTEM_FUNCTION_DESTRUCTOR, "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", createFunctionCdecl<void, RuntimeFunctionInfo*>(runtimeFunctionInfoDestructor), scriptCompiler), true);
+		//int f3 = fb.registFunction(SYSTEM_FUNCTION_COPY_CONSTRUCTOR, "ref void, ref void", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", createFunctionCdecl<void, RuntimeFunctionInfo*>(runtimeFunctionInfoCopyConstructor), scriptCompiler), true);
 
 		scriptCompiler->setRuntimeInfoConstructor(f1);
 		scriptCompiler->setRuntimeInfoDestructor(f2);
 		//scriptCompiler->setRuntimeInfoCopyConstructor(f3);
 		
 		fb.registFunction("createThread", "function<void()>&", new BasicFunctionFactory<1>(EXP_UNIT_ID_CREATE_THREAD, FUNCTION_PRIORITY_USER_FUNCTION, "hthread", new CreateThreadCommand(), scriptCompiler), true);
-		fb.registFunction("joinThread", "hthread", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, THREAD_HANDLE>(joinThread), scriptCompiler), true);
-		fb.registFunction("closeThread", "hthread", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, THREAD_HANDLE>(closeThread), scriptCompiler), true);
+		fb.registFunction("joinThread", "hthread", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", createFunctionCdecl<void, THREAD_HANDLE>(joinThread), scriptCompiler), true);
+		fb.registFunction("closeThread", "hthread", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", createFunctionCdecl<void, THREAD_HANDLE>(closeThread), scriptCompiler), true);
 #pragma endregion
 	}
 }

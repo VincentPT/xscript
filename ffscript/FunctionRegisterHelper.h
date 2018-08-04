@@ -43,37 +43,41 @@ namespace ffscript {
 	};
 
 
+	//template <class Rt, class... Types>
+	//DFunction2* createFunctionCdecl1(Rt(_cdecl *f)(Types...)) {
+	//	return new CdeclFunction2<Rt, Types...>(f);
+	//}
+
+	//template <class Rt, class... Types>
+	//DFunction2* createFunctionCdecl1FromVoidPtr(void* ptr) {
+	//	typedef CdeclFunction2<Rt, Types...> FObjType;
+	//	return new FObjType((FObjType::FuncType)ptr);
+	//}
+
 	template <class Rt, class... Types>
-	DFunction2* createFunctionCdecl1(Rt(_cdecl *f)(Types...)) {
-		return new CdeclFunction2<Rt, Types...>(f);
+	DFunction2* createFunctionCdecl(Rt(_cdecl *f)(Types...)) {
+		return new FunctionT<Rt, Types...>(f);
 	}
 
 	template <class Rt, class... Types>
-	DFunction2* createFunctionCdecl1FromVoidPtr(void* ptr) {
-		typedef CdeclFunction2<Rt, Types...> FObjType;
-		return new FObjType((FObjType::FuncType)ptr);
+	DFunction2Ref createFunctionCdeclRef(Rt(_cdecl *f)(Types...)) {
+		return std::make_shared<FunctionT<Rt, Types...>>(f);
 	}
 
-	template <class Rt, class... Types>
-	DFunction2* createFunctionCdecl2(Rt(_cdecl *f)(Types...)) {
-		return new CdelFunction3<Rt, Types...>(f);
-	}
-
-	template <class Rt, class... Types>
-	DFunction2* createFunctionCdecl2FromVoidPtr(void* ptr) {
-		typedef CdelFunction3<Rt, Types...> FObjType;
-		return new FObjType((FObjType::Fx)ptr);
-	}
+	//template <class Rt, class... Types>
+	//DFunction2* createFunctionCdeclFromVoidPtr(void* ptr) {
+	//	typedef typename FunctionT<Rt, Types...> FObjType;
+	//	return new FObjType((FObjType::Fx)ptr);
+	//}
 
 	template <class Rt, class... Types>
 	void* fpToVoidPtr(Rt(_cdecl *f)(Types...)) {
 		return f;
 	}
 
-
 	template <class Rt, class... Types>
-	FunctionFactory* createUserFunctionCdecl1(ScriptCompiler* scriptCompiler, const char* rt, Rt(_cdecl *f)(Types...)) {
-		return new BasicFunctionFactory<sizeof...(Types)>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, rt, createFunctionCdecl1<Rt, Types...>(f), scriptCompiler);
+	FunctionFactory* createUserFunctionCdecl(ScriptCompiler* scriptCompiler, const char* rt, Rt(_cdecl *f)(Types...)) {
+		return new BasicFunctionFactory<sizeof...(Types)>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, rt, createFunctionCdecl<Rt, Types...>(f), scriptCompiler);
 	}
 
 	template <class ...Args>
