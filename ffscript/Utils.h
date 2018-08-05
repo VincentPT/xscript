@@ -164,5 +164,8 @@ namespace ffscript {
 			}
 		}
 	}
+
+	std::string buildFunctionSign(const std::string& name, const std::vector<ScriptType>& paramTypes);
+
 #pragma endregion
 }

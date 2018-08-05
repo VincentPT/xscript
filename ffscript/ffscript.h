@@ -76,6 +76,7 @@ class DFunction;
 class DFunction2;
 
 #include "function/CdeclFunction3.hpp"
+#include "function/MemberFunction3.hpp"
 
 namespace ffscript {
 	class InstructionCommand;
@@ -92,6 +93,9 @@ namespace ffscript {
 
 	template <class Ret, class... Types>
 	using FunctionT = typename FT::CdelFunction3<Ret, Types...>;
+
+	template <class Class, class Ret, class... Types>
+	using MFunctionT = typename FT::MFunction3<Class, Ret, Types...>;
 
 	typedef void* THREAD_HANDLE;
 	

@@ -3,6 +3,7 @@
 #include <list>
 
 #include "function/CdeclFunction3.hpp"
+#include "function/MemberFunction3.hpp"
 
 class DFunction2;
 namespace ffscript {
@@ -41,42 +42,34 @@ namespace ffscript {
 		ScriptCompiler* getSriptCompiler() const;
 	};
 
-
-	//template <class Rt, class... Types>
-	//DFunction2* createFunctionCdecl1(Rt(_cdecl *f)(Types...)) {
-	//	return new CdeclFunction2<Rt, Types...>(f);
-	//}
-
-	//template <class Rt, class... Types>
-	//DFunction2* createFunctionCdecl1FromVoidPtr(void* ptr) {
-	//	typedef CdeclFunction2<Rt, Types...> FObjType;
-	//	return new FObjType((FObjType::FuncType)ptr);
-	//}
-
 	template <class Rt, class... Types>
-	DFunction2* createFunctionCdecl(Rt(_cdecl *f)(Types...)) {
+	DFunction2* createFunctionCdecl(Rt(*f)(Types...)) {
 		return new FunctionT<Rt, Types...>(f);
 	}
 
 	template <class Rt, class... Types>
-	DFunction2Ref createFunctionCdeclRef(Rt(_cdecl *f)(Types...)) {
+	DFunction2Ref createFunctionCdeclRef(Rt(*f)(Types...)) {
 		return std::make_shared<FunctionT<Rt, Types...>>(f);
 	}
 
-	//template <class Rt, class... Types>
-	//DFunction2* createFunctionCdeclFromVoidPtr(void* ptr) {
-	//	typedef typename FunctionT<Rt, Types...> FObjType;
-	//	return new FObjType((FObjType::Fx)ptr);
-	//}
+	template <class Class, class Rt, class... Types>
+	DFunction2* createFunctionMember(Class* obj, Rt(Class::*f)(Types...)) {
+		return new MFunctionT<Class, Rt, Types...>(obj, f);
+	}
 
-	template <class Rt, class... Types>
-	void* fpToVoidPtr(Rt(_cdecl *f)(Types...)) {
-		return f;
+	template <class Class, class Rt, class... Types>
+	DFunction2Ref createFunctionMemberRef(Class* obj, Rt(Class::*f)(Types...)) {
+		return std::make_shared<MFunctionT<Class, Rt, Types...>>(obj, f);
 	}
 
 	template <class Rt, class... Types>
-	FunctionFactory* createUserFunctionFactoryCdecl(ScriptCompiler* scriptCompiler, const char* rt, Rt(_cdecl *f)(Types...)) {
+	FunctionFactory* createUserFunctionFactoryCdecl(ScriptCompiler* scriptCompiler, const char* rt, Rt(*f)(Types...)) {
 		return new DefaultUserFunctionFactory(createFunctionCdeclRef<Rt, Types...>(f), scriptCompiler, rt, sizeof...(Types));
+	}
+
+	template <class Class, class Rt, class... Types>
+	FunctionFactory* createUserFunctionFactoryMember(ScriptCompiler* scriptCompiler, Class* obj, const char* rt, Rt(Class::*f)(Types...)) {
+		return new DefaultUserFunctionFactory(createFunctionMemberRef<Class, Rt, Types...>(obj, f), scriptCompiler, rt, sizeof...(Types));
 	}
 
 	template <class ...Args>

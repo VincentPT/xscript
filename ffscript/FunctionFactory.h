@@ -33,5 +33,6 @@ namespace ffscript {
 		int getParamsDataSize() const;
 		ScriptCompiler* getCompiler() const;
 		void setCompiler(ScriptCompiler* pCompiler);
+		std::string getFullFuntionName() const;
 	};
 }

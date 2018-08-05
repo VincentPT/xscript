@@ -5,6 +5,7 @@
 namespace ffscript{
 	CompilerSuite::CompilerSuite()
 	{
+		_pCompiler = (ScriptCompilerRef)(new ScriptCompiler());
 	}
 
 	CompilerSuite::~CompilerSuite()
@@ -12,7 +13,6 @@ namespace ffscript{
 	}
 
 	void CompilerSuite::initialize(int globalMemSize) {
-		_pCompiler = (ScriptCompilerRef)(new ScriptCompiler());
 		_globalScopeRef = (GlobalScopeRef)(new GlobalScope(globalMemSize, _pCompiler.get()));
 
 		FunctionRegisterHelper funcLibHelper(_pCompiler.get());

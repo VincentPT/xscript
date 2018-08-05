@@ -18,6 +18,7 @@
 #include <memory>
 
 #define CONDITIONAL_FUNCTION "_SYSTEM_FUNCTION_CONDITIONAL"
+#define LOG_COMPILE_MESSAGE(logger, type, message) if(logger) logger->log(type, message)
 
 namespace ffscript {
 	class ScriptScope;
@@ -39,6 +40,13 @@ namespace ffscript {
 		KEYWORD_UNKNOWN,
 	};
 
+	enum MessageType
+	{
+		MESSAGE_INFO,
+		MESSAGE_WARNING,
+		MESSAGE_ERROR
+	};
+
 	struct OperatorEntry {
 		string name;
 		const char* nameInExpression;
@@ -50,6 +58,11 @@ namespace ffscript {
 	struct CandidatePathInfo {
 		CandidateInfo candidate;
 		std::vector<ExecutableUnitRef>* paramPath;
+	};
+
+	class CompilationLogger {
+	public:
+		virtual void log(MessageType type, const wchar_t* message) = 0;
 	};
 	
 	class ScriptCompiler
@@ -81,6 +94,7 @@ namespace ffscript {
 		map<int, int> _functionCallMap;
 
 		Program* _program;
+		CompilationLogger* _logger;
 
 		struct LibraryMarkInfo {
 			int functionIdx;			
@@ -89,6 +103,7 @@ namespace ffscript {
 		LibraryMarkInfoRef _systemLibMarkEnd;
 
 		std::string _lastError;
+		std::vector<wchar_t> _messageBuffer;
 
 		int _refFunctionId = -1;
 		int _functionInfoConstructorId = -1;
@@ -101,6 +116,8 @@ namespace ffscript {
 
 		void setErrorText(const std::string& errorMsg);
 		const std::string& getLastError() const;
+		void setLogger(CompilationLogger*);
+		CompilationLogger* getLogger() const;
 
 		void pushScope(ScriptScope* scope);
 		ScriptScope* popScope();
@@ -219,13 +236,15 @@ namespace ffscript {
 
 		int registFunctionType(const std::string& functionType);
 		int registArrayType(const std::wstring& arrayType);
+		const wchar_t* formatMessage(const wchar_t* format, ...);
+		const wchar_t* formatMessage(const char* format, ...);
 
 	protected:
 		int registArrayType(const ScriptType& elmType, const std::vector<int>& dimensions);
 		bool registDefaultConstructor(int type, int functionId);
 		bool registBinaryConstructor(int type, int functionId);
 	public:
-		inline static bool isCommandBreakSign(wchar_t c) {		
+		inline static bool isCommandBreakSign(wchar_t c) {
 			return c == ';';
 		}
 		inline static bool isOpenScopeSign(wchar_t c) {

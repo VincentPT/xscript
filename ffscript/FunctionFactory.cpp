@@ -2,6 +2,7 @@
 #include "expressionunit.h"
 #include "FunctionFactory.h"
 #include "ScriptCompiler.h"
+#include "Utils.h"
 
 namespace ffscript {
 	FunctionFactory::FunctionFactory(const char* functionName, ScriptCompiler* scriptCompiler) :
@@ -73,4 +74,13 @@ namespace ffscript {
 	void FunctionFactory::setCompiler(ScriptCompiler* pCompiler) {
 		_scriptCompiler = pCompiler;
 	}
-}
+
+	std::string FunctionFactory::getFullFuntionName() const {
+		std::string fullName;
+
+		fullName.append(_returnType.sType());
+		fullName.append(" ");
+		fullName.append(buildFunctionSign(_functionName, _registeredParamTypes));
+		return fullName;
+	}
+};

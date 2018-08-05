@@ -3048,7 +3048,15 @@ namespace ffscript {
 				functionCandidates = findApproxiateDefaultOperator(scriptCompiler, function, candidatesForParams);
 				if (functionCandidates == nullptr || !functionCandidates->size()) {
 					eResult = E_FUNCTION_NOT_FOUND;
-					scriptCompiler->setErrorText("function '" + function->getName() + "' is not found");
+					std::vector<ScriptType> paramTypes(function->getChildCount());
+					int n = function->getChildCount();
+					for (int i = 0; i < n; i++) {
+						paramTypes[i] = function->getChild(i)->getReturnType();
+					}
+
+					auto functionSignature = buildFunctionSign(function->getName(), paramTypes);
+					scriptCompiler->setErrorText("function '" + functionSignature + "' is not found");
+					LOG_COMPILE_MESSAGE(scriptCompiler->getLogger(), MESSAGE_ERROR, scriptCompiler->formatMessage("function '%s' is not found", functionSignature.c_str()));
 					return nullptr;
 				}
 #pragma endregion
@@ -3063,7 +3071,7 @@ namespace ffscript {
 				auto functionInfo = functionLib->findFunctionInfo(functionId);				
 				if (functionInfo == nullptr) {
 					eResult = E_FUNCTION_NOT_FOUND;
-					scriptCompiler->setErrorText("library error: '" + function->getName() + "' is missing");
+					scriptCompiler->setErrorText("library error: information of '" + function->getName() + "' is missing");
 					return nullptr;
 				}
 				if (scriptCompiler->findDynamicFunctionOnly(*functionInfo->itemName) == functionId) {

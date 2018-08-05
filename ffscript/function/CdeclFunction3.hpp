@@ -12,14 +12,14 @@ namespace Cdel3 {
 	struct Invoke;
 
 #define DECLARE_CLASS_INVOKER_T(Ret, ...)\
-	class Invoke<Ret, __VA_ARGS__> {\
+	struct Invoke<Ret, __VA_ARGS__> {\
 	private:\
 	typedef MemberTypeInfo<0, sizeof(void*), __VA_ARGS__> Helper;\
 	typedef typename real_type<Ret>::T RRT;\
 	template <std::size_t N>\
 	using ATs  = typename std::tuple_element<N, std::tuple<__VA_ARGS__>>::type;\
 	template <std::size_t N>\
-	using RRATs  = typename real_type<ATs<N>>::T;\
+	using RATs  = typename real_type<ATs<N>>::T;\
 	public:\
 		typedef Ret(*Fp)(__VA_ARGS__);\
 		Fp _fx;\
@@ -29,14 +29,13 @@ namespace Cdel3 {
 	}
 
 #define DECLARE_CLASS_INVOKER_VOID(...) \
-	class InvokeVoid<__VA_ARGS__> {\
+	struct InvokeVoid<__VA_ARGS__> {\
 	private:\
 	typedef MemberTypeInfo<0, sizeof(void*), __VA_ARGS__> Helper;\
-	typedef correct_types<__VA_ARGS__> RATs;\
 	template <std::size_t N>\
 	using ATs  = typename std::tuple_element<N, std::tuple<__VA_ARGS__>>::type;\
 	template <std::size_t N>\
-	using RRATs  = typename real_type<ATs<N>>::T;\
+	using RATs  = typename real_type<ATs<N>>::T;\
 	public:\
 		typedef void(*Fp)(__VA_ARGS__);\
 		Fp _fx;\
@@ -117,54 +116,54 @@ namespace Cdel3 {
 
 	template <class T>
 	void InvokeVoid<T>::operator()(void* pRet, char* args) {
-		typedef void(*Fx)(RRATs<0>);
-		((Fx)_fx)(*((RRATs<0>*)&args[0]));
+		typedef void(*Fx)(RATs<0>);
+		((Fx)_fx)(*((RATs<0>*)&args[0]));
 	}
 
 	template <class T1, class T2>
 	void InvokeVoid<T1, T2>::operator()(void* pRet, char* args) {
-		typedef void(*Fx)(RRATs<0>, RRATs<1>);
-		((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]));
+		typedef void(*Fx)(RATs<0>, RATs<1>);
+		((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]));
 	}
 
 	template <class T1, class T2, class T3>
 	void InvokeVoid<T1, T2, T3>::operator()(void* pRet, char* args) {
-		typedef void(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>);
-		((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]), *((RRATs<2>*)&args[Helper::offset<2>()]));
+		typedef void(*Fx)(RATs<0>, RATs<1>, RATs<2>);
+		((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]), *((RATs<2>*)&args[Helper::offset<2>()]));
 	}
 
 	template <class T1, class T2, class T3, class T4>
 	void InvokeVoid<T1, T2, T3, T4>::operator()(void* pRet, char* args) {
-		typedef void(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>, RRATs<3>);
-		((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]), *((RRATs<2>*)&args[Helper::offset<2>()]), *((RRATs<3>*)&args[Helper::offset<3>()]));
+		typedef void(*Fx)(RATs<0>, RATs<1>, RATs<2>, RATs<3>);
+		((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]), *((RATs<2>*)&args[Helper::offset<2>()]), *((RATs<3>*)&args[Helper::offset<3>()]));
 	}
 
 	template <class T1, class T2, class T3, class T4, class T5>
 	void InvokeVoid<T1, T2, T3, T4, T5>::operator()(void* pRet, char* args) {
-		typedef void(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>, RRATs<3>, RRATs<4>);
-		((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]), *((RRATs<2>*)&args[Helper::offset<2>()]), *((RRATs<3>*)&args[Helper::offset<3>()]),
-			*((RRATs<4>*)&args[Helper::offset<4>()]));
+		typedef void(*Fx)(RATs<0>, RATs<1>, RATs<2>, RATs<3>, RATs<4>);
+		((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]), *((RATs<2>*)&args[Helper::offset<2>()]), *((RATs<3>*)&args[Helper::offset<3>()]),
+			*((RATs<4>*)&args[Helper::offset<4>()]));
 	}
 
 	template <class T1, class T2, class T3, class T4, class T5, class T6>
 	void InvokeVoid<T1, T2, T3, T4, T5, T6>::operator()(void* pRet, char* args) {
-		typedef void(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>, RRATs<3>, RRATs<4>, RRATs<5>);
-		((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]), *((RRATs<2>*)&args[Helper::offset<2>()]), *((RRATs<3>*)&args[Helper::offset<3>()]),
-			*((RRATs<4>*)&args[Helper::offset<4>()]), *((RRATs<5>*)&args[Helper::offset<5>()]));
+		typedef void(*Fx)(RATs<0>, RATs<1>, RATs<2>, RATs<3>, RATs<4>, RATs<5>);
+		((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]), *((RATs<2>*)&args[Helper::offset<2>()]), *((RATs<3>*)&args[Helper::offset<3>()]),
+			*((RATs<4>*)&args[Helper::offset<4>()]), *((RATs<5>*)&args[Helper::offset<5>()]));
 	}
 
 	template <class T1, class T2, class T3, class T4, class T5, class T6, class T7>
 	void InvokeVoid<T1, T2, T3, T4, T5, T6, T7>::operator()(void* pRet, char* args) {
-		typedef void(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>, RRATs<3>, RRATs<4>, RRATs<5>, RRATs<6>);
-		((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]), *((RRATs<2>*)&args[Helper::offset<2>()]), *((RRATs<3>*)&args[Helper::offset<3>()]),
-			*((RRATs<4>*)&args[Helper::offset<4>()]), *((RRATs<5>*)&args[Helper::offset<5>()]), *((RRATs<6>*)&args[Helper::offset<6>()]));
+		typedef void(*Fx)(RATs<0>, RATs<1>, RATs<2>, RATs<3>, RATs<4>, RATs<5>, RATs<6>);
+		((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]), *((RATs<2>*)&args[Helper::offset<2>()]), *((RATs<3>*)&args[Helper::offset<3>()]),
+			*((RATs<4>*)&args[Helper::offset<4>()]), *((RATs<5>*)&args[Helper::offset<5>()]), *((RATs<6>*)&args[Helper::offset<6>()]));
 	}
 
 	template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
 	void InvokeVoid<T1, T2, T3, T4, T5, T6, T7, T8>::operator()(void* pRet, char* args) {
-		typedef void(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>, RRATs<3>, RRATs<4>, RRATs<5>, RRATs<6>, RRATs<7>);
-		((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]), *((RRATs<2>*)&args[Helper::offset<2>()]), *((RRATs<3>*)&args[Helper::offset<3>()]),
-			*((RRATs<4>*)&args[Helper::offset<4>()]), *((RRATs<5>*)&args[Helper::offset<5>()]), *((RRATs<6>*)&args[Helper::offset<6>()]), *((RRATs<7>*)&args[Helper::offset<7>()]));
+		typedef void(*Fx)(RATs<0>, RATs<1>, RATs<2>, RATs<3>, RATs<4>, RATs<5>, RATs<6>, RATs<7>);
+		((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]), *((RATs<2>*)&args[Helper::offset<2>()]), *((RATs<3>*)&args[Helper::offset<3>()]),
+			*((RATs<4>*)&args[Helper::offset<4>()]), *((RATs<5>*)&args[Helper::offset<5>()]), *((RATs<6>*)&args[Helper::offset<6>()]), *((RATs<7>*)&args[Helper::offset<7>()]));
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,55 +179,55 @@ namespace Cdel3 {
 
 	template <class Ret, class T>
 	void Invoke<Ret, T>::operator()(void* pRet, char* args) {
-		typedef RRT(*Fx)(RRATs<0>);
-		*((RRT*)pRet) = ((Fx)_fx)(*((RRATs<0>*)&args[0]));
+		typedef RRT(*Fx)(RATs<0>);
+		*((RRT*)pRet) = ((Fx)_fx)(*((RATs<0>*)&args[0]));
 	}
 
 	template <class Ret, class T1, class T2>
 	void Invoke<Ret, T1, T2>::operator()(void* pRet, char* args) {
-		typedef RRT(*Fx)(RRATs<0>, RRATs<1>);
-		*((RRT*)pRet) = ((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]));
+		typedef RRT(*Fx)(RATs<0>, RATs<1>);
+		*((RRT*)pRet) = ((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3>
 	void Invoke<Ret, T1, T2, T3>::operator()(void* pRet, char* args) {
-		typedef RRT(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>);
-		*((RRT*)pRet) = ((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]),
-			*((RRATs<2>*)&args[Helper::offset<2>()]));
+		typedef RRT(*Fx)(RATs<0>, RATs<1>, RATs<2>);
+		*((RRT*)pRet) = ((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]),
+			*((RATs<2>*)&args[Helper::offset<2>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3, class T4>
 	void Invoke<Ret, T1, T2, T3, T4>::operator()(void* pRet, char* args) {
-		typedef RRT(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>, RRATs<3>);
-		*((RRT*)pRet) = ((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]), *((RRATs<2>*)&args[Helper::offset<2>()]), *((RRATs<3>*)&args[Helper::offset<3>()]));
+		typedef RRT(*Fx)(RATs<0>, RATs<1>, RATs<2>, RATs<3>);
+		*((RRT*)pRet) = ((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]), *((RATs<2>*)&args[Helper::offset<2>()]), *((RATs<3>*)&args[Helper::offset<3>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3, class T4, class T5>
 	void Invoke<Ret, T1, T2, T3, T4, T5>::operator()(void* pRet, char* args) {
-		typedef RRT(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>, RRATs<3>, RRATs<4>);
-		*((RRT*)pRet) = ((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]), *((RRATs<2>*)&args[Helper::offset<2>()]), *((RRATs<3>*)&args[Helper::offset<3>()]),
-			*((RRATs<4>*)&args[Helper::offset<4>()]));
+		typedef RRT(*Fx)(RATs<0>, RATs<1>, RATs<2>, RATs<3>, RATs<4>);
+		*((RRT*)pRet) = ((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]), *((RATs<2>*)&args[Helper::offset<2>()]), *((RATs<3>*)&args[Helper::offset<3>()]),
+			*((RATs<4>*)&args[Helper::offset<4>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6>
 	void Invoke<Ret, T1, T2, T3, T4, T5, T6>::operator()(void* pRet, char* args) {
-		typedef RRT(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>, RRATs<3>, RRATs<4>, RRATs<5>);
-		*((RRT*)pRet) = ((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]), *((RRATs<2>*)&args[Helper::offset<2>()]), *((RRATs<3>*)&args[Helper::offset<3>()]),
-			*((RRATs<4>*)&args[Helper::offset<4>()]), *((RRATs<5>*)&args[Helper::offset<5>()]));
+		typedef RRT(*Fx)(RATs<0>, RATs<1>, RATs<2>, RATs<3>, RATs<4>, RATs<5>);
+		*((RRT*)pRet) = ((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]), *((RATs<2>*)&args[Helper::offset<2>()]), *((RATs<3>*)&args[Helper::offset<3>()]),
+			*((RATs<4>*)&args[Helper::offset<4>()]), *((RATs<5>*)&args[Helper::offset<5>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
 	void Invoke<Ret, T1, T2, T3, T4, T5, T6, T7>::operator()(void* pRet, char* args) {
-		typedef RRT(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>, RRATs<3>, RRATs<4>, RRATs<5>, RRATs<6>);
-		*((RRT*)pRet) = ((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]), *((RRATs<2>*)&args[Helper::offset<2>()]), *((RRATs<3>*)&args[Helper::offset<3>()]),
-			*((RRATs<4>*)&args[Helper::offset<4>()]), *((RRATs<5>*)&args[Helper::offset<5>()]), *((RRATs<6>*)&args[Helper::offset<6>()]));
+		typedef RRT(*Fx)(RATs<0>, RATs<1>, RATs<2>, RATs<3>, RATs<4>, RATs<5>, RATs<6>);
+		*((RRT*)pRet) = ((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]), *((RATs<2>*)&args[Helper::offset<2>()]), *((RATs<3>*)&args[Helper::offset<3>()]),
+			*((RATs<4>*)&args[Helper::offset<4>()]), *((RATs<5>*)&args[Helper::offset<5>()]), *((RATs<6>*)&args[Helper::offset<6>()]));
 	}
 
 	template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
 	void Invoke<Ret, T1, T2, T3, T4, T5, T6, T7, T8>::operator()(void* pRet, char* args) {
-		typedef RRT(*Fx)(RRATs<0>, RRATs<1>, RRATs<2>, RRATs<3>, RRATs<4>, RRATs<5>, RRATs<6>, RRATs<7>);
-		*((RRT*)pRet) = ((Fx)_fx)(*((RRATs<0>*)&args[0]), *((RRATs<1>*)&args[Helper::offset<1>()]), *((RRATs<2>*)&args[Helper::offset<2>()]), *((RRATs<3>*)&args[Helper::offset<3>()]),
-			*((RRATs<4>*)&args[Helper::offset<4>()]), *((RRATs<5>*)&args[Helper::offset<5>()]), *((RRATs<6>*)&args[Helper::offset<6>()]), *((RRATs<7>*)&args[Helper::offset<7>()]));
+		typedef RRT(*Fx)(RATs<0>, RATs<1>, RATs<2>, RATs<3>, RATs<4>, RATs<5>, RATs<6>, RATs<7>);
+		*((RRT*)pRet) = ((Fx)_fx)(*((RATs<0>*)&args[0]), *((RATs<1>*)&args[Helper::offset<1>()]), *((RATs<2>*)&args[Helper::offset<2>()]), *((RATs<3>*)&args[Helper::offset<3>()]),
+			*((RATs<4>*)&args[Helper::offset<4>()]), *((RATs<5>*)&args[Helper::offset<5>()]), *((RATs<6>*)&args[Helper::offset<6>()]), *((RATs<7>*)&args[Helper::offset<7>()]));
 	}
 }
 

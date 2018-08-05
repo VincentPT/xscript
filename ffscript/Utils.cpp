@@ -122,4 +122,25 @@ namespace ffscript {
 
 		return readCodeFromStream(wif);
 	}
+
+	std::string buildFunctionSign(const std::string& name, const std::vector<ScriptType>& paramTypes) {
+		std::string funtionSignature;
+
+		funtionSignature.append(name);
+		funtionSignature.append("(");
+
+		auto pit = paramTypes.begin();
+		if (pit != paramTypes.end()) {
+			while (true) {
+				funtionSignature.append(pit->sType());
+				pit++;
+				if (pit == paramTypes.end())
+					break;
+				funtionSignature.append(",");
+			}
+		}
+
+		funtionSignature.append(")");
+		return funtionSignature;
+	}
 }

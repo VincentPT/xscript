@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "RawStringLib.h"
 
-#include "function\CdeclFunction2.hpp"
-#include "function\MemberFunction2.hpp"
 #include "BasicFunctionFactory.hpp"
 #include "DynamicFunctionFactory.h"
 #include "BasicType.h"
