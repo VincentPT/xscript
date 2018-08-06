@@ -140,7 +140,7 @@ struct GeneralLine {
 };
 
 template <class T>
-double directionalAngle(const T& u, const T& v)
+auto directionalAngle(const T& u, const T& v)
 {
 	// angle has value from [0 - pi]
 	auto angle = acosf((float)cosAngle(u, v));
@@ -165,7 +165,7 @@ inline bool checkPoint(const T& p, int width, int height) {
 
 template <class T, class Iterator>
 void projectPoints(const T& p, const T& u, Iterator begin, Iterator end) {
-	auto v = T(u.y, -u.x);
+	auto v = { u.y, -u.x };
 	float t;
 	for (auto iter = begin; iter != end; iter++) {
 		auto& x = *iter;
@@ -176,7 +176,7 @@ void projectPoints(const T& p, const T& u, Iterator begin, Iterator end) {
 
 template <class T>
 float projectPoint(const T& p, const T& u, const T& x) {
-	T v(u.y, -u.x);
+	T v = { u.y, -u.x };
 	float t;
 	Intersect2D_Lines(p, u, x, v, &t, nullptr);
 	return t;

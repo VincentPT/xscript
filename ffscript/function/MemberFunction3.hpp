@@ -229,12 +229,15 @@ namespace FT {
 	template <class Class, class Ret, class...Types>
 	class MFunction3 : public DFunction2 {
 	public:
-		typedef Ret(Class::*Fx)(Types...);
+		typedef Ret(Class::*MFx)(Types...);
+		typedef Ret(Class::*MFxConst)(Types...) const;
+		typedef Ret(*Fx)(Class*, Types...);
 	private:
 		typedef typename std::conditional<std::is_void<Ret>::value, MInvokeVoid<Class, Types...>, MInvoke<Class, Ret, Types...>>::type MyInvoker;
 		MyInvoker _invoker;
 	public:
-		MFunction3(Class* obj, Fx fx) : _invoker(obj, fx) {}
+		MFunction3(Class* obj, MFx mfx) : _invoker(obj, mfx) {}
+		MFunction3(Class* obj, MFxConst mfx) : _invoker(obj, (MFx)mfx) {}
 
 		void call(void* pReturnVal, void* params[]) {
 			_invoker(pReturnVal, (char*)params);
@@ -242,6 +245,14 @@ namespace FT {
 		DFunction2* clone() {
 			auto funcObj = new MFunction3<Class, Ret, Types...>(_invoker._obj, _invoker._fx);
 			return funcObj;
+		}
+
+		static Fx convertToFunction(MFx mfx) {
+			return (Fx)*((void**)&mfx);
+		}
+
+		static Fx convertToFunction(MFxConst mfx) {
+			return (Fx)*((void**)&mfx);
 		}
 	};
 }
