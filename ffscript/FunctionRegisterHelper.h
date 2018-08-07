@@ -62,6 +62,16 @@ namespace ffscript {
 		return std::make_shared<MFunctionT<Class, Rt, Types...>>(obj, f);
 	}
 
+	template <class Class, class Rt, class... Types>
+	DFunction2* createFunctionMember(Class* obj, Rt(Class::*f)(Types...) const) {
+		return new MFunctionT<Class, Rt, Types...>(obj, f);
+	}
+
+	template <class Class, class Rt, class... Types>
+	DFunction2Ref createFunctionMemberRef(Class* obj, Rt(Class::*f)(Types...) const) {
+		return std::make_shared<MFunctionT<Class, Rt, Types...>>(obj, f);
+	}
+
 	template <class Rt, class... Types>
 	FunctionFactory* createUserFunctionFactoryCdecl(ScriptCompiler* scriptCompiler, const char* rt, Rt(*f)(Types...)) {
 		return new DefaultUserFunctionFactory(createFunctionCdeclRef<Rt, Types...>(f), scriptCompiler, rt, sizeof...(Types));
@@ -69,6 +79,11 @@ namespace ffscript {
 
 	template <class Class, class Rt, class... Types>
 	FunctionFactory* createUserFunctionFactoryMember(ScriptCompiler* scriptCompiler, Class* obj, const char* rt, Rt(Class::*f)(Types...)) {
+		return new DefaultUserFunctionFactory(createFunctionMemberRef<Class, Rt, Types...>(obj, f), scriptCompiler, rt, sizeof...(Types));
+	}
+
+	template <class Class, class Rt, class... Types>
+	FunctionFactory* createUserFunctionFactoryMember(ScriptCompiler* scriptCompiler, Class* obj, const char* rt, Rt(Class::*f)(Types...) const) {
 		return new DefaultUserFunctionFactory(createFunctionMemberRef<Class, Rt, Types...>(obj, f), scriptCompiler, rt, sizeof...(Types));
 	}
 
