@@ -2205,7 +2205,9 @@ namespace ffscript {
 					items.push_back(overloadingItem);
 				}
 				else {
-					return unitCandidate;
+					eResult = E_FUNCTION_NOT_FOUND;
+					scriptCompiler->setErrorText("token '" + unit->toString() + "' is not found");
+					LOG_COMPILE_MESSAGE(scriptCompiler->getLogger(), MESSAGE_ERROR, scriptCompiler->formatMessage("token '%s' is not found", unit->toString().c_str()));
 				}
 			}
 			else {

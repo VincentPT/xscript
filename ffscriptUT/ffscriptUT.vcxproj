@@ -264,6 +264,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="UserLibraryUT.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="VectorCompatibleUT.cpp">
       <SubType>
