@@ -2128,8 +2128,7 @@ namespace ffscript {
 		}
 		stype.append(1, '>');
 		
-		auto iType = registFunctionType(stype);
-		return iType;
+		return registFunctionType(stype);
 	}
 
 	const wchar_t* ScriptCompiler::parseFunctionType(const wchar_t* text, const wchar_t* end, ScriptType& returnType, std::list<ScriptType>& argTypes, bool& isDynamicFunction) {
@@ -2180,9 +2179,12 @@ namespace ffscript {
 	}
 
 	int ScriptCompiler::registFunctionType(const std::string& functionType) {
-		int iType = registType(functionType, DATA_TYPE_FUNCTION_MASK);
-		if (IS_UNKNOWN_TYPE(iType)) {
-			LOG_COMPILE_MESSAGE(_logger, MESSAGE_INFO, formatMessage("function type '%s' is already register", functionType.c_str()));
+		int iType = _typeManagerRef->registType(functionType, DATA_TYPE_FUNCTION_MASK);
+		if (iType == DATA_TYPE_INVALID) {
+			LOG_COMPILE_MESSAGE(_logger, MESSAGE_INFO, formatMessage("cannot register function type '%s'", functionType.c_str()));
+			return iType;
+		}
+		else if (IS_UNKNOWN_TYPE(iType)) {
 			iType = getType(functionType);
 		}
 		else {
@@ -2470,7 +2472,7 @@ namespace ffscript {
 			}
 
 			token1.append(1, '>');
-			if( (iType = registFunctionType(token1)) == DATA_TYPE_UNKNOWN) {
+			if( IS_UNKNOWN_TYPE(iType = registFunctionType(token1))) {
 				return nullptr;
 			}
 		}

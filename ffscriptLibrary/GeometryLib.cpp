@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GeometryLib.h"
 
+#include "function\CdeclFunction.hpp"
 #include "function\CdeclFunction2.hpp"
 #include "function\MemberFunction2.hpp"
 #include "BasicFunctionFactory.hpp"
@@ -158,5 +159,11 @@ namespace ffscript {
 
 		functionId = helper.registFunction("intersect", "Point&,Point&,Point&,Point&,float&,float&", createUserFunctionFactoryCdecl<bool,const Point&,const Point&,const Point&,const Point&, float*, float*>(scriptCompiler, "bool", Intersect2D_Lines));
 		functionId = helper.registFunction("project", "Point&,Point&,Point&", createUserFunctionFactoryCdecl<float, const Point&, const Point&, const Point&>(scriptCompiler, "float", projectPoint));
+
+		auto createConstantFuncObj = make_shared<CdeclFunction<ConstOperandBase*, float, const char*>>(createConsant<float>);
+		static float _MATH_PI = 3.14159f;
+		createConstantFuncObj->pushParam((void*)&_MATH_PI);
+		createConstantFuncObj->pushParam((void*)"float");
+		scriptCompiler->setConstantMap("PI", createConstantFuncObj);
 	}
 }

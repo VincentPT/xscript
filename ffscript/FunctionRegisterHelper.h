@@ -10,6 +10,7 @@ namespace ffscript {
 
 	class FunctionFactory;
 	class ScriptCompiler;
+	class ConstOperandBase;
 
 	struct PredefinedOperator {
 		const char* name;
@@ -91,4 +92,9 @@ namespace ffscript {
 	struct ArgumentFunctionCounter {
 		static constexpr int count = sizeof...(Args);
 	};
+
+	template <class T>
+	ConstOperandBase* createConsant(const T& cosnt_val, const char* typeStr) {
+		return new CConstOperand<T>(cosnt_val, typeStr);
+	}
 }

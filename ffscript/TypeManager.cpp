@@ -14,7 +14,8 @@ namespace ffscript {
 
 	int TypeManager::registType(const std::string& type, int mask) {
 		if (checkPointerType(type)) {
-			return DATA_TYPE_UNKNOWN;
+			// invalid type
+			return DATA_TYPE_INVALID;
 		}
 
 		int typeInInt = (int)_typesInString.size();
