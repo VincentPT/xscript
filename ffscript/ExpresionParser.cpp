@@ -490,6 +490,12 @@ namespace ffscript {
 				DBG_ERROR(_tprintf(__T("\n[#]Error at index %d"), c - sExpressionString));
 				break;
 			}
+			// if this condition happens, it means
+			// an one character like operator '.' follow an operator like '[]'
+			// so we reset the stoken as null to avoid an ExpUnit is created by an empty token
+			if (sToken && *sToken == 0) {
+				sToken = NULL;
+			}
 			if (sToken == NULL) {
 				if ((s2 - sToken2 == 1) && (s1 - sToken1 > 1 || (s1 - sToken1 == 1 && *(s2 - 1) == *c))) {
 					//sToken1 is fully collected
@@ -3050,15 +3056,22 @@ namespace ffscript {
 				functionCandidates = findApproxiateDefaultOperator(scriptCompiler, function, candidatesForParams);
 				if (functionCandidates == nullptr || !functionCandidates->size()) {
 					eResult = E_FUNCTION_NOT_FOUND;
-					std::vector<ScriptType> paramTypes(function->getChildCount());
-					int n = function->getChildCount();
-					for (int i = 0; i < n; i++) {
-						paramTypes[i] = function->getChild(i)->getReturnType();
-					}
 
-					auto functionSignature = buildFunctionSign(function->getName(), paramTypes);
-					scriptCompiler->setErrorText("function '" + functionSignature + "' is not found");
-					LOG_COMPILE_MESSAGE(scriptCompiler->getLogger(), MESSAGE_ERROR, scriptCompiler->formatMessage("function '%s' is not found", functionSignature.c_str()));
+					std::list<std::vector<ExecutableUnitRef>> paramPaths;
+					listPaths<ExecutableUnitRef, CandidateCollection, ExecutableUnitRef>(candidatesForParams, paramPaths);
+
+					for (auto pathIt = paramPaths.begin(); pathIt != paramPaths.begin(); pathIt++) {
+						auto& path = *pathIt;
+						int n = (int)path.size();
+						std::vector<ScriptType> paramTypes(n);
+						for (int i = 0; i < n; i++) {
+							paramTypes[i] = path[i]->getReturnType();
+						}
+
+						auto functionSignature = buildFunctionSign(function->getName(), paramTypes);
+						LOG_COMPILE_MESSAGE(scriptCompiler->getLogger(), MESSAGE_INFO, scriptCompiler->formatMessage("function '%s' is not found", functionSignature.c_str()));
+					}
+					scriptCompiler->setErrorText("no overloadding found for function '" + function->getName() + "'");
 					return nullptr;
 				}
 #pragma endregion
