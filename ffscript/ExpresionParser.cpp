@@ -607,7 +607,7 @@ namespace ffscript {
 						if (pVariable) {
 							if (pVariable->getDataType().isUnkownType()) {
 								eResult = E_TYPE_UNKNOWN;
-								scriptCompiler->setErrorText("type of '" + pVariable->getName() + "' is unknowns");
+								scriptCompiler->setErrorText("type of '" + pVariable->getName() + "' is unknown");
 								DBG_ERROR(_tprintf(__T("\n[#]varible's type is unknown")));
 								break;
 							}

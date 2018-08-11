@@ -91,7 +91,9 @@ namespace ffscript {
 		int lineOfCode2 = getExpressionCount();
 
 		if (lineOfCode2 - lineOfCode1 != 1) {
-			scriptCompiler->setErrorText("invalid condition expression");
+			if (scriptCompiler->getLastError().size() == 0) {
+				scriptCompiler->setErrorText("invalid condition expression");
+			}
 			return nullptr;
 		}		
 		return c;

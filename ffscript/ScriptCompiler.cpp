@@ -383,9 +383,9 @@ namespace ffscript {
 		auto key = TYPE_CONVERSION_MAKE_KEY(sourceType, targetType);
 		auto it = _typeConversionMap.find(key);
 		if (it != _typeConversionMap.end()) {
-			LOG_COMPILE_MESSAGE(_logger, MESSAGE_WARNING, formatMessage("cannot find accuration of conversion: %d -> %d", sourceType, targetType));
 			return it->second;
 		}
+		LOG_COMPILE_MESSAGE(_logger, MESSAGE_WARNING, formatMessage("cannot find accuration of conversion: %d -> %d", sourceType, targetType));
 		return -1;
 	}
 
