@@ -136,6 +136,10 @@ namespace ffscript {
 	}
 
 	EExpressionResult ScriptScope::parseExpressionInternal(std::list<ExpUnitRef>& unitList, const ScriptType* expectedReturnType) {
+		if (unitList.size() == 0) {
+			return E_SUCCESS;
+		}
+
 		ScriptCompiler* scriptCompiler = getCompiler();
 		ScopedCompilingScope autoScope(scriptCompiler, this);
 		ExpressionParser parser(getCompiler());
@@ -201,6 +205,11 @@ namespace ffscript {
 
 			c = parser.readExpression(text, end, eResult, unitList);
 			if (eResult != E_SUCCESS || c == nullptr) {
+				if (c != nullptr && scriptCompiler->getLastError().size() == 0) {
+					std::wstring message = L"compile expression '" + std::wstring(text, c - text) + L"' failed";
+					scriptCompiler->setErrorText(convertToAscii(message.c_str(), message.size()));
+					LOG_COMPILE_MESSAGE(scriptCompiler->getLogger(), MESSAGE_ERROR, message.c_str());
+				}
 				return nullptr;
 			}
 			expression = std::wstring(text, c - text);
