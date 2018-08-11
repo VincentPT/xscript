@@ -30,6 +30,8 @@ using namespace ffscript;
 #include "function\MemberFunction2.hpp"
 #include "expressionunit.h"
 #include "DynamicFunctionFactory.h"
+#include "RawStringLib.h"
+#include "GeometryLib.h"
 
 namespace ffscriptUT
 {
@@ -1582,6 +1584,239 @@ namespace ffscriptUT
 			StructA* objRes = (StructA*)scriptTask.getTaskResult();
 			Assert::AreEqual(objA.a, objRes->a, L"program can run but return wrong value");
 			Assert::AreEqual(objA.b, objRes->b, L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument1)
+		{
+			byte globalData[1024];
+			StaticContext staticContext(globalData, sizeof(globalData));
+			GlobalScope rootScope(&staticContext, &scriptCompiler);
+
+			importBasicfunction(funcLibHelper);
+			includeRawStringToCompiler(&scriptCompiler);
+			includeGeoLibToCompiler(&scriptCompiler);
+
+			//initialize an instance of script program
+			Program theProgram;
+			scriptCompiler.bindProgram(&theProgram);
+
+			const wchar_t* scriptCode =
+				L"struct SimpleArray {"
+				L"	int count;"
+				L"	ref Point data;"
+				L"}"
+
+				L"float test() {"
+				L"	Point p = {1.1f, 2.2f};"
+				L"	SimpleArray a = {1, ref(p)};"
+				L"	points = a.data;"
+				L"	x = points[0].x;"
+				L"	return x;"
+				L"}"
+				;
+
+			scriptCompiler.beginUserLib();
+
+			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsTrue(res != nullptr, L"compile program failed");
+
+			bool blRes = rootScope.extractCode(&theProgram);
+			Assert::IsTrue(blRes, L"extract code failed");
+
+			int functionId = scriptCompiler.findFunction("test", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+
+			ScriptTask scriptTask(&theProgram);
+			scriptTask.runFunction(functionId, nullptr);
+			auto fRes = *(float*)scriptTask.getTaskResult();
+			Assert::AreEqual(1.1f, fRes, L"function 'foo' return wrong");
+		}
+
+		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument2)
+		{
+			byte globalData[1024];
+			StaticContext staticContext(globalData, sizeof(globalData));
+			GlobalScope rootScope(&staticContext, &scriptCompiler);
+
+			importBasicfunction(funcLibHelper);
+			includeRawStringToCompiler(&scriptCompiler);
+			includeGeoLibToCompiler(&scriptCompiler);
+
+			//initialize an instance of script program
+			Program theProgram;
+			scriptCompiler.bindProgram(&theProgram);
+
+			const wchar_t* scriptCode =
+				L"struct SimpleArray {"
+				L"	int count;"
+				L"	ref Point data;"
+				L"}"
+
+				L"float test() {"
+				L"	Point p = {1.1f, 2.2f};"
+				L"	SimpleArray a = {1, ref(p)};"
+				L"	points = a.data;"
+				L"	return points[0].x;"
+				L"}"
+				;
+
+			scriptCompiler.beginUserLib();
+
+			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsTrue(res != nullptr, L"compile program failed");
+
+			bool blRes = rootScope.extractCode(&theProgram);
+			Assert::IsTrue(blRes, L"extract code failed");
+
+			int functionId = scriptCompiler.findFunction("test", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+
+			ScriptTask scriptTask(&theProgram);
+			scriptTask.runFunction(functionId, nullptr);
+			auto fRes = *(float*)scriptTask.getTaskResult();
+			Assert::AreEqual(1.1f, fRes, L"function 'foo' return wrong");
+		}
+
+		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument3)
+		{
+			byte globalData[1024];
+			StaticContext staticContext(globalData, sizeof(globalData));
+			GlobalScope rootScope(&staticContext, &scriptCompiler);
+
+			importBasicfunction(funcLibHelper);
+			includeRawStringToCompiler(&scriptCompiler);
+			includeGeoLibToCompiler(&scriptCompiler);
+
+			//initialize an instance of script program
+			Program theProgram;
+			scriptCompiler.bindProgram(&theProgram);
+
+			const wchar_t* scriptCode =
+				L"struct SimpleArray {"
+				L"	int count;"
+				L"	ref Point data;"
+				L"}"
+
+				L"float test() {"
+				L"	Point p = {1.1f, 2.2f};"
+				L"	SimpleArray a = {1, ref(p)};"
+				L"	points = a.data;"
+				L"	return points.x;"
+				L"}"
+				;
+
+			scriptCompiler.beginUserLib();
+
+			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsTrue(res != nullptr, L"compile program failed");
+
+			bool blRes = rootScope.extractCode(&theProgram);
+			Assert::IsTrue(blRes, L"extract code failed");
+
+			int functionId = scriptCompiler.findFunction("test", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+
+			ScriptTask scriptTask(&theProgram);
+			scriptTask.runFunction(functionId, nullptr);
+			auto fRes = *(float*)scriptTask.getTaskResult();
+			Assert::AreEqual(1.1f, fRes, L"function 'foo' return wrong");
+		}
+
+		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument4)
+		{
+			byte globalData[1024];
+			StaticContext staticContext(globalData, sizeof(globalData));
+			GlobalScope rootScope(&staticContext, &scriptCompiler);
+
+			importBasicfunction(funcLibHelper);
+			includeRawStringToCompiler(&scriptCompiler);
+			includeGeoLibToCompiler(&scriptCompiler);
+
+			//initialize an instance of script program
+			Program theProgram;
+			scriptCompiler.bindProgram(&theProgram);
+
+			const wchar_t* scriptCode =
+				L"struct SimpleArray {"
+				L"	int count;"
+				L"	ref Point data;"
+				L"}"
+
+				L"float test(ref Point points) {"
+				L"	return points[0].y;"
+				L"}"
+
+				L"float test() {"
+				L"	Point p = {1.1f, 2.2f};"
+				L"	SimpleArray a = {1, ref(p)};"
+				L"	points = a.data;"
+				L"	return test(points);"
+				L"}"
+				;
+
+			scriptCompiler.beginUserLib();
+
+			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsTrue(res != nullptr, L"compile program failed");
+
+			bool blRes = rootScope.extractCode(&theProgram);
+			Assert::IsTrue(blRes, L"extract code failed");
+
+			int functionId = scriptCompiler.findFunction("test", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+
+			ScriptTask scriptTask(&theProgram);
+			scriptTask.runFunction(functionId, nullptr);
+			auto fRes = *(float*)scriptTask.getTaskResult();
+			Assert::AreEqual(2.2f, fRes, L"function 'foo' return wrong");
+		}
+
+		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument5)
+		{
+			byte globalData[1024];
+			StaticContext staticContext(globalData, sizeof(globalData));
+			GlobalScope rootScope(&staticContext, &scriptCompiler);
+
+			importBasicfunction(funcLibHelper);
+			includeRawStringToCompiler(&scriptCompiler);
+			includeGeoLibToCompiler(&scriptCompiler);
+
+			//initialize an instance of script program
+			Program theProgram;
+			scriptCompiler.bindProgram(&theProgram);
+
+			const wchar_t* scriptCode =
+				L"struct SimpleArray {"
+				L"	int count;"
+				L"	ref Point data;"
+				L"}"
+
+				L"float test(ref Point points) {"
+				L"	return points[0].y;"
+				L"}"
+
+				L"float test() {"
+				L"	Point p = {1.1f, 2.2f};"
+				L"	SimpleArray a = {1, ref(p)};"
+				L"	return test(a.data);"
+				L"}"
+				;
+
+			scriptCompiler.beginUserLib();
+
+			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsTrue(res != nullptr, L"compile program failed");
+
+			bool blRes = rootScope.extractCode(&theProgram);
+			Assert::IsTrue(blRes, L"extract code failed");
+
+			int functionId = scriptCompiler.findFunction("test", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+
+			ScriptTask scriptTask(&theProgram);
+			scriptTask.runFunction(functionId, nullptr);
+			auto fRes = *(float*)scriptTask.getTaskResult();
+			Assert::AreEqual(2.2f, fRes, L"function 'foo' return wrong");
 		}
 	};
 }

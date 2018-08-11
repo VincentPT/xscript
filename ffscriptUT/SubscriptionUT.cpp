@@ -3,6 +3,8 @@
 #include <CompilerSuite.h>
 #include <ScriptTask.h>
 #include <Utils.h>
+#include <RawStringLib.h>
+#include <GeometryLib.h>
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -310,6 +312,42 @@ namespace ffscriptUT
 			task.runFunction(functionId, &paramBuffer);
 
 			Assert::AreEqual(1, a[1], L"function 'foo' return wrong");
+		}
+
+		TEST_METHOD(ElementMemberAccess1)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(128);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = compiler.getCompiler();
+			includeRawStringToCompiler(scriptCompiler.get());
+			includeGeoLibToCompiler(scriptCompiler.get());
+
+			const wchar_t scriptCode[] =
+				L"float foo() {"
+				L"	Point p = {1.1f , 2.2f};"
+				L"	a = ref(p);"
+				L"	x = a[0].x;"
+				L"	return x;"
+				L"}"
+				;
+
+			scriptCompiler->beginUserLib();
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, (L"Compile program failed:" + convertToWstring(scriptCompiler->getLastError())).c_str());
+
+			auto nativeCompiler = compiler.getCompiler();
+			int functionId = nativeCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+
+			ScriptTask task(program);
+			task.runFunction(functionId, nullptr);
+			auto res = *(float*)task.getTaskResult();
+
+			Assert::AreEqual(1.1f, res, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(TestSorting)

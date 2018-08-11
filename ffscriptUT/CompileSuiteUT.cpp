@@ -190,6 +190,97 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, nullptr);
 		}
 
+		TEST_METHOD(CompileSimpleProgram7)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+			includeRawStringToCompiler(scriptCompiler);
+			// if not call bellow code, the RawString library will be remove when compile the program
+			scriptCompiler->beginUserLib();
+
+			const wchar_t* scriptCode =
+				L"void main() {"
+				L"	int i = 0;"
+				L"	if(true) {;"
+				L"	    i = 1;"
+				L"	}"
+				L"	else {"
+				L"	    i = 2;"
+				L"	}"
+				L"}"
+				;
+
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program, L"compile program should success");
+		}
+
+		TEST_METHOD(CompileSimpleProgram8)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+			includeRawStringToCompiler(scriptCompiler);
+			// if not call bellow code, the RawString library will be remove when compile the program
+			scriptCompiler->beginUserLib();
+
+			const wchar_t* scriptCode =
+				L"void main() {"
+				L"	int i = 0;"
+				L"	if(true) {"
+				L"	    i = 1;"
+				L"	}"
+				L"	else {"
+				L"	    i = 2;"
+				L"}"
+				;
+
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNull(program, L"compile program should be failed due to brackets are mismatch");
+
+			Assert::IsTrue(scriptCompiler->getLastError().length() > 0, L"error message should not be empty");
+		}
+
+		TEST_METHOD(CompileSimpleProgram9)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+			includeRawStringToCompiler(scriptCompiler);
+			// if not call bellow code, the RawString library will be remove when compile the program
+			scriptCompiler->beginUserLib();
+
+			const wchar_t* scriptCode =
+				L"void main() {"
+				L"	int i = 0;"
+				L"	if(true) {;"
+				L"	    i = 1;"
+				L"	}"
+				L"	else {"
+				L"	    i = 2;"
+				L"}"
+				L"void foo() {"
+				L"}"
+				;
+
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNull(program, L"compile program should be failed due to brackets are mismatch");
+
+			Assert::IsTrue(scriptCompiler->getLastError().length() > 0, L"error message should not be empty");
+		}
+
 		TEST_METHOD(ProgramIndependent1)
 		{
 			GlobalScopeRef rootScope;			
