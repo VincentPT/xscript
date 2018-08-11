@@ -737,7 +737,8 @@ namespace ffscript {
 			paramInfo.castingFunction = nullptr; //no need to casting
 			return true;
 		}
-		if (argumentType.refLevel() == 1 && paramType.isSemiRefType() && argumentType.origin() == paramType.origin()) {
+		if (argumentType.origin() == paramType.origin() && paramType.isSemiRefType() &&
+			argumentType.refLevel() == 1 && paramType.refLevel() == 0) {
 			paramInfo.accurative = 0; //best match
 			paramInfo.castingFunction = nullptr; //no need to casting
 			return true;
