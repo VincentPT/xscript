@@ -92,6 +92,16 @@ namespace ffscript {
 		DFunction2* clone();
 	};
 
+	//class for accessing member of an 'ref T&' type and return r-value of member
+	class ElementAccessCommand4 : public DFunction2 {
+	private:
+		int _elementSize;
+	public:
+		ElementAccessCommand4(int elementSize);
+		void call(void* pReturnVal, void* param[]);
+		DFunction2* clone();
+	};
+
 	//class for deref a pointer and return r-value
 	class DeRefCommand : public DFunction2 {
 	private:

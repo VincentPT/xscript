@@ -1748,14 +1748,32 @@ namespace ffscript {
 						//defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit1));
 						//defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit2));
 
+						// Fix bug, unexpected access behaviour if the object has type like that 'ref T& arr'
+						// in this case we should consider it as 'ref T arr' then the expression arr[0] will return
+						// the exepceted type, T& or T.
+
 						ScriptType returnType1 = param1Type.deRef();
-						ScriptType returnType2 = returnType1.makeSemiRef();
+						bool semiRefType = returnType1.isSemiRefType();
+						ScriptType returnType2;
+						if (semiRefType) {
+							returnType2 = returnType1;
+							returnType1 = returnType1.deSemiRef();
+						} 
+						else {
+							returnType2 = returnType1.makeSemiRef();
+						}
+						
 						int elementSize = scriptCompiler->getTypeSize(returnType1);
 
 						auto defaultOperatorUnit2 = new FixParamFunction<2>(SUBSCRIPT_OPERATOR, EXP_UNIT_ID_OPERATOR_SUBSCRIPT, FUNCTION_PRIORITY_SUBSCRIPT, returnType2);
 						defaultOperatorUnit2->pushParam(param1);
 						defaultOperatorUnit2->pushParam(param2);
-						defaultOperatorUnit2->setNative((DFunction2Ref)(new ElementAccessCommand2(elementSize)));
+						if (semiRefType) {
+							defaultOperatorUnit2->setNative((DFunction2Ref)(new ElementAccessCommand4(elementSize)));
+						}
+						else {
+							defaultOperatorUnit2->setNative((DFunction2Ref)(new ElementAccessCommand2(elementSize)));
+						}
 
 						defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit2));
 						

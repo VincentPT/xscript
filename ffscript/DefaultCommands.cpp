@@ -218,6 +218,22 @@ namespace ffscript {
 		return new ElementAccessCommand2(_elementSize);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ElementAccessCommand4::ElementAccessCommand4(int elementSize) : _elementSize(elementSize) {
+	}
+
+	void ElementAccessCommand4::call(void* pReturnVal, void* params[]) {
+		void** pRoot = (void**)params[0];
+		char* root = (char*)(*pRoot);
+		int index = (int)(size_t)params[1];
+
+		//copy address of member to address of return value
+		*((size_t*)pReturnVal) = (size_t)(root + index*_elementSize);
+	}
+
+	DFunction2* ElementAccessCommand4::clone() {
+		return new ElementAccessCommand4(_elementSize);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DeRefCommand::DeRefCommand(int typeSize) : _typeSize(typeSize) {
 	}
 
