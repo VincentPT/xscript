@@ -86,8 +86,11 @@ namespace ffscript {
 			return nullptr;
 		}
 
+		auto iTypeBool = scriptCompiler->getTypeManager()->getBasicTypes().TYPE_BOOL;
+		ScriptType expectedReturnTypeOfCondition(iTypeBool, scriptCompiler->getType(iTypeBool));
+
 		int lineOfCode1 = getExpressionCount();
-		parseExpression(d, c - 1);
+		parseExpression(d, c - 1, &expectedReturnTypeOfCondition);
 		int lineOfCode2 = getExpressionCount();
 
 		if (lineOfCode2 - lineOfCode1 != 1) {
