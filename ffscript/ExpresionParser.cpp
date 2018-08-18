@@ -49,8 +49,7 @@ namespace ffscript {
 		return pChar != sNumber;
 	}
 
-	ExpressionParser::ExpressionParser(ScriptCompiler* scriptCompiler) : _scriptCompiler(scriptCompiler) {}
-
+	ExpressionParser::ExpressionParser(ScriptCompiler* scriptCompiler) : _scriptCompiler(scriptCompiler), _lastCompileChar(nullptr) {}
 
 	ExpressionParser::~ExpressionParser(){}
 
@@ -215,6 +214,10 @@ namespace ffscript {
 		}
 
 		auto c = trimLeft(begin, end);
+		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)begin, [this, &c](WCHAR*) {
+			setLastCompilerChar(c);
+		});
+
 		if (*c != '[') {
 			return nullptr;
 		}
@@ -269,10 +272,13 @@ namespace ffscript {
 		auto& params = paramCollector->getParams();
 
 		int lambaFunctionId;
- 		c = globalScope->parseAnonymous(c, end, params, lambaFunctionId);
+		// assign return value to d to keep c as its current value in return value is null
+ 		d = globalScope->parseAnonymous(c, end, params, lambaFunctionId);
 		if (c == nullptr) {
 			return nullptr;
 		}
+		// keep last compile character by c to storing last compile char when the scope exit
+		c = d;
 
 		//now we dont use function operator() to call create lambda function
 		//but we use create lambda function directly
@@ -316,6 +322,10 @@ namespace ffscript {
 		pLastUnit = NULL;
 
 		eResult = E_SUCCESS;
+
+		unique_ptr<WCHAR,  std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)begin, [this, &c](WCHAR*) {
+			setLastCompilerChar(c);
+		});
 
 		static string key_create_array_func(SYSTEM_ARRAY_FUNCTION);
 		for (c = begin; eResult == E_SUCCESS; c++)
@@ -622,6 +632,8 @@ namespace ffscript {
 								if (currentScope == nullptr) {
 									scriptCompiler->setErrorText("internal error: the scope is missing");
 									eResult = E_TOKEN_UNEXPECTED;
+									// keep last char in c
+									c = ctemp;
 									return nullptr;
 								}
 								pVariable = currentScope->registVariable(stdtoken);
@@ -809,6 +821,16 @@ namespace ffscript {
 
 	ScriptCompiler* ExpressionParser::getCompiler() const {
 		return _scriptCompiler;
+	}
+
+	const WCHAR* ExpressionParser::getLastCompileChar() const {
+		return _lastCompileChar;
+	}
+
+	void ExpressionParser::setLastCompilerChar(const WCHAR* c) { 
+		if (c != nullptr) {
+			_lastCompileChar = c;
+		}
 	}
 
 	EExpressionResult ExpressionParser::pickParamUnitsForFunction(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, const DynamicParamFunctionRef& functionRef) {

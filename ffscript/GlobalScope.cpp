@@ -6,7 +6,7 @@
 #include "CodeUpdater.h"
 
 namespace ffscript {
-	GlobalScope::GlobalScope(StaticContext* staticContext, ScriptCompiler* scriptCompiler): ScriptScope(scriptCompiler)
+	GlobalScope::GlobalScope(StaticContext* staticContext, ScriptCompiler* scriptCompiler): ScriptScope(scriptCompiler), _lastCompileChar(nullptr)
 	{
 		_updateLaterMan = new CodeUpdater(this);
 		_refContext = false;

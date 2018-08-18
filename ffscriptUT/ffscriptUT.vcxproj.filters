@@ -161,9 +161,6 @@
     <ClCompile Include="CompositeConstructorUT.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FunctionHelperUT.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UserLibraryUT.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

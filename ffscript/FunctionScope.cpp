@@ -24,6 +24,10 @@ namespace ffscript {
 	const wchar_t* FunctionScope::parseFunctionParameters(const wchar_t* text, const wchar_t* end, std::vector<ScriptType>& paramTypes) {
 		const wchar_t* c;
 
+		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)c, [this, &c](WCHAR*) {
+			((GlobalScope*)getRoot())->setLastCompilerChar(c);
+		});
+
 		c = trimLeft(text, end);
 		if (*c != '(') return nullptr;
 		c++;
@@ -48,6 +52,10 @@ namespace ffscript {
 		std::string token1;
 		ScriptType type;
 
+		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)c, [this, &c](WCHAR*) {
+			((GlobalScope*)getRoot())->setLastCompilerChar(c);
+		});
+
 		Variable* pVariable;
 		paramTypes.clear();
 		decltype(c) e;
@@ -55,6 +63,9 @@ namespace ffscript {
 			e = c;
 			c = parseType(c, end, type);
 			if (c == nullptr) {
+				// parseType current is not support to set last compilied char
+				// so now, it is must work around here
+				((GlobalScope*)getRoot())->setLastCompilerChar(e);
 				break;
 			}
 			d = trimLeft(c, end);
@@ -89,6 +100,9 @@ namespace ffscript {
 				break;
 			}
 			if (*c != ',') {
+				// store last complied char before c is set to null
+				((GlobalScope*)getRoot())->setLastCompilerChar(c);
+
 				c = lastCharInToken(c, end);
 				token1.resize(c - e);
 				token1.assign(e, c);

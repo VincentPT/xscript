@@ -405,6 +405,18 @@ namespace ffscript {
 	ScriptScope* ScriptScope::getParent() const {
 		return _parent;
 	}
+
+	ScriptScope* ScriptScope::getRoot() const {
+		const ScriptScope* root = this;
+		ScriptScope* parent;
+		while (parent = root->getParent())
+		{
+			root = parent;
+		}
+
+		return (ScriptScope*)root;
+	}
+
 	void ScriptScope::setParent(ScriptScope* parent) {
 		_parent = parent;
 	}

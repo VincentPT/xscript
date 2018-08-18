@@ -49,6 +49,7 @@ namespace ffscript {
 	class FFSCRIPT_API ExpressionParser
 	{
 		ScriptCompiler* _scriptCompiler;
+		const WCHAR* _lastCompileChar;
 	public:
 		ExpressionParser(ScriptCompiler* scriptCompiler);
 		virtual ~ExpressionParser();
@@ -60,6 +61,8 @@ namespace ffscript {
 		const WCHAR* readLambdaExression(const WCHAR* begin, const WCHAR* end, EExpressionResult& eResult, FunctionRef& lambdaExpression);
 		EExpressionResult stringToExpList(const std::wstring& sExpressionString, std::list<ExpUnitRef>& expList);
 		EExpressionResult stringToExpList(const WCHAR* sExpressionString, const WCHAR* end, std::list<ExpUnitRef>& expList);
+		const WCHAR* getLastCompileChar() const;
+		void setLastCompilerChar(const WCHAR* c);
 		static void numberedForUnit(std::list<ExpUnitRef>& expList);
 		bool compile(list<ExpUnitRef>& expUnitList, list<ExpressionRef> &expList, EExpressionResult* peResult = nullptr);
 		EExpressionResult link(Expression* pExp);
@@ -73,12 +76,5 @@ namespace ffscript {
 		EExpressionResult pickParamUnitsForFunction(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, const DynamicParamFunctionRef& functionRef);
 		EExpressionResult pickParamUnitsElseClause(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, const DynamicParamFunctionRef& elseClauseUnitRef);
 		EExpressionResult putFunction(OperatorStack* operStack, OutputStack* operandStack, const DynamicParamFunctionRef& functionUnit, list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end);
-	};
-
-	class FFSCRIPT_API ExpressionReader {
-	public:
-		ExpressionReader();
-		virtual ~ExpressionReader();
-		virtual const WCHAR* read(const WCHAR* text, const WCHAR* end, EExpressionResult& eResult, std::list<ExpUnitRef>& expList);
 	};
 }

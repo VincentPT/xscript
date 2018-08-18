@@ -14,13 +14,11 @@ namespace ffscript {
 
 		ScriptCompiler* scriptCompiler = getCompiler();
 
-
 		c = scriptCompiler->readType(text, end, type);
 		if (type.isUnkownType()) {
 			scriptCompiler->setErrorText("unknow data type '" + type.sType() + "'");
 			return nullptr;
 		}
-
 
 		return c;
 	}
@@ -204,12 +202,15 @@ namespace ffscript {
 			ExpressionParser parser(getCompiler());
 
 			c = parser.readExpression(text, end, eResult, unitList);
+			((GlobalScope*)getRoot())->setLastCompilerChar(parser.getLastCompileChar());
+
 			if (eResult != E_SUCCESS || c == nullptr) {
 				if (c != nullptr && scriptCompiler->getLastError().size() == 0) {
 					std::wstring message = L"compile expression '" + std::wstring(text, c - text) + L"' failed";
 					scriptCompiler->setErrorText(convertToAscii(message.c_str(), message.size()));
 					LOG_COMPILE_MESSAGE(scriptCompiler->getLogger(), MESSAGE_ERROR, message.c_str());
 				}
+				
 				return nullptr;
 			}
 			expression = std::wstring(text, c - text);

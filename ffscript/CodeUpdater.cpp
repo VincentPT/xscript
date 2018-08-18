@@ -50,13 +50,7 @@ namespace ffscript {
 
 	CodeUpdater* CodeUpdater::getInstance(const ScriptScope* scope) {
 		if (scope == nullptr) return nullptr;
-		ScriptScope* parent;
-		while ( parent = scope->getParent() )
-		{
-			scope = parent;
-		}
-
-		return ((GlobalScope*)scope)->getCodeUpdater();
+		return ((GlobalScope*)scope->getRoot())->getCodeUpdater();
 	}
 
 	void CodeUpdater::updateScriptFunction(Program* program, CallScriptFuntion* command, int functionId) {

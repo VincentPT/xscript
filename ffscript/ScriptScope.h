@@ -88,6 +88,7 @@ namespace ffscript {
 		DFunction2Ref getProcessingFunc(const std::string& keyword);
 		bool setProcessingFunc(const std::string& keyword, DFunction2Ref function);
 		ScriptScope* getParent() const;
+		ScriptScope* getRoot() const;
 		const ScopeRefList& getChildren() const;
 		void setParent(ScriptScope* parent);
 		void clear();

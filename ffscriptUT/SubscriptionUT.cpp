@@ -314,6 +314,70 @@ namespace ffscriptUT
 			Assert::AreEqual(1, a[1], L"function 'foo' return wrong");
 		}
 
+		TEST_METHOD(ElementAccess7)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(128);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			const wchar_t scriptCode[] =
+				L"void foo(ref int a) {"
+				L"	int i = 1;"
+				L"	a[i++] = 5;"
+				L"}"
+				;
+
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			auto nativeCompiler = compiler.getCompiler();
+			int functionId = nativeCompiler->findFunction("foo", "ref int");
+			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+
+			int a[] = { 1,2,3 };
+			ScriptParamBuffer paramBuffer(&a[0]);
+
+			ScriptTask task(program);
+			task.runFunction(functionId, &paramBuffer);
+
+			Assert::AreEqual(5, a[1], L"function 'foo' return wrong");
+		}
+
+		TEST_METHOD(ElementAccess8)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(128);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+
+			const wchar_t scriptCode[] =
+				L"void foo(ref int a) {"
+				L"	int i = 1;"
+				L"	a[++i] = 5;"
+				L"}"
+				;
+
+			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
+			Assert::IsNotNull(program, L"Compile program failed");
+
+			auto nativeCompiler = compiler.getCompiler();
+			int functionId = nativeCompiler->findFunction("foo", "ref int");
+			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+
+			int a[] = { 1,2,3 };
+			ScriptParamBuffer paramBuffer(&a[0]);
+
+			ScriptTask task(program);
+			task.runFunction(functionId, &paramBuffer);
+
+			Assert::AreEqual(5, a[2], L"function 'foo' return wrong");
+		}
+
 		TEST_METHOD(ElementMemberAccess1)
 		{
 			CompilerSuite compiler;

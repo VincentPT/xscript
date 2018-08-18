@@ -62,6 +62,9 @@ namespace ffscript {
 	const wchar_t* ContextScope::parseCondition(const wchar_t* text, const wchar_t* end) {
 		const wchar_t* c;
 		const wchar_t* d;
+		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)text, [this, &c](WCHAR*) {
+			((GlobalScope*)getRoot())->setLastCompilerChar(c);
+		});
 
 		ScriptCompiler* scriptCompiler = this->getCompiler();
 
@@ -108,6 +111,10 @@ namespace ffscript {
 		const wchar_t* e;
 		std::string token1;
 		std::string token2;
+
+		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)text, [this, &c](WCHAR*) {
+			((GlobalScope*)getRoot())->setLastCompilerChar(c);
+		});
 
 		c = trimLeft(text, end);
 		c = parseCondition(c, end);
@@ -250,6 +257,11 @@ namespace ffscript {
 		ScriptCompiler* scriptCompiler = this->getCompiler();
 
 		c = trimLeft(text, end);
+
+		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)text, [this, &c](WCHAR*) {
+			((GlobalScope*)getRoot())->setLastCompilerChar(c);
+		});
+
 		if (!ScriptCompiler::isOpenScopeSign(*c)) {
 			return nullptr;
 		}
@@ -351,10 +363,14 @@ namespace ffscript {
 				if (*e == '=') {
 					if (e + 1 >= end) {
 						scriptCompiler->setErrorText("incompleted expression");
+						// always keep last compilied char in c before exit this function
+						c = e;
 						return nullptr;
 					}
 					if (*(e + 1) == '=') {
 						scriptCompiler->setErrorText("operator '==' is not expected here");
+						// always keep last compilied char in c before exit this function
+						c = e;
 						return nullptr;
 					}
 
@@ -391,6 +407,8 @@ namespace ffscript {
 							c = parser.readExpression(d, end, eResult, unitList);
 							
 							if (eResult != E_SUCCESS || c == nullptr) {
+								// always keep last compilied char in c before exit this function
+								c = parser.getLastCompileChar();
 								return nullptr;
 							}
 							if (unitList.size() == 0) {

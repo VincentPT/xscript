@@ -34,12 +34,14 @@ namespace ffscript {
 		token = convertToAscii(d, c - d);
 		//name cannot be empty
 		if (token.size() == 0) {
+			setLastCompilerChar(d);
 			return nullptr;
 		}
 		//move to next token
 		d = trimLeft(c, end);
 		//expect an struct begin with char '{' after the name
 		if (d >= end || *d != '{') {
+			setLastCompilerChar(d);
 			return nullptr;
 		}
 
@@ -60,6 +62,8 @@ namespace ffscript {
 			token = convertToAscii(d, c - d);
 			//name cannot be empty
 			if (token.size() == 0) {
+				scriptCompiler->setErrorText("Missing member name");
+				setLastCompilerChar(c);
 				c = nullptr;
 				break;
 			}
@@ -69,6 +73,8 @@ namespace ffscript {
 			}
 			else
 			{
+				scriptCompiler->setErrorText("Missing ';'");
+				setLastCompilerChar(c);
 				c = nullptr;
 				break;
 			}
@@ -77,11 +83,15 @@ namespace ffscript {
 		//register the struct as a type to compiler
 		if (c != nullptr) {
 			if (*c != '}') {
+				scriptCompiler->setErrorText("Missing '}'");
+				setLastCompilerChar(c);
 				c = nullptr;
 			}
 			else {
 				int type = scriptCompiler->registStruct(aStruct);
 				if (IS_UNKNOWN_TYPE(type)) {
+					scriptCompiler->setErrorText("Register struct " + aStruct->getName() + " failed");
+					setLastCompilerChar(c);
 					c = nullptr;
 				}
 			}
@@ -90,7 +100,7 @@ namespace ffscript {
 		if (c == nullptr) {
 			delete aStruct;
 		}
-
+		setLastCompilerChar(c);
 		return c;
 	}
 
@@ -366,5 +376,17 @@ namespace ffscript {
 		}
 
 		return iRes;
+	}
+
+	const WCHAR* GlobalScope::getLastCompileChar() const {
+		return _lastCompileChar;
+	}
+
+	void GlobalScope::setLastCompilerChar(const WCHAR* c) {
+		if (c != nullptr) {
+			if (c > _lastCompileChar) {
+				_lastCompileChar = c;
+			}
+		}
 	}
 }
