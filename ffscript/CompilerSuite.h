@@ -33,5 +33,6 @@ namespace ffscript {
 		ScriptCompilerRef& getCompiler();
 		void setPreprocessor(const PreprocessorRef& preprocessor);
 		const PreprocessorRef getPreprocessor() const;
+		void getLastCompliedPosition(int& line, int& column);
 	};
 }

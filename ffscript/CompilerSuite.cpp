@@ -61,9 +61,15 @@ namespace ffscript{
 		ExpressionParser parser(_pCompiler.get());
 		_pCompiler->pushScope(_globalScopeRef.get());
 
+		_globalScopeRef->setBeginCompileChar(expression);
+
 		list<ExpUnitRef> units;
 		EExpressionResult eResult = parser.stringToExpList(expression, units);
-		if (eResult != E_SUCCESS) return nullptr;
+		_globalScopeRef->setLastCompilerChar(parser.getLastCompileChar());
+
+		if (eResult != E_SUCCESS) {
+			return nullptr;
+		}
 
 		list<ExpressionRef> expList;
 		bool res = parser.compile(units, expList);
@@ -101,5 +107,14 @@ namespace ffscript{
 
 	const PreprocessorRef CompilerSuite::getPreprocessor() const {
 		return _preprocessor;
+	}
+
+	void CompilerSuite::getLastCompliedPosition(int& line, int& column) {
+		if (_preprocessor && _globalScopeRef) {
+			auto beginCompileChar = _globalScopeRef->getBeginCompileChar();
+			auto lastCompileChar = _globalScopeRef->getLastCompileChar();
+
+			_preprocessor->getOriginalPosition((int)(lastCompileChar - beginCompileChar), line, column);
+		}
 	}
 }

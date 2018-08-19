@@ -16,6 +16,7 @@ namespace ffscript {
 
 	class ScriptScope;
 	class Expression;
+	class ExpressionParser;
 	struct OperatorItem;
 	typedef std::shared_ptr<ScriptScope> ScriptScopeRef;
 
@@ -97,10 +98,12 @@ namespace ffscript {
 	private:
 		const wchar_t* parseExpressionInternal(const wchar_t* text, const wchar_t* end, std::wstring& expression, const ScriptType* expectedReturnType = nullptr);	
 	protected:
-		EExpressionResult parseExpressionInternal(std::list<ExpUnitRef>& unitList, const ScriptType* expectedReturnType = nullptr);
+		EExpressionResult parseExpressionInternal(ExpressionParser* parser, std::list<ExpUnitRef>& unitList, const ScriptType* expectedReturnType = nullptr);
+		EExpressionResult parseExpressionInternal(ExpressionParser* parser, std::list<ExpressionRef>& expList , const ScriptType* expectedReturnType = nullptr);
 	public:
 		const wchar_t* parseType(const wchar_t* text, const wchar_t* end, ScriptType& type);
 		const wchar_t* parseExpression(const wchar_t* text, const wchar_t* end, const ScriptType* expectedReturnType = nullptr);
+		const wchar_t* parseDeclaredExpression(const wchar_t* text, const wchar_t* end, const ScriptType* expectedReturnType = nullptr);
 		virtual const wchar_t* parse(const wchar_t* text, const wchar_t* end) = 0;
 		virtual int correctAndOptimize(Program* program) = 0;
 		virtual bool extractCode(Program* program) = 0;

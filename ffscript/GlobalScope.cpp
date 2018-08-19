@@ -6,14 +6,15 @@
 #include "CodeUpdater.h"
 
 namespace ffscript {
-	GlobalScope::GlobalScope(StaticContext* staticContext, ScriptCompiler* scriptCompiler): ScriptScope(scriptCompiler), _lastCompileChar(nullptr)
+	GlobalScope::GlobalScope(StaticContext* staticContext, ScriptCompiler* scriptCompiler):
+		ScriptScope(scriptCompiler), _lastCompileChar(nullptr), _beginCompileChar(nullptr)
 	{
 		_updateLaterMan = new CodeUpdater(this);
 		_refContext = false;
 		_staticContextRef.reset(staticContext);
 	}
 
-	GlobalScope::GlobalScope(int globalMemSize, ScriptCompiler* scriptCompiler) : ScriptScope(scriptCompiler) {
+	GlobalScope::GlobalScope(int globalMemSize, ScriptCompiler* scriptCompiler) : ScriptScope(scriptCompiler), _lastCompileChar(nullptr), _beginCompileChar(nullptr) {
 		_staticContextRef.reset(new StaticContext(globalMemSize));
 		_refContext = true;
 		_updateLaterMan = new CodeUpdater(this);

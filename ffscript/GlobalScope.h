@@ -17,6 +17,7 @@ namespace ffscript {
 		CodeUpdater* _updateLaterMan;
 		bool _refContext;
 		const WCHAR* _lastCompileChar;
+		const WCHAR* _beginCompileChar;
 	public:
 		GlobalScope(StaticContext* staticContext, ScriptCompiler* scriptCompiler);
 		GlobalScope(int globalMemSize, ScriptCompiler* scriptCompiler);
@@ -25,7 +26,9 @@ namespace ffscript {
 		void runGlobalCode();
 		virtual int correctAndOptimize(Program* program);
 		const WCHAR* getLastCompileChar() const;
+		const WCHAR* getBeginCompileChar() const;
 		void setLastCompilerChar(const WCHAR* c);
+		void setBeginCompileChar(const WCHAR* c);
 	public:
 		const wchar_t* parse(const wchar_t* text, const wchar_t* end);
 		const wchar_t* parseAnonymous(const wchar_t* text, const wchar_t* end, const std::list<ExecutableUnitRef>& captureList, int& functionId);

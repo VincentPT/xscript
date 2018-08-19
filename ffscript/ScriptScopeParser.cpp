@@ -16,6 +16,7 @@ namespace ffscript {
 
 		c = scriptCompiler->readType(text, end, type);
 		if (type.isUnkownType()) {
+			((GlobalScope*)getRoot())->setLastCompilerChar(text);
 			scriptCompiler->setErrorText("unknow data type '" + type.sType() + "'");
 			return nullptr;
 		}
@@ -133,20 +134,23 @@ namespace ffscript {
 		return nullptr;
 	}
 
-	EExpressionResult ScriptScope::parseExpressionInternal(std::list<ExpUnitRef>& unitList, const ScriptType* expectedReturnType) {
+	EExpressionResult ScriptScope::parseExpressionInternal(ExpressionParser* pParser, std::list<ExpUnitRef>& unitList, const ScriptType* expectedReturnType) {
 		if (unitList.size() == 0) {
 			return E_SUCCESS;
 		}
-
-		ScriptCompiler* scriptCompiler = getCompiler();
-		ScopedCompilingScope autoScope(scriptCompiler, this);
-		ExpressionParser parser(getCompiler());
+		ExpressionParser& parser = *pParser;
 
 		std::list<ExpressionRef> expList;
 		bool res = parser.compile(unitList, expList);
 		if (res == false) {
 			return E_TYPE_UNKNOWN;
 		}
+		return parseExpressionInternal(pParser, expList, expectedReturnType);
+	}
+
+	EExpressionResult ScriptScope::parseExpressionInternal(ExpressionParser* pParser, std::list<ExpressionRef>& expList, const ScriptType* expectedReturnType) {
+		ExpressionParser& parser = *pParser;
+		ScriptCompiler* scriptCompiler = parser.getCompiler();
 		EExpressionResult eResult = E_INCOMPLETED_EXPRESSION;
 		if (expList.size() == 1) {
 			CandidateCollectionRef candidates = std::make_shared<CandidateCollection>();
@@ -197,26 +201,24 @@ namespace ffscript {
 		std::list<ExpUnitRef> unitList;
 		EExpressionResult eResult = E_FAIL;
 		const wchar_t* c = nullptr;
-		{
-			ScopedCompilingScope autoScope(scriptCompiler, this);
-			ExpressionParser parser(getCompiler());
+		ScopedCompilingScope autoScope(scriptCompiler, this);
+		ExpressionParser parser(getCompiler());
 
-			c = parser.readExpression(text, end, eResult, unitList);
-			((GlobalScope*)getRoot())->setLastCompilerChar(parser.getLastCompileChar());
+		c = parser.readExpression(text, end, eResult, unitList);
+		((GlobalScope*)getRoot())->setLastCompilerChar(parser.getLastCompileChar());
 
-			if (eResult != E_SUCCESS || c == nullptr) {
-				if (c != nullptr && scriptCompiler->getLastError().size() == 0) {
-					std::wstring message = L"compile expression '" + std::wstring(text, c - text) + L"' failed";
-					scriptCompiler->setErrorText(convertToAscii(message.c_str(), message.size()));
-					LOG_COMPILE_MESSAGE(scriptCompiler->getLogger(), MESSAGE_ERROR, message.c_str());
-				}
-				
-				return nullptr;
+		if (eResult != E_SUCCESS || c == nullptr) {
+			if (c != nullptr && scriptCompiler->getLastError().size() == 0) {
+				std::wstring message = L"compile expression '" + std::wstring(text, c - text) + L"' failed";
+				scriptCompiler->setErrorText(convertToAscii(message.c_str(), message.size()));
+				LOG_COMPILE_MESSAGE(scriptCompiler->getLogger(), MESSAGE_ERROR, message.c_str());
 			}
-			expression = std::wstring(text, c - text);
+				
+			return nullptr;
 		}
+		expression = std::wstring(text, c - text);
 
-		eResult = parseExpressionInternal(unitList, expectedReturnType);
+		eResult = parseExpressionInternal(&parser, unitList, expectedReturnType);
 		if (eResult != E_SUCCESS) {
 			c = nullptr;
 		}
@@ -234,8 +236,11 @@ namespace ffscript {
 
 			scriptCompiler->setErrorText("compile '" + expression + "' failed with error:" + lastError);
 		}
-
 		return c;
+	}
+
+	const wchar_t* ScriptScope::parseDeclaredExpression(const wchar_t* text, const wchar_t* end, const ScriptType* expectedReturnType = nullptr) {
+		return nullptr;
 	}
 
 	//void ScriptScope::setBeginExpression(CommandConstRefIter expressionIter) {

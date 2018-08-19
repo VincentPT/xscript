@@ -92,16 +92,25 @@ shared_ptr<wstring> DefaultPreprocessor::preprocess(const wchar_t* begin, const 
 }
 
 
-int DefaultPreprocessor::getOriginalLine(int charIndex) const {
-	if (charIndex < 0) return -1;
+void DefaultPreprocessor::getOriginalPosition(int charIndex, int& line, int& column) const {
+	line = -1;
+	column = -1;
+	if (charIndex < 0) return;
 
 	auto it = lower_bound(_linesMap.begin(), _linesMap.end(), charIndex, [](const LineMapInfo& lineMapInfo, int externalVal) {
 		return (lineMapInfo.endCharIdx <= externalVal);
 	});
 
 	if (it == _linesMap.end()) {
-		return -1;
+		return;
 	}
 
-	return it->originalLine;
+	line = it->originalLine;
+	if (it == _linesMap.begin()) {
+		column = charIndex;
+	}
+	else {
+		it--;
+		column = charIndex - it->endCharIdx;
+	}
 }

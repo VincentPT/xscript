@@ -400,38 +400,40 @@ namespace ffscript {
 					
 					if (applied == false) {
 						unitList.clear();
-						{
-							ScopedCompilingScope autoScope(scriptCompiler, this);
-							ExpressionParser parser(getCompiler());
-							EExpressionResult eResult = E_FAIL;
-							c = parser.readExpression(d, end, eResult, unitList);
+						ScopedCompilingScope autoScope(scriptCompiler, this);
+						ExpressionParser parser(getCompiler());
+						EExpressionResult eResult = E_FAIL;
+						c = parser.readExpression(d, end, eResult, unitList);
 							
-							if (eResult != E_SUCCESS || c == nullptr) {
-								// always keep last compilied char in c before exit this function
-								c = parser.getLastCompileChar();
-								return nullptr;
-							}
-							if (unitList.size() == 0) {
-								scriptCompiler->setErrorText("incompleted expression");
-								return nullptr;
-							}
-							if (unitList.size() >= 2) {
-								auto it = unitList.begin();
-								auto& firstUnit = *it++;
-								auto& secondtUnit = *it++;
-								if (firstUnit->getType() == EXP_UNIT_ID_XOPERAND && secondtUnit->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
-									auto xOperand = unitList.front();
-									MaskType mask = (xOperand->getMask() | UMASK_DECLAREINEXPRESSION);
-									firstUnit->setMask(mask);
+						if (eResult != E_SUCCESS || c == nullptr) {
+							// always keep last compilied char in c before exit this function
+							c = parser.getLastCompileChar();
+							return nullptr;
+						}
+						if (unitList.size() == 0) {
+							scriptCompiler->setErrorText("incompleted expression");
+							return nullptr;
+						}
+						if (ScriptCompiler::isCommandBreakSign(*c) == false) {
+							scriptCompiler->setErrorText("missing ';'");
+							return nullptr;
+						}
+						if (unitList.size() >= 2) {
+							auto it = unitList.begin();
+							auto& firstUnit = *it++;
+							auto& secondtUnit = *it++;
+							if (firstUnit->getType() == EXP_UNIT_ID_XOPERAND && secondtUnit->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
+								auto xOperand = unitList.front();
+								MaskType mask = (xOperand->getMask() | UMASK_DECLAREINEXPRESSION);
+								firstUnit->setMask(mask);
 
-									auto operatorEntry = scriptCompiler->findPredefinedOperator(DEFAULT_COPY_OPERATOR);
-									auto defaultAssigmentUnit = new DynamicParamFunction(operatorEntry->name, operatorEntry->operatorType, operatorEntry->priority, operatorEntry->maxParam);
-									secondtUnit.reset(defaultAssigmentUnit);
-								}
+								auto operatorEntry = scriptCompiler->findPredefinedOperator(DEFAULT_COPY_OPERATOR);
+								auto defaultAssigmentUnit = new DynamicParamFunction(operatorEntry->name, operatorEntry->operatorType, operatorEntry->priority, operatorEntry->maxParam);
+								secondtUnit.reset(defaultAssigmentUnit);
 							}
 						}
 
-						if (parseExpressionInternal(unitList) != E_SUCCESS) {
+						if (parseExpressionInternal(&parser, unitList) != E_SUCCESS) {
 							return nullptr;
 						}
 					}
@@ -456,6 +458,10 @@ namespace ffscript {
 						if (returnType != typeVoid) {
 							c = parseExpression(c, end, &returnType);
 							if (c != nullptr) {
+								if (ScriptCompiler::isCommandBreakSign(*c) == false) {
+									scriptCompiler->setErrorText("missing ';'");
+									return nullptr;
+								}
 								auto returnExrpressionIter = getLastExpression();
 #if USE_DIRECT_COPY_FOR_RETURN
 								ReturnCommandBuilder2* returnCommand = new ReturnCommandBuilder2(this, _functionScope);
@@ -554,6 +560,10 @@ namespace ffscript {
 			}
 			c = parseExpression(c, end);
 			if (c == nullptr) {
+				return nullptr;
+			}
+			if (ScriptCompiler::isCommandBreakSign(*c) == false) {
+				scriptCompiler->setErrorText("missing ';'");
 				return nullptr;
 			}
 			c++;

@@ -18,6 +18,6 @@ public:
 	DefaultPreprocessor();
 	virtual ~DefaultPreprocessor();
 	std::shared_ptr<std::wstring> preprocess(const wchar_t* begin, const wchar_t* end);
-	int getOriginalLine(int charIndex) const;
+	void getOriginalPosition(int charIndex, int& line, int& column) const;
 };
 
