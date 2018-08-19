@@ -1132,31 +1132,28 @@ namespace ffscript {
 			}
 			
 			//pop open bracket, we don't need it any more
-			auto bracket = pOperatorStack->top();
+			auto bracket = pOperatorStack->top().get();
 			pOperatorStack->pop();
 
 			//get previous unit before open bracket
-			list<ExpUnit*> tempUnits;
-			tempUnits.push_back(bracket.get());
+			ExpUnit* previousUnit = nullptr;
+
 			if (pOperatorStack->size() > 0) {
-				tempUnits.push_back(pOperatorStack->top().get());
+				if (pOperatorStack->top().get()->getIndex() < bracket->getIndex()) {
+					previousUnit = pOperatorStack->top().get();
+				}
 			}
 			if( pOutputStack->size() > 0) {
-				tempUnits.push_back(pOutputStack->top().get());
-			}
-			tempUnits.sort([](ExpUnit* expUnit1, ExpUnit* expUnit2) {
-				return expUnit1->getIndex() < expUnit2->getIndex();
-			});
-
-			ExpUnit* previousUnit = nullptr;
-			auto it = std::find(tempUnits.begin(), tempUnits.end(), bracket.get());
-			if (it == tempUnits.begin()) {
-				previousUnit = nullptr;
-			}
-			else
-			{
-				it--;
-				previousUnit = *it;
+				if (previousUnit == nullptr) {
+					if (pOutputStack->top().get()->getIndex() < bracket->getIndex()) {
+						previousUnit = pOutputStack->top().get();
+					}
+				}
+				else if (pOutputStack->top().get()->getIndex() < bracket->getIndex()) {
+					if (pOutputStack->top().get()->getIndex() > previousUnit->getIndex()) {
+						previousUnit = pOutputStack->top().get();
+					}
+				}
 			}
 
 			bool completedFunction = false;
