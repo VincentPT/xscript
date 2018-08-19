@@ -240,73 +240,7 @@ namespace ffscript {
 					pVariable->setDataType(type);
 				} 
 
-				// begin replace
-				// begin remove
-				// c = parseExpression(e, end);
-				// end remove
-				// begin add
-				std::list<ExpUnitRef> unitList;
-				ScopedCompilingScope autoScope(scriptCompiler, this);
-				ExpressionParser parser(getCompiler());
-				EExpressionResult eResult = E_FAIL;
-				c = parser.readExpression(d, end, eResult, unitList);
-
-				if (eResult != E_SUCCESS || c == nullptr) {
-					c = parser.getLastCompileChar();
-					return nullptr;
-				}
-				if (unitList.size() == 0) {
-					scriptCompiler->setErrorText("incompleted expression");
-					c = parser.getLastCompileChar();
-					return nullptr;
-				}
-				if (ScriptCompiler::isCommandBreakSign(*c) == false) {
-					scriptCompiler->setErrorText("missing ';'");
-					setLastCompilerChar(c);
-					return nullptr;
-				}
-				if (unitList.size() >= 2) {
-					auto it = unitList.begin();
-					auto& firstUnit = *it++;
-					auto& secondtUnit = *it++;
-					if (firstUnit->getType() == EXP_UNIT_ID_XOPERAND && secondtUnit->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
-						auto xOperand = unitList.front();
-						MaskType mask = (xOperand->getMask() | UMASK_DECLAREINEXPRESSION);
-						firstUnit->setMask(mask);
-
-						auto operatorEntry = scriptCompiler->findPredefinedOperator(DEFAULT_COPY_OPERATOR);
-						auto defaultAssigmentUnit = new DynamicParamFunction(operatorEntry->name, operatorEntry->operatorType, operatorEntry->priority, operatorEntry->maxParam);
-						secondtUnit.reset(defaultAssigmentUnit);
-					}
-				}
-				std::list<ExpressionRef> expList;
-				bool res = parser.compile(unitList, expList);
-				if (res == false) {
-					return nullptr;
-				}
-
-				if (expList.size() > 1) {
-					scriptCompiler->setErrorText("not support multiple expressions in declaration expression");
-					return nullptr;
-				}
-
-				// root function of expression that initialize as declare must be operator '='
-				auto rootUnit = expList.front().get()->getRoot().get();
-				auto rootFunction = dynamic_cast<ffscript::Function*>(rootUnit);
-				if (rootFunction == nullptr ||
-					(rootUnit->getType() != EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR && rootUnit->getType() != EXP_UNIT_ID_OPERATOR_ASSIGNMENT)) {
-					scriptCompiler->setErrorText("unexpected token '" + rootUnit->toString() + "'");
-					setLastCompilerChar(c);
-					c = nullptr;
-					break;
-				}
-
-				if (parseExpressionInternal(&parser, expList) != E_SUCCESS) {
-					c = nullptr;
-				}
-
-				// end add
-				// end replace
+				c = parseDeclaredExpression(e, end);
 				if (c == nullptr) {
 					//parse expression failed
 					break;

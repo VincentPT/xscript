@@ -367,75 +367,11 @@ namespace ffscript {
 						c = e;
 						return nullptr;
 					}
-					if (*(e + 1) == '=') {
-						scriptCompiler->setErrorText("operator '==' is not expected here");
-						// always keep last compilied char in c before exit this function
-						c = e;
-						return nullptr;
-					}
 
 					e++;
-
-					// check the expression of '=' and convert operator '=' to default copy constructor
-					std::list<ExpUnitRef> unitList;
-					//{
-					//	ScopedCompilingScope autoScope(scriptCompiler, this);
-					//	ExpressionParser parser(getCompiler());
-					//	EExpressionResult eResult = E_FAIL;
-					//	c = parser.readExpression(e, end, eResult, unitList);
-					//	if (eResult != E_SUCCESS || c == nullptr) {
-					//		return nullptr;
-					//	}
-					//	if (unitList.size() == 0) {
-					//		scriptCompiler->setErrorText("incompleted expression");
-					//		return nullptr;
-					//	}
-					//}
-					//
-					//EExpressionResult eResult;
-					bool applied = false;// tryApplyConstructorForDeclarationExpression(pVariable, unitList, nullptr, eResult);
-					//if (eResult != E_SUCCESS) {
-					//	return nullptr;
-					//}
-					
-					if (applied == false) {
-						unitList.clear();
-						ScopedCompilingScope autoScope(scriptCompiler, this);
-						ExpressionParser parser(getCompiler());
-						EExpressionResult eResult = E_FAIL;
-						c = parser.readExpression(d, end, eResult, unitList);
-							
-						if (eResult != E_SUCCESS || c == nullptr) {
-							// always keep last compilied char in c before exit this function
-							c = parser.getLastCompileChar();
-							return nullptr;
-						}
-						if (unitList.size() == 0) {
-							scriptCompiler->setErrorText("incompleted expression");
-							return nullptr;
-						}
-						if (ScriptCompiler::isCommandBreakSign(*c) == false) {
-							scriptCompiler->setErrorText("missing ';'");
-							return nullptr;
-						}
-						if (unitList.size() >= 2) {
-							auto it = unitList.begin();
-							auto& firstUnit = *it++;
-							auto& secondtUnit = *it++;
-							if (firstUnit->getType() == EXP_UNIT_ID_XOPERAND && secondtUnit->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
-								auto xOperand = unitList.front();
-								MaskType mask = (xOperand->getMask() | UMASK_DECLAREINEXPRESSION);
-								firstUnit->setMask(mask);
-
-								auto operatorEntry = scriptCompiler->findPredefinedOperator(DEFAULT_COPY_OPERATOR);
-								auto defaultAssigmentUnit = new DynamicParamFunction(operatorEntry->name, operatorEntry->operatorType, operatorEntry->priority, operatorEntry->maxParam);
-								secondtUnit.reset(defaultAssigmentUnit);
-							}
-						}
-
-						if (parseExpressionInternal(&parser, unitList) != E_SUCCESS) {
-							return nullptr;
-						}
+					c = parseDeclaredExpression(d, end);
+					if (c == nullptr) {
+						return nullptr;
 					}
 					c++;
 					continue;

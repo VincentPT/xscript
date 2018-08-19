@@ -239,8 +239,82 @@ namespace ffscript {
 		return c;
 	}
 
-	const wchar_t* ScriptScope::parseDeclaredExpression(const wchar_t* text, const wchar_t* end, const ScriptType* expectedReturnType = nullptr) {
-		return nullptr;
+	const wchar_t* ScriptScope::parseDeclaredExpression(const wchar_t* text, const wchar_t* end, const ScriptType* expectedReturnType) {
+		auto scriptCompiler = getCompiler();
+		std::list<ExpUnitRef> unitList;
+		ScopedCompilingScope autoScope(scriptCompiler, this);
+		ExpressionParser parser(getCompiler());
+		EExpressionResult eResult = E_FAIL;
+		auto c = parser.readExpression(text, end, eResult, unitList);
+		auto globalScope = (GlobalScope*)getRoot();
+		globalScope->setLastCompilerChar(parser.getLastCompileChar());
+
+		if (eResult != E_SUCCESS || c == nullptr) {
+			return nullptr;
+		}
+		if (unitList.size() == 0) {
+			scriptCompiler->setErrorText("incompleted expression");
+			return nullptr;
+		}
+		if (ScriptCompiler::isCommandBreakSign(*c) == false) {
+			scriptCompiler->setErrorText("missing ';'");
+			return nullptr;
+		}
+		/*if (unitList.size() >= 2) {
+			auto it = unitList.begin();
+			auto& firstUnit = *it++;
+			auto& secondtUnit = *it++;
+			if (firstUnit->getType() == EXP_UNIT_ID_XOPERAND && secondtUnit->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
+				auto xOperand = unitList.front();
+				MaskType mask = (xOperand->getMask() | UMASK_DECLAREINEXPRESSION);
+				firstUnit->setMask(mask);
+
+				auto operatorEntry = scriptCompiler->findPredefinedOperator(DEFAULT_COPY_OPERATOR);
+				auto defaultAssigmentUnit = new DynamicParamFunction(operatorEntry->name, operatorEntry->operatorType, operatorEntry->priority, operatorEntry->maxParam);
+				secondtUnit.reset(defaultAssigmentUnit);
+			}
+		}*/
+		std::list<ExpressionRef> expList;
+		bool res = parser.compile(unitList, expList);
+		if (res == false) {
+			return nullptr;
+		}
+
+		// root function of expression that initialize as declare must be operator '='
+		for (auto expIt = expList.begin(); expIt != expList.end(); expIt++) {
+			auto& rootUnit = expIt->get()->getRoot();
+			if (rootUnit->getType() != EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
+				scriptCompiler->setErrorText("unexpected token '" + rootUnit->toString() + "'");
+				return nullptr;
+			}
+
+			auto assgimentFunction = dynamic_cast<Function*>(rootUnit.get());
+			// take all parameters of operator '='
+			auto firstUnit = assgimentFunction->getChild(0);
+			auto secondUnit = assgimentFunction->getChild(1);
+
+			if (firstUnit->getType() == EXP_UNIT_ID_XOPERAND) {
+				// set first unit with mask UMASK_DECLAREINEXPRESSION to mark it
+				// is in a declared expression for further processing
+				firstUnit->setMask(firstUnit->getMask() | UMASK_DECLAREINEXPRESSION);
+
+				auto operatorEntry = scriptCompiler->findPredefinedOperator(DEFAULT_COPY_OPERATOR);
+				auto defaultAssigmentUnit = new DynamicParamFunction(operatorEntry->name, operatorEntry->operatorType, operatorEntry->priority, operatorEntry->maxParam);
+
+				// replace operator '=' by operator '<--'
+				rootUnit.reset(defaultAssigmentUnit);
+
+				// restore parameters of operator '=' to the new operator
+				defaultAssigmentUnit->pushParam(firstUnit);
+				defaultAssigmentUnit->pushParam(secondUnit);
+			}
+		}
+
+		if (parseExpressionInternal(&parser, expList) != E_SUCCESS) {
+			c = nullptr;
+		}
+
+		return c;
 	}
 
 	//void ScriptScope::setBeginExpression(CommandConstRefIter expressionIter) {

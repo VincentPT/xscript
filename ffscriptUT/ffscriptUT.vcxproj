@@ -245,6 +245,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="ShowErrorLineUT.cpp" />
     <ClCompile Include="StaticArrayUT.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
