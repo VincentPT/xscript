@@ -1081,66 +1081,7 @@ namespace ffscript {
 			if (eResult != E_SUCCESS) {
 				return eResult;
 			}
-#if 0
 
-			list<ExecutableUnitRef> params;
-			if (pOutputStack->size() == 0) {
-				//remove empty entry (outout stack and operator stack)
-				inputList.pop_back();
-
-				delete pOutputStack;
-				delete pOperatorStack;
-
-				//with an empty entry, it should be case someFunc()
-				//so the previous must be a user function
-				//or an variable with operator () is registered
-				ExpressionEntry& entry = inputList.back();
-				pOutputStack = entry.first;
-				pOperatorStack = entry.second;
-
-				if (pOperatorStack->size() < 2 || pOperatorStack->top()->getType() != EXP_UNIT_ID_OPEN_BRACKET) {
-					scriptCompiler->setErrorText("Incompleted expression");
-					eResult = E_INCOMPLETED_EXPRESSION;
-					return eResult;
-				}
-				auto openBracket = pOperatorStack->top();
-				pOperatorStack->pop();
-
-				//previous operator is not a user function
-				if (!ISUSERFUNC(pOperatorStack->top())) {
-					scriptCompiler->setErrorText("Incompleted expression");
-					eResult = E_INCOMPLETED_EXPRESSION;
-					return eResult;
-				}
-
-				//push open bracket to stack again for further processing
-				pOperatorStack->push(openBracket);
-			}
-			else {
-				while (inputList.size())
-				{
-					ExpressionEntry& entry = inputList.back();
-					pOutputStack = entry.first;
-					pOperatorStack = entry.second;
-
-					if (pOperatorStack->size() && pOperatorStack->top()->getType() == EXP_UNIT_ID_OPEN_BRACKET) {
-						break;
-					}
-					inputList.pop_back();
-
-					if (pOutputStack->size() != 1 || pOperatorStack->size() > 0) {
-						scriptCompiler->setErrorText("Incompleted expression");
-						eResult = E_INCOMPLETED_EXPRESSION;
-						break;
-					}
-
-					params.push_back(pOutputStack->top());
-
-					delete pOutputStack;
-					delete pOperatorStack;
-				}
-			}
-#else
 			auto paramCollectionUnit = new ParamUnitCollection();
 			ExecutableUnitRef paramCollectionUnitRef = ExecutableUnitRef(paramCollectionUnit);
 			auto& params = paramCollectionUnit->getParams();
@@ -1173,7 +1114,6 @@ namespace ffscript {
 				delete pOutputStack;
 				delete pOperatorStack;
 			}
-#endif // 0
 			if (eResult != E_SUCCESS) {
 				return eResult;
 			}
@@ -1236,24 +1176,6 @@ namespace ffscript {
 					previousUnit->getType() == EXP_UNIT_ID_OPERATOR_SUBSCRIPT)) {
 				//collect param inside brackets () for user functions like sin(a), sum(...)
 				//Ex: 1 + 2 * sum(3,4,5)
-#if  0
-				pExpFunction = pOperatorStack->top();
-				iResult = 0;
-				for (auto it = params.begin(); it != params.end(); it++) {
-					iResult = pExpFunction->pushParamFront(*it);
-					if (iResult < 0) {
-						DBG_ERROR(_tprintf(__T("\n[#]Unexpected token %s"), (*it)->GetName()));
-						scriptCompiler->setErrorText("Unexpected token '" + (*it)->toString() + "'");
-						break;
-					}
-				}
-				if (iResult < 0) {
-					eResult = E_TOKEN_UNEXPECTED;
-					return eResult;
-				}
-				pOperatorStack->pop();
-				pOutputStack->push(pExpFunction);
-#else
 				auto functionOperator = make_shared<DynamicParamFunction>(FUNCTION_OPERATOR, EXP_UNIT_ID_OPERATOR_FUNCTIONCALL, FUNCTION_PRIORITY_FUNCTIONCALL, 2);
 				eResult = putFunction(pOperatorStack, pOutputStack, functionOperator, iter, end);
 				if (eResult != E_SUCCESS) {
@@ -1262,7 +1184,6 @@ namespace ffscript {
 				//pust param collection of subscript operator to output stack
 				//it will be processed later
 				pOutputStack->push(paramCollectionUnitRef);
-#endif //  0
 				
 			}
 			else {
@@ -1423,161 +1344,6 @@ namespace ffscript {
 		return eResult == E_SUCCESS && expList.size() > 0;
 	}
 
-#if 0 /*following function is not used any more*/
-	bool findAccuracyForCandidate(
-		ScriptCompiler* scriptCompiler,
-		const ScriptType& refVoidType,
-		const ScriptType& expectedType, const ScriptType& actualType,
-		ParamCastingInfo& paramInfo) {
-
-		bool valid = true;
-		FunctionFactory* functionFactory;
-		int accurative;
-		int functionId;
-		//expected type and actual type is not same
-		//but actual type is not ref of specific type and expected type is not ref void
-		//in c++ we can see the case, int* will not cast to void* automatically
-		if (actualType != expectedType && !(actualType.isRefType() && refVoidType == expectedType)) {
-
-			const list<OverLoadingItem>* castingFuncs = nullptr;
-			bool makingRef = false;
-			//check argument type is reference but param type is not
-			if (expectedType.refLevel() - actualType.refLevel() == 1 && expectedType.origin() == expectedType.origin()) {
-				//consider ref function as a casting function
-				makingRef = true;
-			}
-			else if (!actualType.isRefType() && refVoidType == expectedType ) {
-				//param type is ref void but actual type is another ref type
-				makingRef = true;
-			}
-			else {
-				//find a function can cast from actual type to expected type
-				castingFuncs = scriptCompiler->findOverloadingFuncRoot(expectedType.sType());
-			}
-			if (makingRef) {
-				functionId = scriptCompiler->getMakingRefFunction();
-				if (functionId == -1) {
-					valid = false;
-				}
-				else {
-					paramInfo.castingFunction = scriptCompiler->getFunctionFactory(functionId);
-					paramInfo.accurative = 2;
-				}
-			}
-			else {
-				if (castingFuncs == nullptr) {
-					valid = false;
-				}
-				else {
-					//check casting function is valid or not
-					//a valid casting function receive must receive only one parameter in actualType
-					auto it2 = castingFuncs->begin();
-					for (; it2 != castingFuncs->end(); ++it2) {
-						if (it2->paramTypes.size() == 1) {
-							auto& arg0Type = *(it2->paramTypes[0]);
-							if (arg0Type == actualType) {
-								break;
-							}
-							if (arg0Type == refVoidType && !actualType.isRefType()) {
-								break;
-							}
-						}
-						
-					}
-					if (it2 == castingFuncs->end()) {
-						//not a valid function
-						valid = false;
-					}
-					else {
-						//check return type of the function
-						functionFactory = scriptCompiler->getFunctionFactory(it2->functionId);
-						if (functionFactory == nullptr || functionFactory->getReturnType() != expectedType &&
-							!(refVoidType == expectedType && functionFactory->getReturnType().isRefType())) {
-							//return type is not match or function factory not found
-							//if function factory not found this is an error of the library
-							valid = false;
-						}
-						else {
-							accurative = scriptCompiler->findConversionAccurative(actualType.iType(), expectedType.iType());
-							if (accurative < 0) {
-								valid = false;
-							}
-							else {
-								paramInfo.accurative = accurative;
-								paramInfo.castingFunction = functionFactory; 
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return valid;
-	}
-#endif
-
-#if 0 /*following function are no longer used*/
-	EExpressionResult findCandidates(ScriptCompiler* scriptCompiler,
-		const FunctionRef& function,
-		const list<OverLoadingItem>& overloadingFuncs,
-		list<CandidateInfo>& overloadingCandidates) {
-		const string& functionName = function->getName();
-		int n = function->getChildCount();
-		ParamCastingInfo paramInfoTemp;
-		paramInfoTemp.accurative = 0;
-		paramInfoTemp.castingFunction = nullptr;
-
-		//filter overloading functions by number of parameter
-  		for (auto it = overloadingFuncs.begin(); it != overloadingFuncs.end(); ++it) {
-			if ((*it).paramTypes.size() == (size_t)n) {
-				const OverLoadingItem& item = *it;
-
-				CandidateInfo candidateInfo;
-				overloadingCandidates.push_back(candidateInfo);
-				CandidateInfo& candidateInfoRef = overloadingCandidates.back();
-				candidateInfoRef.item = &item;
-				candidateInfoRef.paramCasting.resize(n, paramInfoTemp);
-			}
-		}
-
-		ScriptType refVoidType(scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID | DATA_TYPE_POINTER_MASK, "ref void");
-		int overloadingSize = (int)overloadingCandidates.size();
-		//filter overloading functions by number of parameter types
-		for (int i = 0; i < n; i++) {
-			auto& paramType = function->getChild(i)->getReturnType();
-			auto it = overloadingCandidates.begin();
-			decltype(it) itTemp;
-
-			while (it != overloadingCandidates.end()) {
-				auto& argumentType = *(it->item->paramTypes[i].get());
-				if (findMatchingLevel1(scriptCompiler, refVoidType, argumentType, paramType, it->paramCasting.at(i))) {
-					++it;
-				}
-				else if (overloadingSize == 1 && findMatchingLevel2(scriptCompiler, argumentType, paramType, it->paramCasting.at(i))) {
-					++it;
-				}
-				else {
-					itTemp = it;
-					++it;
-					overloadingCandidates.erase(itTemp);
-				}
-			}
-		}
-
-		return E_SUCCESS;
-	}
-
-	EExpressionResult findCandidates(ScriptCompiler* scriptCompiler, const FunctionRef& function, list<CandidateInfo>& overloadingCandidates) {
-		const string& functionName = function->getName();
-		const list<OverLoadingItem>* overloadingFuncs = scriptCompiler->findOverloadingFuncRoot(functionName);
-
-		if (!overloadingFuncs) {
-			return E_FUNCTION_NOT_FOUND;
-		}
-
-		return findCandidates(scriptCompiler, function, *overloadingFuncs, overloadingCandidates);
-	}
-#endif
 	const CandidateInfo* chooseFunction(ScriptCompiler* scriptCompiler, const list<CandidateInfo>& candidates, int paramCount, EExpressionResult& eResult) {
 		int bestAcurative, totalAcurative;
 
@@ -2028,171 +1794,6 @@ namespace ffscript {
 
 		return std::make_pair(it->paramPath, it->candidate.totalAccurative);
 	}
-
-	//CandidateCollectionRef filterCandidate(ScriptCompiler* scriptCompiler,
-	//	const string& functionName, int functionType,
-	//	const list<OverLoadingItem>* overloadingFuncs,
-	//	const std::vector<CandidateCollectionRef>& candidatesForParams, EExpressionResult& eResult) {
-
-	//	int n = (int)candidatesForParams.size();
-	//	ParamCastingInfo paramInfoTemp;
-	//	paramInfoTemp.accurative = 0;
-	//	paramInfoTemp.castingFunction = nullptr;
-
-	//	list<CandidateInfo> overloadingCandidatesOrigin;
-
-	//	//filter overloading functions by number of parameter
-	//	for (auto it = overloadingFuncs->begin(); it != overloadingFuncs->end(); ++it) {
-	//		if ((*it).paramTypes.size() == (size_t)n) {
-	//			const OverLoadingItem& item = *it;
-
-	//			CandidateInfo candidateInfo;
-	//			overloadingCandidatesOrigin.push_back(candidateInfo);
-	//			CandidateInfo& candidateInfoRef = overloadingCandidatesOrigin.back();
-	//			candidateInfoRef.item = &item;
-	//			candidateInfoRef.paramCasting.resize(n, paramInfoTemp);
-	//		}
-	//	}
-
-	//	ScriptType refVoidType(scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID | DATA_TYPE_POINTER_MASK, "ref void");
-	//	int overloadingSize = (int)overloadingCandidatesOrigin.size();
-
-	//	std::list<std::vector<ExecutableUnitRef>> paramPaths;
-	//	listPaths<ExecutableUnitRef, CandidateCollection, ExecutableUnitRef>(candidatesForParams, paramPaths);
-
-	//	std::map<int, CandidatePathInfo> candidateMap;
-	//	for (auto pit = paramPaths.begin(); pit != paramPaths.end(); pit++) {
-	//		auto& path = *pit;
-	//		//prevent following expression to be executed by a native assigment function
-	//		// int b = 1;
-	//		// ref int a = b;
-	//		//but it will be processed by default assignment operator
-	//		if (functionType == EXP_UNIT_ID_OPERATOR_ASSIGNMENT && path.size() == 2) {
-	//			auto& param1Type = path[0]->getReturnType();
-	//			auto& param2Type = path[1]->getReturnType();
-
-	//			if (path[0]->getType() == EXP_UNIT_ID_XOPERAND && param2Type.origin() == param1Type.origin() && param1Type.refLevel() != param2Type.refLevel()) {
-	//				//continue
-	//				//following assigment is not allow
-	//				//ref int b;
-	//				//int a;
-	//				//b = a;
-	//				continue;
-	//			}
-	//		}
-
-	//		list<CandidateInfo> overloadingCandidates = overloadingCandidatesOrigin;
-	//		for (int i = 0; i < n; i++) {
-	//			auto& param = path[i];
-	//			auto& paramType = param->getReturnType();
-	//			auto it = overloadingCandidates.begin();
-	//			decltype(it) itTemp;
-
-	//			while (it != overloadingCandidates.end()) {
-	//				auto& argumentType = *(it->item->paramTypes[i]);
-	//				if (scriptCompiler->findMatchingComposite(argumentType, param, it->paramCasting.at(i))) {
-	//					++it;
-	//				}
-	//				else if (scriptCompiler->findMatching(refVoidType, argumentType, paramType, it->paramCasting.at(i), overloadingSize == 1)) {
-	//					++it;
-	//				}
-	//				else {
-	//					itTemp = it;
-	//					++it;
-	//					overloadingCandidates.erase(itTemp);
-	//				}
-	//			}
-	//		}
-
-	//		//copy candidate to map but no duplicate candidate(function) id
-	//		for (auto cit = overloadingCandidates.begin(); cit != overloadingCandidates.end(); cit++) {
-	//			CandidatePathInfo candidate;
-	//			candidate.candidate = *cit;
-	//			candidate.paramPath = &path;
-	//			auto it = candidateMap.insert(std::make_pair(candidate.candidate.item->functionId, candidate));
-	//			CandidatePathInfo& insertedCandidate = it.first->second;
-	//			//if the canidate id is exits, compare accurative to choose the best one
-	//			if (it.second == false) {
-	//				//calcuate total accurative for each
-	//				int acc1 = insertedCandidate.candidate.totalAccurative;
-	//				int acc2 = 0;
-	//				for (int j = 0; j < n; j++) {
-	//					acc2 += candidate.candidate.paramCasting.at(j).accurative;
-	//				}
-	//				//the better found, so we repelace it
-	//				if (acc1 > acc2) {
-	//					candidate.candidate.totalAccurative = acc2;
-	//					it.first->second = candidate;
-	//				}
-	//			}
-	//			else {
-	//				int acc1 = 0;
-	//				for (int j = 0; j < n; j++) {
-	//					acc1 += insertedCandidate.candidate.paramCasting.at(j).accurative;
-	//				}
-	//				insertedCandidate.candidate.totalAccurative = acc1;
-	//			}
-	//		}
-	//	}
-
-	//	//now we have all candidate, we remove duplicate by function id
-	//	//but if two function return the same type, it is an ambious call.
-	//	//so, now we check ambious call
-	//	for (auto it = candidateMap.begin(); it != candidateMap.end(); it++) {
-	//		FunctionFactory* fp1 = scriptCompiler->getFunctionFactory(it->first);
-	//		auto jt = it;
-	//		for (++jt; jt != candidateMap.end(); jt++) {
-
-	//			FunctionFactory* fp2 = scriptCompiler->getFunctionFactory(jt->first);
-	//			if (fp1->getReturnType() == fp2->getReturnType()) {
-	//				eResult = E_TYPE_AMBIOUS_CALL;
-	//				scriptCompiler->setErrorText("ambious call for function " + functionName);
-	//				return nullptr;
-	//			}
-	//		}
-	//	}
-	//	vector<std::pair<const int, CandidatePathInfo>*> candidateElems(candidateMap.size());
-	//	auto elmIt = candidateElems.begin();
-	//	for (auto it = candidateMap.begin(); it != candidateMap.end(); it++) {
-	//		*elmIt++ = &(*it);
-	//	}
-	//	std::sort(candidateElems.begin(), candidateElems.end(),
-	//		[](std::pair<const int, CandidatePathInfo>* elm1, std::pair<const int, CandidatePathInfo>* elm2) {
-	//		return elm1->second.candidate.totalAccurative < elm2->second.candidate.totalAccurative;
-	//	});
-
-	//	//everything is ok now, it's time to build candidates		
-	//	CandidateCollectionRef functionCandidates = std::make_shared<CandidateCollection>();
-	//	for (auto it = candidateElems.begin(); it != candidateElems.end(); it++) {
-	//		FunctionFactory* fp = scriptCompiler->getFunctionFactory((*it)->first);
-	//		Function* f = fp->build(fp->getName());
-	//		CandidatePathInfo& candidate = (*it)->second;
-
-	//		std::vector<ExecutableUnitRef>& paramPath = *(candidate.paramPath);
-	//		ParamCastingList& paramCastingList = candidate.candidate.paramCasting;			
-	//		
-	//		auto& argTypes = candidate.candidate.item->paramTypes;
-
-	//		for (int i = 0; i < n; i++) {
-	//			FunctionRef& castingF = paramCastingList[i].castingFunction;
-	//			ExecutableUnitRef& param = paramPath[i];
-	//			if (castingF == nullptr) {
-	//				f->pushParam(param);
-	//			}
-	//			else {
-	//				auto paramTemp = param;
-	//				applyCasting(paramTemp, castingF);
-	//				paramTemp->setReturnType(*argTypes[i]);
-
-	//				f->pushParam(paramTemp);
-	//			}
-	//		}
-
-	//		functionCandidates->push_back(ExecutableUnitRef(f));
-	//	}
-
-	//	return functionCandidates;
-	//}
 
 	CandidateCollectionRef filterCandidate(ScriptCompiler* scriptCompiler,
 		const string& functionName, int functionType,
@@ -3157,17 +2758,6 @@ namespace ffscript {
 			}
 #pragma endregion
 		}
-
-		//if (IS_UNKNOWN_TYPE(bestFunctionMatch->getReturnType())) {
-		//	eResult = E_TYPE_UNKNOWN;
-		//	scriptCompiler->setErrorText("Internal error, register function '" + bestFunctionMatch->getName() + "' is not specified return type");
-		//	return nullptr;
-		//}
-		////re-assign return type for assigment struct because
-		////the library has only one assigment operator for all truct and it return default is ref void
-		//if (assignForStruct || EXP_UNIT_ID_MEMBER_ACCESS == function->getType()) {
-		//	bestFunctionMatch->setReturnType(function->getReturnType());
-		//}
 		eResult = checkCandidates(scriptCompiler, function, functionCandidates);
 		if (eResult != E_SUCCESS) {
 			return nullptr;
