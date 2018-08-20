@@ -86,6 +86,7 @@ namespace ffscript {
 			auto nativeRefContainer = new ObjectBlock<DFunction2Ref>(nativeRef);
 			_memoryBlocks.push_back(MemoryBlockRef(nativeRefContainer));
 			usedRuntimeInfoObject->address = nativeRef.get();
+			delete nativeFunction;
 		}
 		_memoryBlocks.push_back(MemoryBlockRef(memoryBlock));
 		return usedRuntimeInfoObject;
