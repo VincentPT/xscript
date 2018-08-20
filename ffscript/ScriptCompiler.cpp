@@ -649,6 +649,9 @@ namespace ffscript {
 				if (!findMatching(refVoidType, expectedType, param2Type, castingInfo, true)) {
 					continue;
 				}
+				else if (castingInfo.castingFunction) {
+					castingInfo.castingFunction->setSourceCharIndex(paramUnit->getSourceCharIndex());
+				}
 			}
 
 			CandidateInfo constructorCandidate;
@@ -879,6 +882,7 @@ namespace ffscript {
 			auto collector = dynamic_cast<DynamicParamFunction*>(secondParam.get() );
 			if (!collector) {
 				// throw exception here
+				throw std::runtime_error("internal error, unit is not a DynamicParamFunction");
 			}
 			
 			list<ExecutableUnitRef> wholeConstructorParams;
@@ -887,6 +891,7 @@ namespace ffscript {
 			int makeRefId = getMakingRefFunction();
 			if (makeRefId < 0) {
 				// throw exception here
+				throw std::runtime_error("internal error, definition of ref operator is not found");
 			}
 
 			// create making ref function unit with empty parameter and initialized return type
@@ -894,10 +899,13 @@ namespace ffscript {
 			auto makeRefFunc = createFunctionFromId(makeRefId);
 			if (!makeRefFunc) {
 				// throw exception here
+				throw std::runtime_error("internal error, definition of ref operator is not found");
 			}
 
 			makeRefFunc->pushParam(objectParam);
 			FunctionRef makeRefFuncRef(makeRefFunc);
+			// keep origin source char in new expression unit
+			makeRefFunc->setSourceCharIndex(objectParam->getSourceCharIndex());
 
 			// first parameter of constructor is always make ref function
 			// that make the object need to be constructed to a reference then pass
@@ -919,7 +927,11 @@ namespace ffscript {
 			auto constructorUnit = createFunctionFromId(pCandidate->item->functionId);
 			if (!constructorUnit) {
 				// throw exception here
+				throw std::runtime_error("internal error, constructor is not defined");
 			}
+
+			// keep origin source char in new expression unit
+			constructorUnit->setSourceCharIndex(objectParam->getSourceCharIndex());
 
 			// push the first parameter unit to constructor unit
 			// the first parameter is the making ref function
@@ -928,6 +940,9 @@ namespace ffscript {
 			FunctionRef constructorUnitRef(constructorUnit);
 			FwdCompositeConstrutorUnit* compositeUnit = new FwdCompositeConstrutorUnit(constructorUnitRef, argumentTypes, castingList);
 			compositeUnit->setReturnType(argumentType);
+
+			// keep origin source char in new expression unit
+			compositeUnit->setSourceCharIndex(objectParam->getSourceCharIndex());
 
 			// set it excludedded from destructor to prevent the data of variable is destroyed
 			compositeUnit->setMask(compositeUnit->getMask() | UMASK_EXCLUDEFROMDESTRUCTOR);
@@ -953,6 +968,9 @@ namespace ffscript {
 
 			FwdConstrutorUnit* fwdCtorUnit = new FwdConstrutorUnit(FunctionRef(constructorFunc));
 			fwdCtorUnit->setReturnType(argumentType);
+
+			// keep origin source char in new expression unit
+			fwdCtorUnit->setSourceCharIndex(secondParam->getSourceCharIndex());
 
 			// set it excludedded from destructor to prevent the data of variable is destroyed
 			fwdCtorUnit->setMask(fwdCtorUnit->getMask() | UMASK_EXCLUDEFROMDESTRUCTOR);
@@ -1007,11 +1025,15 @@ namespace ffscript {
 
 			while (it != overloadingCandidates->end()) {
 				auto& argumentType = *(it->item->paramTypes[i]);
-
-				if (findMatchingComposite(argumentType, *pit, it->paramCasting.at(i))) {
+				auto& paramCasting = it->paramCasting.at(i);
+				if (findMatchingComposite(argumentType, *pit, paramCasting)) {
 					it++;
 				}
-				else if (findMatching(refVoidType, argumentType, paramType, it->paramCasting.at(i), overloadingSize == 1)) {
+				else if (findMatching(refVoidType, argumentType, paramType, paramCasting, overloadingSize == 1)) {
+					// keep origin source char in new expression unit
+					if (paramCasting.castingFunction) {
+						paramCasting.castingFunction->setSourceCharIndex((*pit)->getSourceCharIndex());
+					}
 					++it;
 				}
 				else {
@@ -1076,12 +1098,17 @@ namespace ffscript {
 				castingFunction->pushParam(paramUnit);
 
 				param = castingFunction;
+				// keep origin source char in new expression unit
+				param->setSourceCharIndex(paramUnit->getSourceCharIndex());
 			}
 			else {
 				param = paramUnit;
 			}
 			auto newFunction = createFunctionFromId(functionInfo->functionId);
 			newFunction->pushParam(param);
+
+			// keep origin source char in new expression unit
+			newFunction->setSourceCharIndex(param->getSourceCharIndex());
 
 			boolOperatorFunc.reset(newFunction);
 		}
@@ -1162,6 +1189,9 @@ namespace ffscript {
 			newFunction->pushParam(param2);
 			newFunction->setMask(newFunction->getMask() | UMASK_CONSTRUCTOR);
 
+			// keep origin source char in new expression unit
+			newFunction->setSourceCharIndex(variableUnit->getSourceCharIndex());
+
 			//auto xOperand = dynamic_cast<CXOperand*>(variableUnit.get());
 			//auto pVariable = xOperand->getVariable();
 			//auto scope = currentScope();
@@ -1215,6 +1245,10 @@ namespace ffscript {
 		Function* refFunction = (Function*)createFunctionFromId(refFunctionId);
 		refFunction->pushParam(param);
 		refFunction->setMask(refFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
+
+		// keep origin source char in new expression unit
+		refFunction->setSourceCharIndex(param->getSourceCharIndex());
+
 		param.reset((ExecutableUnit*)(refFunction));
 
 		return true;
@@ -1239,6 +1273,8 @@ namespace ffscript {
 			}
 			else {
 				assignmentCompositeUnit = make_shared<CompositeConstrutorUnit>(assigments);
+				// keep origin source char in new expression unit
+				assignmentCompositeUnit->setSourceCharIndex(firstUnit->getSourceCharIndex());
 			}
 			assignmentCompositeUnit->setReturnType(typeVoid);
 		}
@@ -1261,6 +1297,8 @@ namespace ffscript {
 			}
 			else {
 				assignmentCompositeUnit = make_shared<CompositeConstrutorUnit>(assigments);
+				// keep origin source char in new expression unit
+				assignmentCompositeUnit->setSourceCharIndex(firstUnit->getSourceCharIndex());
 			}
 			assignmentCompositeUnit->setReturnType(typeVoid);
 		}
@@ -1284,6 +1322,9 @@ namespace ffscript {
 		CXOperand* pCXOperand = new CXOperand(scope, pVariable, pVariable->getDataType());
 		ExecutableUnitRef variableUnitRef(pCXOperand);
 
+		// keep origin source char in new expression unit
+		pCXOperand->setSourceCharIndex(unit->getSourceCharIndex());
+
 		if  ((argumentType.origin() != paramType.origin() || (argumentType.refLevel() == 0 && paramType.refLevel() > 0)) &&
 			findMatchingConstructor(variableUnitRef, unit, paramInfo)) {
 			auto& constructorUnit = paramInfo.castingFunction;
@@ -1298,6 +1339,8 @@ namespace ffscript {
 
 		if (unit->getType() == EXP_UNIT_ID_DYNAMIC_FUNC) {
 			auto assignmentCompositeUnit = make_shared<CompositeConstrutorUnit>();
+			// keep origin source char in new expression unit
+			assignmentCompositeUnit->setSourceCharIndex(unit->getSourceCharIndex());
 
 			ScriptType typeVoid(getTypeManager()->getBasicTypes().TYPE_VOID, "void");
 			list<pair<Variable*, ExecutableUnitRef>> assigments;
@@ -1407,12 +1450,15 @@ namespace ffscript {
 					if (res) {
 						if (paramCastingInfo.castingFunction) {
 							tranformUnitRef = paramUnit;
+							// keep origin source char in new expression unit
+							paramCastingInfo.castingFunction->setSourceCharIndex(paramUnit->getSourceCharIndex());
+
 							applyCasting(tranformUnitRef, paramCastingInfo.castingFunction);
 							tranformUnitRef->setReturnType(argumentType);
 						}
 						else {
 							checkUnitForExcludingDestructor(this, paramUnit);
-							tranformUnitRef = paramUnit;							
+							tranformUnitRef = paramUnit;
 						}
 						memberAccurative = paramCastingInfo.accurative;
 					}
@@ -1453,6 +1499,9 @@ namespace ffscript {
 				CXOperand* pCXMemberOperand = new CXOperand(scope, memberVariable, memberVariable->getDataType());
 				ExecutableUnitRef memberVariableRef(pCXMemberOperand);
 
+				// keep origin source char in new expression unit
+				pCXMemberOperand->setSourceCharIndex(paramUnit->getSourceCharIndex());
+
 				if (!applyTranformTypeUnit(memberVariableRef, paramUnit)) {
 					return false;
 				}
@@ -1473,6 +1522,9 @@ namespace ffscript {
 				auto defaultConstructorId = getDefaultConstructor(argumentType.iType());
 				if (defaultConstructorId >= 0) {
 					auto defaultConstructor = scope->generateDefaultAutoOperator(defaultConstructorId, memberVariable);
+					// keep origin source char in new expression unit
+					defaultConstructor->setSourceCharIndex(variableUnit->getSourceCharIndex());
+
 					assigments.emplace_back(make_pair(memberVariable, defaultConstructor));
 				}
 				else {
@@ -1517,6 +1569,9 @@ namespace ffscript {
 				CXOperand* pCXMemberOperand = new CXOperand(scope, memberVariable, memberVariable->getDataType());
 				ExecutableUnitRef memberVariableRef(pCXMemberOperand);
 
+				// keep origin source char in new expression unit
+				pCXMemberOperand->setSourceCharIndex(paramUnit->getSourceCharIndex());
+
 				if (!applyTranformTypeUnit(memberVariableRef, paramUnit)) {
 					return false;
 				}
@@ -1535,6 +1590,9 @@ namespace ffscript {
 					memberVariable->setOffset(elmOffset);
 
 					auto defaultConstructor = scope->generateDefaultAutoOperator(defaultConstructorId, memberVariable);
+					// keep origin source char in new expression unit
+					defaultConstructor->setSourceCharIndex(variableUnit->getSourceCharIndex());
+
 					assigments.emplace_back(make_pair(memberVariable, defaultConstructor));
 					elmOffset += arrayInfo->elmSize;
 				}
@@ -1653,6 +1711,8 @@ namespace ffscript {
 						}
 						else {
 							tranformUnitRef = paramCastingInfo.castingFunction;
+							// keep origin source char in new expression unit
+							tranformUnitRef->setSourceCharIndex(paramUnit->getSourceCharIndex());
 						}
 						memberAccurative = paramCastingInfo.accurative;
 					}
@@ -1693,6 +1753,9 @@ namespace ffscript {
 				CXOperand* pCXMemberOperand = new CXOperand(scope, memberVariable, memberVariable->getDataType());
 				ExecutableUnitRef memberVariableRef(pCXMemberOperand);
 
+				// keep origin source char in new expression unit
+				pCXMemberOperand->setSourceCharIndex(paramUnit->getSourceCharIndex());
+
 				if (!applyTranformTypeUnit(memberVariableRef, paramUnit)) {
 					return false;
 				}
@@ -1713,6 +1776,9 @@ namespace ffscript {
 				auto defaultConstructorId = getDefaultConstructor(argumentType.iType());
 				if (defaultConstructorId >= 0) {
 					auto defaultConstructor = scope->generateDefaultAutoOperator(defaultConstructorId, memberVariable);
+					// keep origin source char in new expression unit
+					defaultConstructor->setSourceCharIndex(variableUnit->getSourceCharIndex());
+
 					assigments.emplace_back(make_pair(memberVariable, defaultConstructor));
 				}
 				else {
@@ -1757,6 +1823,9 @@ namespace ffscript {
 				CXOperand* pCXMemberOperand = new CXOperand(scope, memberVariable, memberVariable->getDataType());
 				ExecutableUnitRef memberVariableRef(pCXMemberOperand);
 
+				// keep origin source char in new expression unit
+				pCXMemberOperand->setSourceCharIndex(paramUnit->getSourceCharIndex());
+
 				if (!applyTranformTypeUnit(memberVariableRef, paramUnit)) {
 					return false;
 				}
@@ -1775,6 +1844,9 @@ namespace ffscript {
 					memberVariable->setOffset(elmOffset);
 
 					auto defaultConstructor = scope->generateDefaultAutoOperator(defaultConstructorId, memberVariable);
+					// keep origin source char in new expression unit
+					defaultConstructor->setSourceCharIndex(variableUnit->getSourceCharIndex());
+
 					assigments.emplace_back(make_pair(memberVariable, defaultConstructor));
 					elmOffset += arrayInfo->elmSize;
 				}
@@ -1812,10 +1884,15 @@ namespace ffscript {
 
 			while (it != overloadingCandidates.end()) {
 				auto& argumentType = *(it->item->paramTypes[i]);
-				if (scriptCompiler->findMatchingComposite(argumentType, param, it->paramCasting.at(i))) {
+				auto& paramCasting = it->paramCasting.at(i);
+				if (scriptCompiler->findMatchingComposite(argumentType, param, paramCasting)) {
 					++it;
 				}
-				else if (scriptCompiler->findMatching(refVoidType, argumentType, paramType, it->paramCasting.at(i), overloadingSize == 1)) {
+				else if (scriptCompiler->findMatching(refVoidType, argumentType, paramType, paramCasting, overloadingSize == 1)) {
+					// keep origin source char in new expression unit
+					if (paramCasting.castingFunction) {
+						paramCasting.castingFunction->setSourceCharIndex(param->getSourceCharIndex());
+					}
 					++it;
 				}
 				else {

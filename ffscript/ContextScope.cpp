@@ -377,7 +377,13 @@ namespace ffscript {
 					continue;
 				}
 				if (ScriptCompiler::isCommandBreakSign(*e)) {
-					checkVariableToRunConstructor(pVariable);
+					// use x operand unit to store variable and source char index then
+					// the function checkVariableToRunConstructor will use it to set setSourceCharIndex
+					// for some generated units if necessary
+					CXOperand xOperand(this, pVariable);
+					xOperand.setSourceCharIndex((int)(d - text));
+
+					checkVariableToRunConstructor(&xOperand);
 					c++;
 					continue;
 				}

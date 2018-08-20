@@ -96,6 +96,10 @@ void DefaultPreprocessor::getOriginalPosition(int charIndex, int& line, int& col
 	line = -1;
 	column = -1;
 	if (charIndex < 0) return;
+	if (_linesMap.size() > 0 && charIndex >= _linesMap.back().endCharIdx) {
+		line = _linesMap.back().originalLine + 1;
+		column = 0;
+	}
 
 	auto it = lower_bound(_linesMap.begin(), _linesMap.end(), charIndex, [](const LineMapInfo& lineMapInfo, int externalVal) {
 		return (lineMapInfo.endCharIdx <= externalVal);

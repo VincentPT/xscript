@@ -46,12 +46,15 @@ namespace ffscript {
 	{
 	private:
 	protected:
-		int _indexInExpression;
+		short _indexInExpression;
+		unsigned short _sourceCharIndex;
 	public:
 		ExpUnit();
 		virtual ~ExpUnit();
 		void setIndex(int);
 		int getIndex() const;
+		void setSourceCharIndex(int);
+		int getSourceCharIndex() const;
 	};
 
 	class FFSCRIPT_API OpenBracket : public ExpUnit

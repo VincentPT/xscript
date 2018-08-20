@@ -88,6 +88,8 @@ namespace ffscript {
 				if (res) {
 					if (paramInfo.castingFunction) {
 						auto& castingFunction = paramInfo.castingFunction;
+						castingFunction->setSourceCharIndex(candidateUnitRef->getSourceCharIndex());
+
 						applyCasting(candidateUnitRef, castingFunction);
 						candidateUnitRef->setReturnType(expectedType);
 					}
@@ -206,6 +208,7 @@ namespace ffscript {
 
 		c = parser.readExpression(text, end, eResult, unitList);
 		((GlobalScope*)getRoot())->setLastCompilerChar(parser.getLastCompileChar());
+		((GlobalScope*)getRoot())->convertSourceCharIndexToGlobal(text, unitList);
 
 		if (eResult != E_SUCCESS || c == nullptr) {
 			if (c != nullptr && scriptCompiler->getLastError().size() == 0) {
@@ -248,6 +251,7 @@ namespace ffscript {
 		auto c = parser.readExpression(text, end, eResult, unitList);
 		auto globalScope = (GlobalScope*)getRoot();
 		globalScope->setLastCompilerChar(parser.getLastCompileChar());
+		globalScope->convertSourceCharIndexToGlobal(text, unitList);
 
 		if (eResult != E_SUCCESS || c == nullptr) {
 			return nullptr;

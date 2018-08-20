@@ -247,11 +247,34 @@ namespace ffscript {
 		//}
 		newExpression.append(1, ')');
 
+		// the expression [capture1, capture2, ...] become SYSTEM_LAMBDA_FUNCTION(capture1, capture2, ...)
+		// so we need offset indicators to origin by substract to the additional sace
+		constexpr int lamdaFunctionNameLen = sizeof(SYSTEM_LAMBDA_FUNCTION) - 1;
+		constexpr int offset = lamdaFunctionNameLen - 0;
+
 		std::list<ExpUnitRef> expUnitList;
 		d = newExpression.c_str();
 		d = readExpression(d, d + newExpression.size(), eResult, expUnitList);
+
+		// convert the last compilied char from newExpression to current expression(begin, end)
+		auto lastCharOffset = getLastCompileChar() - newExpression.c_str();
+		if (lastCharOffset < lamdaFunctionNameLen) {
+			lastCharOffset = 0;
+		}
+		else {
+			lastCharOffset -= offset;
+		}
+		setLastCompilerChar(begin + lastCharOffset);
 		if (d == nullptr || eResult != E_SUCCESS) {
 			return nullptr;
+		}
+
+		// also convert the unit's source chars to origin
+		auto it = expUnitList.begin();
+		// make the first unit is at begin
+		it->get()->setSourceCharIndex(0);
+		for (it++; it != expUnitList.end(); it++) {
+			it->get()->setSourceCharIndex(it->get()->getSourceCharIndex() - offset);
 		}
 
 		list<ExpressionRef> temp;
@@ -289,6 +312,9 @@ namespace ffscript {
 		auto unitIdRef = make_shared<CConstOperand<int>>(lambaFunctionId, "int");
 		createLambdaFunction->pushParam(unitIdRef);
 
+		// keep origin source char in new expression unit
+		createLambdaFunction->setSourceCharIndex(lambdaExpression->getSourceCharIndex());
+
 		lambdaExpression.reset(createLambdaFunction);
 		return c;
 	}
@@ -300,6 +326,21 @@ namespace ffscript {
 			pLastUnit->getType() == EXP_UNIT_ID_FUNC_CONDITIONAL ||
 			pLastUnit->getType() == EXP_UNIT_ID_FUNC_CHOICE ||
 			pLastUnit->getType() == EXP_UNIT_ID_FUNC_SEPERATOR;
+	}
+
+	void ExpressionParser::recursiveOffsetSourceCharIndex(Function* expFunc, int offset) {
+		int n = expFunc->getChildCount();
+		expFunc->setSourceCharIndex(expFunc->getSourceCharIndex() + offset);
+
+		for (int i = 0; i < n; i++) {
+			auto& child = expFunc->getChild(0);
+			if (ISFUNCTION(child)) {
+				recursiveOffsetSourceCharIndex((Function*)child.get(), offset);
+			}
+			else {
+				child->setSourceCharIndex(child->getSourceCharIndex() + offset);
+			}
+		}
 	}
 
 	const WCHAR* ExpressionParser::readExpression(const WCHAR* begin, const WCHAR* end, EExpressionResult& eResult, std::list<ExpUnitRef>& expUnitList) {
@@ -381,6 +422,7 @@ namespace ffscript {
 						//size = scriptCompiler->findDynamicFunctionOnly(key_create_array_func);
 						//pArrayExpUnit = scriptCompiler->createFunctionFromId(size);
 						pArrayExpUnit = new IncompletedUserFunctionUnit(key_create_array_func);
+						pArrayExpUnit->setSourceCharIndex((int)(c - begin));
 						expUnitList.push_back(ExpUnitRef(pArrayExpUnit));
 						pFixedExpUnit = new OpenBracket();
 						break;
@@ -433,6 +475,8 @@ namespace ffscript {
 								else {
 									pStringConst = new CConstOperand<std::string>(convertToAscii(sMax, size), "string");
 								}
+
+								pStringConst->setSourceCharIndex((int)(sMax - begin));
 							}
 						}
 						break;
@@ -521,6 +565,7 @@ namespace ffscript {
 				}
 			}
 			if (sToken) {
+				int tokenLength = wcslen(sToken);
 				if ((blHasDot && !blHasChar) || IsDisgit(sToken)) {
 					int sign = 1;
 					if (expUnitList.size() > 0) {
@@ -539,14 +584,14 @@ namespace ffscript {
 							expUnitList.erase(lastUnitIter);
 						}
 					}
-
-					wchar_t* lastChar;
-					if (sToken == sToken1) {
-						lastChar = sToken1 + wcslen(sToken1) - 1;
-					}
-					else {
-						lastChar = sToken2 + wcslen(sToken2) - 1;
-					}
+					
+					wchar_t* lastChar = sToken + tokenLength - 1;
+					//if (sToken == sToken1) {
+					//	lastChar = sToken1 + wcslen(sToken1) - 1;
+					//}
+					//else {
+					//	lastChar = sToken2 + wcslen(sToken2) - 1;
+					//}
 
 					if (blHasDot) {
 						if (*lastChar == 'f') {
@@ -592,10 +637,10 @@ namespace ffscript {
 					//expected member name here.
 					//member name will be stored as string constant
 					pStringConst = new CConstOperand<std::string>(convertToAscii(sToken), "string");
+					pStringConst->setSourceCharIndex((int)(c - begin) - tokenLength);
 				}
 				else {
-
-					std::string&& stdtoken = convertToAscii(sToken);
+					std::string&& stdtoken = convertToAscii(sToken, tokenLength);
 
 					if (scriptCompiler->findKeyword(stdtoken) != KEYWORD_UNKNOWN) {
 						eResult = E_TOKEN_UNEXPECTED;
@@ -677,6 +722,10 @@ namespace ffscript {
 									scriptCompiler->setErrorText("Unexpected token '" + convertToAscii(sToken) + "'");
 									}*/
 								}
+
+								if (pTBDExpUnit) {
+									pTBDExpUnit->setSourceCharIndex((int)(c - begin) - tokenLength);
+								}
 							}
 						}
 					}
@@ -685,12 +734,16 @@ namespace ffscript {
 					blHasDot = false;
 					blHasChar = false;
 				}
+				if (pExpUnit) {
+					pExpUnit->setSourceCharIndex((int)(c - begin) - tokenLength);
+				}
 			}
 			if (pExpUnit) {
 				pLastUnit = pExpUnit;
 				expUnitList.push_back(ExpUnitRef((ExpUnit*)pExpUnit));
 			}
 			else if (pTBDExpUnit) {
+				int tbdUnitIndex = pTBDExpUnit->getSourceCharIndex();
 				if (pTBDExpUnit->getType() == EXP_UNIT_ID_OPERATOR_ADD) {
 					if (checkPosibilityUnaryPrefix(pLastUnit)) {
 						delete pTBDExpUnit;
@@ -711,6 +764,8 @@ namespace ffscript {
 						pTBDExpUnit = new DynamicParamFunction("-", EXP_UNIT_ID_OPERATOR_NEG, FUNCTION_PRIORITY_UNARY_PREFIX, 1);
 					}
 					else if (pLastUnit->getType() == EXP_UNIT_ID_OPERATOR_SUB) {
+						//use index of last unit because two oprator '--' are become '+'
+						tbdUnitIndex = pLastUnit->getSourceCharIndex();
 						expUnitList.pop_back();
 						delete pTBDExpUnit;
 						pTBDExpUnit = new DynamicParamFunction("+", EXP_UNIT_ID_OPERATOR_ADD, FUNCTION_PRIORITY_ADDITIVE, 2);
@@ -738,6 +793,8 @@ namespace ffscript {
 				}
 
 				if (pTBDExpUnit) {
+					pTBDExpUnit->setSourceCharIndex(tbdUnitIndex);
+
 					pLastUnit = pTBDExpUnit;
 					expUnitList.push_back(ExpUnitRef(pTBDExpUnit));
 				}
@@ -747,6 +804,8 @@ namespace ffscript {
 				expUnitList.push_back(ExpUnitRef(pStringConst));
 			}
 			if (pFixedExpUnit) {
+				pFixedExpUnit->setSourceCharIndex((int)(c - begin));
+
 				bool isReplaced = false;
 				if (pFixedExpUnit->getType() == EXP_UNIT_OPEN_SQUARE_BRACKET) {
 					//check if the charactor is begin of a lambda expression
@@ -756,6 +815,11 @@ namespace ffscript {
 						if (c == nullptr || !lambdaExpression) {
 							return nullptr;
 						}
+
+						// since source char indcies generated by readLambdaExression are aligned by 'c',
+						// they need to aligned by 'begin'
+						recursiveOffsetSourceCharIndex(lambdaExpression.get(), (int)(c - begin));
+
 						c--;
 						delete pFixedExpUnit;
 						pFixedExpUnit = lambdaExpression.get();
@@ -764,6 +828,7 @@ namespace ffscript {
 						isReplaced = true;
 					}
 				}
+
 				pLastUnit = pFixedExpUnit;
 				if (!isReplaced) {
 					expUnitList.push_back(ExpUnitRef(pFixedExpUnit));
@@ -922,6 +987,9 @@ namespace ffscript {
 		//find if clause expression
 		//use dummy function to collect the unit for if clause
 		DynamicParamFunctionRef dummyFuncion = std::make_shared<DynamicParamFunction>(":", EXP_UNIT_ID_FUNC_CHOICE, FUNCTION_PRIORITY_CONDITIONAL, 1);
+		// keep origin source char in new expression unit
+		dummyFuncion->setSourceCharIndex(it->get()->getSourceCharIndex());
+
 		eResult = pickParamUnitsForFunction(it, end, dummyFuncion);
 
 		if (eResult != E_SUCCESS) {
@@ -1086,6 +1154,9 @@ namespace ffscript {
 			ExecutableUnitRef paramCollectionUnitRef = ExecutableUnitRef(paramCollectionUnit);
 			auto& params = paramCollectionUnit->getParams();
 
+			// temporary set source char index of paramCollectionUnit is source char index of close bracket
+			paramCollectionUnit->setSourceCharIndex(expUnit->getSourceCharIndex());
+
 			if (pOutputStack->size() == 0) {
 				//remove empty entry (outout stack and operator stack)
 				inputList.pop_back();
@@ -1133,6 +1204,9 @@ namespace ffscript {
 			
 			//pop open bracket, we don't need it any more
 			auto bracket = pOperatorStack->top().get();
+			// set true source char index of paramCollectionUnit is source char index of open bracket
+			// before it is destroyed
+			paramCollectionUnit->setSourceCharIndex(bracket->getSourceCharIndex());
 			pOperatorStack->pop();
 
 			//get previous unit before open bracket
@@ -1174,6 +1248,9 @@ namespace ffscript {
 				//collect param inside brackets () for user functions like sin(a), sum(...)
 				//Ex: 1 + 2 * sum(3,4,5)
 				auto functionOperator = make_shared<DynamicParamFunction>(FUNCTION_OPERATOR, EXP_UNIT_ID_OPERATOR_FUNCTIONCALL, FUNCTION_PRIORITY_FUNCTIONCALL, 2);
+				// keep origin source char in new expression unit
+				functionOperator->setSourceCharIndex(iter->get()->getSourceCharIndex());
+
 				eResult = putFunction(pOperatorStack, pOutputStack, functionOperator, iter, end);
 				if (eResult != E_SUCCESS) {
 					return eResult;
@@ -1212,6 +1289,9 @@ namespace ffscript {
 				return eResult;
 			}
 			auto paramCollectionUnit = new ParamUnitCollection();
+			// temporary set source char index of paramCollectionUnit is source char index of close bracket
+			paramCollectionUnit->setSourceCharIndex(expUnit->getSourceCharIndex());
+
 			ExecutableUnitRef paramCollectionUnitRef = ExecutableUnitRef(paramCollectionUnit);
 			auto& params = paramCollectionUnit->getParams();
 			while (inputList.size())
@@ -1253,9 +1333,16 @@ namespace ffscript {
 				return E_INCOMPLETED_EXPRESSION;
 			}
 
+			// set true source char index of paramCollectionUnit is source char index of open bracket
+			paramCollectionUnit->setSourceCharIndex(pOperatorStack->top()->getSourceCharIndex());
+
 			//replace unit '[' by subscript operator
 			pOperatorStack->pop();
 			auto subscriptOperator = make_shared<DynamicParamFunction>(SUBSCRIPT_OPERATOR, EXP_UNIT_ID_OPERATOR_SUBSCRIPT, FUNCTION_PRIORITY_SUBSCRIPT, 2);
+
+			// set true source char index of operator '[]' is source char index of open bracket
+			subscriptOperator->setSourceCharIndex(paramCollectionUnit->getSourceCharIndex());
+
 			eResult = putFunction(pOperatorStack, pOutputStack, subscriptOperator, iter, end);
 			if (eResult != E_SUCCESS) {
 				return eResult;
@@ -1407,6 +1494,7 @@ namespace ffscript {
 
 			if (funcNode->getType() == EXP_UNIT_ID_CREATE_LAMBDA) {
 				DynamicParamFunction* createLambdaCandidate = new DynamicParamFunction(SYSTEM_LAMBDA_FUNCTION, EXP_UNIT_ID_CREATE_LAMBDA, FUNCTION_PRIORITY_USER_FUNCTION, (int)pathParam.size());
+				createLambdaCandidate->setSourceCharIndex(funcNode->getSourceCharIndex());
 				
 				for (auto it = pathParam.begin(); it != pathParam.end(); it++) {
 					createLambdaCandidate->pushParam(*it);
@@ -1461,6 +1549,9 @@ namespace ffscript {
 						defaultOperatorUnit->pushParam(param1);
 						defaultOperatorUnit->pushParam(param2);
 
+						// keep origin source char in new expression unit
+						defaultOperatorUnit->setSourceCharIndex(funcNode->getSourceCharIndex());
+
 						defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit));
 						continue;
 					}
@@ -1472,9 +1563,15 @@ namespace ffscript {
 						RuntimeFunctionInfo nullValueOfRuntimeFunctionInfo;
 						defaultRuntimeFunctionInfoConstructor(&nullValueOfRuntimeFunctionInfo);
 						auto nullValueRef = make_shared<CConstOperand<RuntimeFunctionInfo>>(nullValueOfRuntimeFunctionInfo, param1Type);
+						// keep origin source char in new expression unit
+						nullValueRef->setSourceCharIndex(param2->getSourceCharIndex());
+
 						auto defaultOperatorUnit = new FixParamFunction<2>(DEFAULT_COPY_OPERATOR, EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR, FUNCTION_PRIORITY_ASSIGNMENT, param1Type.makeSemiRef());
 						defaultOperatorUnit->pushParam(param1);
 						defaultOperatorUnit->pushParam(nullValueRef);
+
+						// keep origin source char in new expression unit
+						defaultOperatorUnit->setSourceCharIndex(funcNode->getSourceCharIndex());
 
 						defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit));
 						continue;
@@ -1495,6 +1592,9 @@ namespace ffscript {
 						defaultOperatorUnit->setReturnType(param1Type);
 						defaultOperatorUnit->setNative((DFunction2Ref)(new ArrayToStructCommand()));
 
+						// keep origin source char in new expression unit
+						defaultOperatorUnit->setSourceCharIndex(funcNode->getSourceCharIndex());
+
 						defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit));
 						continue;
 					}
@@ -1512,6 +1612,10 @@ namespace ffscript {
 							auto castingFunction = scriptCompiler->createFunctionFromId(integerCasting);
 							castingFunction->pushParam(param2);
 							castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
+
+							// keep origin source char in new expression unit
+							castingFunction->setSourceCharIndex(param2->getSourceCharIndex());
+
 							//replace param 2 by casting function
 							param2.reset(castingFunction);
 						}
@@ -1560,6 +1664,9 @@ namespace ffscript {
 							defaultOperatorUnit2->setNative((DFunction2Ref)(new ElementAccessCommand2(elementSize)));
 						}
 
+						// keep origin source char in new expression unit
+						defaultOperatorUnit2->setSourceCharIndex(funcNode->getSourceCharIndex());
+
 						defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit2));
 						
 						continue;
@@ -1576,6 +1683,10 @@ namespace ffscript {
 								auto castingFunction = scriptCompiler->createFunctionFromId(integerCasting);
 								castingFunction->pushParam(param2);
 								castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
+
+								// keep origin source char in new expression unit
+								castingFunction->setSourceCharIndex(param2->getSourceCharIndex());
+
 								//replace param 2 by casting function
 								param2.reset(castingFunction);
 							}
@@ -1590,6 +1701,9 @@ namespace ffscript {
 							auto defaultOperatorUnit2 = new FixParamFunction<2>(SUBSCRIPT_OPERATOR, EXP_UNIT_ID_STATIC_ARRAY_SUBSCRIPT, FUNCTION_PRIORITY_SUBSCRIPT, returnType2);
 							defaultOperatorUnit2->pushParam(param1);
 							defaultOperatorUnit2->pushParam(param2);
+
+							// keep origin source char in new expression unit
+							defaultOperatorUnit2->setSourceCharIndex(funcNode->getSourceCharIndex());
 
 							defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit2));
 							continue;
@@ -1612,6 +1726,9 @@ namespace ffscript {
 						defaultOperatorUnit->setReturnType(boolType);
 						defaultOperatorUnit->setNative((DFunction2Ref)(new CompareRuntimeFunction()));
 
+						// keep origin source char in new expression unit
+						defaultOperatorUnit->setSourceCharIndex(funcNode->getSourceCharIndex());
+
 						defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit));
 						continue;
 					}
@@ -1633,6 +1750,10 @@ namespace ffscript {
 						auto deRefFunction = new FixParamFunction<1>(DEREF_OPERATOR, EXP_UNIT_ID_DEREF, FUNCTION_PRIORITY_UNARY_PREFIX, argumentType);
 						deRefFunction->setNative((DFunction2Ref)(new DeRefCommand(scriptCompiler->getTypeSize(argumentType))));
 						deRefFunction->pushParam(param1);
+
+						// keep origin source char in new expression unit
+						deRefFunction->setSourceCharIndex(param1->getSourceCharIndex());
+
 						param1.reset(deRefFunction);
 					}
 
@@ -1644,6 +1765,9 @@ namespace ffscript {
 					ScriptType& memberType = memberInfo->type;
 
 					CConstOperand<int>* param2New = new CConstOperand<int>(memberInfo->offset, typeInt);
+					// keep origin source char in new expression unit
+					param2New->setSourceCharIndex(param2->getSourceCharIndex());
+
 					ExecutableUnitRef param2NewRef(param2New);
 
 					/*auto defaultOperatorUnit1 = new FixParamFunction<2>(".", EXP_UNIT_ID_MEMBER_ACCESS, FUNCTION_PRIORITY_MEMBER_ACCESS, memberType);
@@ -1656,6 +1780,9 @@ namespace ffscript {
 					defaultOperatorUnit2->pushParam(param1);
 					defaultOperatorUnit2->pushParam(param2NewRef);
 					defaultOperatorUnit2->setNative((DFunction2Ref)(new MemberAccessCommand2()));
+
+					// keep origin source char in new expression unit
+					defaultOperatorUnit2->setSourceCharIndex(funcNode->getSourceCharIndex());
 					
 					//defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit1));
 					defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit2));
@@ -1681,6 +1808,9 @@ namespace ffscript {
 						auto defaultOperatorUnit = new FixParamFunction<1>(DEREF_OPERATOR, EXP_UNIT_ID_DEREF, FUNCTION_PRIORITY_UNARY_PREFIX, returnType);
 						defaultOperatorUnit->pushParam(param1);
 						defaultOperatorUnit->setNative((DFunction2Ref)(new DeRefCommand(typeSize)));
+
+						// keep origin source char in new expression unit
+						defaultOperatorUnit->setSourceCharIndex(funcNode->getSourceCharIndex());
 
 						defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit));
 					}
@@ -1782,6 +1912,8 @@ namespace ffscript {
 			auto& castingF = castingInfo.castingFunction;
 			if (castingF) {
 				auto& paramRef = *jt;
+				// keep origin source char in new expression unit
+				castingF->setSourceCharIndex(paramRef->getSourceCharIndex());
 				applyCasting(paramRef, castingF);
 				paramRef->setReturnType(*(kt->get()));
 			}
@@ -1868,6 +2000,10 @@ namespace ffscript {
 				runtimeInfoTemp.address = (void*)(size_t)item->functionId;
 				runtimeInfoTemp.info.type = isScriptFunction(scriptCompiler, item->functionId) ? RuntimeFunctionType::ScriptFunction: RuntimeFunctionType::NativeFunction;
 				auto functionPointerUnit = new CConstOperand<RuntimeFunctionInfo>(runtimeInfoTemp, ScriptType(type, scriptCompiler->getType(type)));
+
+				// keep origin source char in new expression unit
+				functionPointerUnit->setSourceCharIndex(unit->getSourceCharIndex());
+
 				unitCandidate->push_back(ExecutableUnitRef(functionPointerUnit));
 			}			
 		}
@@ -1953,6 +2089,9 @@ namespace ffscript {
 			else if(pExeUnit1->getReturnType().isFunctionType()){
 				candidatesForParams.resize(1 + params.size());
 				auto forwardCallUnitRef = make_shared<DynamicParamFunction>(FUNCTION_OPERATOR, EXP_UNIT_ID_FORWARD_CALL, FUNCTION_PRIORITY_FUNCTIONCALL, 1 + (int)params.size());
+				// keep origin source char in new expression unit
+				forwardCallUnitRef->setSourceCharIndex(function->getSourceCharIndex());
+
 				forwardCallUnitRef->pushParam(pExeUnit1);
 				for (auto it = params.begin(); it != params.end(); it++) {
 					forwardCallUnitRef->pushParam(*it);
@@ -1971,6 +2110,9 @@ namespace ffscript {
 				if (param1CandidatesTmp->size() == 1 && param1CandidatesTmp->front()->getReturnType().isFunctionType()) {
 					candidatesForParams.resize(1 + params.size());
 					auto forwardCallUnitRef = make_shared<DynamicParamFunction>(FUNCTION_OPERATOR, EXP_UNIT_ID_FORWARD_CALL, FUNCTION_PRIORITY_FUNCTIONCALL, 1 + (int)params.size());
+					// keep origin source char in new expression unit
+					forwardCallUnitRef->setSourceCharIndex(function->getSourceCharIndex());
+
 					forwardCallUnitRef->pushParam(pExeUnit1);
 					for (auto it = params.begin(); it != params.end(); it++) {
 						forwardCallUnitRef->pushParam(*it);
@@ -1993,6 +2135,9 @@ namespace ffscript {
 									scriptCompiler->setErrorText("Library error function operator is missing");
 									return nullptr;
 								}
+								// keep origin source char in new expression unit
+								functionUnit->setSourceCharIndex(function->getSourceCharIndex());
+
 								functionCandidates->push_back(ExecutableUnitRef(functionUnit));
 							}
 						}
@@ -2068,6 +2213,10 @@ namespace ffscript {
 			for (it++; it != param1Candidates->end(); it++) {
 				auto& param1TypeN = (*it)->getReturnType();
 				auto newCandidate = make_shared<FixParamFunction<1>>(MAKING_SEMI_REF_FUNC, EXP_UNIT_ID_SEMI_REF, FUNCTION_PRIORITY_UNARY_PREFIX, param1TypeN.makeSemiRef());
+
+				// keep origin source char in new expression unit
+				newCandidate->setSourceCharIndex(it->get()->getSourceCharIndex());
+
 				functionCandidates->push_back(newCandidate);
 			}
 
@@ -2136,6 +2285,8 @@ namespace ffscript {
 						functionCandidate->pushParam(param2);
 						functionCandidate->setMask(function->getMask());
 						functionCandidate->setUserData(function->getUserData());
+						// keep origin source char in new expression unit
+						functionCandidate->setSourceCharIndex(function->getSourceCharIndex());
 
 						if (acurative == 0) {
 							functionCandidates->push_back(functionCandidate);
@@ -2199,6 +2350,10 @@ namespace ffscript {
 					//so we replace current function object by default copy constructor
 					auto defaultOperatorUnit = new DynamicParamFunction(DEFAULT_COPY_OPERATOR,
 						EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR, FUNCTION_PRIORITY_ASSIGNMENT, 2);
+
+					// keep origin source char in new expression unit
+					defaultOperatorUnit->setSourceCharIndex(function->getSourceCharIndex());
+
 					function.reset(defaultOperatorUnit);
 					defaultOperatorUnit->pushParam(param1Candidates->front());
 					defaultOperatorUnit->pushParam(pExeUnit2);
@@ -2286,6 +2441,10 @@ namespace ffscript {
 						}
 						auto castingFunction = (Function*)scriptCompiler->createFunctionFromId(castingFunctionId);
 						castingFunction->pushParam(conditionUnit);
+
+						// keep origin source char in new expression unit
+						castingFunction->setSourceCharIndex(conditionUnit->getSourceCharIndex());
+
 						conditionUnit =  ExecutableUnitRef(castingFunction);
 					}
 
@@ -2295,6 +2454,9 @@ namespace ffscript {
 					conditionOperator->pushParam(conditionUnit);
 					conditionOperator->pushParam(ifUnit);
 					conditionOperator->pushParam(elseUnit);
+
+					// keep origin source char in new expression unit
+					conditionOperator->setSourceCharIndex(function->getSourceCharIndex());
 
 					functionCandidates->push_back( ExecutableUnitRef(conditionOperator) );
 				}
@@ -2329,6 +2491,10 @@ namespace ffscript {
 					else if (choosedFunctionId >= 0) {
 						Function* refFunction = (Function*)scriptCompiler->createFunctionFromId(choosedFunctionId);
 						refFunction->pushParam(makeRefParamUnit);
+
+						// keep origin source char in new expression unit
+						refFunction->setSourceCharIndex(makeRefParamUnit->getSourceCharIndex());
+
 						functionCandidates->push_back(ExecutableUnitRef(refFunction));
 					}
 				}
@@ -2425,6 +2591,10 @@ namespace ffscript {
 								auto castingFunction = (Function*)scriptCompiler->createFunctionFromId(castingFunctionId);
 								castingFunction->pushParam(param2);
 								castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
+
+								// keep origin source char in new expression unit
+								castingFunction->setSourceCharIndex(param2->getSourceCharIndex());
+
 								param2 = ExecutableUnitRef(castingFunction);
 
 								acceptPath = true;
@@ -2439,6 +2609,9 @@ namespace ffscript {
 						defaultCopyFunction->pushParam(param2);
 						defaultCopyFunction->setReturnType(param2->getReturnType().makeSemiRef());
 
+						// keep origin source char in new expression unit
+						defaultCopyFunction->setSourceCharIndex(function->getSourceCharIndex());
+
 						auto& oldParam1 = ((Function*)param1.get())->getChild(0);
 						// check if param 1 is a variable and
 						// its was declared inside the expression...
@@ -2446,9 +2619,8 @@ namespace ffscript {
 							(oldParam1->getMask() & UMASK_DECLAREINEXPRESSION)) {
 							// ...then generate destructor for it
 							
-							auto xOperand = (CXOperand*)oldParam1.get();
-							auto pVariable = xOperand->getVariable();							
-							if (currentScope->checkVariableToRunDestructor(pVariable)) {
+							auto xOperand = (CXOperand*)oldParam1.get();				
+							if (currentScope->checkVariableToRunDestructor(xOperand)) {
 								// set construct build info to allow frame work set the object to be constructed
 								// when the command is run
 								currentScope->applyConstructBuildInfo(defaultCopyFunction);
@@ -2484,10 +2656,9 @@ namespace ffscript {
 						//because param 1 is a X Operand/
 						//we should call its constructor if exist first, then call assigment
 						auto xOperand = (CXOperand*)param1.get();
-						auto pVariable = xOperand->getVariable();
 
 						// this will check and add constructor and destructor for the variable
-						if (currentScope->checkVariableToRunConstructor(pVariable)) {
+						if (currentScope->checkVariableToRunConstructor(xOperand)) {
 							//add constructror to scope success, so we need to remove all other candidates
 							auto itAfterBegin = functionCandidates->begin();
 							itAfterBegin++;
@@ -2550,6 +2721,10 @@ namespace ffscript {
 							forwardCallUnit->pushParam(*jt);
 						}
 						forwardCallUnit->setReturnType(returnType);
+
+						// keep origin source char in new expression unit
+						forwardCallUnit->setSourceCharIndex(function->getSourceCharIndex());
+
 						paramPathCandidate.push_back( std::make_pair(forwardCallUnit, res.second));
 					}
 				}
@@ -2593,10 +2768,11 @@ namespace ffscript {
 							}
 
 							//change param 2 from string type to int type
-							pExeUnit2.reset(
-								new CConstOperand<MemberInfo>(memberInfo,
-									scriptCompiler->getType(basicType.TYPE_ELEMENT_INFO))
-							);
+							auto newExpUnit2 = new CConstOperand<MemberInfo>(memberInfo, scriptCompiler->getType(basicType.TYPE_ELEMENT_INFO));
+							// keep origin source char in new expression unit
+							newExpUnit2->setSourceCharIndex(pExeUnit2->getSourceCharIndex());
+							pExeUnit2.reset(newExpUnit2);
+
 							pExeUnit2->setReturnType(ScriptType(basicType.TYPE_ELEMENT_INFO, scriptCompiler->getType(basicType.TYPE_ELEMENT_INFO)));
 							function->setReturnType(memberInfo.type);
 						}
@@ -2666,6 +2842,9 @@ namespace ffscript {
 			if (choosedFunctionId > 0) {
 #pragma region linking for dynamic function
 				Function* dynamicFunction = (Function*)scriptCompiler->createFunctionFromId(choosedFunctionId);
+				// keep origin source char in new expression unit
+				dynamicFunction->setSourceCharIndex(function->getSourceCharIndex());
+
 				std::list<std::vector<ExecutableUnitRef>> paramPaths;
 				listPaths<ExecutableUnitRef, CandidateCollection, ExecutableUnitRef>(candidatesForParams, paramPaths);
 
@@ -2746,6 +2925,9 @@ namespace ffscript {
 
 				for (auto functionid : dynamicFunctionCandidates) {
 					Function* dynamicFunction = (Function*)scriptCompiler->createFunctionFromId(functionid);
+					// keep origin source char in new expression unit
+					dynamicFunction->setSourceCharIndex(function->getSourceCharIndex());
+
 					auto& paramPath = paramPaths.front();
 					for (auto pit = paramPath.begin(); pit != paramPath.end(); pit++) {
 						dynamicFunction->pushParam(*pit);

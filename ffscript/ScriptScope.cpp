@@ -224,8 +224,9 @@ namespace ffscript {
 	//	_constructorCount++;
 	//}
 
-	CommandUnit* ScriptScope::checkVariableToRunConstructor(Variable* pVariable) {
-		bool hasDestructors = checkVariableToRunDestructor(pVariable);
+	CommandUnit* ScriptScope::checkVariableToRunConstructor(CXOperand* xOperand) {
+		auto pVariable = xOperand->getVariable();
+		bool hasDestructors = checkVariableToRunDestructor(xOperand);
 
 		auto getConstructorFunction = std::bind(&ScriptCompiler::getDefaultConstructor, _scriptCompiler, std::placeholders::_1);
 		auto constructorBuildInfoBlockRef = generateConstructBuildInfo();
@@ -248,7 +249,8 @@ namespace ffscript {
 			if (constructorUnit == nullptr) {
 				return nullptr;
 			}
-
+			// keep origin source char in new expression unit
+			constructorUnit->setSourceCharIndex(xOperand->getSourceCharIndex());
 			constructorUnit->setUserData(constructorBuildInfoBlockRef);
 			constructorUnit->setMask(constructorUnit->getMask() | UMASK_DEFAULT_CTOR);
 
@@ -277,10 +279,12 @@ namespace ffscript {
 			throw exception("null variable");
 		}
 
-		return checkVariableToRunDestructor(pVariable);
+		return checkVariableToRunDestructor(xOperand);
 	}
 
-	bool ScriptScope::checkVariableToRunDestructor(Variable* pVariable) {
+	bool ScriptScope::checkVariableToRunDestructor(CXOperand* xOperand) {
+		auto pVariable = xOperand->getVariable();
+
 		auto getDestructorFunction = std::bind(&ScriptCompiler::getDestructor, _scriptCompiler, std::placeholders::_1);
 
 		auto destructorBuildInfoBlockRef = generateConstructBuildInfo();
@@ -299,7 +303,8 @@ namespace ffscript {
 				// it should throw exception here
 				return false;
 			}
-
+			// keep origin source char in new expression unit
+			destructor->setSourceCharIndex(xOperand->getSourceCharIndex());
 			destructor->setMask(destructor->getMask() | UMASK_DESTRUCTOR);
 			destructor->setUserData(destructorBuildInfoBlockRef);
 

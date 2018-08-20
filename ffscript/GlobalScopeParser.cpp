@@ -207,7 +207,12 @@ namespace ffscript {
 					return nullptr;
 				}
 				pVariable->setDataType(type);
-				checkVariableToRunConstructor(pVariable);
+				// use x operand unit to store variable and source char index then
+				// the function checkVariableToRunConstructor will use it to set setSourceCharIndex
+				// for some generated units if necessary
+				CXOperand xOperand(this, pVariable);
+				xOperand.setSourceCharIndex((int)(d - text));
+				checkVariableToRunConstructor(&xOperand);
 				c++;
 				continue;
 			}
@@ -393,5 +398,18 @@ namespace ffscript {
 
 	void GlobalScope::setBeginCompileChar(const WCHAR* c) {
 		_beginCompileChar = c;
+	}
+
+	void GlobalScope::convertSourceCharIndexToGlobal(const WCHAR* source, std::list<ExpUnitRef>& units) {
+		int offset = (int)(source - _beginCompileChar);
+		for (auto it = units.begin(); it != units.end(); it++) {
+			auto unit = it->get();
+			if (ISFUNCTION(unit)) {
+				ExpressionParser::recursiveOffsetSourceCharIndex((Function*)unit, offset);
+			}
+			else {
+				unit->setSourceCharIndex(unit->getSourceCharIndex() + offset);
+			}
+		}
 	}
 }

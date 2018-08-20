@@ -68,7 +68,8 @@ namespace ffscript {
 		EExpressionResult link(Expression* pExp);
 		EExpressionResult link(Expression* pExp, CandidateCollectionRef& candidates);
 		static CandidateCollectionRef linkForUnit(ScriptCompiler* scriptCompiler, ExecutableUnitRef& unit, EExpressionResult& eResult);
-		static CandidateCollectionRef completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult );		
+		static CandidateCollectionRef completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult );
+		static void recursiveOffsetSourceCharIndex(Function* expFunc, int offset);
 	protected:
 		EExpressionResult compileConditionalExpression(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, ExecutableUnitRef& ifClauseUnit, ExecutableUnitRef& elseClauseUnit);
 		EExpressionResult putAnExpUnit(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, ExpressionInputList& inputList);

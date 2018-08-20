@@ -29,6 +29,7 @@ namespace ffscript {
 		const WCHAR* getBeginCompileChar() const;
 		void setLastCompilerChar(const WCHAR* c);
 		void setBeginCompileChar(const WCHAR* c);
+		void convertSourceCharIndexToGlobal(const WCHAR* source, std::list<ExpUnitRef>& units);
 	public:
 		const wchar_t* parse(const wchar_t* text, const wchar_t* end);
 		const wchar_t* parseAnonymous(const wchar_t* text, const wchar_t* end, const std::list<ExecutableUnitRef>& captureList, int& functionId);

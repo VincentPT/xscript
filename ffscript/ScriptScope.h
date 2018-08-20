@@ -19,6 +19,7 @@ namespace ffscript {
 	class ExpressionParser;
 	struct OperatorItem;
 	typedef std::shared_ptr<ScriptScope> ScriptScopeRef;
+	class CXOperand;
 
 	typedef std::list<CommandUnitRef > ComandRefList;
 	typedef ComandRefList::const_iterator CommandConstRefIter;
@@ -61,13 +62,13 @@ namespace ffscript {
 		Variable* applyTemporaryVariableFor(CommandUnit* parentUnit, Variable* pVariable);
 		bool deleteTempVariable(CommandUnit* parentUnit);
 		Variable* findTempVariable(CommandUnit* parentUnit);
-		CommandUnit* checkVariableToRunConstructor(Variable* pVariable);
+		CommandUnit* checkVariableToRunConstructor(CXOperand* xOperand);
 		Function* generateDefaultAutoOperator(int operatorId, Variable* obj);
 		OperatorBuidInfo* applyDefaultConstructor(const ScriptType& type, Function* constructor);
 		/*void checkVariableToRunConstructorNonRecursive(Variable* pVariable, Function* constructor);*/
         void applyConstructorDestructor(const ExecutableUnitRef& variableUnit, Function* constructor);
 		bool applyDestructor(const ExecutableUnitRef& variableUnit);
-		bool checkVariableToRunDestructor(Variable* pVariable);
+		bool checkVariableToRunDestructor(CXOperand* pVariable);
 		int getConstructorCommandCount() const;
 		void generateNextConstructId();
 		OperatorBuidInfo* applyConstructBuildInfo(Function* constructFactor);

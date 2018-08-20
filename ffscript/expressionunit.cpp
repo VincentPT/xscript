@@ -3,8 +3,10 @@
 #include "ScriptScope.h"
 #include "expressionunit.h"
 
+#define INVALID_CHAR_INDEX 0xFFFF
+
 namespace ffscript {
-	ExpUnit::ExpUnit() : _indexInExpression(-1) {
+	ExpUnit::ExpUnit() : _indexInExpression(-1), _sourceCharIndex(INVALID_CHAR_INDEX) {
 		LOG_D("Create expression unit " + POINTER2STRING(this));
 	}
 	ExpUnit::~ExpUnit() {
@@ -12,11 +14,25 @@ namespace ffscript {
 	}
 
 	void ExpUnit::setIndex(int idx) {
-		_indexInExpression = idx;
+		_indexInExpression = (short)idx;
 	}
 
 	int ExpUnit::getIndex() const {
-		return _indexInExpression;
+		return (int)_indexInExpression;
+	}
+
+	void ExpUnit::setSourceCharIndex(int idx) {
+		if (idx < 0) {
+			_sourceCharIndex = INVALID_CHAR_INDEX;
+		}
+		else {
+			_sourceCharIndex = (unsigned short)idx;
+		}
+	}
+
+	int ExpUnit::getSourceCharIndex() const {
+		if (_sourceCharIndex == INVALID_CHAR_INDEX) return -1;
+		return (int)_sourceCharIndex;
 	}
 
 	////////////////////////////////////////////////////////
@@ -178,9 +194,15 @@ namespace ffscript {
 	}
 
 	ExecutableUnit* CXOperand::clone() {
-		if(_variable)
-			return new CXOperand(getScope(), _variable->clone());
-		return new CXOperand(getScope(), nullptr);
+		ExecutableUnit* newInstance = nullptr;
+		if (_variable) {
+			newInstance = new CXOperand(getScope(), _variable->clone());
+		}
+		else {
+			newInstance = new CXOperand(getScope(), nullptr);
+		}
+		newInstance->setSourceCharIndex(getSourceCharIndex());
+		return newInstance;
 	}
 	////////////////////////////////////////////////////////
 	Function::Function(const std::string& name, unsigned int functionType, int iPriority, const std::string& returnType) :
