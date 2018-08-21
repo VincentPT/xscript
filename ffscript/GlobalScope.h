@@ -16,7 +16,7 @@ namespace ffscript {
 		std::list<int> _registeredFuntions;
 		CodeUpdater* _updateLaterMan;
 		bool _refContext;
-		const WCHAR* _lastCompileChar;
+		const WCHAR* _errorCompiledChar;
 		const WCHAR* _beginCompileChar;
 	public:
 		GlobalScope(StaticContext* staticContext, ScriptCompiler* scriptCompiler);
@@ -25,9 +25,9 @@ namespace ffscript {
 		void* getGlobalAddress(int offset);
 		void runGlobalCode();
 		virtual int correctAndOptimize(Program* program);
-		const WCHAR* getLastCompileChar() const;
+		const WCHAR* getErrorCompiledChar() const;
 		const WCHAR* getBeginCompileChar() const;
-		void setLastCompilerChar(const WCHAR* c);
+		void setErrorCompilerChar(const WCHAR* c, bool force = false);
 		void setBeginCompileChar(const WCHAR* c);
 		void convertSourceCharIndexToGlobal(const WCHAR* source, std::list<ExpUnitRef>& units);
 	public:

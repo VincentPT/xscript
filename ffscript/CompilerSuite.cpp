@@ -65,7 +65,7 @@ namespace ffscript{
 
 		list<ExpUnitRef> units;
 		EExpressionResult eResult = parser.stringToExpList(expression, units);
-		_globalScopeRef->setLastCompilerChar(parser.getLastCompileChar());
+		_globalScopeRef->setErrorCompilerChar(parser.getLastCompileChar());
 
 		if (eResult != E_SUCCESS) {
 			return nullptr;
@@ -112,7 +112,7 @@ namespace ffscript{
 	void CompilerSuite::getLastCompliedPosition(int& line, int& column) {
 		if (_preprocessor && _globalScopeRef) {
 			auto beginCompileChar = _globalScopeRef->getBeginCompileChar();
-			auto lastCompileChar = _globalScopeRef->getLastCompileChar();
+			auto lastCompileChar = _globalScopeRef->getErrorCompiledChar();
 
 			_preprocessor->getOriginalPosition((int)(lastCompileChar - beginCompileChar), line, column);
 		}

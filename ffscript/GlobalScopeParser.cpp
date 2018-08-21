@@ -34,14 +34,14 @@ namespace ffscript {
 		token = convertToAscii(d, c - d);
 		//name cannot be empty
 		if (token.size() == 0) {
-			setLastCompilerChar(d);
+			setErrorCompilerChar(d);
 			return nullptr;
 		}
 		//move to next token
 		d = trimLeft(c, end);
 		//expect an struct begin with char '{' after the name
 		if (d >= end || *d != '{') {
-			setLastCompilerChar(d);
+			setErrorCompilerChar(d);
 			return nullptr;
 		}
 
@@ -63,7 +63,7 @@ namespace ffscript {
 			//name cannot be empty
 			if (token.size() == 0) {
 				scriptCompiler->setErrorText("Missing member name");
-				setLastCompilerChar(c);
+				setErrorCompilerChar(c);
 				c = nullptr;
 				break;
 			}
@@ -74,7 +74,7 @@ namespace ffscript {
 			else
 			{
 				scriptCompiler->setErrorText("Missing ';'");
-				setLastCompilerChar(c);
+				setErrorCompilerChar(c);
 				c = nullptr;
 				break;
 			}
@@ -84,14 +84,14 @@ namespace ffscript {
 		if (c != nullptr) {
 			if (*c != '}') {
 				scriptCompiler->setErrorText("Missing '}'");
-				setLastCompilerChar(c);
+				setErrorCompilerChar(c);
 				c = nullptr;
 			}
 			else {
 				int type = scriptCompiler->registStruct(aStruct);
 				if (IS_UNKNOWN_TYPE(type)) {
 					scriptCompiler->setErrorText("Register struct " + aStruct->getName() + " failed");
-					setLastCompilerChar(c);
+					setErrorCompilerChar(c);
 					c = nullptr;
 				}
 			}
@@ -100,7 +100,7 @@ namespace ffscript {
 		if (c == nullptr) {
 			delete aStruct;
 		}
-		setLastCompilerChar(c);
+		setErrorCompilerChar(c);
 		return c;
 	}
 
@@ -112,7 +112,7 @@ namespace ffscript {
 		static const std::string k_struct("struct");
 
 		d = trimLeft(text, end);
-		setLastCompilerChar(d);
+		setErrorCompilerChar(d);
 		if (d == end) {
 			return d;
 		}
@@ -122,7 +122,7 @@ namespace ffscript {
 		token = convertToAscii(d, c - d);
 		
 		if (k_struct == token) {
-			setLastCompilerChar(c);
+			setErrorCompilerChar(c);
 			return this->parseStruct(c, end);
 		}
 		//else if (k_struct == token1) {
@@ -155,7 +155,7 @@ namespace ffscript {
 		_beginCompileChar = text;
 
 		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)text, [this, &c](WCHAR*) {
-			setLastCompilerChar(c);
+			setErrorCompilerChar(c);
 		});
 
 		ScriptCompiler* scriptCompiler = getCompiler();
@@ -234,7 +234,7 @@ namespace ffscript {
 					}
 					if (ScriptCompiler::isCommandBreakSign(*c) == false) {
 						scriptCompiler->setErrorText("missing ';'");
-						setLastCompilerChar(c);
+						setErrorCompilerChar(c);
 						return nullptr;
 					}
 					c++;
@@ -261,7 +261,7 @@ namespace ffscript {
 					}
 					if (ScriptCompiler::isCommandBreakSign(*c) == false) {
 						scriptCompiler->setErrorText("missing ';'");
-						setLastCompilerChar(c);
+						setErrorCompilerChar(c);
 						return nullptr;
 					}
 				}
@@ -285,7 +285,7 @@ namespace ffscript {
 					}
 					if (ScriptCompiler::isCommandBreakSign(*c) == false) {
 						scriptCompiler->setErrorText("missing ';'");
-						setLastCompilerChar(c);
+						setErrorCompilerChar(c);
 						return nullptr;
 					}
 				}
@@ -296,7 +296,7 @@ namespace ffscript {
 					}
 					if (ScriptCompiler::isCommandBreakSign(*c) == false) {
 						scriptCompiler->setErrorText("missing ';'");
-						setLastCompilerChar(c);
+						setErrorCompilerChar(c);
 						return nullptr;
 					}
 				}
@@ -380,18 +380,21 @@ namespace ffscript {
 		return iRes;
 	}
 
-	const WCHAR* GlobalScope::getLastCompileChar() const {
-		return _lastCompileChar;
+	const WCHAR* GlobalScope::getErrorCompiledChar() const {
+		return _errorCompiledChar;
 	}
 
 	const WCHAR* GlobalScope::getBeginCompileChar() const {
 		return _beginCompileChar;
 	}
 
-	void GlobalScope::setLastCompilerChar(const WCHAR* c) {
-		if (c != nullptr) {
-			if (c > _lastCompileChar) {
-				_lastCompileChar = c;
+	void GlobalScope::setErrorCompilerChar(const WCHAR* c, bool force) {
+		if (force) {
+			_errorCompiledChar = c;
+		}
+		else if (c != nullptr) {
+			if (c > _errorCompiledChar) {
+				_errorCompiledChar = c;
 			}
 		}
 	}
@@ -407,7 +410,7 @@ namespace ffscript {
 			if (ISFUNCTION(unit)) {
 				ExpressionParser::recursiveOffsetSourceCharIndex((Function*)unit, offset);
 			}
-			else {
+			else if (unit->getSourceCharIndex() >= 0) {
 				unit->setSourceCharIndex(unit->getSourceCharIndex() + offset);
 			}
 		}

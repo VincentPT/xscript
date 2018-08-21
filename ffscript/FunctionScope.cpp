@@ -25,7 +25,7 @@ namespace ffscript {
 		const wchar_t* c;
 
 		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)c, [this, &c](WCHAR*) {
-			((GlobalScope*)getRoot())->setLastCompilerChar(c);
+			((GlobalScope*)getRoot())->setErrorCompilerChar(c);
 		});
 
 		c = trimLeft(text, end);
@@ -53,7 +53,7 @@ namespace ffscript {
 		ScriptType type;
 
 		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)c, [this, &c](WCHAR*) {
-			((GlobalScope*)getRoot())->setLastCompilerChar(c);
+			((GlobalScope*)getRoot())->setErrorCompilerChar(c);
 		});
 
 		Variable* pVariable;
@@ -65,7 +65,7 @@ namespace ffscript {
 			if (c == nullptr) {
 				// parseType current is not support to set last compilied char
 				// so now, it is must work around here
-				((GlobalScope*)getRoot())->setLastCompilerChar(e);
+				((GlobalScope*)getRoot())->setErrorCompilerChar(e);
 				break;
 			}
 			d = trimLeft(c, end);
@@ -101,7 +101,7 @@ namespace ffscript {
 			}
 			if (*c != ',') {
 				// store last complied char before c is set to null
-				((GlobalScope*)getRoot())->setLastCompilerChar(c);
+				((GlobalScope*)getRoot())->setErrorCompilerChar(c);
 
 				c = lastCharInToken(c, end);
 				token1.resize(c - e);

@@ -53,7 +53,7 @@ namespace ffscript {
 
 	ExpressionParser::~ExpressionParser(){}
 
-	EExpressionResult makeExpression(OutputStack& output, OperatorStack& operators) {
+	EExpressionResult ExpressionParser::makeExpression(OutputStack& output, OperatorStack& operators) {
 		DynamicParamFunctionRef pExpFunction;
 		ExecutableUnitRef expUnitTemp;
 		EExpressionResult eResult = E_SUCCESS;
@@ -65,6 +65,7 @@ namespace ffscript {
 			if ( !ISFUNCTION(pExpFunction) ) {
 				DBG_ERROR(_tprintf(__T("\n[#]Unexpected token %s"), pExpFunction->GetName()));
 				eResult = E_TOKEN_UNEXPECTED;
+				_lastErrorUnit = pExpFunction;
 				break;
 			}
 
@@ -77,6 +78,7 @@ namespace ffscript {
 				if (iResult < 0) {
 					DBG_ERROR(_tprintf(__T("\n[#]Unexpected token %s"), expUnitTemp->GetName()));					
 					eResult = E_TOKEN_UNEXPECTED;
+					_lastErrorUnit = expUnitTemp;
 					break;
 				}
 
@@ -330,14 +332,16 @@ namespace ffscript {
 
 	void ExpressionParser::recursiveOffsetSourceCharIndex(Function* expFunc, int offset) {
 		int n = expFunc->getChildCount();
-		expFunc->setSourceCharIndex(expFunc->getSourceCharIndex() + offset);
+		if (expFunc->getSourceCharIndex() >= 0) {
+			expFunc->setSourceCharIndex(expFunc->getSourceCharIndex() + offset);
+		}
 
 		for (int i = 0; i < n; i++) {
 			auto& child = expFunc->getChild(0);
 			if (ISFUNCTION(child)) {
 				recursiveOffsetSourceCharIndex((Function*)child.get(), offset);
 			}
-			else {
+			else if(child->getSourceCharIndex() >= 0) {
 				child->setSourceCharIndex(child->getSourceCharIndex() + offset);
 			}
 		}
@@ -869,12 +873,14 @@ namespace ffscript {
 			//a operand can't be next to another operand
 			if (ISOPERAND(lastUnit) && ISOPERAND((*it))) {
 				scriptCompiler->setErrorText("operator missing between '" + lastUnit->toString() + "' and '" + (*it)->toString() + "'");
+				_lastErrorUnit = *it;
 				return false;
 			}
 
 			//a operand can't be next to a user function
 			//user function is a function use brackets to pass the param
 			if (ISOPERAND(lastUnit) && ISUSERFUNC((*it))) {
+				_lastErrorUnit = *it;
 				scriptCompiler->setErrorText("operator missing between '" + lastUnit->toString() + "' and '" + (*it)->toString() + "'");
 				return false;
 			}
@@ -896,6 +902,10 @@ namespace ffscript {
 		if (c != nullptr) {
 			_lastCompileChar = c;
 		}
+	}
+
+	ExpUnitRef ExpressionParser::getLastErrorUnit() const {
+		return _lastErrorUnit;
 	}
 
 	EExpressionResult ExpressionParser::pickParamUnitsForFunction(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, const DynamicParamFunctionRef& functionRef) {
@@ -929,7 +939,11 @@ namespace ffscript {
 			eResult = makeExpressionList(inputList, expList);
 
 			if (eResult == E_SUCCESS && expList.size() != 1) {
+				_lastErrorUnit = functionRef;
 				eResult = E_INCOMPLETED_EXPRESSION;
+			}
+			else if (_lastErrorUnit.get() == nullptr) {
+				_lastErrorUnit = functionRef;
 			}
 		}
 
@@ -975,7 +989,11 @@ namespace ffscript {
 			eResult = makeExpressionList(inputList, expList);
 
 			if (eResult == E_SUCCESS && expList.size() != 1) {
+				_lastErrorUnit = elseClauseUnitRef;
 				eResult = E_INCOMPLETED_EXPRESSION;
+			}
+			else if (_lastErrorUnit.get() == nullptr) {
+				_lastErrorUnit = elseClauseUnitRef;
 			}
 		}
 
@@ -999,6 +1017,7 @@ namespace ffscript {
 		if (it == end || (*it)->getType() != EXP_UNIT_ID_FUNC_CHOICE) {
 			getCompiler()->setErrorText("Incompleted condition expression");
 			eResult = E_INCOMPLETED_EXPRESSION;
+			_lastErrorUnit = dummyFuncion;
 			return eResult;
 		}
 
@@ -1044,6 +1063,7 @@ namespace ffscript {
 					DBG_ERROR(_tprintf(__T("\n[#]Unexpected token %s"), pFuncTemp1->GetName()));
 					scriptCompiler->setErrorText("Unexpected token '" + pFuncTemp1->toString() + "' inside '" + pExpFunction->getName() + "'");
 					eResult = E_TOKEN_UNEXPECTED;
+					_lastErrorUnit = pFuncTemp1;
 					break;
 				}
 
@@ -1088,9 +1108,9 @@ namespace ffscript {
 
 	EExpressionResult ExpressionParser::putAnExpUnit(list<ExpUnitRef>::const_iterator& iter, list<ExpUnitRef>::const_iterator end, ExpressionInputList& inputList) {
 		EExpressionResult eResult = E_SUCCESS;
-		if (iter == end) {
+		/*if (iter == end) {
 			return E_TYPE_END;
-		}
+		}*/
 
 		ExpUnitRef expUnitTemp;
 		DynamicParamFunctionRef pExpFunction;
@@ -1143,6 +1163,7 @@ namespace ffscript {
 
 			eResult = makeExpression(*pOutputStack, *pOperatorStack);
 			if (/*pOutputStack->size() != 1 || */pOperatorStack->size() > 0) {
+				_lastErrorUnit = expUnit;
 				scriptCompiler->setErrorText("Incompleted expression");
 				eResult = E_INCOMPLETED_EXPRESSION;
 			}
@@ -1186,6 +1207,7 @@ namespace ffscript {
 				delete pOperatorStack;
 			}
 			if (eResult != E_SUCCESS) {
+				_lastErrorUnit = expUnit;
 				return eResult;
 			}
 			//at least input list must contain open bracket
@@ -1194,11 +1216,13 @@ namespace ffscript {
 				DBG_ERROR(_tprintf(__T("\n[#]Unexpected token %s"), expUnit->GetName()));
 				scriptCompiler->setErrorText("Unexpected token '" + expUnit->toString() + "'");
 				eResult = E_INCOMPLETED_EXPRESSION;
+				_lastErrorUnit = expUnit;
 				return eResult;
 			}
 
 			if (pOperatorStack->size() == 0 || pOperatorStack->top()->getType() != EXP_UNIT_ID_OPEN_BRACKET) {
 				scriptCompiler->setErrorText("Unexpected token ')'");
+				_lastErrorUnit = expUnit;
 				return E_INCOMPLETED_EXPRESSION;
 			}
 			
@@ -1283,6 +1307,7 @@ namespace ffscript {
 			eResult = makeExpression(*pOutputStack, *pOperatorStack);
 			if (pOutputStack->size() != 1 || pOperatorStack->size() > 0) {
 				scriptCompiler->setErrorText("Incompleted expression");
+				_lastErrorUnit = expUnit;
 				eResult = E_INCOMPLETED_EXPRESSION;
 			}
 			if (eResult != E_SUCCESS) {
@@ -1317,6 +1342,7 @@ namespace ffscript {
 			}
 
 			if (eResult != E_SUCCESS) {
+				_lastErrorUnit = expUnit;
 				return eResult;
 			}
 			//at least input list must contain open square bracket and subscription's owner
@@ -1325,11 +1351,13 @@ namespace ffscript {
 				DBG_ERROR(_tprintf(__T("\n[#]Unexpected token %s"), expUnit->GetName()));
 				scriptCompiler->setErrorText("Unexpected token '" + expUnit->toString() + "'");
 				eResult = E_INCOMPLETED_EXPRESSION;
+				_lastErrorUnit = expUnit;
 				return eResult;
 			}
 
 			if (pOperatorStack->size() == 0 || pOperatorStack->top()->getType() != EXP_UNIT_ID_OPEN_SQUARE_BRACKET) {
 				scriptCompiler->setErrorText("Unexpected token ')'");
+				_lastErrorUnit = expUnit;
 				return E_INCOMPLETED_EXPRESSION;
 			}
 
@@ -1356,6 +1384,7 @@ namespace ffscript {
 			DBG_ERROR(_tprintf(__T("\n[#]unknown type %X of token '%s'"), expUnit->GetType(), expUnit->GetName()));
 			scriptCompiler->setErrorText("internal error: unknow type of token '" + expUnit->toString() + "'");
 			eResult = E_TOKEN_TYPE_UNEXPECTED;
+			_lastErrorUnit = expUnit;
 		}
 
 		return eResult;
@@ -1380,6 +1409,9 @@ namespace ffscript {
 				if (pOutputStack->size() != 1 || pOperatorStack->size() > 0) {
 					eResult = E_INCOMPLETED_EXPRESSION;
 					scriptCompiler->setErrorText("Incompleted expression");
+					if (pOperatorStack->size()) {
+						_lastErrorUnit = pOperatorStack->top();
+					}
 				}
 				if (eResult != E_SUCCESS) {
 					expList.clear();
@@ -1424,6 +1456,11 @@ namespace ffscript {
 		}
 
 		eResult = makeExpressionList(inputList, expList);
+		if (eResult != E_SUCCESS && _lastErrorUnit.get() == nullptr) {
+			if (expUnitList.size()) {
+				_lastErrorUnit = expUnitList.back();
+			}
+		}
 
 		return eResult == E_SUCCESS && expList.size() > 0;
 	}

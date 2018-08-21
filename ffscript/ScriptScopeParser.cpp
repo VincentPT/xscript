@@ -16,7 +16,7 @@ namespace ffscript {
 
 		c = scriptCompiler->readType(text, end, type);
 		if (type.isUnkownType()) {
-			((GlobalScope*)getRoot())->setLastCompilerChar(text);
+			((GlobalScope*)getRoot())->setErrorCompilerChar(text);
 			scriptCompiler->setErrorText("unknow data type '" + type.sType() + "'");
 			return nullptr;
 		}
@@ -175,23 +175,23 @@ namespace ffscript {
 			auto lastUnitIter = expList.end();
 			lastUnitIter--;
 			CandidateCollectionRef candidates = std::make_shared<CandidateCollection>();
-			for (auto it = expList.begin(); it != expList.end(); ++it) {
+			eResult = E_SUCCESS;
+			for (auto it = expList.begin(); eResult == E_SUCCESS && it != expList.end(); ++it) {
 				eResult = parser.link(it->get(), candidates);
-				if (eResult != E_SUCCESS) {
-					break;
-				}
-				if (expectedReturnType == nullptr || it != lastUnitIter) {
-					putCommandUnit(candidates->front());
-				}
-				else {
-					auto candidate = chooseCandidate(candidates, *expectedReturnType);
-					if (!candidate) {
-						scriptCompiler->setErrorText("Cannot cast the return type to '" + expectedReturnType->sType() + "'");
-						return eResult;
+				if (eResult == E_SUCCESS) {
+					if (expectedReturnType == nullptr || it != lastUnitIter) {
+						putCommandUnit(candidates->front());
 					}
-					putCommandUnit(candidate);
+					else {
+						auto candidate = chooseCandidate(candidates, *expectedReturnType);
+						if (!candidate) {
+							scriptCompiler->setErrorText("Cannot cast the return type to '" + expectedReturnType->sType() + "'");
+							return eResult;
+						}
+						putCommandUnit(candidate);
+					}
+					candidates->clear();
 				}
-				candidates->clear();
 			}
 		}
 
@@ -207,7 +207,7 @@ namespace ffscript {
 		ExpressionParser parser(getCompiler());
 
 		c = parser.readExpression(text, end, eResult, unitList);
-		((GlobalScope*)getRoot())->setLastCompilerChar(parser.getLastCompileChar());
+		((GlobalScope*)getRoot())->setErrorCompilerChar(parser.getLastCompileChar());
 		((GlobalScope*)getRoot())->convertSourceCharIndexToGlobal(text, unitList);
 
 		if (eResult != E_SUCCESS || c == nullptr) {
@@ -250,7 +250,7 @@ namespace ffscript {
 		EExpressionResult eResult = E_FAIL;
 		auto c = parser.readExpression(text, end, eResult, unitList);
 		auto globalScope = (GlobalScope*)getRoot();
-		globalScope->setLastCompilerChar(parser.getLastCompileChar());
+		globalScope->setErrorCompilerChar(parser.getLastCompileChar());
 		globalScope->convertSourceCharIndexToGlobal(text, unitList);
 
 		if (eResult != E_SUCCESS || c == nullptr) {
@@ -264,20 +264,7 @@ namespace ffscript {
 			scriptCompiler->setErrorText("missing ';'");
 			return nullptr;
 		}
-		/*if (unitList.size() >= 2) {
-			auto it = unitList.begin();
-			auto& firstUnit = *it++;
-			auto& secondtUnit = *it++;
-			if (firstUnit->getType() == EXP_UNIT_ID_XOPERAND && secondtUnit->getType() == EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
-				auto xOperand = unitList.front();
-				MaskType mask = (xOperand->getMask() | UMASK_DECLAREINEXPRESSION);
-				firstUnit->setMask(mask);
 
-				auto operatorEntry = scriptCompiler->findPredefinedOperator(DEFAULT_COPY_OPERATOR);
-				auto defaultAssigmentUnit = new DynamicParamFunction(operatorEntry->name, operatorEntry->operatorType, operatorEntry->priority, operatorEntry->maxParam);
-				secondtUnit.reset(defaultAssigmentUnit);
-			}
-		}*/
 		std::list<ExpressionRef> expList;
 		bool res = parser.compile(unitList, expList);
 		if (res == false) {

@@ -63,7 +63,7 @@ namespace ffscript {
 		const wchar_t* c;
 		const wchar_t* d;
 		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)text, [this, &c](WCHAR*) {
-			((GlobalScope*)getRoot())->setLastCompilerChar(c);
+			((GlobalScope*)getRoot())->setErrorCompilerChar(c);
 		});
 
 		ScriptCompiler* scriptCompiler = this->getCompiler();
@@ -113,7 +113,7 @@ namespace ffscript {
 		std::string token2;
 
 		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)text, [this, &c](WCHAR*) {
-			((GlobalScope*)getRoot())->setLastCompilerChar(c);
+			((GlobalScope*)getRoot())->setErrorCompilerChar(c);
 		});
 
 		c = trimLeft(text, end);
@@ -259,7 +259,7 @@ namespace ffscript {
 		c = trimLeft(text, end);
 
 		unique_ptr<WCHAR, std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)text, [this, &c](WCHAR*) {
-			((GlobalScope*)getRoot())->setLastCompilerChar(c);
+			((GlobalScope*)getRoot())->setErrorCompilerChar(c);
 		});
 
 		if (!ScriptCompiler::isOpenScopeSign(*c)) {

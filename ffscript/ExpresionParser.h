@@ -50,6 +50,7 @@ namespace ffscript {
 	{
 		ScriptCompiler* _scriptCompiler;
 		const WCHAR* _lastCompileChar;
+		ExpUnitRef _lastErrorUnit;
 	public:
 		ExpressionParser(ScriptCompiler* scriptCompiler);
 		virtual ~ExpressionParser();
@@ -63,6 +64,7 @@ namespace ffscript {
 		EExpressionResult stringToExpList(const WCHAR* sExpressionString, const WCHAR* end, std::list<ExpUnitRef>& expList);
 		const WCHAR* getLastCompileChar() const;
 		void setLastCompilerChar(const WCHAR* c);
+		ExpUnitRef getLastErrorUnit() const;
 		static void numberedForUnit(std::list<ExpUnitRef>& expList);
 		bool compile(list<ExpUnitRef>& expUnitList, list<ExpressionRef> &expList, EExpressionResult* peResult = nullptr);
 		EExpressionResult link(Expression* pExp);
@@ -71,6 +73,7 @@ namespace ffscript {
 		static CandidateCollectionRef completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult );
 		static void recursiveOffsetSourceCharIndex(Function* expFunc, int offset);
 	protected:
+		EExpressionResult makeExpression(OutputStack& output, OperatorStack& operators);
 		EExpressionResult compileConditionalExpression(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, ExecutableUnitRef& ifClauseUnit, ExecutableUnitRef& elseClauseUnit);
 		EExpressionResult putAnExpUnit(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, ExpressionInputList& inputList);
 		EExpressionResult makeExpressionList(ExpressionInputList& inputList, list<ExpressionRef>& expList);
