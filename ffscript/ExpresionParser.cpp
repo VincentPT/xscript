@@ -1429,6 +1429,8 @@ namespace ffscript {
 	}
 
 	bool ExpressionParser::compile(list<ExpUnitRef>& expUnitList, list<ExpressionRef>& expList, EExpressionResult* peResult) {
+		_lastErrorUnit.reset();
+
 		numberedForUnit(expUnitList);
 		if (precheck(expUnitList) == false) return false;
 		ExpressionInputList inputList;
@@ -2021,6 +2023,7 @@ namespace ffscript {
 					eResult = E_FUNCTION_NOT_FOUND;
 					scriptCompiler->setErrorText("token '" + unit->toString() + "' is not found");
 					LOG_COMPILE_MESSAGE(scriptCompiler->getLogger(), MESSAGE_ERROR, scriptCompiler->formatMessage("token '%s' is not found", unit->toString().c_str()));
+					_lastErrorUnit = unit;
 				}
 			}
 			else {
@@ -2052,6 +2055,7 @@ namespace ffscript {
 				if (scriptType.isUnkownType()) {
 					eResult = E_TYPE_UNKNOWN;
 					scriptCompiler->setErrorText("data type of '" + unit->toString() + "' is unknown");
+					_lastErrorUnit = unit;
 					return nullptr;
 				}
 			}
@@ -2062,6 +2066,7 @@ namespace ffscript {
 			//other kinds is known as error
 			eResult = E_TOKEN_UNEXPECTED;
 			scriptCompiler->setErrorText("Unexpected operator '" + unit->toString() + "'");
+			_lastErrorUnit = unit;
 		}
 
 		return unitCandidate;
@@ -2106,15 +2111,18 @@ namespace ffscript {
 				if (newFunction == nullptr) {
 					eResult = E_TOKEN_UNEXPECTED;
 					scriptCompiler->setErrorText("Unexpected token '" + functionName + "'");
+					_lastErrorUnit = pExeUnit1;
 					return nullptr;
 				}
 
 				//function operator is replaced by the real function
+				newFunction->setSourceCharIndex(function->getSourceCharIndex());
 				function.reset((Function*)newFunction);
 				for (auto it = params.begin(); it != params.end(); it++) {
 					if (function->pushParam(*it) < 0) {
 						eResult = E_FUNCTION_NOT_FOUND;
 						scriptCompiler->setErrorText("function '" + function->getName() + "' is not compatible with its parameters");
+						_lastErrorUnit = *it;
 						return nullptr;
 					}
 				}
@@ -2169,7 +2177,8 @@ namespace ffscript {
 								auto functionUnit = scriptCompiler->createFunctionFromId(functionOperator);
 								if (functionUnit == nullptr) {
 									eResult = E_FUNCTION_NOT_FOUND;
-									scriptCompiler->setErrorText("Library error function operator is missing");
+									scriptCompiler->setErrorText("Library error function operator for type " + checkType.sType() + " is missing");
+									_lastErrorUnit = *it;
 									return nullptr;
 								}
 								// keep origin source char in new expression unit
@@ -2181,7 +2190,8 @@ namespace ffscript {
 					}
 					if (functionCandidates->size() <= 0) {
 						eResult = E_TOKEN_UNEXPECTED;
-						scriptCompiler->setErrorText("Unexpected operator '()'");
+						scriptCompiler->setErrorText("Unexpected operator for token " + pExeUnit1->toString() + " '()'");
+						_lastErrorUnit = pExeUnit1;
 						return nullptr;
 					}
 					candidatesForParams[0] = param1CandidatesTmp;
@@ -2223,12 +2233,14 @@ namespace ffscript {
 			if (n != 1) {
 				eResult = E_TOKEN_INVALID;
 				scriptCompiler->setErrorText("'&' operator can only take one parameter");
+				_lastErrorUnit = function;
 				return nullptr;
 			}
 			auto& refUnit = function->getChild(0);
 			if (refUnit->getType() != EXP_UNIT_ID_XOPERAND) {
 				eResult = E_TOKEN_INVALID;
 				scriptCompiler->setErrorText("'&' operator can only use for variable");
+				_lastErrorUnit = function;
 				return nullptr;
 			}
 
@@ -2264,6 +2276,7 @@ namespace ffscript {
 			if (n != 2) {
 				eResult = E_TOKEN_INVALID;
 				scriptCompiler->setErrorText("operator '" + function->getName() + "' must has two parameters");
+				_lastErrorUnit = function;
 				return nullptr;
 			}
 
@@ -2343,7 +2356,8 @@ namespace ffscript {
 					}
 				}
 			}
-
+			scriptCompiler->setErrorText("no overloading of operator '" + function->getName() + "' found with given parameters");
+			_lastErrorUnit = function;
 			return nullptr;
 
 		}
@@ -2400,6 +2414,7 @@ namespace ffscript {
 							eResult = E_TYPE_UNKNOWN;
 							scriptCompiler->setErrorText("data type of '" + pExeUnit1->toString() + "' is not set");
 							//check later - bellow line was added
+							_lastErrorUnit = pExeUnit1;
 							return nullptr;
 						}
 					}
@@ -2445,6 +2460,7 @@ namespace ffscript {
 				if (choosedFunctionId < 0) {
 					eResult = E_FUNCTION_NOT_FOUND;
 					scriptCompiler->setErrorText("internal error: definition of operator ? is missing");
+					_lastErrorUnit = function;
 					return nullptr;
 				}
 
@@ -2499,9 +2515,11 @@ namespace ffscript {
 				}
 				if (functionCandidates->size() == 0) {
 					scriptCompiler->setErrorText(error);
+					_lastErrorUnit = function;
 				}
 				eResult = checkCandidates(scriptCompiler, function, functionCandidates);
 				if (eResult != E_SUCCESS) {
+					_lastErrorUnit = function;
 					return nullptr;
 				}
 				return functionCandidates;
@@ -2538,10 +2556,12 @@ namespace ffscript {
 				if (functionCandidates->size() == 0) {
 					eResult = E_FUNCTION_NOT_FOUND;
 					scriptCompiler->setErrorText("internal error: definition of operator 'ref' is missing");
+					_lastErrorUnit = function;
 					return nullptr;
 				}
 				eResult = checkCandidates(scriptCompiler, function, functionCandidates);
 				if (eResult != E_SUCCESS) {
+					_lastErrorUnit = function;
 					return nullptr;
 				}
 				return functionCandidates;
@@ -2555,6 +2575,7 @@ namespace ffscript {
 			if (choosedFunctionId < 0) {
 				eResult = E_FUNCTION_NOT_FOUND;
 				scriptCompiler->setErrorText("internal error: definition of operator '" DEFAULT_COPY_OPERATOR "' is missing");
+				_lastErrorUnit = function;
 				return nullptr;
 			}
 
@@ -2710,6 +2731,7 @@ namespace ffscript {
 				// ...then its must be and error case
 				eResult = E_FUNCTION_NOT_FOUND;
 				scriptCompiler->setErrorText("there is no copy constructor or a combination of default copy constructor and assigment operator found");
+				_lastErrorUnit = function;
 				return nullptr;
 			}
 
@@ -2742,6 +2764,7 @@ namespace ffscript {
 					if (returnType.isUnkownType()) {
 						eResult = E_TYPE_UNKNOWN;
 						scriptCompiler->setErrorText("function type is not specified for unit'" + functionPointerUnit->toString() + "'");
+						_lastErrorUnit = functionPointerUnit;
 						return nullptr;
 					}
 
@@ -2769,6 +2792,7 @@ namespace ffscript {
 				if (paramPathCandidate.size() == 0) {
 					scriptCompiler->setErrorText("Cannot convert from parameter types to argument types");
 					eResult = E_TYPE_CONVERSION_ERROR;
+					_lastErrorUnit = function;
 					return nullptr;
 				}
 				paramPathCandidate.sort([](pair<ExecutableUnit*, int>& c1, pair<ExecutableUnit*, int>& c2) { return c1.second < c2.second; });
@@ -2801,6 +2825,7 @@ namespace ffscript {
 							if (!struct1->getInfo(memberName, memberInfo)) {
 								eResult = E_TOKEN_UNEXPECTED;
 								scriptCompiler->setErrorText(memberName + " is not member of " + struct1->getName());
+								_lastErrorUnit = pExeUnit2;
 								return nullptr;
 							}
 
@@ -2818,7 +2843,8 @@ namespace ffscript {
 						}
 						else {
 							eResult = E_TOKEN_UNEXPECTED;
-							scriptCompiler->setErrorText("Wrong gramar of using operator '.'");
+							scriptCompiler->setErrorText("Wrong syntax of using operator '.'");
+							_lastErrorUnit = function;
 							return nullptr;
 						}
 					}
@@ -2835,6 +2861,7 @@ namespace ffscript {
 									if (!checkAssigmentOperatorForStruct(scriptCompiler, struct1, dynamic_pointer_cast<DynamicParamFunction>(pExeUnit2))) {
 										eResult = E_TYPE_CONVERSION_ERROR;
 										scriptCompiler->setErrorText("different type and different number of element for struct assigment does not allow");
+										_lastErrorUnit = pExeUnit2;
 										return nullptr;
 									}
 								}
@@ -2848,6 +2875,7 @@ namespace ffscript {
 								if (!hasNoError) {
 									eResult = E_TYPE_CONVERSION_ERROR;
 									scriptCompiler->setErrorText("different type and different number of element for struct assigment does not allow");
+									_lastErrorUnit = pExeUnit2;
 									return nullptr;
 								}
 								if (functionRef) {
@@ -2926,6 +2954,7 @@ namespace ffscript {
 						LOG_COMPILE_MESSAGE(scriptCompiler->getLogger(), MESSAGE_INFO, scriptCompiler->formatMessage("function '%s' is not found", functionSignature.c_str()));
 					}
 					scriptCompiler->setErrorText("no overloadding found for function '" + function->getName() + "'");
+					_lastErrorUnit = function;
 					return nullptr;
 				}
 #pragma endregion
@@ -2941,6 +2970,7 @@ namespace ffscript {
 				if (functionInfo == nullptr) {
 					eResult = E_FUNCTION_NOT_FOUND;
 					scriptCompiler->setErrorText("library error: information of '" + function->getName() + "' is missing");
+					_lastErrorUnit = function;
 					return nullptr;
 				}
 				if (scriptCompiler->findDynamicFunctionOnly(*functionInfo->itemName) == functionId) {
@@ -2976,6 +3006,7 @@ namespace ffscript {
 		}
 		eResult = checkCandidates(scriptCompiler, function, functionCandidates);
 		if (eResult != E_SUCCESS) {
+			_lastErrorUnit = function;
 			return nullptr;
 		}
 		scriptCompiler->setErrorText("");
@@ -3011,6 +3042,8 @@ namespace ffscript {
 	EExpressionResult ExpressionParser::link(Expression* pExp, CandidateCollectionRef& candidates) {
 		ExecutableUnitRef& root = pExp->getRoot();
 		EExpressionResult eResult = E_SUCCESS;
+		_lastErrorUnit.reset();
+
 		candidates = linkForUnit(getCompiler(), root, eResult);
 		return eResult;
 	}
