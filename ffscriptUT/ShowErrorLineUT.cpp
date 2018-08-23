@@ -36,9 +36,9 @@ namespace ffscriptUT
 			compiler.getLastCompliedPosition(line, column);
 
 			string errorMsg("error at line = ");
-			errorMsg.append(std::to_string(line));
+			errorMsg.append(std::to_string(line + 1));
 			errorMsg.append(", column = ");
-			errorMsg.append(std::to_string(column));
+			errorMsg.append(std::to_string(column + 1));
 			errorMsg.append("\n");
 			errorMsg.append(scriptCompiler->getLastError());
 
