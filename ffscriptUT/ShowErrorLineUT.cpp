@@ -33,9 +33,16 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(script.c_str(), script.c_str() + script.size());
 
 			Assert::IsNull(program, L"compie program should be failed");
-			Logger::WriteMessage(scriptCompiler->getLastError().c_str());
-
 			compiler.getLastCompliedPosition(line, column);
+
+			string errorMsg("error at line = ");
+			errorMsg.append(std::to_string(line));
+			errorMsg.append(", column = ");
+			errorMsg.append(std::to_string(column));
+			errorMsg.append("\n");
+			errorMsg.append(scriptCompiler->getLastError());
+
+			Logger::WriteMessage(errorMsg.c_str());
 		}
 
 		TEST_METHOD(ErrorInGlobalScope1)

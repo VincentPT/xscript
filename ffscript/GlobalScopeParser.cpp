@@ -290,10 +290,10 @@ namespace ffscript {
 					// ...if not success, try to parse the text as an expression
 					c = parseExpression(e, end);
 					if (c == nullptr) {
-						std::string error("try compile as function failed: ");
+						std::string error("tried compiling as function failed: ");
 						error.append(errorCompileOfFunction);
 						error.append(1, '\n');
-						error.append("try compile as expression failed: ");
+						error.append("tried compiling as expression failed: ");
 						error.append(scriptCompiler->getLastError());
 						scriptCompiler->setErrorText(error);
 						break;
