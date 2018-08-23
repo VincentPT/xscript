@@ -28,6 +28,7 @@ namespace ffscript {
 		const WCHAR* getErrorCompiledChar() const;
 		const WCHAR* getBeginCompileChar() const;
 		void setErrorCompilerChar(const WCHAR* c, bool force = false);
+		void setErrorCompilerCharIndex(int idx);
 		void setBeginCompileChar(const WCHAR* c);
 		void convertSourceCharIndexToGlobal(const WCHAR* source, std::list<ExpUnitRef>& units);
 	public:

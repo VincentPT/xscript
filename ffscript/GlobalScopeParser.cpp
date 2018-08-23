@@ -41,6 +41,7 @@ namespace ffscript {
 		d = trimLeft(c, end);
 		//expect an struct begin with char '{' after the name
 		if (d >= end || *d != '{') {
+			scriptCompiler->setErrorText("Missing '{'");
 			setErrorCompilerChar(d);
 			return nullptr;
 		}
@@ -129,7 +130,7 @@ namespace ffscript {
 
 		//}
 		
-		return nullptr;
+		return text;
 	}
 
 	const wchar_t* GlobalScope::parseAnonymous(const wchar_t* text, const wchar_t* end, const std::list<ExecutableUnitRef>& captureList, int& functionId) {
@@ -170,7 +171,11 @@ namespace ffscript {
 		while (c < end) {
 
 			d = this->detectKeyword(c, end);
-			if (d != nullptr) {
+			if (d == nullptr) {
+				c = d;
+				break;
+			}
+			else if(d > c) {
 				if (d == end) {
 					break;
 				}
@@ -268,6 +273,7 @@ namespace ffscript {
 				else if (*c == '(') {
 					FunctionScope* functionScope = new FunctionScope(this, token1, type);
 					std::vector<ScriptType> paramTypes;
+					std::string errorCompileOfFunction;
 					// try to parse the text as a function header ...
 					if ((c = functionScope->parseHeader(d, end, paramTypes))) {
 						// ...if success, continue to parse body function
@@ -278,9 +284,18 @@ namespace ffscript {
 						// parse the body failed
 						break;
 					}
+					else {
+						errorCompileOfFunction = scriptCompiler->getLastError();
+					}
 					// ...if not success, try to parse the text as an expression
 					c = parseExpression(e, end);
 					if (c == nullptr) {
+						std::string error("try compile as function failed: ");
+						error.append(errorCompileOfFunction);
+						error.append(1, '\n');
+						error.append("try compile as expression failed: ");
+						error.append(scriptCompiler->getLastError());
+						scriptCompiler->setErrorText(error);
 						break;
 					}
 					if (ScriptCompiler::isCommandBreakSign(*c) == false) {
@@ -396,6 +411,12 @@ namespace ffscript {
 			if (c > _errorCompiledChar) {
 				_errorCompiledChar = c;
 			}
+		}
+	}
+
+	void GlobalScope::setErrorCompilerCharIndex(int idx) {
+		if (idx >= 0 && _beginCompileChar != nullptr) {
+			_errorCompiledChar = _beginCompileChar + idx;
 		}
 	}
 

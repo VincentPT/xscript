@@ -631,6 +631,12 @@ namespace ffscriptUT
 			Assert::IsTrue(*funcRes == n*n, L"program can run but return wrong value");
 		}
 
+		static int getOriginalLinePosition(Preprocessor* preprocessor, int idx) {
+			int line, column;
+			preprocessor->getOriginalPosition(idx, line, column);
+			return line;
+		}
+
 		TEST_METHOD(ApplyPreprocessor3)
 		{
 			GlobalScopeRef rootScope;
@@ -659,18 +665,18 @@ namespace ffscriptUT
 
 			Assert::IsNotNull(program, (L"compie program failed: " + convertToWstring(scriptCompiler->getLastError())).c_str());
 
-			auto preprocessor = compiler.getPreprocessor();
-			/*Assert::AreEqual(-1, preprocessor->getOriginalLine(-1), L"line original map failed");
-			Assert::AreEqual(-1, preprocessor->getOriginalLine(-2), L"line original map failed");
+			auto preprocessor = compiler.getPreprocessor().get();
+			Assert::AreEqual(-1,getOriginalLinePosition(preprocessor,-1), L"line original map failed");
+			Assert::AreEqual(-1,getOriginalLinePosition(preprocessor,-2), L"line original map failed");
 
-			Assert::AreEqual(0, preprocessor->getOriginalLine(0), L"line original map failed");
-			Assert::AreEqual(1, preprocessor->getOriginalLine(1), L"line original map failed");
-			Assert::AreEqual(1, preprocessor->getOriginalLine(14), L"line original map failed");
-			Assert::AreEqual(1, preprocessor->getOriginalLine(15), L"line original map failed");
-			Assert::AreEqual(2, preprocessor->getOriginalLine(21), L"line original map failed");
-			Assert::AreEqual(3, preprocessor->getOriginalLine(22), L"line original map failed");
-			Assert::AreEqual(3, preprocessor->getOriginalLine(24), L"line original map failed");
-			Assert::AreEqual(4, preprocessor->getOriginalLine(30), L"line original map failed");*/
+			Assert::AreEqual(0,getOriginalLinePosition(preprocessor,0), L"line original map failed");
+			Assert::AreEqual(1,getOriginalLinePosition(preprocessor,1), L"line original map failed");
+			Assert::AreEqual(1,getOriginalLinePosition(preprocessor,14), L"line original map failed");
+			Assert::AreEqual(1,getOriginalLinePosition(preprocessor,15), L"line original map failed");
+			Assert::AreEqual(2,getOriginalLinePosition(preprocessor,21), L"line original map failed");
+			Assert::AreEqual(3,getOriginalLinePosition(preprocessor,22), L"line original map failed");
+			Assert::AreEqual(3,getOriginalLinePosition(preprocessor,24), L"line original map failed");
+			Assert::AreEqual(4,getOriginalLinePosition(preprocessor,30), L"line original map failed");
 		}
 
 		shared_ptr<Program> loadProgram(GlobalScopeRef& rootScope, const char* file,

@@ -17,7 +17,7 @@ namespace ffscript {
 		c = scriptCompiler->readType(text, end, type);
 		if (type.isUnkownType()) {
 			((GlobalScope*)getRoot())->setErrorCompilerChar(text);
-			scriptCompiler->setErrorText("unknow data type '" + type.sType() + "'");
+			scriptCompiler->setErrorText("unknown data type '" + type.sType() + "'");
 			return nullptr;
 		}
 
@@ -145,6 +145,10 @@ namespace ffscript {
 		std::list<ExpressionRef> expList;
 		bool res = parser.compile(unitList, expList);
 		if (res == false) {
+			auto errorUnitRef = parser.getLastErrorUnit();
+			if (errorUnitRef) {
+				((GlobalScope*)getRoot())->setErrorCompilerCharIndex(errorUnitRef->getSourceCharIndex());
+			}
 			return E_TYPE_UNKNOWN;
 		}
 		return parseExpressionInternal(pParser, expList, expectedReturnType);
@@ -170,6 +174,12 @@ namespace ffscript {
 					putCommandUnit(candidate);
 				}
 			}
+			else {
+				auto errorUnitRef = parser.getLastErrorUnit();
+				if (errorUnitRef) {
+					((GlobalScope*)getRoot())->setErrorCompilerCharIndex(errorUnitRef->getSourceCharIndex());
+				}
+			}
 		}
 		else {
 			auto lastUnitIter = expList.end();
@@ -186,11 +196,18 @@ namespace ffscript {
 						auto candidate = chooseCandidate(candidates, *expectedReturnType);
 						if (!candidate) {
 							scriptCompiler->setErrorText("Cannot cast the return type to '" + expectedReturnType->sType() + "'");
+							((GlobalScope*)getRoot())->setErrorCompilerCharIndex(candidates->front()->getSourceCharIndex());
 							return eResult;
 						}
 						putCommandUnit(candidate);
 					}
 					candidates->clear();
+				}
+				else {
+					auto errorUnitRef = parser.getLastErrorUnit();
+					if (errorUnitRef) {
+						((GlobalScope*)getRoot())->setErrorCompilerCharIndex(errorUnitRef->getSourceCharIndex());
+					}
 				}
 			}
 		}
@@ -236,8 +253,6 @@ namespace ffscript {
 			ScriptCompiler* scriptCompiler = getCompiler();
 			std::string lastError = scriptCompiler->getLastError();
 			std::string expression = convertToAscii(expressionString.c_str());
-
-			scriptCompiler->setErrorText("compile '" + expression + "' failed with error:" + lastError);
 		}
 		return c;
 	}
@@ -268,6 +283,10 @@ namespace ffscript {
 		std::list<ExpressionRef> expList;
 		bool res = parser.compile(unitList, expList);
 		if (res == false) {
+			auto errorUnitRef = parser.getLastErrorUnit();
+			if (errorUnitRef) {
+				((GlobalScope*)getRoot())->setErrorCompilerCharIndex(errorUnitRef->getSourceCharIndex());
+			}
 			return nullptr;
 		}
 
@@ -276,6 +295,7 @@ namespace ffscript {
 			auto& rootUnit = expIt->get()->getRoot();
 			if (rootUnit->getType() != EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
 				scriptCompiler->setErrorText("unexpected token '" + rootUnit->toString() + "'");
+				((GlobalScope*)getRoot())->setErrorCompilerCharIndex(rootUnit->getSourceCharIndex());
 				return nullptr;
 			}
 

@@ -710,14 +710,18 @@ namespace ffscript {
 					//the variable for this node will be update later
 					auto pVariable = registTempVariable(exeUnit, -1);
 
-					pVariable->setDataType(type);
-					ExecutableUnitRef returnUnit = std::make_shared<CXOperand>(this, pVariable, pVariable->getDataType());
+					destructor->setSourceCharIndex(exeUnit->getSourceCharIndex());
 
-					if (!scriptCompiler->convertToRef(returnUnit)) {
+					pVariable->setDataType(type);
+					ExecutableUnitRef destructorUnit = std::make_shared<CXOperand>(this, pVariable, pVariable->getDataType());
+					destructorUnit->setSourceCharIndex(exeUnit->getSourceCharIndex());
+
+					if (!scriptCompiler->convertToRef(destructorUnit)) {
+						((GlobalScope*)getRoot())->setErrorCompilerCharIndex(destructorUnit->getSourceCharIndex());
 						return 1;
 					}
 
-					destructor->pushParam(returnUnit);
+					destructor->pushParam(destructorUnit);
 				}
 			}
 		}
