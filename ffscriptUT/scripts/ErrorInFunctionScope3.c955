@@ -1,0 +1,6 @@
+// this is a comment
+int a = 0;
+
+void function(int a, int b) {
+    int b;
+}

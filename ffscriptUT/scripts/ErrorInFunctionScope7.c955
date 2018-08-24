@@ -1,0 +1,10 @@
+// this is a comment
+int a = 0;
+
+void function(int a, int b) {
+    if (a > b) {
+        // this is an empty scope
+    }
+    
+    doSomething(a, b);
+}

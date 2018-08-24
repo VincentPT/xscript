@@ -111,5 +111,64 @@ namespace ffscriptUT
 			Assert::AreEqual(18, column);
 		}
 
+		TEST_METHOD(ErrorInFunctionScope2) {
+			int line = -1;
+			int column = -1;
+
+			complieErrorProgram("ErrorInFunctionScope2.c955", line, column);
+
+			Assert::AreEqual(4, line);
+			Assert::AreEqual(0, column);
+		}
+
+		TEST_METHOD(ErrorInFunctionScope3) {
+			int line = -1;
+			int column = -1;
+
+			complieErrorProgram("ErrorInFunctionScope3.c955", line, column);
+
+			Assert::AreEqual(4, line);
+			Assert::AreEqual(9, column);
+		}
+
+		TEST_METHOD(ErrorInFunctionScope4) {
+			int line = -1;
+			int column = -1;
+
+			complieErrorProgram("ErrorInFunctionScope4.c955", line, column);
+
+			Assert::AreEqual(5, line);
+			Assert::AreEqual(0, column);
+		}
+
+		TEST_METHOD(ErrorInFunctionScope5) {
+			int line = -1;
+			int column = -1;
+
+			complieErrorProgram("ErrorInFunctionScope5.c955", line, column);
+
+			Assert::AreEqual(8, line);
+			Assert::AreEqual(0, column);
+		}
+
+		TEST_METHOD(ErrorInFunctionScope6) {
+			int line = -1;
+			int column = -1;
+
+			complieErrorProgram("ErrorInFunctionScope6.c955", line, column);
+
+			Assert::AreEqual(8, line);
+			Assert::AreEqual(0, column);
+		}
+
+		TEST_METHOD(ErrorInFunctionScope7) {
+			int line = -1;
+			int column = -1;
+
+			complieErrorProgram("ErrorInFunctionScope7.c955", line, column);
+
+			Assert::AreEqual(8, line);
+			Assert::AreEqual(4, column);
+		}
 	};
 }

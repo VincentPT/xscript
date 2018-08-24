@@ -263,6 +263,7 @@ namespace ffscript {
 		});
 
 		if (!ScriptCompiler::isOpenScopeSign(*c)) {
+			scriptCompiler->setErrorText("missing open bracket '{'");
 			return nullptr;
 		}
 		c++;
