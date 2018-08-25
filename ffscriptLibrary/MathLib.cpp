@@ -14,7 +14,7 @@ namespace ffscript {
 #define REGIST_MATH_FUNCTION1(helper, nativeFunc, scriptFunc, returnType, ...) \
 	helper.registFunction(\
 		scriptFunc, #__VA_ARGS__,\
-		createUserFunctionFactoryCdecl<returnType,__VA_ARGS__>(helper.getSriptCompiler(), #returnType, nativeFunc)\
+		createUserFunctionFactory<returnType,__VA_ARGS__>(helper.getSriptCompiler(), #returnType, nativeFunc)\
 	)
 
 #define REGIST_MATH_FUNCTION2(helper, func, returnType, ...) REGIST_MATH_FUNCTION1(helper, func, #func, returnType, __VA_ARGS__)
@@ -94,6 +94,6 @@ namespace ffscript {
 		REGIST_MATH_FUNCTION2(helper, abs, float, float);
 		REGIST_MATH_FUNCTION2(helper, abs, int, int);
 		helper.registFunction("abs", "long",
-			createUserFunctionFactoryCdecl<long long, long long>(helper.getSriptCompiler(), "long", abs));
+			createUserFunctionFactory<long long, long long>(helper.getSriptCompiler(), "long", abs));
 	}
 }

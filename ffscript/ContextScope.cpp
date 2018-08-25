@@ -272,6 +272,10 @@ namespace ffscript {
 		EnterScopeBuilder* enterScope = new EnterScopeBuilder(this);
 		putCommandUnit(enterScope);
 
+		if (_parseContextBodyEventHandler) {
+			_parseContextBodyEventHandler(this, ContextScopeParseEvent::BeforeParseBody);
+		}
+
 		bool keywordDetected = false;
 
 		auto updateLaterMan = CodeUpdater::getInstance(this);
@@ -517,9 +521,13 @@ namespace ffscript {
 			return nullptr;
 		}
 
+		if (_parseContextBodyEventHandler) {
+			_parseContextBodyEventHandler(this, ContextScopeParseEvent::AfterParseBody);
+		}
+
 		_beginExitScopeUnit = nullptr;
 
-		//move commands for destructor to end of context scope before add exit sccope command
+		//move commands for destructor to end of context scope before add exit scope command
 		auto desctructorList = getDestructorList();
 		for (auto it = desctructorList->begin(); it != desctructorList->end(); it++) {
 			putCommandUnit(*it);
@@ -818,5 +826,9 @@ namespace ffscript {
 			iRes = (*it)->correctAndOptimize(program);
 		}
 		return iRes;
+	}
+
+	void ContextScope::setParseBodyEventHandler(const ParseEventHandler& handler) {
+		_parseContextBodyEventHandler = handler;
 	}
 }

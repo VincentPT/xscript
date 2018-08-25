@@ -134,16 +134,32 @@ namespace ffscript {
 		}
 		else /*EXP_UNIT_ID_CONST*/ {
 			void* constantValue = (void*)node->Execute();
-			int dataSize = ((ConstOperandBase*)node.get())->getDataSize();
+			//int dataSize = ((ConstOperandBase*)node.get())->getDataSize();
 
-			MemoryBlock* memoryBlock = new BufferBlock(dataSize);
-			byte* constantData = (byte*)memoryBlock->getDataRef();
+			//MemoryBlock* memoryBlock = new BufferBlock(dataSize);
+			//byte* constantData = (byte*)memoryBlock->getDataRef();
 
-			memcpy_s(constantData, dataSize, constantValue, dataSize);
+			//memcpy_s(constantData, dataSize, constantValue, dataSize);
+			//_memoryBlocks.push_back(MemoryBlockRef(memoryBlock));
+
+			const BasicTypes& basicType = scriptCompiler->getTypeManager()->getBasicTypes();
+			MemoryBlock* memoryBlock;
+			if (basicType.TYPE_STRING == node->getReturnType().iType()) {
+				memoryBlock = new ObjectBlock<std::string>(*((std::string*)constantValue));
+				constantValue = memoryBlock->getDataRef();
+			}
+			else if (basicType.TYPE_WSTRING == node->getReturnType().iType()) {
+				memoryBlock = new ObjectBlock<std::wstring>(*((std::wstring*)constantValue));
+				constantValue = memoryBlock->getDataRef();
+			}
+			else {
+				memoryBlock = new ObjectBlock<ExecutableUnitRef>(node);
+			}
+
 			_memoryBlocks.push_back(MemoryBlockRef(memoryBlock));
 
 			auto pushParamFunc = new PushParamRef();
-			pushParamFunc->setCommandData(constantData, returnOffset);
+			pushParamFunc->setCommandData(constantValue, returnOffset);
 
 			assitFunction = pushParamFunc;
 		}

@@ -16,15 +16,19 @@ namespace ffscript {
 	}
 
 	void StaticContext::addCommand(CommandPointer command) {
-		_globalComands.push_back(command);
+		_globalCommands.push_back(command);
 		//Logger::WriteMessage(__FUNCTION__);
 	}
 
-	void StaticContext::run() {
+	void StaticContext::addDestructorCommand(CommandPointer command) {
+		_destructorCommands.push_back(command);
+	}
+
+	void StaticContext::runCommands(const std::list<CommandPointer>& commands) {
 		auto currentContext = Context::getCurrent();
 		Context::makeCurrent(this);
 
-		for (auto it = _globalComands.begin(); it != _globalComands.end(); ++it) {
+		for (auto it = commands.begin(); it != commands.end(); ++it) {
 			(*(*it))->execute();
 #ifndef THROW_EXCEPTION_ON_ERROR
 			if (isError()) {
@@ -35,5 +39,13 @@ namespace ffscript {
 		}
 
 		Context::makeCurrent(currentContext);
+	}
+
+	void StaticContext::run() {
+		runCommands(_globalCommands);
+	}
+
+	void StaticContext::runDestructorCommands() {
+		runCommands(_destructorCommands);
 	}
 }

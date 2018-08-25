@@ -6,8 +6,6 @@
 #include <DefaultPreprocessor.h>
 #include <RawStringLib.h>
 
-#include "Utils.h"
-
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;

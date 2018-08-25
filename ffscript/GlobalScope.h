@@ -9,6 +9,7 @@ namespace ffscript {
 
 	class Executor;
 	class CodeUpdater;
+	class CLamdaProg;
 
 	class GlobalScope : public ScriptScope
 	{
@@ -24,6 +25,7 @@ namespace ffscript {
 		virtual ~GlobalScope();
 		void* getGlobalAddress(int offset);
 		void runGlobalCode();
+		void cleanupGlobalMemory();
 		virtual int correctAndOptimize(Program* program);
 		const WCHAR* getErrorCompiledChar() const;
 		const WCHAR* getBeginCompileChar() const;
@@ -31,6 +33,7 @@ namespace ffscript {
 		void setErrorCompilerCharIndex(int idx);
 		void setBeginCompileChar(const WCHAR* c);
 		void convertSourceCharIndexToGlobal(const WCHAR* source, std::list<ExpUnitRef>& units);
+		CLamdaProg* detachScriptProgram(Program* program);
 	public:
 		const wchar_t* parse(const wchar_t* text, const wchar_t* end);
 		const wchar_t* parseAnonymous(const wchar_t* text, const wchar_t* end, const std::list<ExecutableUnitRef>& captureList, int& functionId);

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ffscript", "ffscript\ffscript.vcxproj", "{62653E92-4237-4105-8A30-C5BCC814CA67}"
 EndProject
@@ -14,6 +14,12 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ffscriptLibrary", "ffscriptLibrary\ffscriptLibrary.vcxproj", "{B74DA622-9C2C-4E28-815A-393F090348C0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tutorials", "tutorials", "{EA85A6DF-5B3B-40BE-A9FB-0E2BFB7F692C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoActionRecursive", "tutorials\CoActionRecursive\CoActionRecursive.vcxproj", "{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B74DA622-9C2C-4E28-815A-393F090348C0} = {B74DA622-9C2C-4E28-815A-393F090348C0}
+		{62653E92-4237-4105-8A30-C5BCC814CA67} = {62653E92-4237-4105-8A30-C5BCC814CA67}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,9 +81,28 @@ Global
 		{B74DA622-9C2C-4E28-815A-393F090348C0}.Release|x64.Build.0 = Release|x64
 		{B74DA622-9C2C-4E28-815A-393F090348C0}.Release|x86.ActiveCfg = Release|Win32
 		{B74DA622-9C2C-4E28-815A-393F090348C0}.Release|x86.Build.0 = Release|Win32
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Debug|x64.ActiveCfg = Debug|x64
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Debug|x64.Build.0 = Debug|x64
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Debug|x86.ActiveCfg = Debug|Win32
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Debug|x86.Build.0 = Debug|Win32
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Dll_debug|x64.ActiveCfg = Debug|x64
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Dll_debug|x64.Build.0 = Debug|x64
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Dll_debug|x86.ActiveCfg = Debug|Win32
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Dll_debug|x86.Build.0 = Debug|Win32
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Dll_Release|x64.ActiveCfg = Release|x64
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Dll_Release|x64.Build.0 = Release|x64
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Dll_Release|x86.ActiveCfg = Release|Win32
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Dll_Release|x86.Build.0 = Release|Win32
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Release|x64.ActiveCfg = Release|x64
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Release|x64.Build.0 = Release|x64
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Release|x86.ActiveCfg = Release|Win32
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E5C2F7D9-11EC-407A-8B2D-C7A78F131548} = {EA85A6DF-5B3B-40BE-A9FB-0E2BFB7F692C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {178FF0E3-46E8-4EB0-8DD6-00CD000C7A24}

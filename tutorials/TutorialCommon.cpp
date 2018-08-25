@@ -1,0 +1,71 @@
+// CoActionRecursive.cpp : Defines the entry point for the console application.
+//
+
+#include "TutorialCommon.h"
+#include <chrono>
+
+int scriptMainFunctionId = -1;
+
+CLamdaProg* complieProgram(FImportLibrary importLib, const char* file) {
+	CompilerSuite compiler;
+
+	// initialize compiler and import system library
+	compiler.initialize(1024);
+	auto& rootScope = compiler.getGlobalScope();
+	auto scriptCompiler = rootScope->getCompiler();
+
+	// import custom libraries
+	// String library
+	includeRawStringToCompiler(scriptCompiler);
+
+	// import application specific library
+	importLib(scriptCompiler);
+	
+	// tell compiler that from now, any the function that will be registered
+	// is a user function, that mean it will be clean each time compileProgram is executed
+	scriptCompiler->beginUserLib();
+
+	auto script = readCodeFromUtf8File(file);
+	compiler.setPreprocessor(std::make_shared<DefaultPreprocessor>());
+	auto program = compiler.compileProgram(script.c_str(), script.c_str() + script.size());
+
+	if (program == nullptr) {
+		int line, column;
+		compiler.getLastCompliedPosition(line, column);
+
+		string errorMsg("error at line = ");
+		errorMsg.append(std::to_string(line + 1));
+		errorMsg.append(", column = ");
+		errorMsg.append(std::to_string(column + 1));
+		errorMsg.append("\n");
+		errorMsg.append(scriptCompiler->getLastError());
+
+		cout << "Compile program " << file << " error" << endl;
+		cout << errorMsg << endl;
+	}
+	else {
+		scriptMainFunctionId = scriptCompiler->findFunction("main", "");
+		if (scriptMainFunctionId < 0) {
+			cout << "Warning!!! Main function of script is not implemented" << endl;
+		}
+		else {
+			cout << "Compile program successfully!" << endl;
+		}
+	}
+	return rootScope->detachScriptProgram(program);
+}
+
+void runProgram(CLamdaProg* scriptProgram) {
+	if (scriptMainFunctionId < 0) return;
+
+	using namespace std::chrono;
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
+	ScriptTask scriptTask(scriptProgram->getProgram());
+	scriptTask.runFunction(1024 * 1024, scriptMainFunctionId, nullptr);
+
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
+	duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+	cout << "time consume: " << time_span.count() << "s" << endl;
+}

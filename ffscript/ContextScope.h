@@ -7,6 +7,14 @@ namespace ffscript {
 	class FunctionScope;
 	class Executor;
 	class LoopScope;
+	class ContextScope;
+
+	enum class ContextScopeParseEvent {
+		BeforeParseBody,
+		AfterParseBody
+	};
+
+	typedef std::function<void(ContextScope*, ContextScopeParseEvent)> ParseEventHandler;
 
 	class ContextScope :
 		public ScriptScope
@@ -19,6 +27,7 @@ namespace ffscript {
 		ExecutorRef _endExecutor;
 		CommandUnit* _beginExitScopeUnit;
 		std::string _name;
+		ParseEventHandler _parseContextBodyEventHandler;
 
 	public:
 		ContextScope(ScriptScope* parent, FunctionScope* functionScope);
@@ -43,6 +52,8 @@ namespace ffscript {
 		void setCodeBegin( CommandPointer startCode);
 		void setCodeEnd(CommandPointer endCode);
 		virtual int correctAndOptimize(Program* program);
+
+		void setParseBodyEventHandler(const ParseEventHandler&);
 	protected:
 		//Executor* getExcutorBegin() const;
 		//Executor* getExcutorEnd() const;

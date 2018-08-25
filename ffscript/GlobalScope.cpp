@@ -4,6 +4,8 @@
 #include "Program.h"
 #include "ScriptFunction.h"
 #include "CodeUpdater.h"
+#include "ScriptRunner.h"
+#include "CLamdaProg.h"
 
 namespace ffscript {
 	GlobalScope::GlobalScope(StaticContext* staticContext, ScriptCompiler* scriptCompiler):
@@ -45,6 +47,16 @@ namespace ffscript {
 
 		_staticContextRef->run();
 
+		//_staticContextRef->scopeUnallocate(dataSize, codeSize);
+		//_staticContextRef->popContext();
+	}
+
+	void GlobalScope::cleanupGlobalMemory() {
+		int dataSize = getDataSize();
+		int codeSize = getScopeSize() - dataSize;
+
+		_staticContextRef->runDestructorCommands();
+
 		_staticContextRef->scopeUnallocate(dataSize, codeSize);
 		_staticContextRef->popContext();
 	}
@@ -71,5 +83,29 @@ namespace ffscript {
 			scriptCompiler->setErrorText("The function '" + name + "' is already exist");
 		}
 		return functionId;
+	}
+
+	CLamdaProg* GlobalScope::detachScriptProgram(Program* program) {
+		CLamdaProg* scriptProgram = new CLamdaProg(program);
+		if (_refContext == false) {
+			throw std::runtime_error("Cannot detach script program from a shared context");
+		}
+		if (_staticContextRef.get() == nullptr) {
+			throw std::runtime_error("Cannot detach script program from a null context");
+		}
+
+		if (program == nullptr) {
+			throw std::runtime_error("Cannot create script program from a null program");
+		}
+		int dataSize = getDataSize();
+		int codeSize = getScopeSize() - dataSize;
+
+		scriptProgram->_globalCodeSize = codeSize;
+		scriptProgram->_globalDataSize = dataSize;
+		scriptProgram->_globalConstructorCount = getConstructorCommandCount();
+
+		scriptProgram->setContext(std::shared_ptr<StaticContext>(_staticContextRef.release()));
+
+		return scriptProgram;
 	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "ffscript.h"
 #include "ScriptParamBuffer.hpp"
+#include "ScriptRunner.h"
 
 namespace ffscript {
 
@@ -8,17 +9,10 @@ namespace ffscript {
 	class Program;
 	struct FunctionInfo;
 
-	class ScriptTask
+	class ScriptTask : public ScriptRunner 
 	{
 		Context* _scriptContext;
-		int _resultSize;
 		int _allocatedSize;
-		Program* _program;
-
-		// cached data
-		int _functionId;
-		FunctionInfo* _functionInfo;
-		CodeSegmentEntry* _functionCode;
 	public:
 		ScriptTask(Program* program);
 		virtual ~ScriptTask();

@@ -74,7 +74,7 @@ namespace ffscript {
 	}
 
 	template <class Rt, class... Types>
-	FunctionFactory* createUserFunctionFactoryCdecl(ScriptCompiler* scriptCompiler, const char* rt, Rt(*f)(Types...)) {
+	FunctionFactory* createUserFunctionFactory(ScriptCompiler* scriptCompiler, const char* rt, Rt(*f)(Types...)) {
 		return new DefaultUserFunctionFactory(createFunctionCdeclRef<Rt, Types...>(f), scriptCompiler, rt, sizeof...(Types));
 	}
 
@@ -96,5 +96,20 @@ namespace ffscript {
 	template <class T>
 	ConstOperandBase* createConsant(const T& cosnt_val, const char* typeStr) {
 		return new CConstOperand<T>(cosnt_val, typeStr);
+	}
+
+	template<class RT, class ...Types>
+	int registerFunction(FunctionRegisterHelper& fb, RT(*nativeFunction)(Types...), const char* scriptFunction, const char* returnType, const char* paramTypes) {
+		return fb.registFunction(
+			scriptFunction,
+			paramTypes, // parameter type of the function
+			createUserFunctionFactory
+			<RT, Types...> // native function prototype
+			(
+				fb.getSriptCompiler(), // script compiler
+				returnType, // return type of the script function
+				nativeFunction // native function
+				)
+		);
 	}
 }

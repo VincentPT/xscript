@@ -318,7 +318,65 @@ namespace ffscript {
 			}
 			c++;			
 		}
+
+		//auto lastErrorCompileChar = getErrorCompiledChar();
+
+		//int typeVoid = scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID;
+		//ScriptType voidType(typeVoid, scriptCompiler->getType(typeVoid));
+		//FunctionScope* cleanupFunctionScope = new FunctionScope(this, "__globalScopeCleanupFunction__", voidType);
+		//static wchar_t emptyParamHeade r[] = L"()";
+
+		//// this variable is required to use parseHeader but it never changed
+		//// because of we use empty param header above
+		//static std::vector<ScriptType> paramTypes;
+		//if (cleanupFunctionScope->parseHeader(&emptyParamHeader[0], &emptyParamHeader[2], paramTypes) == nullptr) {
+		//	throw std::runtime_error("parse an empty function header shoud be success");
+		//}
+		//if (paramTypes.size() > 0) {
+		//	throw std::runtime_error("parse an empty function header but there is parameter is the list");
+		//}
+		//static wchar_t emptyBody[] = L"{}";
+
+		//// move destructors of global scope to clean up function of global scope
+		//cleanupFunctionScope->setParseBodyEventHandler([this](auto contextScope, auto eventType) {
+		//	if (eventType == ContextScopeParseEvent::AfterParseBody) {
+		//		auto desctructorList = getDestructorList();
+		//		for (auto it = desctructorList->begin(); it != desctructorList->end(); it++) {
+		//			//auto& destructorUnit = *it;
+		//			contextScope->putCommandUnit(*it);
+		//		}
+		//		desctructorList->clear();
+		//	}
+		//});
+		//if (cleanupFunctionScope->parseBody(&emptyBody[0], &emptyBody[2], cleanupFunctionScope->getReturnType(), paramTypes) == nullptr) {
+		//	throw std::runtime_error("parse an empty function body shoud be success");
+		//}
+		//
+		//_cleanupFunctionOfGlobalScope = cleanupFunctionScope->getFunctionId();
+
+		//setErrorCompilerChar(lastErrorCompileChar, true);
 		return c;
+	}
+
+	inline bool extractCodeForUnit(Program* program, GlobalScope* scope, const CommandUnitRef& commandUnit, std::list<Executor*>& excutorContainer) {
+		const ExecutableUnitRef& extUnit = dynamic_pointer_cast<ExecutableUnit>(commandUnit);
+
+		if (extUnit) {
+			ExpUnitExecutor * pExecutor = new ExpUnitExecutor(scope);
+			if (pExecutor->extractCode(scope->getCompiler(), extUnit) == false) {
+				return false;
+			}
+			excutorContainer.push_back(pExecutor);
+			program->addExecutor((ExecutorRef)(pExecutor));
+		}
+		else {
+			CommandBuilder* controllerUnit = (CommandBuilder*)commandUnit.get();
+			Executor* pExecutor = controllerUnit->buildNativeCommand();
+			excutorContainer.push_back(pExecutor);
+			program->addExecutor((ExecutorRef)(pExecutor));
+		}
+
+		return true;
 	}
 
 	bool GlobalScope::extractCode(Program* program) {
@@ -329,21 +387,17 @@ namespace ffscript {
 		std::list<Executor*> globalExcutors;
 		for (auto it = getFirstExpression(); expressionCount > 0; ++it, --expressionCount) {
 			const CommandUnitRef& commandUnit = *it;
-			const ExecutableUnitRef& extUnit = dynamic_pointer_cast<ExecutableUnit>(commandUnit);
-			
-			if(extUnit) {
-				ExpUnitExecutor * pExecutor = new ExpUnitExecutor(this);
-				if (pExecutor->extractCode(getCompiler(), extUnit) == false) {
-					return false;
-				}
-				globalExcutors.push_back(pExecutor);
-				program->addExecutor( (ExecutorRef)(pExecutor));
+			if (extractCodeForUnit(program, this, commandUnit, globalExcutors) == false) {
+				return false;
 			}
-			else {
-				CommandBuilder* controllerUnit = (CommandBuilder*)commandUnit.get();
-				Executor* pExecutor = controllerUnit->buildNativeCommand();
-				globalExcutors.push_back(pExecutor);
-				program->addExecutor((ExecutorRef)(pExecutor));
+		}
+
+		std::list<Executor*> destructionExcutors;
+		auto destructorUnits = getDestructorList();
+		for (auto it = destructorUnits->begin(); it != destructorUnits->end(); it++) {
+			const CommandUnitRef& commandUnit = *it;
+			if (extractCodeForUnit(program, this, commandUnit, destructionExcutors) == false) {
+				return false;
 			}
 		}
 
@@ -378,6 +432,18 @@ namespace ffscript {
 
 				for (CommandPointer commandPointer = beginCommand; commandPointer <= endCommand; ++commandPointer) {
 					_staticContextRef->addCommand(commandPointer);
+				}
+			}
+		}
+
+		for (auto it = destructionExcutors.begin(); it != destructionExcutors.end(); ++it) {
+			pExcutorCodeEntry = program->getCode(*it);
+			if (pExcutorCodeEntry) {
+				beginCommand = pExcutorCodeEntry->first;
+				endCommand = pExcutorCodeEntry->second;
+
+				for (CommandPointer commandPointer = beginCommand; commandPointer <= endCommand; ++commandPointer) {
+					_staticContextRef->addDestructorCommand(commandPointer);
 				}
 			}
 		}

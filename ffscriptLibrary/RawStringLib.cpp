@@ -361,19 +361,19 @@ namespace ffscript {
 		ScriptType typeString(iTypeString, "String");
 
 		// register constructors and destructor
-		int ctor = fb.registFunction("defaultConstructor", "ref String", createUserFunctionFactoryCdecl<void, RawString&>(scriptCompiler, "void", defaultConstructor));
-		int dtor = fb.registFunction("freeRawString", "ref String", createUserFunctionFactoryCdecl<void, RawString&>(scriptCompiler, "void", freeRawString));
+		int ctor = fb.registFunction("defaultConstructor", "ref String", createUserFunctionFactory<void, RawString&>(scriptCompiler, "void", defaultConstructor));
+		int dtor = fb.registFunction("freeRawString", "ref String", createUserFunctionFactory<void, RawString&>(scriptCompiler, "void", freeRawString));
 
 		scriptCompiler->registDestructor(iTypeString, dtor);
 		scriptCompiler->registConstructor(iTypeString, ctor);
 
-		ctor = fb.registFunction("constantConstructor", "ref String, string&", createUserFunctionFactoryCdecl<void, RawString&, const std::string&>(scriptCompiler, "void", constantConstructor));
+		ctor = fb.registFunction("constantConstructor", "ref String, string&", createUserFunctionFactory<void, RawString&, const std::string&>(scriptCompiler, "void", constantConstructor));
 		scriptCompiler->registConstructor(iTypeString, ctor);
 
-		ctor = fb.registFunction("constantConstructor", "ref String, wstring&", createUserFunctionFactoryCdecl<void, RawString&, const std::wstring&>(scriptCompiler, "void", constantConstructor));
+		ctor = fb.registFunction("constantConstructor", "ref String, wstring&", createUserFunctionFactory<void, RawString&, const std::wstring&>(scriptCompiler, "void", constantConstructor));
 		scriptCompiler->registConstructor(iTypeString, ctor);
 
-		ctor = fb.registFunction("constantConstructor", "ref String, String&", createUserFunctionFactoryCdecl<void, RawString&, const RawString&>(scriptCompiler, "void", constantConstructor));
+		ctor = fb.registFunction("constantConstructor", "ref String, String&", createUserFunctionFactory<void, RawString&, const RawString&>(scriptCompiler, "void", constantConstructor));
 		scriptCompiler->registConstructor(iTypeString, ctor);
 
 		// register conversion operators
@@ -404,11 +404,11 @@ namespace ffscript {
 		fb.registPredefinedOperators("==", "String&,String&", "bool", createFunctionCdecl<bool, const RawString&, const RawString&>(operator==));
 		fb.registPredefinedOperators("!=", "String&,String&", "bool", createFunctionCdecl<bool, const RawString&, const RawString&>(operator!=));
 
-		fb.registFunction("compare", "String&,string&", createUserFunctionFactoryCdecl<int, const RawString&, const std::string&>(scriptCompiler, "int", constantCompare));
-		fb.registFunction("compare", "string&,String&", createUserFunctionFactoryCdecl<int, const std::string&, const RawString&>(scriptCompiler, "int", constantCompare));
-		fb.registFunction("compare", "String&,wstring&", createUserFunctionFactoryCdecl<int, const RawString&, const std::wstring&>(scriptCompiler, "int", constantCompare));
-		fb.registFunction("compare", "wstring&,String&", createUserFunctionFactoryCdecl<int, const std::wstring&, const RawString&>(scriptCompiler, "int", constantCompare));
-		fb.registFunction("compare", "String&,String&", createUserFunctionFactoryCdecl<int, const RawString&, const RawString&>(scriptCompiler, "int", constantCompare));
+		fb.registFunction("compare", "String&,string&", createUserFunctionFactory<int, const RawString&, const std::string&>(scriptCompiler, "int", constantCompare));
+		fb.registFunction("compare", "string&,String&", createUserFunctionFactory<int, const std::string&, const RawString&>(scriptCompiler, "int", constantCompare));
+		fb.registFunction("compare", "String&,wstring&", createUserFunctionFactory<int, const RawString&, const std::wstring&>(scriptCompiler, "int", constantCompare));
+		fb.registFunction("compare", "wstring&,String&", createUserFunctionFactory<int, const std::wstring&, const RawString&>(scriptCompiler, "int", constantCompare));
+		fb.registFunction("compare", "String&,String&", createUserFunctionFactory<int, const RawString&, const RawString&>(scriptCompiler, "int", constantCompare));
 
 		// register other operators
 		fb.registPredefinedOperators("=", "String&,string&", "void", createFunctionCdecl<void, RawString&, const std::string&>(assignStringConst));

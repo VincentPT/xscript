@@ -112,7 +112,7 @@ namespace ffscript {
 		auto iTypePoint = scriptCompiler->registStruct(pointStruct);
 		ScriptType typePoint(iTypePoint, scriptCompiler->getType(iTypePoint).c_str());
 
-		functionId = helper.registFunction("String", "Point", createUserFunctionFactoryCdecl(scriptCompiler, "String", pointToString));
+		functionId = helper.registFunction("String", "Point", createUserFunctionFactory(scriptCompiler, "String", pointToString));
 
 		// register struct Ray must be same as RawRay
 		StructClass* rayStruct = new StructClass(scriptCompiler, "Ray");
@@ -130,10 +130,10 @@ namespace ffscript {
 		helper.registPredefinedOperators("*=", "Point&,float", "Point&", createFunctionCdecl<const Point&, Point&, float>(operator*=));
 		helper.registPredefinedOperators("/=", "Point&,float", "Point&", createFunctionCdecl<const Point&, Point&, float>(operator/=));
 		
-		//auto functionId = helper.registFunction("Point", "ref Point, float, float", createUserFunctionFactoryCdecl<void, Point&, float, float>(scriptCompiler, "void", constructPoint));
+		//auto functionId = helper.registFunction("Point", "ref Point, float, float", createUserFunctionFactory<void, Point&, float, float>(scriptCompiler, "void", constructPoint));
 		//scriptCompiler->registConstructor(iTypePoint, functionId);
 
-		//functionId = helper.registFunction("Ray", "ref Ray, Point, Point", createUserFunctionFactoryCdecl<void, Ray&, Point, Point>(scriptCompiler, "void", constructRay));
+		//functionId = helper.registFunction("Ray", "ref Ray, Point, Point", createUserFunctionFactory<void, Ray&, Point, Point>(scriptCompiler, "void", constructRay));
 		//scriptCompiler->registConstructor(iTypeRay, functionId);
 
 		// dot product
@@ -146,19 +146,19 @@ namespace ffscript {
 		scriptCompiler->setTypeSize(generalLineTypeInt, sizeof(GeneralLineF));
 
 		auto fx1 = MFunctionT<GeneralLineF, void, const Point&, const Point&>::convertToFunction(&GeneralLineF::build);
-		functionId = helper.registFunction("GeneralLine", "ref GeneralLine, Point&, Point&", createUserFunctionFactoryCdecl(scriptCompiler, "void", fx1));
+		functionId = helper.registFunction("GeneralLine", "ref GeneralLine, Point&, Point&", createUserFunctionFactory(scriptCompiler, "void", fx1));
 		scriptCompiler->registConstructor(generalLineTypeInt, functionId);
 
 		auto fx2 = MFunctionT<GeneralLineF, float, const Point&>::convertToFunction(&GeneralLineF::compute);
-		functionId = helper.registFunction("compute", "GeneralLine&, Point&", createUserFunctionFactoryCdecl(scriptCompiler, "float", fx2));
+		functionId = helper.registFunction("compute", "GeneralLine&, Point&", createUserFunctionFactory(scriptCompiler, "float", fx2));
 
 		auto fx3 = MFunctionT<GeneralLineF, float, const Point&>::convertToFunction(&GeneralLineF::directionalDistance);
-		functionId = helper.registFunction("distance", "GeneralLine&, Point&", createUserFunctionFactoryCdecl(scriptCompiler, "float", fx3));
+		functionId = helper.registFunction("distance", "GeneralLine&, Point&", createUserFunctionFactory(scriptCompiler, "float", fx3));
 
-		functionId = helper.registFunction("angle", "Point&, Point&", createUserFunctionFactoryCdecl<float, const Point&, const Point&>(scriptCompiler, "float", directionalAngle));
+		functionId = helper.registFunction("angle", "Point&, Point&", createUserFunctionFactory<float, const Point&, const Point&>(scriptCompiler, "float", directionalAngle));
 
-		functionId = helper.registFunction("intersect", "Point&,Point&,Point&,Point&,float&,float&", createUserFunctionFactoryCdecl<bool,const Point&,const Point&,const Point&,const Point&, float*, float*>(scriptCompiler, "bool", Intersect2D_Lines));
-		functionId = helper.registFunction("project", "Point&,Point&,Point&", createUserFunctionFactoryCdecl<float, const Point&, const Point&, const Point&>(scriptCompiler, "float", projectPoint));
+		functionId = helper.registFunction("intersect", "Point&,Point&,Point&,Point&,float&,float&", createUserFunctionFactory<bool,const Point&,const Point&,const Point&,const Point&, float*, float*>(scriptCompiler, "bool", Intersect2D_Lines));
+		functionId = helper.registFunction("project", "Point&,Point&,Point&", createUserFunctionFactory<float, const Point&, const Point&, const Point&>(scriptCompiler, "float", projectPoint));
 
 		auto createConstantFuncObj = make_shared<CdeclFunction<ConstOperandBase*, float, const char*>>(createConsant<float>);
 		static float _MATH_PI = 3.14159f;

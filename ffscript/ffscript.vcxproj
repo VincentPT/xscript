@@ -278,6 +278,7 @@
     <ClInclude Include="BasicFunctionFactory.hpp" />
     <ClInclude Include="BasicOperators.hpp" />
     <ClInclude Include="BasicType.h" />
+    <ClInclude Include="CLamdaProg.h" />
     <ClInclude Include="CommandTree.h" />
     <ClInclude Include="CommandUnit.h" />
     <ClInclude Include="CompilerSuite.h" />
@@ -341,6 +342,7 @@
     <ClInclude Include="ScriptCompiler.h" />
     <ClInclude Include="ScriptFunction.h" />
     <ClInclude Include="ScriptParamBuffer.hpp" />
+    <ClInclude Include="ScriptRunner.h" />
     <ClInclude Include="ScriptScope.h" />
     <ClInclude Include="ScriptTask.h" />
     <ClInclude Include="ScriptType.h" />
@@ -365,6 +367,7 @@
   <ItemGroup>
     <ClCompile Include="BasicFunction.cpp" />
     <ClCompile Include="BasicType.cpp" />
+    <ClCompile Include="CLamdaProg.cpp" />
     <ClCompile Include="CommandTree.cpp" />
     <ClCompile Include="CommandUnit.cpp" />
     <ClCompile Include="CompilerSuite.cpp" />
@@ -410,6 +413,7 @@
     <ClCompile Include="ScriptArgStream.cpp" />
     <ClCompile Include="ScriptCompiler.cpp" />
     <ClCompile Include="ScriptFunction.cpp" />
+    <ClCompile Include="ScriptRunner.cpp" />
     <ClCompile Include="ScriptScope.cpp" />
     <ClCompile Include="ScriptScopeParser.cpp" />
     <ClCompile Include="ScriptTask.cpp" />

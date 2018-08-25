@@ -292,6 +292,12 @@
     <ClInclude Include="function\FunctionHelper.hpp">
       <Filter>Header Files\Function</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptRunner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLamdaProg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -481,6 +487,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DestructorContextScope.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptRunner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLamdaProg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

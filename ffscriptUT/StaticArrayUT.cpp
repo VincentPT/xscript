@@ -397,6 +397,8 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
+			rootScope->cleanupGlobalMemory();
+
 			Assert::AreEqual(1, *iRes);
 		}
 
@@ -424,6 +426,8 @@ namespace ffscriptUT
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
+
+			rootScope->cleanupGlobalMemory();
 
 			Assert::AreEqual(1, *iRes);
 		}
@@ -479,6 +483,8 @@ namespace ffscriptUT
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
+
+			rootScope->cleanupGlobalMemory();
 
 			Assert::AreEqual(1, *iRes);
 		}
