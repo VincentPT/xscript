@@ -71,6 +71,7 @@ namespace ffscript {
 			if (ScriptCompiler::isCommandBreakSign(*c)) {
 				aStruct->addMember(type, token);
 				c++;
+				c = trimLeft(c, end);
 			}
 			else
 			{
