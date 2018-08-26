@@ -41,5 +41,13 @@ namespace ffscript {
 		inline int getSize() const {
 			return (int)(_p - _data) + 1;
 		}
+
+		inline const T* begin() const {
+			return _data;
+		}
+
+		inline const T* end() const {
+			return _p;
+		}
 	};
 }

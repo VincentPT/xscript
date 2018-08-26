@@ -5,13 +5,17 @@
 #include "InstructionCommand.h"
 
 namespace ffscript {
-	ScriptTask::ScriptTask(Program* program) : ScriptRunner(program), _scriptContext(nullptr), _allocatedSize(0)
+	ScriptTask::ScriptTask(Program* program) : _program(program), _scriptContext(nullptr), _allocatedSize(0),
+		_scriptRunner(nullptr), _lastCallFunctionId(-1)
 	{
 	}
 
 	ScriptTask::~ScriptTask(){
 		if (_scriptContext) {
 			delete _scriptContext;
+		}
+		if (_scriptRunner) {
+			delete _scriptRunner;
 		}
 	}
 
@@ -20,6 +24,12 @@ namespace ffscript {
 	}
 
 	void ScriptTask::runFunction(int stackSize, int functionId, const ScriptParamBuffer* paramBuffer) {
+		if (_scriptRunner == nullptr || _lastCallFunctionId != functionId) {
+			if (_scriptRunner) delete _scriptRunner;
+			_scriptRunner = new ScriptRunner(_program, functionId);
+			_lastCallFunctionId = functionId;
+		}
+
 		if (_scriptContext == nullptr) {
 			_scriptContext = new Context(stackSize);
 		}
@@ -34,7 +44,7 @@ namespace ffscript {
 		}
 
 		Context::makeCurrent(_scriptContext);
-		ScriptRunner::runFunction(functionId, paramBuffer);
+		_scriptRunner->runFunction(paramBuffer);
 	}
 
 	void ScriptTask::runFunction(int functionId, const ScriptParamBuffer& paramBuffer) {
@@ -47,6 +57,6 @@ namespace ffscript {
 
 	void* ScriptTask::getTaskResult() {
 		Context::makeCurrent(_scriptContext);
-		return ScriptRunner::getTaskResult();
+		return _scriptRunner->getTaskResult();
 	}
 }

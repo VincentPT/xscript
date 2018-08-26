@@ -9,10 +9,6 @@ void println(const RawString& rs) {
 	wcout << rs.elms << endl;
 }
 
-void println(const std::wstring& rw) {
-	wcout << rw << endl;
-}
-
 void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 	FunctionRegisterHelper fb(scriptCompiler);
 
@@ -24,16 +20,6 @@ void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 			"println", //script function name
 			"void", // return type of the script function
 			"String&" // parameter type of the function
-			);
-
-	// register 'println' function
-	registerFunction
-		<void, const std::wstring&> // native function prototype
-		(fb, // register helper object
-			println, // native function
-			"println", //script function name
-			"void", // return type of the script function
-			"wstring&" // parameter type of the function
 			);
 }
 

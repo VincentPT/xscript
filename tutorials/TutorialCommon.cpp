@@ -49,10 +49,13 @@ CLamdaProg* complieProgram(FImportLibrary importLib, const char* file) {
 			cout << "Warning!!! Main function of script is not implemented" << endl;
 		}
 		else {
-			cout << "Compile program successfully!" << endl;
+			cout << "+----------------------------------------------------------+" << endl;
+			cout << "|            Compile program successfully!                 |" << endl;
+			cout << "+----------------------------------------------------------+" << endl << endl;
 		}
+		return rootScope->detachScriptProgram(program);
 	}
-	return rootScope->detachScriptProgram(program);
+	return nullptr;
 }
 
 void runProgram(CLamdaProg* scriptProgram) {
@@ -61,11 +64,19 @@ void runProgram(CLamdaProg* scriptProgram) {
 	using namespace std::chrono;
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
-	ScriptTask scriptTask(scriptProgram->getProgram());
-	scriptTask.runFunction(1024 * 1024, scriptMainFunctionId, nullptr);
+	try {
+		ScriptRunner scriptRunner(scriptProgram->getProgram(), scriptMainFunctionId);
+		scriptRunner.runFunction(nullptr);
+	}
+	catch (std::exception& e) {
+		cout << "An exception has been occured while running the script: " << e.what() << endl;
+	}
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
 	duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
-	cout << "time consume: " << time_span.count() << "s" << endl;
+	cout << endl;
+	cout << "+----------------------------------------------------------+" << endl;
+	cout << "|              time consume: " << time_span.count() <<"                       |" << endl;
+	cout << "+----------------------------------------------------------+" << endl;
 }

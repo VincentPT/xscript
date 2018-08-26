@@ -7,32 +7,36 @@
 namespace ffscript {
 	static const int s_returnOffset = SCRIPT_FUNCTION_RETURN_STORAGE_OFFSET;
 
-	ScriptRunner::ScriptRunner(Program* program) : _program(program),
-		_functionInfo(nullptr), _functionCode(nullptr), _functionId(-1)
+	ScriptRunner::ScriptRunner(Program* program, int functionId) : _program(program), _functionInfo(nullptr)
 	{
+		_functionInfo = program->getFunctionInfo(functionId);
+		auto functionCode = program->getFunctionPlainCode(functionId);
+
+		int paramOffset = s_returnOffset + _functionInfo->returnStorageSize;
+
+#if USE_DIRECT_COPY_FOR_RETURN
+#if USE_FUNCTION_TREE
+		CallScriptFuntion3* callScriptCommand = new CallScriptFuntion3();
+#else
+		CallScriptFuntion2* callScriptCommand = new CallScriptFuntion2();
+#endif
+
+		callScriptCommand->setCommandData(s_returnOffset, paramOffset, _functionInfo->paramDataSize);
+#else
+		CallScriptFuntion* callScriptCommand = new CallScriptFuntion();
+		callScriptCommand.setCommandData(_resultSize, paramOffset, functionInfo->paramDataSize);
+#endif
+		callScriptCommand->setTargetCommand(functionCode->first);
+		_scriptInvoker = callScriptCommand;
 	}
 
 	ScriptRunner::~ScriptRunner(){
 	}
 
-	void ScriptRunner::runFunction(int functionId, const ScriptParamBuffer* paramBuffer) {
+	void ScriptRunner::runFunction(const ScriptParamBuffer* paramBuffer) {
 		auto context = Context::getCurrent();
 
 		Program* program = _program;
-
-		if (_functionId != functionId) {
-			_functionId = functionId;
-
-			_functionInfo = program->getFunctionInfo(functionId);
-			_functionCode = program->getFunctionPlainCode(functionId);
-		}
-
-		if (_functionInfo == nullptr) {
-			return;
-		}
-		if (_functionCode == nullptr) {
-			return;
-		}
 
 		int paramOffset = s_returnOffset + _functionInfo->returnStorageSize;
 		if (paramBuffer != nullptr && _functionInfo->paramDataSize > 0) {
@@ -44,25 +48,12 @@ namespace ffscript {
 		auto allocatedSize = _functionInfo->returnStorageSize + _functionInfo->paramDataSize;
 		context->scopeAllocate(allocatedSize, 0);
 
-#if USE_DIRECT_COPY_FOR_RETURN
-#if USE_FUNCTION_TREE
-		CallScriptFuntion3 callScriptCommand;
-#else
-		CallScriptFuntion2 callScriptCommand;
-#endif
-		
-		callScriptCommand.setCommandData(s_returnOffset, paramOffset, _functionInfo->paramDataSize);		
-#else
-		CallScriptFuntion callScriptCommand;
-		callScriptCommand.setCommandData(_resultSize, paramOffset, functionInfo->paramDataSize);
-#endif
-		
-		callScriptCommand.setTargetCommand(_functionCode->first);
-		callScriptCommand.execute();
+		_scriptInvoker->execute();
 
 #if !USE_FUNCTION_TREE
 		_scriptContext->run();
 #endif
+		context->scopeUnallocate(allocatedSize, 0);
 	}
 
 	void* ScriptRunner::getTaskResult() {

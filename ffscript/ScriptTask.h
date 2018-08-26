@@ -9,10 +9,14 @@ namespace ffscript {
 	class Program;
 	struct FunctionInfo;
 
-	class ScriptTask : public ScriptRunner 
+	class ScriptTask
 	{
 		Context* _scriptContext;
 		int _allocatedSize;
+		ScriptRunner* _scriptRunner;
+		Program* _program;
+
+		int _lastCallFunctionId;
 	public:
 		ScriptTask(Program* program);
 		virtual ~ScriptTask();

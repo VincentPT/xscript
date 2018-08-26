@@ -159,6 +159,15 @@ namespace ffscript {
 		return (int)_allocatedStack.front();
 	}
 
+	unsigned int Context::getTotalAllocatedSize() const {
+		unsigned int size = 0;
+		for (auto it = _allocatedStack.begin(); it != _allocatedStack.end(); it++) {
+			size += *it;
+		}
+
+		return size;
+	}
+
 	int Context::getMemCapacity() const {
 		return _dataSize;
 	}

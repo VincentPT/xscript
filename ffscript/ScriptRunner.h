@@ -5,20 +5,19 @@
 namespace ffscript {
 	class Program;
 	struct FunctionInfo;
+	class CallFuntion;
 
 	class ScriptRunner
 	{
 	protected:
 		Program* _program;
-		// cached data
-		int _functionId;
 		FunctionInfo* _functionInfo;
-		CodeSegmentEntry* _functionCode;
+		CallFuntion* _scriptInvoker;
 	public:
-		ScriptRunner(Program* program);
+		ScriptRunner(Program* program, int functionId);
 		virtual ~ScriptRunner();
 
-		virtual void runFunction(int functionId, const ScriptParamBuffer* paramBuffer);
+		virtual void runFunction(const ScriptParamBuffer* paramBuffer);
 		virtual void* getTaskResult();
 	};
 }

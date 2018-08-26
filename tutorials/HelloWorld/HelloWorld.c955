@@ -1,0 +1,18 @@
+////////////////////////////////////////////////////////////////////////////
+///
+/// Simple script program demonstrate working with IO operation
+///
+////////////////////////////////////////////////////////////////////////////
+
+// main function of script
+// unlike C++, this function is not required in a script application
+// it is just a function specific depend on loader program
+void main() {
+    
+    println("Welcome to C Lambda!");
+    println("What your name?");
+    
+    String name = getLine();
+    
+    println("Hello " + name + ". Nice to meet you!");
+}

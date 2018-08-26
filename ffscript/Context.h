@@ -45,6 +45,7 @@ namespace ffscript {
 		//int getCurrentOffset() const;
 		inline int Context::getCurrentOffset() const { return _currentOffset; }
 		int getCurrentScopeSize() const;
+		unsigned int getTotalAllocatedSize() const;
 		int getMemCapacity() const;
 		bool isError() const;
 		void moveOffset(int size);
