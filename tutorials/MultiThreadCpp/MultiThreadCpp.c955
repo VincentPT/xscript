@@ -1,0 +1,25 @@
+////////////////////////////////////////////////////////////////////////////
+///
+/// Simple script program demonstrate calling script function from threads in C++ program.
+///
+////////////////////////////////////////////////////////////////////////////
+
+// declare function object of long(long arg0)
+function<long(long)> fy;
+
+long X(long n) {
+    if(n < 1) {
+        return 1;
+    }
+    return X(n -1) + fy(n - 1);
+}
+
+long Y(long n) {
+    if(n < 1) {
+        return 1;
+    }
+    return 2 * X(n -1) * Y(n - 1);
+}
+
+// set the function object to function 'Y'
+fy = Y;

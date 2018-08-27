@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DataExchange", "tutorials\D
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiThread", "tutorials\MultiThread\MultiThread.vcxproj", "{46A4A2B3-C227-42DD-B77C-E1785D1B16CF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiThreadCpp", "tutorials\MultiThreadCpp\MultiThreadCpp.vcxproj", "{7AA83C15-FA9E-46D3-B573-F591272689F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -151,6 +153,22 @@ Global
 		{46A4A2B3-C227-42DD-B77C-E1785D1B16CF}.Release|x64.Build.0 = Release|x64
 		{46A4A2B3-C227-42DD-B77C-E1785D1B16CF}.Release|x86.ActiveCfg = Release|Win32
 		{46A4A2B3-C227-42DD-B77C-E1785D1B16CF}.Release|x86.Build.0 = Release|Win32
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Debug|x64.ActiveCfg = Debug|x64
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Debug|x64.Build.0 = Debug|x64
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Debug|x86.ActiveCfg = Debug|Win32
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Debug|x86.Build.0 = Debug|Win32
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Dll_debug|x64.ActiveCfg = Debug|x64
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Dll_debug|x64.Build.0 = Debug|x64
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Dll_debug|x86.ActiveCfg = Debug|Win32
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Dll_debug|x86.Build.0 = Debug|Win32
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Dll_Release|x64.ActiveCfg = Release|x64
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Dll_Release|x64.Build.0 = Release|x64
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Dll_Release|x86.ActiveCfg = Release|Win32
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Dll_Release|x86.Build.0 = Release|Win32
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Release|x64.ActiveCfg = Release|x64
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Release|x64.Build.0 = Release|x64
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Release|x86.ActiveCfg = Release|Win32
+		{7AA83C15-FA9E-46D3-B573-F591272689F2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -160,6 +178,7 @@ Global
 		{078E5DAB-7D6F-4ED6-989A-BB59E1A454D9} = {EA85A6DF-5B3B-40BE-A9FB-0E2BFB7F692C}
 		{47B631DC-903D-49FC-B788-4F4AB36FF0A6} = {EA85A6DF-5B3B-40BE-A9FB-0E2BFB7F692C}
 		{46A4A2B3-C227-42DD-B77C-E1785D1B16CF} = {EA85A6DF-5B3B-40BE-A9FB-0E2BFB7F692C}
+		{7AA83C15-FA9E-46D3-B573-F591272689F2} = {EA85A6DF-5B3B-40BE-A9FB-0E2BFB7F692C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {178FF0E3-46E8-4EB0-8DD6-00CD000C7A24}

@@ -15,4 +15,5 @@ using namespace ffscript;
 typedef void(*FImportLibrary)(ScriptCompiler*);
 
 CLamdaProg* complieProgram(FImportLibrary importLib, const char* file, int globalStackSize = 1024);
+// run script program which has main() function in global context
 void* runProgram(CLamdaProg*);
