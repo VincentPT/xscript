@@ -9,24 +9,6 @@
 using namespace std::chrono;
 using namespace std;
 
-// native function that is real implementation of 'println' in the script
-void println(const RawString& rs) {
-	wcout << rs.elms << endl;
-}
-
-void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
-	FunctionRegisterHelper fb(scriptCompiler);
-
-	// register 'println' function
-	registerFunction
-		<void, const RawString&> // native function prototype
-		(fb, // register helper object
-			println, // native function
-			"println", //script function name
-			"void", // return type of the script function
-			"String&" // parameter type of the function
-			);
-}
 
 int main(int argc, char* argv[])
 {
@@ -40,9 +22,6 @@ int main(int argc, char* argv[])
 	// import custom libraries
 	// String library
 	includeRawStringToCompiler(scriptCompiler);
-
-	// import application specific library
-	importApplicationLibrary(scriptCompiler);
 
 	// tell compiler that from now, any the function that will be registered
 	// is a user function, that mean it will be clean each time compileProgram is executed
