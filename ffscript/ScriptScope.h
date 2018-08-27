@@ -51,6 +51,7 @@ namespace ffscript {
 	protected:
 		ExecutableUnitRef chooseCandidate(const CandidateCollectionRef& candidates, const ScriptType& expectedReturnType);
 		void constructObjectForReturning(ExecutableUnitRef& candidate, const ScriptType& expectedReturnType);
+		std::list<Variable>& getVariables();
 	public:
 		ScriptScope(ScriptCompiler* scriptCompiler);
 		virtual ~ScriptScope();

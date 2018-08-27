@@ -73,6 +73,10 @@ namespace ffscript {
 		return it.first->second.get();
 	}
 
+	std::list<Variable>& ScriptScope::getVariables() {
+		return _varibles;
+	}
+
 	Variable* ScriptScope::applyTemporaryVariableFor(CommandUnit* parentUnit, Variable* pVariable) {
 		auto it = _variableUnitMap.insert(std::make_pair(parentUnit, pVariable));
 		if (it.second) {

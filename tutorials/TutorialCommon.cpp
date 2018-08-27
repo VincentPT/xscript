@@ -58,8 +58,9 @@ CLamdaProg* complieProgram(FImportLibrary importLib, const char* file) {
 	return nullptr;
 }
 
-void runProgram(CLamdaProg* scriptProgram) {
-	if (scriptMainFunctionId < 0) return;
+void* runProgram(CLamdaProg* scriptProgram) {
+	if (scriptMainFunctionId < 0) return nullptr;
+	void* returnFromMain = nullptr;
 
 	using namespace std::chrono;
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -67,6 +68,8 @@ void runProgram(CLamdaProg* scriptProgram) {
 	try {
 		ScriptRunner scriptRunner(scriptProgram->getProgram(), scriptMainFunctionId);
 		scriptRunner.runFunction(nullptr);
+
+		returnFromMain = scriptRunner.getTaskResult();
 	}
 	catch (std::exception& e) {
 		cout << "An exception has been occured while running the script: " << e.what() << endl;
@@ -77,6 +80,8 @@ void runProgram(CLamdaProg* scriptProgram) {
 	duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
 	cout << endl;
 	cout << "+----------------------------------------------------------+" << endl;
-	cout << "|              time consume: " << time_span.count() <<"                       |" << endl;
+	cout << "|              time consume: " << time_span.count() <<"s                   |" << endl;
 	cout << "+----------------------------------------------------------+" << endl;
+
+	return returnFromMain;
 }

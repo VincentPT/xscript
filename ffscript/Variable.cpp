@@ -50,13 +50,15 @@ namespace ffscript {
 		_ownerScope = ownerScope;
 	}
 
-	Variable* Variable::clone() {
+	Variable* Variable::clone(bool keepManaged) {
 		Variable* aCopy = new Variable(_name);
 		aCopy->_offset = _offset;
 		aCopy->_type = _type;
 		aCopy->_ownerScope = _ownerScope;
 
-		_copies.push_back(std::shared_ptr<Variable>(aCopy));
+		if (keepManaged) {
+			_copies.push_back(std::shared_ptr<Variable>(aCopy));
+		}
 
 		return aCopy;
 	}

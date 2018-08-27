@@ -1,0 +1,34 @@
+////////////////////////////////////////////////////////////////////////////
+///
+/// Simple script program demonstrate exchanging data between C++ program and script program
+///
+////////////////////////////////////////////////////////////////////////////
+
+struct Point {
+    float x;
+    float y;
+}
+
+// a raw data type
+Point p;
+
+// a primary type;
+int val;
+
+// a complex data type(String object has constructors and destructors)
+// destructor of 'str' will be called when c++ program call cleanupGlobalMemory
+String str;
+
+// main function of script
+// unlike C++, this function is not required in a script application
+// it is just a function specific depend on loader program
+String main() {
+    
+    println("p = {" + String(p.x) + ", " + String(p.y) + "}");
+    println("val = " + String(val));
+    println("str = " + str);
+    
+    // return a constant string(std::string in c++) the program will convert to a String object(RawString in c++)
+    // The c++ program have responsible to destroy the String object if it is no longer used
+    return "Hello there!";
+}

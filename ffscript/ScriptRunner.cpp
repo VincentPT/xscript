@@ -58,7 +58,7 @@ namespace ffscript {
 
 	void* ScriptRunner::getTaskResult() {
 		auto context = Context::getCurrent();
-		if (context) {
+		if (_functionInfo->returnStorageSize > 0 && context) {
 #if USE_DIRECT_COPY_FOR_RETURN
 			return context->getAbsoluteAddress(s_returnOffset);
 #else

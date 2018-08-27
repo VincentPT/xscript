@@ -15,4 +15,4 @@ using namespace ffscript;
 typedef void(*FImportLibrary)(ScriptCompiler*);
 
 CLamdaProg* complieProgram(FImportLibrary importLib, const char* file);
-void runProgram(CLamdaProg*);
+void* runProgram(CLamdaProg*);

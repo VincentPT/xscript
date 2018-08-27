@@ -106,6 +106,11 @@ namespace ffscript {
 
 		scriptProgram->setContext(std::shared_ptr<StaticContext>(_staticContextRef.release()));
 
+		auto& variables = getVariables();
+		for (auto it = variables.begin(); it != variables.end(); it++) {
+			scriptProgram->addVariable( std::shared_ptr<Variable>(it->clone(false)));
+		}
+
 		return scriptProgram;
 	}
 }

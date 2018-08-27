@@ -35,7 +35,7 @@ namespace ffscript {
 		void setOffset(int offset);
 		ScriptScope* getScope() const;
 		void setScope(ScriptScope* ownerScope);
-		virtual Variable* clone();
+		virtual Variable* clone(bool keepManaged = true);
 		int getSize() const;
 	};
 
