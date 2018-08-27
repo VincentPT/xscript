@@ -7,7 +7,6 @@
 // buit-in math lib
 #include <MathLib.h>
 
-
 // c++ standard headers
 #include <iostream>
 #include <string>
@@ -77,8 +76,7 @@ int main(int argc, char* argv[])
 	}
 	executor1->runCode();
 	auto pY = (float*)executor1->getReturnData();
-	cout << *pY;
-	cout << "}" << endl;
+	cout << *pY << "}" << endl;
 
 	// run expression 2
 	// get variable of 'y' after compile
@@ -95,8 +93,7 @@ int main(int argc, char* argv[])
 	}
 	executor2->runCode();
 	auto pZ = (float*)executor2->getReturnData();
-	cout << *pZ;
-	cout << "}" << endl;
+	cout << *pZ << "}" << endl;
 
     return 0;
 }
