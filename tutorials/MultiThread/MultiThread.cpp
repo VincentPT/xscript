@@ -21,14 +21,11 @@ void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 			"void", // return type of the script function
 			"String&" // parameter type of the function
 			);
-
 }
 
 int main(int argc, char* argv[])
 {
-	// set the global stack size of program
-	// the global stack size is quite large because we will execute a recursive calling function in gloal context
-	auto program = complieProgram(importApplicationLibrary, "CoActionRecursive.c955", 1024 * 1024);
+	auto program = complieProgram(importApplicationLibrary, "MultiThread.c955");
 	if (program) {
 		// run the code that place in global scope
 		program->runGlobalCode();

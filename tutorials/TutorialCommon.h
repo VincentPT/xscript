@@ -14,5 +14,5 @@
 using namespace ffscript;
 typedef void(*FImportLibrary)(ScriptCompiler*);
 
-CLamdaProg* complieProgram(FImportLibrary importLib, const char* file);
+CLamdaProg* complieProgram(FImportLibrary importLib, const char* file, int globalStackSize = 1024);
 void* runProgram(CLamdaProg*);

@@ -61,7 +61,7 @@ void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 			"wstring&" // parameter type of the function
 			);
 
-	// register 'println' function
+	// register 'getLine' function
 	registerFunction
 		<RawString> // native function prototype
 		(fb, // register helper object

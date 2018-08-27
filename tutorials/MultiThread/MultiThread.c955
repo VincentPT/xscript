@@ -1,0 +1,65 @@
+////////////////////////////////////////////////////////////////////////////
+///
+/// Simple script program demonstrate working with multi-thread in a script program.
+///
+////////////////////////////////////////////////////////////////////////////
+
+// declare function object of long(long arg0)
+function<long(long)> fy;
+
+long X(long n) {
+    if(n < 1) {
+        return 1;
+    }
+    return X(n -1) + fy(n - 1);
+}
+
+long Y(long n) {
+    if(n < 1) {
+        return 1;
+    }
+    return 2 * X(n -1) * Y(n - 1);
+}
+
+// set the function object to function 'Y'
+fy = Y;
+
+// main function of script
+// unlike C++, this function is not required in a script application
+// it is just a function specific depend on loader program
+void main() {
+    long n = 7;
+    long xn_1;
+    long yn_1;
+    
+    // a lambda function which return void, capture variable n and has no parameter.
+    f1 = [n, &xn_1]() {
+        xn_1 = X(n - 1);
+    };
+    
+    // a lambda function which return void, capture variable n and has no parameter.
+    f2 = [n, &yn_1]() {
+        yn_1 = Y(n - 1);
+    };
+    
+    // create threads with default parameter(Stack size = 1MB)
+    // then execute parallel function X and Y to compute values for n - 1
+    t1 = createThread(f1);
+    t2 = createThread(f2);
+    
+    // join threads
+    joinThread(t1);
+    joinThread(t2);
+    
+    // close threads
+    closeThread(t1);
+    closeThread(t2);
+    
+    // after two threads are done, now it's time to compute values for n
+    long xn = xn_1 + yn_1;
+    long yn = 2 * xn_1 * yn_1;
+    
+    // print the results
+    println("X(" + n + ") = " + xn);
+    println("Y(" + n + ") = " + yn);
+}

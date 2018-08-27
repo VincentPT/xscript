@@ -33,7 +33,6 @@ void main() {
     long n = 7;
     long x = X(n);
     long y = Y(n);
-    println(L"xxxxxxx");
     println("X(" + n + ") = " + x);
     println("Y(" + n + ") = " + y);
 }
