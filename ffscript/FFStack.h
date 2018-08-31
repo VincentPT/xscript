@@ -47,7 +47,7 @@ namespace ffscript {
 		}
 
 		inline const T* end() const {
-			return _p;
+			return _p + 1;
 		}
 	};
 }

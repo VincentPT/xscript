@@ -48,7 +48,23 @@ namespace ffscript {
 		auto allocatedSize = _functionInfo->returnStorageSize + _functionInfo->paramDataSize;
 		context->scopeAllocate(allocatedSize, 0);
 
-		_scriptInvoker->execute();
+		int backupOffset = context->getCurrentOffset();
+		auto backupScopeRuntimeData = context->getScopeRuntimeData();
+
+		try {
+			_scriptInvoker->execute();
+		}
+		catch (std::exception& e) {
+			if (backupScopeRuntimeData) {
+				while (context->getScopeRuntimeData() != backupScopeRuntimeData) {
+					context->popContext();
+				}
+			}
+			int currentOffset = context->getCurrentOffset();
+			context->moveOffset(backupOffset - currentOffset);
+			
+			throw;
+		}
 
 #if !USE_FUNCTION_TREE
 		_scriptContext->run();
