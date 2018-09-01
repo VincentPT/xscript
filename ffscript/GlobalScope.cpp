@@ -77,7 +77,7 @@ namespace ffscript {
 			program->setFunctionInfo(functionId, functionInfo);
 
 			_registeredFuntions.push_back(functionId);
-			program->mapFunction(name, paramTypes, functionId);
+			//program->mapFunction(name, paramTypes, functionId);
 		}
 		else {
 			scriptCompiler->setErrorText("The function '" + name + "' is already exist");

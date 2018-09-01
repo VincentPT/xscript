@@ -9,7 +9,7 @@ namespace ffscript {
 	Program::Program() : _commandCounter(0), _programCode(nullptr)
 		//_moveOffset()
 	{
-		_assitantFuncLib = (FuncLibraryRef)( new FuncLibrary() );
+		//_assitantFuncLib = (FuncLibraryRef)( new FuncLibrary() );
 	}
 
 	Program::~Program()
@@ -86,9 +86,9 @@ namespace ffscript {
 		return &it->second;
 	}
 
-	const OverLoadingItem* Program::findFunctionInfo2(int functionId) {
-		return _assitantFuncLib->findFunctionInfo(functionId);
-	}
+	//const OverLoadingItem* Program::findFunctionInfo2(int functionId) {
+	//	return _assitantFuncLib->findFunctionInfo(functionId);
+	//}
 
 	void Program::setFunctionInfo(int functionId, const FunctionInfo& functionInfo) {
 		_functionInfoMap.insert(std::make_pair(functionId, functionInfo));
@@ -98,11 +98,11 @@ namespace ffscript {
 	//	return _assitantFuncLib->findFunction(name, paramTypes);
 	//}
 
-	int Program::mapFunction(const std::string& name, const std::vector<ScriptType>& paramTypes, int functionId) {
-		return _assitantFuncLib->mapFunction(name, paramTypes, functionId);
-	}
+	//int Program::mapFunction(const std::string& name, const std::vector<ScriptType>& paramTypes, int functionId) {
+	//	return _assitantFuncLib->mapFunction(name, paramTypes, functionId);
+	//}
 
-	int Program::mapDynamicFunction(const std::string& name, int functionId) {
-		return _assitantFuncLib->mapDynamicFunction(name, functionId);
-	}
+	//int Program::mapDynamicFunction(const std::string& name, int functionId) {
+	//	return _assitantFuncLib->mapDynamicFunction(name, functionId);
+	//}
 }

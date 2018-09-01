@@ -23,19 +23,20 @@ namespace ffscript {
 		std::map<Executor*, CodeSegmentEntry> _expCmdMap;
 		std::map<int, CodeSegmentEntry> _functionMap;
 		std::map<int, FunctionInfo> _functionInfoMap;
-		FuncLibraryRef _assitantFuncLib;
+		//FuncLibraryRef _assitantFuncLib;
 
 		CommandPointer _programCode;
 		int _commandCounter;
-		static Program* g_instance;
+		//static Program* g_instance;
 	public:
 		Program();
 		virtual ~Program();
 
 		void addExecutor(const ExecutorRef& executor);
 		//int findFunction(const std::string& name, const std::vector<int>& paramTypes);
-		int mapFunction(const std::string& name, const std::vector<ScriptType>& paramTypes, int functionId);
-		int mapDynamicFunction(const std::string& name, int functionId);
+		//int mapFunction(const std::string& name, const std::vector<ScriptType>& paramTypes, int functionId);
+		//int mapDynamicFunction(const std::string& name, int functionId);
+		//const OverLoadingItem* findFunctionInfo2(int functionId);
 
 		//this method must be called after all executors is and before the other methods
 		void convertToPlainCode();
@@ -48,7 +49,6 @@ namespace ffscript {
 		void setFunctionPlainCode(int functionId, const CodeSegmentEntry& functionCode);
 
 		FunctionInfo* getFunctionInfo(int functionId);
-		const OverLoadingItem* findFunctionInfo2(int functionId);
 		void setFunctionInfo(int functionId, const FunctionInfo& functionInfo);
 	};
 }
