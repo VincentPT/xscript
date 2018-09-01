@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        GeometryLib.h
+* Description: declare some geometry functions and object and
+*              declare an interface to import them into the
+*              script compiler.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 
 #include "ffscript.h"

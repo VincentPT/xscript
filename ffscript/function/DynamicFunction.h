@@ -1,3 +1,18 @@
+/******************************************************************
+* File:        DynamicFunction.h
+* Description: declare abstract class of function object that invoke
+*              a target function. This function object design to store
+*              all necessary arguments of its target function when
+*              it is created. The caller just to call 'call' only
+*              to invoke the target function.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 
 class DFunction

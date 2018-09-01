@@ -1,3 +1,24 @@
+/******************************************************************
+* File:        CdeclFunction2.hpp
+* Description: template class and its member functions that used to
+*              invoke _cdecl functions. this function object do not
+*              store any arguments of its target function when
+*              it is created. The caller need to pass arguments
+*              through and array of void* to invoke the target
+*              function.
+*              This function object does not support pass argument
+*              that its type is real type(float,double) for any type
+*              that size of it is larger than current size of an
+*              element in stack(of C++ program).
+***            This template class is deprecated.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "DynamicFunction2.h"
 #include "functioninternal2.hpp"

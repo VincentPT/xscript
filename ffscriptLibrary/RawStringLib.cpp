@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        RawStringLib.h
+* Description: Implement some String functions and implement an
+*              interface to import String type and its
+*              related functions into the script compiler.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "RawStringLib.h"
 

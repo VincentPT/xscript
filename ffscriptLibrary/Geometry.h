@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        Geometry.h
+* Description: C++ template functions of some common geometry
+*              functions using in scripting library.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include <vector>
 #include <memory>

@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        GeometryLib.cpp
+* Description: Implement some geometry functions and object and
+*              implement an interface to import them into the
+*              script compiler.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "GeometryLib.h"
 
