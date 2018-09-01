@@ -213,6 +213,7 @@
     </ClCompile>
     <ClCompile Include="MakePathsUT.cpp" />
     <ClCompile Include="MemberFunctionUT.cpp" />
+    <ClCompile Include="MemoryblockUT.cpp" />
     <ClCompile Include="MultiCompilerUT.cpp">
       <SubType>
       </SubType>
@@ -260,10 +261,6 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="SubscriptionUT.cpp" />
-    <ClCompile Include="UnitTest1.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="UserLibraryUT.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="VectorCompatibleUT.cpp">
