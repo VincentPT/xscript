@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        InternalComplierSuiteUT.cpp
+* Description: Test cases for checking behavior of internal compiler.
+*              Internal compiler is a compiler use inside the
+*              scripting compiler to compile some constant expression.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "InternalCompilerSuite.h"

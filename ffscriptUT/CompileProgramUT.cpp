@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        CompileProgramUT.cpp
+* Description: Test cases for compiling, running C Lambda programs
+*              read from memory.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "ExpresionParser.h"

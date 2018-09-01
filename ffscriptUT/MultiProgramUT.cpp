@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        MultiProgramUT.cpp
+* Description: Test cases for using many program instance
+*              at the same time of C Lambda scripting language.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "ExpresionParser.h"

@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        BitwiseOperatorsUT.cpp
+* Description: Test cases for compiling, running C Lambda scripting
+*              language that contains bitwise operators.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "TemplateForTest.hpp"

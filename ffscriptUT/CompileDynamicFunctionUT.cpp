@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        CompileDynamicFunctionUT.cpp
+* Description: Test cases for compiling C Lambda scripting
+*              language that contains dynamic parameter functions.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "ExpresionParser.h"

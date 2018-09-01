@@ -1,3 +1,19 @@
+/******************************************************************
+* File:        MultiThreadCpp.cpp
+* Description: Contains code for compiling, running C Lambda
+*              scripting language. This application run two scripting
+*              functions in two separate threads to demonstrate the
+*              ability of running the scripting code in multi context.
+*              See file MultiThreadCpp.c955 to understand
+*              what the script does.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "../TutorialCommon.h"
 #include <chrono>

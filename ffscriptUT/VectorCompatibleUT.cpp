@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        VectorCompatibleUT.cpp
+* Description: Test cases check using SimpleArray with some standard
+*              c++ functions.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "ffscript.h"

@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        ffscriptUT.cpp
+* Description: Test cases of checking some C++ techniques before
+*              using it inside C Lambda compiling library. 
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "ExpresionParser.h"

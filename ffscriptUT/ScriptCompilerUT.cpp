@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        ScriptCompilerUT.cpp
+* Description: Test cases for using ScriptCompiler to register types
+*              and functions in a C Lambda application.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "..\ffscript\ScriptCompiler.h"

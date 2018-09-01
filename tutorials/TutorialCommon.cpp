@@ -1,5 +1,14 @@
-// CoActionRecursive.cpp : Defines the entry point for the console application.
-//
+/******************************************************************
+* File:        TutorialCommon.cpp
+* Description: Implementation of common utilities function used
+*              for tutorials of usage C Lambda scripting language.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
 
 #include "TutorialCommon.h"
 #include <chrono>

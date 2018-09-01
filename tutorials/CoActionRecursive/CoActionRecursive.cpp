@@ -1,3 +1,17 @@
+/******************************************************************
+* File:        CoActionRecursive.cpp
+* Description: Contains code for compiling, running C Lambda
+*              scripting language.
+*              See file CoActionRecursive.c955 to understand
+*              what the script does.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "../TutorialCommon.h"
 
@@ -24,7 +38,7 @@ void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 int main(int argc, char* argv[])
 {
 	// set the global stack size of program
-	// the global stack size is quite large because we will execute a recursive calling function in gloal context
+	// the global stack size is quite large because we will execute a recursive calling function in global context
 	auto program = compileProgram(importApplicationLibrary, "CoActionRecursive.c955", 1024 * 1024);
 	if (program) {
 		// run the code that place in global scope

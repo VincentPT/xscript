@@ -1,3 +1,14 @@
+/******************************************************************
+* File:        MemoryblockUT.cpp
+* Description: Test cases focus on checking size of MemoryBlock
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "template\TemplateBlock.hpp"
@@ -7,7 +18,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ffscriptUT
 {		
-	TEST_CLASS(MemoryblockChecker)
+	TEST_CLASS(MemoryblockUT)
 	{
 	public:
 		TEST_METHOD(CheckSize1)

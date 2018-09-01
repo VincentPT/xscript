@@ -1,3 +1,14 @@
+/******************************************************************
+* File:        Utility.cpp
+* Description: implement common functions used in unit test project.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "Utility.h"
 #include "ExpresionParser.h"

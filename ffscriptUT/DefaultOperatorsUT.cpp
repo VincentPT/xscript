@@ -1,3 +1,17 @@
+/******************************************************************
+* File:        DefaultOperatorsUT.cpp
+* Description: Test cases for checking behavior of default operators.
+*              Default operators are operators is supported automatically
+*              by the scripting library for any types such as
+*              operator '=', 'ref'
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "ExpresionParser.h"

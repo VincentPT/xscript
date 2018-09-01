@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        SingleExpression.cpp
+* Description: Contains code for compiling, running single expression
+*              of C Lambda scripting language.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 // script compiler suite header
 #include <CompilerSuite.h>
