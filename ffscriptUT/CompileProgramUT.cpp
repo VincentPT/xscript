@@ -407,8 +407,12 @@ namespace ffscriptUT
 			auto pVariable = rootScope.findVariable("a");
 			Assert::IsNotNull(pVariable, L"cannot find variable 'a'");
 
-			Assert::IsTrue(false, L"Current the engine cannot call a script function in global code");
-			staticContex.run();
+			//Assert::IsTrue(false, L"Current the engine cannot call a script function in global code");
+			//staticContex.run();
+
+			rootScope.runGlobalCode();
+			rootScope.cleanupGlobalMemory();
+
 			int* iRes = (int*)staticContex.getAbsoluteAddress(pVariable->getOffset());
 			Assert::AreEqual(1, *iRes, L"program does not run properly");
 		}
