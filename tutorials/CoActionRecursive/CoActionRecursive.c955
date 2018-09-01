@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////
 ///
-/// Simple script program demonstrate co-action recursive algorithm.
-/// This also shows how to call a function from another function which
-///  declared before it according to compiling order.
+/// Simple C Lambda program demonstrate co-action recursive algorithm.
+/// Other techniques:
+///     + Calling a function from another function which 
+///       declared before it according to compiling order.
 ///
 ////////////////////////////////////////////////////////////////////////////
 
@@ -26,9 +27,7 @@ long Y(long n) {
 // set the function object to function 'Y'
 fy = Y;
 
-// main function of script
-// unlike C++, this function is not required in a script application
-// it is just a function specific depend on loader program
+// a function of script, in this tutorial it act as main function of the script program
 void main() {
     long n = 7;
     long x = X(n);

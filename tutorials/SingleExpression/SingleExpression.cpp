@@ -1,6 +1,3 @@
-//
-//
-
 #include "stdafx.h"
 // script compiler suite header
 #include <CompilerSuite.h>
@@ -63,15 +60,21 @@ int main(int argc, char* argv[])
 	}
 
 	// run expression 1
-	// get variable of X after compile
+	// get reference of 'x' after compile in global scope
 	float& x = *(float*)globalScope->getGlobalAddress(pVariableX->getOffset());
+	// set 'x' to zero
 	x = 0;
 	constexpr int n = 10;
 	cout << "set of y(x)    = {";
 	for (int i = 0; i < n - 1; i++) {
+		// run the compiled expression
 		executor1->runCode();
+		// get return data of the expression
 		auto pY = (float*)executor1->getReturnData();
+		// print the result
 		cout << *pY << ", ";
+
+		// change 'x' to compute expression at the next turn
 		x += 0.2f;
 	}
 	executor1->runCode();
@@ -79,15 +82,20 @@ int main(int argc, char* argv[])
 	cout << *pY << "}" << endl;
 
 	// run expression 2
-	// get variable of 'y' after compile
+	// get reference of 'y' after compile in global scope
 	float& y = *(float*)globalScope->getGlobalAddress(pVariableY->getOffset());
 	x = 0;
 	y = 0;
 	cout << "set of z(x, y) = {";
 	for (int i = 0; i < n - 1; i++) {
+		// run the compiled expression
 		executor2->runCode();
+		// get return data of the expression
 		auto pZ = (float*)executor2->getReturnData();
+		// print the result
 		cout << *pZ << ", ";
+
+		// change 'x' and 'y' to compute expression at the next turn
 		x += 0.2f;
 		y += 0.2f;
 	}

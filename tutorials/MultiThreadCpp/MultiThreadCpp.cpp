@@ -1,6 +1,3 @@
-// CoActionRecursive.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include "../TutorialCommon.h"
 #include <chrono>
@@ -27,12 +24,21 @@ int main(int argc, char* argv[])
 	// is a user function, that mean it will be clean each time compileProgram is executed
 	scriptCompiler->beginUserLib();
 
+	// read script from file
 	const char* scriptFile = "MultiThreadCpp.c955";
 	auto script = readCodeFromUtf8File(scriptFile);
+
+	// set default pre-processor, pre-processor allows user comment in
+	// the script and allows error indicator works
 	compiler.setPreprocessor(std::make_shared<DefaultPreprocessor>());
+
+	// compile the C Lambda program
 	auto program = compiler.compileProgram(script.c_str(), script.c_str() + script.size());
 
+	// check if the compiling process is failed...
 	if (program == nullptr) {
+		// ...then get error information
+		// then shows to user
 		int line, column;
 		compiler.getLastCompliedPosition(line, column);
 
@@ -48,7 +54,7 @@ int main(int argc, char* argv[])
 
 		return -1;
 	}
-
+	// find function 'X' and 'Y' after the script is compiled.
 	int xFunctionId = scriptCompiler->findFunction("X", "long");
 	int yFunctionId = scriptCompiler->findFunction("Y", "long");
 	if (xFunctionId < 0) {

@@ -6,7 +6,7 @@
 
 int scriptMainFunctionId = -1;
 
-CLamdaProg* complieProgram(FImportLibrary importLib, const char* file, int globalStackSize) {
+CLamdaProg* compileProgram(FImportLibrary importLib, const char* file, int globalStackSize) {
 	CompilerSuite compiler;
 
 	// initialize compiler, import system library and set the stack size of global context

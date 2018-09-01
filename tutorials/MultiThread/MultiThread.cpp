@@ -1,6 +1,3 @@
-// CoActionRecursive.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include "../TutorialCommon.h"
 
@@ -25,7 +22,7 @@ void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 
 int main(int argc, char* argv[])
 {
-	auto program = complieProgram(importApplicationLibrary, "MultiThread.c955", 1024*1024);
+	auto program = compileProgram(importApplicationLibrary, "MultiThread.c955", 1024*1024);
 	if (program) {
 		// run the code that place in global scope
 		program->runGlobalCode();

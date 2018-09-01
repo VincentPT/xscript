@@ -1,6 +1,3 @@
-// CoActionRecursive.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include "../TutorialCommon.h"
 
@@ -88,7 +85,7 @@ struct Point {
 
 int main(int argc, char* argv[])
 {
-	auto program = complieProgram(importApplicationLibrary, "DataExchange.c955");
+	auto program = compileProgram(importApplicationLibrary, "DataExchange.c955");
 	if (program) {
 		// run the code that place in global scope
 		program->runGlobalCode();

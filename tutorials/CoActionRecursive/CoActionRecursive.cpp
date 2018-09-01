@@ -1,6 +1,3 @@
-// CoActionRecursive.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include "../TutorialCommon.h"
 
@@ -28,7 +25,7 @@ int main(int argc, char* argv[])
 {
 	// set the global stack size of program
 	// the global stack size is quite large because we will execute a recursive calling function in gloal context
-	auto program = complieProgram(importApplicationLibrary, "CoActionRecursive.c955", 1024 * 1024);
+	auto program = compileProgram(importApplicationLibrary, "CoActionRecursive.c955", 1024 * 1024);
 	if (program) {
 		// run the code that place in global scope
 		program->runGlobalCode();

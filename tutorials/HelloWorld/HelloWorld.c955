@@ -1,12 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////
 ///
-/// Simple script program demonstrate working with IO operation
+/// Simple C Lambda program demonstrate working with IO operation
 ///
 ////////////////////////////////////////////////////////////////////////////
 
-// main function of script
-// unlike C++, this function is not required in a script application
-// it is just a function specific depend on loader program
+// a function of script, in this tutorial it act as main function of the script program
 void main() {
     
     println("Welcome to C Lambda!");

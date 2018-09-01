@@ -1,8 +1,8 @@
-////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-/// Simple script program demonstrate exchanging data between C++ program and script program
+/// Simple C Lambda program demonstrate exchanging data between C++ program and script program
 ///
-////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 struct Point {
     float x;
@@ -15,13 +15,11 @@ Point p;
 // a primary type;
 int val;
 
-// a complex data type(String object has constructors and destructors)
-// destructor of 'str' will be called when c++ program call cleanupGlobalMemory
+// a complex data type(String object has constructors and destructor)
+// destructor of 'str' will be called when c++ program calls cleanupGlobalMemory
 String str;
 
-// main function of script
-// unlike C++, this function is not required in a script application
-// it is just a function specific depend on loader program
+// a function of script, in this tutorial it act as main function of the script program
 String main() {
     
     println("p = {" + String(p.x) + ", " + String(p.y) + "}");
