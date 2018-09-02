@@ -6,7 +6,7 @@
 #include "unitType.h"
 #include "Variable.h"
 #include "function\DynamicFunction2.h"
-#include "CommandUnit.h"
+#include "CommandUnitBuilder.h"
 #include "ScriptType.h"
 
 #include <string>

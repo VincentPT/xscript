@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CommandUnit.h"
+#include "CommandUnitBuilder.h"
 
 namespace ffscript {
 	CommandUnitBuilder::CommandUnitBuilder() : _mask(UMASK_NONE)

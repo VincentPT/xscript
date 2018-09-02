@@ -124,9 +124,6 @@
     <ClInclude Include="Supportfunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CommandUnit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -298,6 +295,9 @@
     <ClInclude Include="CLamdaProg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CommandUnitBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -364,9 +364,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Supportfunctions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandUnit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScriptFunction.cpp">
@@ -493,6 +490,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CLamdaProg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandUnitBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

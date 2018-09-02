@@ -280,7 +280,7 @@
     <ClInclude Include="BasicType.h" />
     <ClInclude Include="CLamdaProg.h" />
     <ClInclude Include="CommandTree.h" />
-    <ClInclude Include="CommandUnit.h" />
+    <ClInclude Include="CommandUnitBuilder.h" />
     <ClInclude Include="CompilerSuite.h" />
     <ClInclude Include="CompositeConstrutorUnit.h" />
     <ClInclude Include="ConditionalOperator.h" />
@@ -369,7 +369,7 @@
     <ClCompile Include="BasicType.cpp" />
     <ClCompile Include="CLamdaProg.cpp" />
     <ClCompile Include="CommandTree.cpp" />
-    <ClCompile Include="CommandUnit.cpp" />
+    <ClCompile Include="CommandUnitBuilder.cpp" />
     <ClCompile Include="CompilerSuite.cpp" />
     <ClCompile Include="CompositeConstrutorUnit.cpp" />
     <ClCompile Include="ConditionalOperator.cpp" />
