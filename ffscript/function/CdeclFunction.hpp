@@ -1,7 +1,7 @@
 /******************************************************************
 * File:        CdeclFunction.hpp
 * Description: template class and its member functions that used to
-*              invoke _cdecl functions. this function object store
+*              invoke _cdecl functions. This function object stores
 *              all necessary arguments of its target function when
 *              it is created. The caller just to call 'call' only
 *              to invoke the target function.

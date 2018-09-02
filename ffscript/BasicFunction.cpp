@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        BasicFunction.cpp
+* Description: implement some basic expression function unit factory
+*              classes.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "BasicFunction.h"
 #include "expressionunit.h"

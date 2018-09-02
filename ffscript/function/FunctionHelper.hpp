@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        FunctionHelper.hpp
+* Description: template class utilities used for working with
+*              vadiaric template.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "CdeclFunction2.hpp"
 #include "CdeclFunction3.hpp"

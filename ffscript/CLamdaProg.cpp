@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        CLamdaProg.cpp
+* Description: implement CLamdaProg class. A class used to store
+*              compiled code and other stuffs that allow user
+*              running the code with a global context.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CLamdaProg.h"
 #include "StaticContext.h"

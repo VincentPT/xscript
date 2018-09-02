@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        functioninternal2.hpp
+* Description: define some common template classes, functions and
+*              macros used by derived classes of DFunction2.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 
 #include <type_traits>

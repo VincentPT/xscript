@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        BasicFunctionFactory.hpp
+* Description: define BasicFunctionFactory template class. A factory class
+*              that create fixed parameter function unit from DFunction2
+*              function object.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "expressionunit.h"
 #include "function\CdeclFunction2.hpp"

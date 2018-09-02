@@ -1,3 +1,17 @@
+/******************************************************************
+* File:        CodeUpdater.h
+* Description: declare CodeUpdater class. A class used to store
+*              update tasks. Behavior of update task are various,
+*              created in compiling time, and run in extraction code
+*              time.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include <list>
 #include <memory>

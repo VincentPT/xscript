@@ -1,3 +1,17 @@
+/******************************************************************
+* File:        BasicType.h
+* Description: declare BasicTypes class to register basic types,
+*              register casting function between types of the
+*              scripting language.
+*              define some casting function factory classes.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ffscript.h"
 #include "expressionunit.h"

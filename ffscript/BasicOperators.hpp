@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        BasicOperators.hpp
+* Description: define function template for basic operators such as
+*              operator+, operator-,...
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ffscript.h"
 

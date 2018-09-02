@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        MemberFunction2Ref.hpp
+* Description: Like MemberFunction2 but this class support target
+*              functions that return a reference type only.
+**             This template class is deprecated.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "DynamicFunction2.h"
 #include "functioninternal2.hpp"

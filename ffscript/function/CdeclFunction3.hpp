@@ -1,11 +1,12 @@
 /******************************************************************
 * File:        CdeclFunction3.hpp
 * Description: template class and its member functions that used to
-*              invoke _cdecl functions. this function object do not
-*              store any arguments of its target function when
+*              invoke _cdecl functions. This function object does
+*              not store any arguments of its target function when
 *              it is created. The caller need to pass arguments
 *              through and array of bytes to invoke the target
 *              function.
+**             CdeclFunction3 class is created to replace CdeclFunction2.
 * Author:      Vincent Pham
 *
 * (C) Copyright 2018, The ffscript project, All rights reserved.

@@ -1,3 +1,18 @@
+/******************************************************************
+* File:        CommandTree.cpp
+* Description: implement command unit classes. Instances of these
+*              classes are compiled code of the script. They are
+*              executable. They have main command and sub commands.
+*              The sub commands are function parameters where the
+*              main command is processor unit of the function.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CommandTree.h"
 #include "Context.h"

@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        MemberTypeInfo.hpp
+* Description: define some common template classes that used for
+*              new generation of function object classes(
+*              CdeclFunction3, MemberFunction3)
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "functioninternal2.hpp"
 

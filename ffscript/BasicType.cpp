@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        BasicType.cpp
+* Description: implement BasicTypes class to register basic types,
+*              register casting function between types of the
+*              scripting language.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "BasicType.h"
 #include "FunctionRegisterHelper.h"
