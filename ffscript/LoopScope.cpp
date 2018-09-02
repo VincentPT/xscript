@@ -24,7 +24,7 @@ namespace ffscript {
 
 	LoopScope::~LoopScope(){}
 
-	CommandUnit* LoopScope::getConditionExpression() const {
+	CommandUnitBuilder* LoopScope::getConditionExpression() const {
 		return _conditionExpression;
 	}
 

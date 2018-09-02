@@ -32,7 +32,7 @@ namespace ffscript {
 		typedef std::map<std::string, DFunction2Ref> KeywordProcessingMap;
 
 		std::map<std::string, Variable*> _variableNameMap;
-		std::map<CommandUnit*, std::shared_ptr<Variable>> _variableUnitMap;
+		std::map<CommandUnitBuilder*, std::shared_ptr<Variable>> _variableUnitMap;
 		KeywordProcessingMap _keywordProcessingMap;
 		std::list<Variable> _varibles;
 		std::list<MemberVariable> _memberVaribles;
@@ -59,11 +59,11 @@ namespace ffscript {
 		Variable* registVariable(const std::string&);
 		Variable* registVariable();
 		void removeVariable(Variable*);
-		Variable* registTempVariable(CommandUnit* parentUnit, int offset);
-		Variable* applyTemporaryVariableFor(CommandUnit* parentUnit, Variable* pVariable);
-		bool deleteTempVariable(CommandUnit* parentUnit);
-		Variable* findTempVariable(CommandUnit* parentUnit);
-		CommandUnit* checkVariableToRunConstructor(CXOperand* xOperand);
+		Variable* registTempVariable(CommandUnitBuilder* parentUnit, int offset);
+		Variable* applyTemporaryVariableFor(CommandUnitBuilder* parentUnit, Variable* pVariable);
+		bool deleteTempVariable(CommandUnitBuilder* parentUnit);
+		Variable* findTempVariable(CommandUnitBuilder* parentUnit);
+		CommandUnitBuilder* checkVariableToRunConstructor(CXOperand* xOperand);
 		Function* generateDefaultAutoOperator(int operatorId, Variable* obj);
 		OperatorBuidInfo* applyDefaultConstructor(const ScriptType& type, Function* constructor);
 		/*void checkVariableToRunConstructorNonRecursive(Variable* pVariable, Function* constructor);*/
@@ -116,9 +116,9 @@ namespace ffscript {
 		//CommandConstRefIter getEndExpression() const;
 
 		int getExpressionCount() const;
-		void putCommandUnit(CommandUnit* commandUnit);
+		void putCommandUnit(CommandUnitBuilder* commandUnit);
 		void putCommandUnit(const CommandUnitRef& commandUnitRef);
-		void insertCommandUnitBefore(CommandConstRefIter commandRefIter, CommandUnit* commandUnit);		
+		void insertCommandUnitBefore(CommandConstRefIter commandRefIter, CommandUnitBuilder* commandUnit);		
 		void remove(CommandConstRefIter commandRefIter);
 		CommandConstRefIter getLastExpression() const;
 		CommandConstRefIter getFirstExpression() const;

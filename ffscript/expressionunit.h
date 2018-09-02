@@ -42,7 +42,7 @@ namespace ffscript {
 		return std::to_string((size_t)val.address);
 	}
 
-	class FFSCRIPT_API ExpUnit : public CommandUnit
+	class FFSCRIPT_API ExpUnit : public CommandUnitBuilder
 	{
 	private:
 	protected:

@@ -6,14 +6,14 @@ namespace ffscript {
 	class LoopScope :
 		public ContextScope
 	{
-		CommandUnit* _conditionExpression;
+		CommandUnitBuilder* _conditionExpression;
 		CommandPointer _conditionCommnand;
 	public:
 		LoopScope(ContextScope* parent, FunctionScope* functionScope);
 		virtual ~LoopScope();
 
 		virtual const wchar_t* parse(const wchar_t* text, const wchar_t* end);
-		CommandUnit* getConditionExpression() const;
+		CommandUnitBuilder* getConditionExpression() const;
 		virtual void buildExitScopeCodeCommands(CommandList& commandList) const;
 		virtual bool updateCodeForControllerCommands(Program* program);
 	};

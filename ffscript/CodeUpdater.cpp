@@ -43,18 +43,18 @@ namespace ffscript {
 		}
 	}
 
-	void CodeUpdater::setUpdateInfo(CommandUnit* commandUnit, Executor* executor) {
+	void CodeUpdater::setUpdateInfo(CommandUnitBuilder* commandUnit, Executor* executor) {
 		_commandExecutorMap.insert(std::make_pair(commandUnit, executor));
 	}
 
-	void CodeUpdater::saveUpdateInfo(CommandUnit* commandUnit, Executor* executor) {
+	void CodeUpdater::saveUpdateInfo(CommandUnitBuilder* commandUnit, Executor* executor) {
 		auto it = _commandExecutorMap.find(commandUnit);
 		if (it != _commandExecutorMap.end()) {
 			it->second = executor;
 		}
 	}
 
-	Executor* CodeUpdater::findUpdateInfo(CommandUnit* commandUnit) const{
+	Executor* CodeUpdater::findUpdateInfo(CommandUnitBuilder* commandUnit) const{
 		auto it = _commandExecutorMap.find(commandUnit);
 		if (it != _commandExecutorMap.end()) {
 			return it->second;

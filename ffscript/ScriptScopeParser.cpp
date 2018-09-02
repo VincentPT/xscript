@@ -382,7 +382,7 @@ namespace ffscript {
 		return (int)_commandBuilder.size();
 	}
 
-	void ScriptScope::putCommandUnit(CommandUnit* commandUnit) {
+	void ScriptScope::putCommandUnit(CommandUnitBuilder* commandUnit) {
 		_commandBuilder.push_back(CommandUnitRef(commandUnit));
 	}
 
@@ -390,7 +390,7 @@ namespace ffscript {
 		_commandBuilder.push_back(commandUnitRef);
 	}
 
-	void ScriptScope::insertCommandUnitBefore(CommandConstRefIter commandRefIter, CommandUnit* commandUnit) {
+	void ScriptScope::insertCommandUnitBefore(CommandConstRefIter commandRefIter, CommandUnitBuilder* commandUnit) {
 		_commandBuilder.insert(commandRefIter, CommandUnitRef(commandUnit));
 	}
 

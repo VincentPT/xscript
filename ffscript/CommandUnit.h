@@ -17,13 +17,13 @@
 
 namespace ffscript {
 
-	class FFSCRIPT_API CommandUnit
+	class FFSCRIPT_API CommandUnitBuilder
 	{
 		MaskType _mask;
 		MemoryBlockRef _userData;
 	public:
-		CommandUnit();
-		virtual ~CommandUnit();
+		CommandUnitBuilder();
+		virtual ~CommandUnitBuilder();
 
 		virtual const std::string& toString()const = 0;
 		virtual UNIT_TYPE getType()const = 0;
@@ -33,5 +33,5 @@ namespace ffscript {
 		virtual void setMask(MaskType);
 	};
 
-	typedef std::shared_ptr<CommandUnit> CommandUnitRef;
+	typedef std::shared_ptr<CommandUnitBuilder> CommandUnitRef;
 }

@@ -2,27 +2,27 @@
 #include "CommandUnit.h"
 
 namespace ffscript {
-	CommandUnit::CommandUnit() : _mask(UMASK_NONE)
+	CommandUnitBuilder::CommandUnitBuilder() : _mask(UMASK_NONE)
 	{
 	}
 
-	CommandUnit::~CommandUnit()
+	CommandUnitBuilder::~CommandUnitBuilder()
 	{
 	}
 
-	const MemoryBlockRef& CommandUnit::getUserData() const {
+	const MemoryBlockRef& CommandUnitBuilder::getUserData() const {
 		return _userData;
 	}
 
-	void CommandUnit::setUserData(const MemoryBlockRef& userData) {
+	void CommandUnitBuilder::setUserData(const MemoryBlockRef& userData) {
 		_userData = userData;
 	}
 
-	MaskType CommandUnit::getMask()const {
+	MaskType CommandUnitBuilder::getMask()const {
 		return _mask;
 	}
 
-	void CommandUnit::setMask(MaskType mask) {
+	void CommandUnitBuilder::setMask(MaskType mask) {
 		_mask = mask;
 	}
 

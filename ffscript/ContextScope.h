@@ -25,7 +25,7 @@ namespace ffscript {
 		CommandPointer _beginExitScopeCommand;
 		ExecutorRef _beginExecutor;
 		ExecutorRef _endExecutor;
-		CommandUnit* _beginExitScopeUnit;
+		CommandUnitBuilder* _beginExitScopeUnit;
 		std::string _name;
 		ParseEventHandler _parseContextBodyEventHandler;
 

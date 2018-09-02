@@ -151,7 +151,7 @@ namespace ffscript {
 	}
 	ReturnCommandBuilder::~ReturnCommandBuilder() {}
 
-	void ReturnCommandBuilder::setReturnExpression(CommandUnit* returnDataUnit) {
+	void ReturnCommandBuilder::setReturnExpression(CommandUnitBuilder* returnDataUnit) {
 		_returnDataUnit = returnDataUnit;
 	}
 
@@ -211,7 +211,7 @@ namespace ffscript {
 
 	ReturnCommandBuilder2::~ReturnCommandBuilder2() {}
 
-	void ReturnCommandBuilder2::setReturnExpression(CommandUnit* returnDataUnit) {
+	void ReturnCommandBuilder2::setReturnExpression(CommandUnitBuilder* returnDataUnit) {
 		_returnDataUnit = returnDataUnit;
 	}
 
@@ -399,7 +399,7 @@ namespace ffscript {
 		_elseScope = elseScope;
 	}
 
-	void IfCommandBuilder::setConditionExpression(CommandUnit* conditionUnit) {
+	void IfCommandBuilder::setConditionExpression(CommandUnitBuilder* conditionUnit) {
 		_conditionUnit = conditionUnit;
 	}
 	

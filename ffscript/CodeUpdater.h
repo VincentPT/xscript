@@ -21,7 +21,7 @@
 namespace ffscript {
 
 	class Executor;
-	class CommandUnit;
+	class CommandUnitBuilder;
 	class IfCommandBuilder;
 	class CallScriptFuntion;
 	class CallScriptFuntion2;
@@ -32,7 +32,7 @@ namespace ffscript {
 	class CodeUpdater
 	{
 		std::list<DFunctionRef> _updateLaterList;
-		std::map<CommandUnit*, Executor*> _commandExecutorMap;
+		std::map<CommandUnitBuilder*, Executor*> _commandExecutorMap;
 		ScriptScope* _ownerScope;
 	public:
 		CodeUpdater(ScriptScope* ownerScope);
@@ -40,9 +40,9 @@ namespace ffscript {
 		void addUpdateLaterTask(DFunction* task);
 		void runUpdate();
 		void clear();
-		void setUpdateInfo(CommandUnit* commandUnit, Executor* executor);
-		void saveUpdateInfo(CommandUnit* commandUnit, Executor* executor);
-		Executor* findUpdateInfo(CommandUnit* commandUnit) const;
+		void setUpdateInfo(CommandUnitBuilder* commandUnit, Executor* executor);
+		void saveUpdateInfo(CommandUnitBuilder* commandUnit, Executor* executor);
+		Executor* findUpdateInfo(CommandUnitBuilder* commandUnit) const;
 
 		static CodeUpdater* getInstance(const ScriptScope* scope);
 

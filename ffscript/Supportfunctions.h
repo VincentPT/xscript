@@ -27,7 +27,7 @@ namespace ffscript {
 	class Jump;
 
 	class CommandBuilder :
-		public CommandUnit
+		public CommandUnitBuilder
 	{
 		UNIT_TYPE _type;
 		std::string _name;
@@ -84,12 +84,12 @@ namespace ffscript {
 	class ReturnCommandBuilder : public CommandBuilder {
 		FunctionScope* _functionScope;
 		ContextScope* _ownerScope;
-		CommandUnit* _returnDataUnit;
+		CommandUnitBuilder* _returnDataUnit;
 	public:
 		ReturnCommandBuilder(ContextScope* ownerScope, FunctionScope* functionScope);
 		~ReturnCommandBuilder();
 
-		void setReturnExpression(CommandUnit* returnDataUnit);
+		void setReturnExpression(CommandUnitBuilder* returnDataUnit);
 
 		Executor* buildNativeCommand();
 		void fillParams(PushParamOffset* command) const;
@@ -98,13 +98,13 @@ namespace ffscript {
 	class ReturnCommandBuilder2 : public CommandBuilder {
 		FunctionScope* _functionScope;
 		ContextScope* _ownerScope;
-		CommandUnit* _returnDataUnit;
+		CommandUnitBuilder* _returnDataUnit;
 		int _indexPreventDestructorRun;
 	public:
 		ReturnCommandBuilder2(ContextScope* ownerScope, FunctionScope* functionScope);
 		~ReturnCommandBuilder2();
 
-		void setReturnExpression(CommandUnit* returnDataUnit);
+		void setReturnExpression(CommandUnitBuilder* returnDataUnit);
 		void setDestructorIndex(int indexPreventDestructorRun);
 
 		Executor* buildNativeCommand();
@@ -148,7 +148,7 @@ namespace ffscript {
 	class IfCommandBuilder : public CommandBuilder {
 		ContextScope* _ifScope;
 		ContextScope* _elseScope;
-		CommandUnit* _conditionUnit;
+		CommandUnitBuilder* _conditionUnit;
 	public:
 		IfCommandBuilder(ContextScope* ifScope);
 		~IfCommandBuilder();
@@ -159,7 +159,7 @@ namespace ffscript {
 		ContextScope* getElseScope() const;
 		void setElseScope(ContextScope* elseScope);
 
-		void setConditionExpression(CommandUnit* conditionUnit);
+		void setConditionExpression(CommandUnitBuilder* conditionUnit);
 		
 		Executor* buildNativeCommand();		
 		void fillParams(InstructionCommand* command) const;

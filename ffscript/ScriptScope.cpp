@@ -63,7 +63,7 @@ namespace ffscript {
 		}
 	}
 
-	Variable* ScriptScope::registTempVariable(CommandUnit* parentUnit, int offset) {
+	Variable* ScriptScope::registTempVariable(CommandUnitBuilder* parentUnit, int offset) {
 		auto it = _variableUnitMap.insert(std::make_pair(parentUnit, nullptr));
 		if (it.second) {
 			auto pVvariable = new Variable("ret of " + parentUnit->toString());
@@ -77,7 +77,7 @@ namespace ffscript {
 		return _varibles;
 	}
 
-	Variable* ScriptScope::applyTemporaryVariableFor(CommandUnit* parentUnit, Variable* pVariable) {
+	Variable* ScriptScope::applyTemporaryVariableFor(CommandUnitBuilder* parentUnit, Variable* pVariable) {
 		auto it = _variableUnitMap.insert(std::make_pair(parentUnit, pVariable));
 		if (it.second) {
 			pVariable->setName("ret of " + parentUnit->toString());
@@ -86,11 +86,11 @@ namespace ffscript {
 		return it.first->second.get();
 	}
 
-	bool ScriptScope::deleteTempVariable(CommandUnit* parentUnit) {
+	bool ScriptScope::deleteTempVariable(CommandUnitBuilder* parentUnit) {
 		return _variableUnitMap.erase(parentUnit) != 0;
 	}
 
-	Variable* ScriptScope::findTempVariable(CommandUnit* parentUnit) {
+	Variable* ScriptScope::findTempVariable(CommandUnitBuilder* parentUnit) {
 		auto it = _variableUnitMap.find(parentUnit);
 		if (it != _variableUnitMap.end()) {
 			return it->second.get();
@@ -228,7 +228,7 @@ namespace ffscript {
 	//	_constructorCount++;
 	//}
 
-	CommandUnit* ScriptScope::checkVariableToRunConstructor(CXOperand* xOperand) {
+	CommandUnitBuilder* ScriptScope::checkVariableToRunConstructor(CXOperand* xOperand) {
 		auto pVariable = xOperand->getVariable();
 		bool hasDestructors = checkVariableToRunDestructor(xOperand);
 
