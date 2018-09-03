@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        FuncLibrary.cpp
+* Description: implement FuncLibrary class. A class used to store and
+*              managed registered function of a script program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "FuncLibrary.h"
 #include <algorithm>

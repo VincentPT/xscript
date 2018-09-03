@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        FunctionScope.cpp
+* Description: implement FunctionScope class. FunctionScope is a context
+*              scope but specialized for a script function.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "FunctionScope.h"
 #include "Internal.h"

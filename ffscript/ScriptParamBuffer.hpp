@@ -1,3 +1,17 @@
+/******************************************************************
+* File:        ScriptParamBuffer.hpp
+* Description: define ScriptParamBuffer template class. This class
+*              is designed to serialize script function's arguments
+*              then pass it to the script function before execute
+*              the function.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include <vector>
 

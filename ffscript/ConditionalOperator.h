@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        ConditionalOperator.h
+* Description: declare ConditionalOperatorFactory class. A factory
+*              class that create expression unit builder for
+*              conditional operator
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "expressionunit.h"
 #include "FunctionFactory.h"
@@ -5,24 +18,6 @@
 
 namespace ffscript {
 	class ScriptCompiler;
-
-	//class RefFunction :
-	//	public Function
-	//{
-	//	ExecutableUnitRef _value;
-	//public:
-	//	RefFunction();
-	//	virtual ~RefFunction();
-	//	void setValueOfVariable(ExecutableUnitRef pExeUnit);
-	//	ExecutableUnitRef& getValueOfVariable();
-	//public:
-	//	virtual int pushParam(ExecutableUnitRef pExeUnit);
-	//	virtual ExecutableUnitRef popParam();
-	//	virtual const ExecutableUnitRef& getChild(int index) const;
-	//	virtual ExecutableUnitRef& getChild(int index);
-	//	virtual int getChildCount();
-	//	virtual void* Execute();
-	//};
 
 	class ConditionalOperatorFactory : public FunctionFactory {
 	public:

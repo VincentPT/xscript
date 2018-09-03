@@ -1,3 +1,20 @@
+/******************************************************************
+* File:        ScriptTask.cpp
+* Description: implement ScriptRunner class. A class is desgined to
+*              execute a script function through function
+*              id. Unlike ScriptRunner, this class will create its
+*              own context and running the commands on its context.
+*              So, we can use it to run the same code in seperated
+*              contexts at the same time. This is main object of
+*              this class, running the code in multi-thread.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "ScriptTask.h"
 #include "Context.h"

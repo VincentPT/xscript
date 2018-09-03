@@ -1,3 +1,14 @@
+/******************************************************************
+* File:        DefaultPreprocessor.h
+* Description: declare default preprocessor class.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "Preprocessor.h"
 #include <vector>

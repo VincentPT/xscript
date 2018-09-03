@@ -1,3 +1,17 @@
+/******************************************************************
+* File:        ScriptRunner.cpp
+* Description: implement ScriptRunner class. A class is desgined to
+*              bind and execute a script function through function
+*              id. User must set the current context before execute
+*              the function.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "ScriptRunner.h"
 #include "Context.h"

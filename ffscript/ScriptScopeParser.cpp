@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        ScriptScopeParser.cpp
+* Description: implement a part of ScriptScope class.
+*              the parsing script part.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "ScriptScope.h"
 #include "ScriptCompiler.h"

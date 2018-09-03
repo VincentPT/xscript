@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        expressionunit.h
+* Description: Declare expression unit classes. Each class is a
+*              expression unit kind and play a role in compiling 
+*              progress.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #ifndef _EXPRESSION_UNIT_H_
 #define _EXPRESSION_UNIT_H_
 

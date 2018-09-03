@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        FuncLibrary.h
+* Description: declare FuncLibrary class. A class used to store and
+*              managed registered function of a script program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ffscript.h"
 #include "FactoryTree.h"

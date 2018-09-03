@@ -1,3 +1,18 @@
+/******************************************************************
+* File:        Variable.h
+* Description: declare Variable and MemberVariable classes.
+*              Variable is a class used to store information of a
+*              variable in the script.
+*              MemberVariable is a class that store information of
+*              a member of a variable has type is a structure.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include <string>
 #include <list>

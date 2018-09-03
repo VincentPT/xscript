@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        TypeManager.h
+* Description: declare TypeManager class. A class is designed to
+*              manage types of a program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "StructClass.h"
 #include "MemoryBlock.h"

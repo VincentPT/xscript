@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        FunctionScope.h
+* Description: declare FunctionScope class. FunctionScope is a context
+*              scope but specialized for a script function.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ContextScope.h"
 #include "Variable.h"

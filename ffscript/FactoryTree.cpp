@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        FactoryTree.cpp
+* Description: implement FactoryTree class. A class is designed to
+*              store function factory use the tree structure.
+*              Now it is no longer used.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "FactoryTree.h"
 

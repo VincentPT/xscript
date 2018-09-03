@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        GlobalScope.h
+* Description: declare GlobalScope class. A class used to parse
+*              the script of a program. It store all global variables
+*              and command builders of the whole program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "Variable.h"
 #include "ScriptScope.h"

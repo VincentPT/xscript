@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        ScriptCompiler.h
+* Description: declare ScriptCompiler class. A class play a role in
+*              script compiling progress.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ffscript.h"
 #include "expressionunit.h"

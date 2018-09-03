@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        Expression.cpp
+* Description: implement Expression class. A class used to store the
+*              the expression by hold the root of expression tree.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "Expression.h"
 #include "ScriptCompiler.h"

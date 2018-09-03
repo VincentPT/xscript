@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        ScriptCompiler.cpp
+* Description: implement ScriptCompiler class. A class play a role in
+*              script compiling progress.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "ScriptCompiler.h"
 #include "FactoryTree.h"
@@ -7,7 +19,6 @@
 #include "DefaultCommands.h"
 #include <algorithm>
 #include "ScriptType.h"
-#include "ffutil.hpp"
 #include "Utils.h"
 #include "Utility.hpp"
 #include "FwdCompositeConstrutorUnit.h"

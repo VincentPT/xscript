@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        InstructionCommand.h
+* Description: declare command classes. Instances of these classes
+*              are the code of the C Lambda script. These are 
+*              processor units of a script program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ffscript.h"
 

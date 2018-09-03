@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        expressionunit.cpp
+* Description: implement expression unit classes. Each class is a
+*              expression unit kind and play a role in compiling
+*              progress.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "../Logger/remotelogger.h"
 #include "ScriptScope.h"

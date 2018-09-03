@@ -1,9 +1,21 @@
+/******************************************************************
+* File:        InstructionCommand.cpp
+* Description: implement command classes. Instances of these classes
+*              are the code of the C Lambda script. These are
+*              processor units of a script program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "InstructionCommand.h"
 #include "Context.h"
 #include "function\DynamicFunction2.h"
 #include "MemberVariableAccessors.h"
-#include "OperatorObject.h"
 #include "ScopeRuntimeData.h"
 
 #include <iomanip>

@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        MemberVariableAccessors.cpp
+* Description: implement member variable accessor classes. Each member
+*              variable accessor has its own data and behavior to
+*              access its data base on parent's address.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "MemberVariableAccessors.h"
 #include "Context.h"

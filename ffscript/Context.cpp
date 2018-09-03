@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        Context.cpp
+* Description: implement Context class. A class that supplied memory
+*              and a mechanism to run the code.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "Context.h"
 #include <stdlib.h>

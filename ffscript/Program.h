@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        Program.h
+* Description: declare Program class. A class that manage the
+*              compiled code(command) of a program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ffscript.h"
 #include <list>

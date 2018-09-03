@@ -1,3 +1,14 @@
+/******************************************************************
+* File:        Internal.cpp
+* Description: implement some internal functions.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "Internal.h"
 #include "ffscript.h"

@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        SingleList.h
+* Description: define SingleList template class. A linked single
+*              connection node list.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 namespace ffscript {
 

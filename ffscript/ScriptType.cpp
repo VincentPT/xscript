@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        ScriptType.cpp
+* Description: implement ScriptType class. A class is used to store
+*              information of a type of the script.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "ScriptType.h"
 #include "ffscript.h"

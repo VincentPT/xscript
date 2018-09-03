@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        FunctionRegisterHelper.cpp
+* Description: implement FunctionRegisterHelper class. A class used
+*              to help users register the function in a script
+*              program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "FunctionRegisterHelper.h"
 #include "ScriptCompiler.h"

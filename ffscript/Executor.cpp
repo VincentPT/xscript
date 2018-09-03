@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        Executor.cpp
+* Description: implement Executor class. A class contain commands(
+*              script code) and data need for the code.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "function\CdeclFunction.hpp"
 #include "function\DynamicFunction2.h"

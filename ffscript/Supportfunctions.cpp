@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        Supportfunctions.cpp
+* Description: implement command builder classes. These classes are
+*              designed to build the controller commands.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "Supportfunctions.h"
 #include "ControllerExecutor.h"

@@ -288,7 +288,6 @@
     <ClInclude Include="DestructorContextScope.h" />
     <ClInclude Include="FFScriptArray.hpp" />
     <ClInclude Include="FFStack.h" />
-    <ClInclude Include="ffutil.hpp" />
     <ClInclude Include="FuncLibrary.h" />
     <ClInclude Include="function\CdeclFunction3.hpp" />
     <ClInclude Include="function\FunctionHelper.hpp" />
@@ -297,14 +296,11 @@
     <ClInclude Include="FwdCompositeConstrutorUnit.h" />
     <ClInclude Include="InternalCompilerSuite.h" />
     <ClInclude Include="LogicCommands.hpp" />
-    <ClInclude Include="OperatorObject.h" />
-    <ClInclude Include="OverloadingRules.h" />
     <ClInclude Include="Preprocessor.h" />
     <ClInclude Include="ScopedCompilingScope.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="ContextScope.h" />
     <ClInclude Include="ControllerExecutor.h" />
-    <ClInclude Include="core_function.h" />
     <ClInclude Include="DynamicFunctionFactory.h" />
     <ClInclude Include="Executor.h" />
     <ClInclude Include="ExpresionParser.h" />
@@ -335,10 +331,8 @@
     <ClInclude Include="ObjectBlock.hpp" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="RefFunction.h" />
-    <ClInclude Include="ReservedContextScope.h" />
     <ClInclude Include="ScopedContext.h" />
     <ClInclude Include="ScopeRuntimeData.h" />
-    <ClInclude Include="ScriptArgStream.h" />
     <ClInclude Include="ScriptCompiler.h" />
     <ClInclude Include="ScriptFunction.h" />
     <ClInclude Include="ScriptParamBuffer.hpp" />
@@ -356,7 +350,6 @@
     <ClInclude Include="Template.h" />
     <ClInclude Include="template\TemplateBlock.hpp" />
     <ClInclude Include="template\TemplateTypeManager.h" />
-    <ClInclude Include="tree\Tree.h" />
     <ClInclude Include="TypeManager.h" />
     <ClInclude Include="unitType.h" />
     <ClInclude Include="CodeUpdater.h" />
@@ -378,8 +371,6 @@
     <ClCompile Include="FuncLibrary.cpp" />
     <ClCompile Include="FwdCompositeConstrutorUnit.cpp" />
     <ClCompile Include="InternalCompilerSuite.cpp" />
-    <ClCompile Include="OperatorObject.cpp" />
-    <ClCompile Include="OverloadingRules.cpp" />
     <ClCompile Include="Preprocessor.cpp" />
     <ClCompile Include="ScopedCompilingScope.cpp" />
     <ClCompile Include="Context.cpp" />
@@ -407,10 +398,8 @@
     <ClCompile Include="MemoryBlock.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="RefFunction.cpp" />
-    <ClCompile Include="ReservedContextScope.cpp" />
     <ClCompile Include="ScopedContext.cpp" />
     <ClCompile Include="ScopeRuntimeData.cpp" />
-    <ClCompile Include="ScriptArgStream.cpp" />
     <ClCompile Include="ScriptCompiler.cpp" />
     <ClCompile Include="ScriptFunction.cpp" />
     <ClCompile Include="ScriptRunner.cpp" />
@@ -434,7 +423,6 @@
     <ClCompile Include="Supportfunctions.cpp" />
     <ClCompile Include="Template.cpp" />
     <ClCompile Include="template\TemplateTypeManager.cpp" />
-    <ClCompile Include="tree\Tree.cpp" />
     <ClCompile Include="CodeUpdater.cpp" />
     <ClCompile Include="TypeManager.cpp" />
     <ClCompile Include="Utils.cpp" />

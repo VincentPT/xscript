@@ -1,9 +1,22 @@
+/******************************************************************
+* File:        ExpresionParser.cpp
+* Description: implement ExpresionParser class. A class used to parse,
+*              compile and link a expression.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "ExpresionParser.h"
 #include <functional>
 #include <array>
+#include "expresion_defs.h"
 #include "expressionunit.h"
-#include "core_function.h"
+#include <stack>
 #include "ScriptCompiler.h"
 #include "ScriptScope.h"
 #include "Expression.h"

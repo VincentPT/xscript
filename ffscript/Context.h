@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        Context.h
+* Description: declare Context class. A class that supplied memory
+*              and a mechanism to run the code.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ffscript.h"
 #include "SingleList.h"

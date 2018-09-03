@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        Executor.h
+* Description: declare Executor class. A class contain commands(
+*              script code) and data need for the code.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include <list>
 #include <memory>

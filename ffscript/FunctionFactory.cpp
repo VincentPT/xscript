@@ -1,3 +1,18 @@
+/******************************************************************
+* File:        FunctionFactory.cpp
+* Description: implement FunctionFactory class. A class used to create
+*              a expression unit instance, not any expression unit
+*              but function unit. A function unit is a expression
+*              unit, it can either be a operator(such as '+') or a
+*              function(such as 'sin').
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "expressionunit.h"
 #include "FunctionFactory.h"

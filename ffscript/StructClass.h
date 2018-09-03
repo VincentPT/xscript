@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        StructClass.h
+* Description: declare StructClass class. A class used to store
+*              information of struct of the C Lambda language.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include <string>
 #include <list>

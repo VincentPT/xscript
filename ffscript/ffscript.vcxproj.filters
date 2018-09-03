@@ -22,9 +22,6 @@
     <Filter Include="template">
       <UniqueIdentifier>{4ad454a1-94ae-499a-bc04-4e9f83e20c41}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tree">
-      <UniqueIdentifier>{9119356f-d2cf-479a-97cb-1b1e92a5d1c2}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -74,9 +71,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="expressionunit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core_function.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FactoryTree.h">
@@ -172,12 +166,6 @@
     <ClInclude Include="ffscript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ReservedContextScope.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tree\Tree.h">
-      <Filter>Tree</Filter>
-    </ClInclude>
     <ClInclude Include="template\TemplateBlock.hpp">
       <Filter>template</Filter>
     </ClInclude>
@@ -229,13 +217,7 @@
     <ClInclude Include="DefaultCommands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OverloadingRules.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptArgStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FFScriptArray.hpp">
@@ -247,16 +229,10 @@
     <ClInclude Include="Template.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OperatorObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ScopeRuntimeData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FFStack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ffutil.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScriptParamBuffer.hpp">
@@ -405,12 +381,6 @@
     <ClCompile Include="ExpUnitExecutor2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReservedContextScope.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tree\Tree.cpp">
-      <Filter>Tree</Filter>
-    </ClCompile>
     <ClCompile Include="template\TemplateTypeManager.cpp">
       <Filter>template</Filter>
     </ClCompile>
@@ -453,19 +423,10 @@
     <ClCompile Include="DefaultCommands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OverloadingRules.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptArgStream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Template.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OperatorObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScopeRuntimeData.cpp">

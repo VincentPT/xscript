@@ -1,10 +1,20 @@
+/******************************************************************
+* File:        StaticContext.cpp
+* Description: implement StaticContext class. A type of context, but
+*              the memory of its is global shared memory and can be
+*              accessed any where, any time in the program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "StaticContext.h"
 #include "function\DynamicFunction.h"
 #include "InstructionCommand.h"
-
-//#include "CppUnitTest.h"
-//using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ffscript {
 	StaticContext::StaticContext(unsigned char* threadData, int bufferSize) : Context(threadData, bufferSize) {}

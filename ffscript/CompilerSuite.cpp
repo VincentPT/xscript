@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        CompilerSuite.cpp
+* Description: implement CompilerSuite class. A utiliy class helps
+*              user compile the script easier.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CompilerSuite.h"
 #include "ExpresionParser.h"

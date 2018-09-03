@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        MemoryBlock.h
+* Description: declare memory block classes. A memory block class
+*              define the way to store data and also the way to
+*              destroy its data when it is no longer used.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 
 #include <memory>

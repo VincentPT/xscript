@@ -1,3 +1,17 @@
+/******************************************************************
+* File:        MemoryBlock.cpp
+* Description: implement memory block classes. A memory block class
+*              define the way to store data and also the way to
+*              destroy its data when it is no longer used.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
+
 #include "stdafx.h"
 #include "MemoryBlock.h"
 

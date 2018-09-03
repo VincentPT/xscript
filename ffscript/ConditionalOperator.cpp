@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        ConditionalOperator.cpp
+* Description: implement ConditionalOperatorFactory class. A factory
+*              class that create expression unit builder for
+*              conditional operator
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "ConditionalOperator.h"
 #include "ScriptCompiler.h"

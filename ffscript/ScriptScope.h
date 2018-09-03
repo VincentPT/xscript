@@ -1,3 +1,17 @@
+/******************************************************************
+* File:        ScriptScope.h
+* Description: declare ScriptScope class. This is an abstract class
+*              design to parse and manage the command builders and
+*              other information of a scope in the script.
+*              It is also have a direct role in compiling progress.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include <map>
 #include <list>

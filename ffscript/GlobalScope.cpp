@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        GlobalScope.cpp
+* Description: implement GlobalScope class, main part. A class used
+*              to parse the script of a program. It stores all global
+*              variables and command builders of the whole program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "GlobalScope.h"
 #include "ScriptCompiler.h"

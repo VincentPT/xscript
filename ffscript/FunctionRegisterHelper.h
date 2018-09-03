@@ -1,3 +1,18 @@
+/******************************************************************
+* File:        FunctionRegisterHelper.h
+* Description: declare FunctionRegisterHelper class. A class used
+*              to help users register the function in a script
+*              program.
+*              Define some utility template functions used in
+*              registering function.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ffscript.h"
 #include <list>

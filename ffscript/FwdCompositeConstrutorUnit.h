@@ -1,3 +1,18 @@
+/******************************************************************
+* File:        FwdCompositeConstrutorUnit.h
+* Description: declare FwdConstrutorUnit and
+*              FwdCompositeConstrutorUnit classes. These classes
+*              contain a constructor unit inside but it also return
+*              the reference of the object need to be constructed
+*              not the void type like contructor unit do.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ExpresionParser.h"
 

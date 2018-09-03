@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        ffscript.h
+* Description: define macros, constants, class interfaces, structures
+*              used in the scripting library.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include <list>
 #include <memory>

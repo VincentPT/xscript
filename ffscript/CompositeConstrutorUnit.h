@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        CompositeConstrutorUnit.h
+* Description: declare CompositeConstrutorUnit class. A command
+*              builder for expression unit. It is specialized for
+*              composite constructor unit.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ExpresionParser.h"
 

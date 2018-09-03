@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        CommandUnitBuilder.cpp
+* Description: implement command unit builder class. A base class of
+*              all command builder that used to build the real
+*              commands(compiled code) of the script.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "CommandUnitBuilder.h"
 

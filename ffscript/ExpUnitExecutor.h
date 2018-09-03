@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        ExpUnitExecutor.h
+* Description: Declare ExpUnitExecutor class. A class contains the
+*              commands generated from an expression.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "Executor.h"
 #include <list>

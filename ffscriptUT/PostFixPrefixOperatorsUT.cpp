@@ -24,7 +24,6 @@
 #include "Utils.h"
 #include "Variable.h"
 #include "ScriptTask.h"
-#include "ReservedContextScope.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
@@ -714,11 +713,12 @@ namespace ffscriptUT
 			Assert::IsTrue(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
+
 		TEST_METHOD(FunctionAndPostFix1)
 		{	
 			int a = 0;
-			GlobalScope globalScope(_staticContext,&scriptCompiler);;
-			ReservedContextScope reservedContextScope(_staticContext);
+			GlobalScope globalScope(_staticContext,&scriptCompiler);
+			unique_ptr<Context, void(*)(Context*)> reservedContextScope(_staticContext, Context::makeCurrent);
 			//initialize an instance of script program
 			Program theProgram;
 			scriptCompiler.bindProgram(&theProgram);
@@ -749,8 +749,8 @@ namespace ffscriptUT
 		TEST_METHOD(FunctionAndPreFix1)
 		{
 			int a = 0;
-			GlobalScope globalScope(_staticContext,&scriptCompiler);;
-			ReservedContextScope reservedContextScope(_staticContext);
+			GlobalScope globalScope(_staticContext,&scriptCompiler);
+			unique_ptr<Context, void(*)(Context*)> reservedContextScope(_staticContext, Context::makeCurrent);
 			//initialize an instance of script program
 			Program theProgram;
 			scriptCompiler.bindProgram(&theProgram);

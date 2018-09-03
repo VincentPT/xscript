@@ -1,3 +1,21 @@
+/******************************************************************
+* File:        RefFunction.h
+* Description: declare RefFunction, MakeRefFactory and DeRefFactory
+*              classes.
+*              Instance of RefFunction is an expression unit stand
+*              for operator 'ref' in a expression in C Lambda language.
+*              MakeRefFactory is a function factory that create an
+*              instance of RefFunction.
+*              DeRefFactory is a function factory that create an
+*              expression unit has type is EXP_UNIT_ID_DEREF.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "expressionunit.h"
 #include "FunctionFactory.h"

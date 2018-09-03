@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        LoopScope.cpp
+* Description: implement LoopScope class. Loop scope is a context
+*              scope but specialized for a loop such as while, for.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "LoopScope.h"
 #include "Internal.h"

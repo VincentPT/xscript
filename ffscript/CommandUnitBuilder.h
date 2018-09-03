@@ -1,6 +1,8 @@
 /******************************************************************
 * File:        CommandUnitBuilder.h
-* Description: declare command unit builder classes.
+* Description: declare command unit builder class. A base class of
+*              all command builder that used to build the real
+*              commands(compiled code) of the script.
 * Author:      Vincent Pham
 *
 * (C) Copyright 2018, The ffscript project, All rights reserved.

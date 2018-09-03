@@ -1,5 +1,19 @@
-#pragma once
+/******************************************************************
+* File:        FFScriptArray.hpp
+* Description: define FFStack template class. A class is
+*              used to store states of running code as a stack. It
+*              is designed to have as much as possible performance
+*              because it is very often to be executed while the
+*              code is running.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
 
+#pragma once
 
 namespace ffscript {
 

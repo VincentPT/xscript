@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        StaticContext.h
+* Description: declare StaticContext class. A type of context, but
+*              the memory of its is global shared memory and can be
+*              accessed any where, any time in the program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "Context.h"
 #include <list>

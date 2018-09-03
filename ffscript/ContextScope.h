@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        ContextScope.h
+* Description: declare ContextScope class. A class use to compile
+*              codes in a specific scope other than global scope.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ScriptScope.h"
 #include "Program.h"

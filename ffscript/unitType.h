@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        unitType.h
+* Description: declare expression unit constants: Unit group type,
+*              unit type id and operator unit precedence. 
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #ifndef _FUNCTION_TYPE_H_
 #define _FUNCTION_TYPE_H_
 

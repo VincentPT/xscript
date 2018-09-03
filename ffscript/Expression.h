@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        Expression.h
+* Description: declare Expression class. A class used to store the
+*              the expression by hold the root of expression tree.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "ffscript.h"
 #include "expressionunit.h"

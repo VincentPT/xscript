@@ -1,3 +1,14 @@
+/******************************************************************
+* File:        DefaultCommands.h
+* Description: declare default command classes.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "InstructionCommand.h"
 #include "expressionunit.h"

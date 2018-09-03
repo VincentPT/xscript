@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        Supportfunctions.h
+* Description: declare command builder classes. These classes are
+*              designed to build the controller commands.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include <string>
 #include "CommandUnitBuilder.h"

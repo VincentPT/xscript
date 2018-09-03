@@ -1,3 +1,16 @@
+/******************************************************************
+* File:        FFScriptArray.hpp
+* Description: define FFScriptArray template class. A class is
+*              designed to use as a dynamic array in the script
+*              but it still not be used.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include <algorithm>
 #include <functional>

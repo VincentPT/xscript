@@ -26,8 +26,6 @@
 #include <future>
 #include <Program.h>
 #include <ScriptTask.h>
-#include <OperatorObject.h>
-
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;

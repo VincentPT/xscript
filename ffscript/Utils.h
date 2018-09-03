@@ -1,3 +1,14 @@
+/******************************************************************
+* File:        Utils.h
+* Description: declare and define some common functions of the library.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "Variable.h"
 #include "GlobalScope.h"

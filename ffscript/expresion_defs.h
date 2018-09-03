@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        expresion_defs.h
+* Description: declare macro and constants used for compiling 
+*              expression.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #ifndef _EXPRESSION_DEFS_
 #define _EXPRESSION_DEFS_
 

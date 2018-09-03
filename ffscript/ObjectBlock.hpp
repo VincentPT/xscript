@@ -1,3 +1,17 @@
+/******************************************************************
+* File:        ObjectBlock.hpp
+* Description: define ObjectBlock template classes. A memory block class
+*              store data in argumment template type and use type's
+*              destructor to implicit destroy the data in ObjectBlock's
+*              destructor.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "MemoryBlock.h"
 

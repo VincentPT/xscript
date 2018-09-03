@@ -1,3 +1,17 @@
+/******************************************************************
+* File:        Template.h
+* Description: declare Template class. A class is designed to store
+*              template information of the C Lambda language. It
+*              may be used in future when the library support template
+*              functions and template structures.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include <string>
 #include <vector>

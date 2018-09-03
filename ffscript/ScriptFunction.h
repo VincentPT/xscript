@@ -1,3 +1,17 @@
+/******************************************************************
+* File:        ScriptFunction.h
+* Description: declare ScriptFunction class and its function factory
+*              class. Instance of ScriptFunction is an expression unit
+*              has type is function and its behavior is defined in
+*              the script, not in C++ part.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #pragma once
 #include "expressionunit.h"
 #include "FunctionFactory.h"

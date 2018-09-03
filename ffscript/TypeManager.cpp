@@ -1,9 +1,20 @@
+/******************************************************************
+* File:        TypeManager.cpp
+* Description: implement TypeManager class. A class is designed to
+*              manage types of a program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "TypeManager.h"
 #include "Internal.h"
 #include "ffscript.h"
 #include "ScriptCompiler.h"
-#include "ffutil.hpp"
 
 namespace ffscript {
 	TypeManager::TypeManager() {}

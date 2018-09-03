@@ -1,3 +1,15 @@
+/******************************************************************
+* File:        Program.cpp
+* Description: implement Program class. A class that manage the
+*              compiled code(command) of a program.
+* Author:      Vincent Pham
+*
+* (C) Copyright 2018, The ffscript project, All rights reserved.
+** Distributed under the MIT License (http://opensource.org/licenses/MIT)
+**
+*
+**********************************************************************/
+
 #include "stdafx.h"
 #include "Program.h"
 #include "Executor.h"
