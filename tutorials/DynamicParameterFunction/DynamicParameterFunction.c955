@@ -1,0 +1,11 @@
+////////////////////////////////////////////////////////////////////////////
+///
+/// Simple C Lambda program demonstrate working with dynamic function
+///
+////////////////////////////////////////////////////////////////////////////
+
+// a function of script, in this tutorial it act as main function of the script program
+void main() {    
+    double val = sum(0, 1.1f, 2.2, 3l);
+    println("sum(0, 1.1f, 2.2, 3l) = " + val);
+}

@@ -1,0 +1,35 @@
+////////////////////////////////////////////////////////////////////////////
+///
+/// Simple C Lambda program demonstrate working with constructors and
+/// destructor
+///
+////////////////////////////////////////////////////////////////////////////
+
+CustomArray foo() {
+    println("foo is executed");
+    CustomArray a;
+    return a;
+}
+
+// a function of script, in this tutorial it act as main function of the script program
+void main() {
+    CustomArray a = foo();
+    println("a before add element");
+    print("a = ");
+    print(a);
+    println("");
+    
+    add(a, 1);
+    
+    CustomArray b = a;
+    add(b, 2);
+    
+    println("a after add an element");
+    print("a = ");
+    print(a);
+    println("");
+    
+    print("b = ");
+    print(b);
+    println("");
+}
