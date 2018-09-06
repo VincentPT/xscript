@@ -22,10 +22,9 @@ namespace ffscript {
 	class DynamicFunctionFactory :
 		public FunctionFactory
 	{
-		const char* _returnType;
 		DFunction2Ref _nativeFunction;
 	public:
-		DynamicFunctionFactory(const char* returnType, DFunction2* nativeFunction, ScriptCompiler*);
+		DynamicFunctionFactory(const std::string& returnType, DFunction2* nativeFunction, ScriptCompiler*);
 		virtual ~DynamicFunctionFactory();
 		Function* createFunction(const std::string& name, int id);
 	};

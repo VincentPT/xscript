@@ -45,6 +45,7 @@ namespace ffscript {
 	class FFSCRIPT_API FunctionRegisterHelper
 	{
 		ScriptCompiler* _scriptCompiler;
+		int registerTypeAutoOperator(int typeId, const std::string& functionParams, FunctionFactory* factory, bool autoDelete, bool constructor);
 	public:
 		FunctionRegisterHelper(ScriptCompiler* scriptCompiler);
 		virtual ~FunctionRegisterHelper();
@@ -55,6 +56,9 @@ namespace ffscript {
 		void addFactory(FunctionFactory* factory, bool autoDelete = true);
 		int registFunctions(FactoryItem* factories, int n);
 		int registPredefinedOperators(PredefinedOperator* operators, int n);
+		int registerUserType(const std::string& type, unsigned int size);
+		int registerConstructor(int typeId, const std::string& functionParams, FunctionFactory* factory, bool autoDelete = true);
+		int registerDestructor(int typeId, FunctionFactory* factory, bool autoDelete = true);
 		ScriptCompiler* getSriptCompiler() const;
 	};
 
@@ -89,17 +93,17 @@ namespace ffscript {
 	}
 
 	template <class Rt, class... Types>
-	FunctionFactory* createUserFunctionFactory(ScriptCompiler* scriptCompiler, const char* rt, Rt(*f)(Types...)) {
+	FunctionFactory* createUserFunctionFactory(ScriptCompiler* scriptCompiler, const std::string& rt, Rt(*f)(Types...)) {
 		return new DefaultUserFunctionFactory(createFunctionCdeclRef<Rt, Types...>(f), scriptCompiler, rt, sizeof...(Types));
 	}
 
 	template <class Class, class Rt, class... Types>
-	FunctionFactory* createUserFunctionFactoryMember(ScriptCompiler* scriptCompiler, Class* obj, const char* rt, Rt(Class::*f)(Types...)) {
+	FunctionFactory* createUserFunctionFactoryMember(ScriptCompiler* scriptCompiler, Class* obj, const std::string& rt, Rt(Class::*f)(Types...)) {
 		return new DefaultUserFunctionFactory(createFunctionMemberRef<Class, Rt, Types...>(obj, f), scriptCompiler, rt, sizeof...(Types));
 	}
 
 	template <class Class, class Rt, class... Types>
-	FunctionFactory* createUserFunctionFactoryMember(ScriptCompiler* scriptCompiler, Class* obj, const char* rt, Rt(Class::*f)(Types...) const) {
+	FunctionFactory* createUserFunctionFactoryMember(ScriptCompiler* scriptCompiler, Class* obj, const std::string& rt, Rt(Class::*f)(Types...) const) {
 		return new DefaultUserFunctionFactory(createFunctionMemberRef<Class, Rt, Types...>(obj, f), scriptCompiler, rt, sizeof...(Types));
 	}
 
@@ -109,20 +113,194 @@ namespace ffscript {
 	};
 
 	template <class T>
-	ConstOperandBase* createConsant(const T& cosnt_val, const char* typeStr) {
+	ConstOperandBase* createConsant(const T& cosnt_val, const std::string& typeStr) {
 		return new CConstOperand<T>(cosnt_val, typeStr);
 	}
 
-	template<class RT, class ...Types>
-	int registerFunction(FunctionRegisterHelper& fb, RT(*nativeFunction)(Types...), const char* scriptFunction, const char* returnType, const char* paramTypes) {
+	template<class Rt, class ...Types>
+	int registerFunction(FunctionRegisterHelper& fb, Rt(*nativeFunction)(Types...), const std::string& scriptFunction, const std::string& returnType, const std::string& paramTypes) {
 		return fb.registFunction(
 			scriptFunction,
 			paramTypes, // parameter type of the function
 			createUserFunctionFactory
-			<RT, Types...> // native function prototype
+			<Rt, Types...> // native function prototype
 			(
 				fb.getSriptCompiler(), // script compiler
 				returnType, // return type of the script function
+				nativeFunction // native function
+				)
+		);
+	}
+
+	template <class Class, class Rt, class... Types>
+	int registerFunction(FunctionRegisterHelper& fb, Class* obj,  Rt(Class::*nativeFunction)(Types...), const std::string& scriptFunction, const std::string& returnType, const std::string& paramTypes) {
+		return fb.registFunction(
+			scriptFunction,
+			paramTypes, // parameter type of the function
+			createUserFunctionFactoryMember
+			<Class, Rt, Types...> // native function prototype
+			(
+				fb.getSriptCompiler(), // script compiler
+				obj, // context object
+				returnType, // return type of the script function
+				nativeFunction // native function
+				)
+		);
+	}
+
+	template <class Class, class Rt, class... Types>
+	int registerFunction(FunctionRegisterHelper& fb, Class* obj, Rt(Class::*nativeFunction)(Types...) const, const std::string& scriptFunction, const std::string& returnType, const std::string& paramTypes) {
+		return fb.registFunction(
+			scriptFunction,
+			paramTypes, // parameter type of the function
+			createUserFunctionFactoryMember
+			<Class, Rt, Types...> // native function prototype
+			(
+				fb.getSriptCompiler(), // script compiler
+				obj, // context object
+				returnType, // return type of the script function
+				nativeFunction // native function
+				)
+		);
+	}
+
+	template<class Rt, class ...Types>
+	int registerOperator(FunctionRegisterHelper& fb, Rt(*nativeFunction)(Types...), const std::string& operatorName, const std::string& returnType, const std::string& paramTypes) {
+		return fb.registPredefinedOperators(
+			operatorName,
+			paramTypes, // parameter type of the function
+			returnType,
+			createFunctionCdecl(nativeFunction)
+		);
+	}
+
+	template <class Class, class Rt, class... Types>
+	int registerOperator(FunctionRegisterHelper& fb, Class* obj, Rt(Class::*nativeFunction)(Types...), const std::string& scriptFunction, const std::string& returnType, const std::string& paramTypes) {
+		return fb.registPredefinedOperators(
+			scriptFunction,
+			paramTypes, // parameter type of the function
+			returnType,
+			createFunctionMember(obj, nativeFunction)
+		);
+	}
+
+	template <class Class, class Rt, class... Types>
+	int registerOperator(FunctionRegisterHelper& fb, Class* obj, Rt(Class::*nativeFunction)(Types...) const, const std::string& scriptFunction, const std::string& returnType, const std::string& paramTypes) {
+		return fb.registPredefinedOperators(
+			scriptFunction,
+			paramTypes, // parameter type of the function
+			returnType,
+			createFunctionMember(obj, nativeFunction)
+		);
+	}
+
+	template<class Rt>
+	int registerDynamicFunction(FunctionRegisterHelper& fb, Rt(*nativeFunction)(SimpleVariantArray*), const std::string& scriptFunction, const std::string& returnType) {
+		auto functionObj = createFunctionCdecl(nativeFunction);
+		auto functionUnitFactory = new DynamicFunctionFactory(returnType, functionObj, fb.getSriptCompiler());
+		return fb.registDynamicFunction(scriptFunction, functionUnitFactory);
+	}
+
+	template<class Class, class Rt>
+	int registerDynamicFunction(FunctionRegisterHelper& fb, Class* obj, Rt(Class::*nativeFunction)(SimpleVariantArray*), const std::string& scriptFunction, const std::string& returnType) {
+		auto functionObj = createFunctionMember(obj, nativeFunction);
+		auto functionUnitFactory = new DynamicFunctionFactory(returnType, functionObj, fb.getSriptCompiler());
+		return fb.registDynamicFunction(scriptFunction, functionUnitFactory);
+	}
+
+	template<class Class, class Rt>
+	int registerDynamicFunction(FunctionRegisterHelper& fb, Class* obj, Rt(Class::*nativeFunction)(SimpleVariantArray*) const, const std::string& scriptFunction, const std::string& returnType) {
+		auto functionObj = createFunctionMember(obj, nativeFunction);
+		auto functionUnitFactory = new DynamicFunctionFactory(returnType, functionObj, fb.getSriptCompiler());
+		return fb.registDynamicFunction(scriptFunction, functionUnitFactory);
+	}
+
+	template<class ...Types>
+	int registerContructor(FunctionRegisterHelper& fb, void(*nativeFunction)(Types...), int typeId, const std::string& paramTypes) {
+		return fb.registerConstructor(
+			typeId,
+			paramTypes, // parameter type of the function
+			createUserFunctionFactory
+			<void, Types...> // native function prototype
+			(
+				fb.getSriptCompiler(), // script compiler
+				"void", // return type of the script function
+				nativeFunction // native function
+				)
+		);
+	}
+
+	template<class Class, class ...Types>
+	int registerContructor(FunctionRegisterHelper& fb, Class* obj, void(Class::*nativeFunction)(Types...), int typeId, const std::string& paramTypes) {
+		return fb.registerConstructor(
+			typeId,
+			paramTypes, // parameter type of the function
+			createUserFunctionFactoryMember
+			<Class, void, Types...> // native function prototype
+			(
+				fb.getSriptCompiler(), // script compiler
+				obj,
+				"void", // return type of the script function
+				nativeFunction // native function
+				)
+		);
+	}
+
+	template<class Class, class ...Types>
+	int registerContructor(FunctionRegisterHelper& fb, Class* obj, void(Class::*nativeFunction)(Types...) const, int typeId, const std::string& paramTypes) {
+		return fb.registerConstructor(
+			typeId,
+			paramTypes, // parameter type of the function
+			createUserFunctionFactoryMember
+			<Class, void, Types...> // native function prototype
+			(
+				fb.getSriptCompiler(), // script compiler
+				obj,
+				"void", // return type of the script function
+				nativeFunction // native function
+				)
+		);
+	}
+
+	template<class T>
+	int registerDestructor(FunctionRegisterHelper& fb, void(*nativeFunction)(T), int typeId) {
+		return fb.registerDestructor(
+			typeId,
+			createUserFunctionFactory
+			<void, T> // native function prototype
+			(
+				fb.getSriptCompiler(), // script compiler
+				"void", // return type of the script function
+				nativeFunction // native function
+				)
+		);
+	}
+
+	template<class Class, class T>
+	int registerDestructor(FunctionRegisterHelper& fb, Class* obj, void(Class::*nativeFunction)(T), int typeId) {
+		return fb.registerDestructor(
+			typeId,
+			createUserFunctionFactoryMember
+			<Class, void, T> // native function prototype
+			(
+				fb.getSriptCompiler(), // script compiler
+				obj,
+				"void", // return type of the script function
+				nativeFunction // native function
+				)
+		);
+	}
+
+	template<class Class, class T>
+	int registerDestructor(FunctionRegisterHelper& fb, Class* obj, void(Class::*nativeFunction)(T) const, int typeId) {
+		return fb.registerDestructor(
+			typeId,
+			createUserFunctionFactoryMember
+			<Class, void, T> // native function prototype
+			(
+				fb.getSriptCompiler(), // script compiler
+				obj,
+				"void", // return type of the script function
 				nativeFunction // native function
 				)
 		);

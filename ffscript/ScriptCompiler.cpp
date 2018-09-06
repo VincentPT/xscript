@@ -221,13 +221,11 @@ namespace ffscript {
 		return getTypeSize(sType.iType());
 	}
 
-	bool ScriptCompiler::setTypeSize(int typeId, int size) {
-		if (size > MAX_DATA_SIZE) {
-			setErrorText("array size reach maximum of data size 64kb");
-			return false;
+	void ScriptCompiler::setTypeSize(int typeId, int size) {
+		if (size > MAX_DATA_SIZE || size < 0) {
+			throw std::runtime_error("array size reach maximum of data size 64kb");
 		}
 		_typeManagerRef->setTypeSize(typeId, size);
-		return true;
 	}
 
 	int ScriptCompiler::getType(const std::string& type) const {
@@ -2382,7 +2380,11 @@ namespace ffscript {
 				int arraySizeInBytes = dimensions[i] * getTypeSize(iElmType);
 
 				// register type size
-				if (!setTypeSize(iType, arraySizeInBytes)) {
+				try {
+					setTypeSize(iType, arraySizeInBytes);
+				}
+				catch(std::exception& e) {
+					setErrorText(e.what());
 					return DATA_TYPE_UNKNOWN;
 				}
 				dim = (int)(dimensions.size() - i);

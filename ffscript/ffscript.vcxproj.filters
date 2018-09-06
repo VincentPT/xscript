@@ -274,6 +274,9 @@
     <ClInclude Include="CommandUnitBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="function\CachedFunction.hpp">
+      <Filter>Header Files\Function</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

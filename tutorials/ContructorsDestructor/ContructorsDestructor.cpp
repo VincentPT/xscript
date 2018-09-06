@@ -14,6 +14,7 @@
 
 #include "stdafx.h"
 #include "../TutorialCommon.h"
+#include <function/CdeclFunction.hpp>
 
 class ConsoleCompilationLogger : public CompilationLogger {
 	void log(MessageType type, const wchar_t* message) {
@@ -39,32 +40,25 @@ struct CustomArray {
 	float* data;
 };
 
-// println functions
-void println(const std::string& s) {
-	cout << s << endl;
-}
-
-void print(const std::string& s) {
-	cout << s;
-}
-
-void print(const CustomArray& arr) {
+ostream& operator<<(ostream& out, const CustomArray& arr) {
 	if (arr.n == 0) {
-		cout << "{}";
-		return;
+		out << "{}";
+		return out;
 	}
-	cout << "{";
+	out << "{";
 	float* p = arr.data;
 	float* pEnd = p + arr.n - 1;
 	while(p < pEnd) {
-		cout << *p << ",";
+		out << *p << ",";
 		p++;
 	}
-	cout << *p << "}";
+	out << *p << "}";
+
+	return out;
 }
 
 // default constructor
-void customArrayCtor(CustomArray* obj) {
+void __customArrayConstructor(CustomArray* obj) {
 	obj->n = 0;
 	obj->data = nullptr;
 
@@ -72,9 +66,9 @@ void customArrayCtor(CustomArray* obj) {
 }
 
 // copy constructor
-void customArrayCtor(CustomArray* objA, const CustomArray& objB) {
+void __customArrayConstructor(CustomArray* objA, const CustomArray& objB) {
 	if (objB.data == nullptr) {
-		customArrayCtor(objA);
+		__customArrayConstructor(objA);
 	}
 	else {
 		objA->n = objB.n;
@@ -87,7 +81,7 @@ void customArrayCtor(CustomArray* objA, const CustomArray& objB) {
 }
 
 // destructor
-void customArrayDtor(CustomArray* obj) {
+void __customArrayDestructor(CustomArray* obj) {
 	if (obj->data) {
 		free(obj->data);
 	}
@@ -107,44 +101,37 @@ void add(CustomArray& obj, float val) {
 	obj.data = newData;
 }
 
+
+ConstOperandBase* createCoutConsant() {
+	return new CConstOperand<size_t>((size_t)_Ptr_cout, "ostream");
+}
+
+ConstOperandBase* createEndlConsant() {
+	return new CConstOperand<char>('\n', "char");
+}
+
 void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 	FunctionRegisterHelper fb(scriptCompiler);
 	scriptCompiler->setLogger(&compilationLogger);
 
 	// register a new type
-	int typeId = scriptCompiler->registType("CustomArray");
+	// map CustomArray in C++ into CustomArray in the script
+	int typeId = fb.registerUserType("CustomArray", sizeof(CustomArray));
 	if (IS_UNKNOWN_TYPE(typeId)) {
 		return;
 	}
-	scriptCompiler->setTypeSize(typeId, sizeof(CustomArray));
+	// map ostream* in C++ into ostream in the script
+	int streamTypeId = fb.registerUserType("ostream", sizeof(ostream*));
+	if (IS_UNKNOWN_TYPE(streamTypeId)) {
+		return;
+	}
+	scriptCompiler->setConstantMap("cout", make_shared<CdeclFunction<ConstOperandBase*>>(createCoutConsant));
+	scriptCompiler->setConstantMap("endl", make_shared<CdeclFunction<ConstOperandBase*>>(createEndlConsant));
 
-	// register print functions
-	registerFunction
-		<void, const std::string&> // native function prototype
-		(fb, // register helper object
-			println, // native function
-			"println", //script function name
-			"void", // return type of the script function
-			"string&" // parameter type of the function
-			);
-
-	registerFunction
-		<void, const std::string&> // native function prototype
-		(fb, // register helper object
-			print, // native function
-			"print", //script function name
-			"void", // return type of the script function
-			"string&" // parameter type of the function
-			);
-
-	registerFunction
-		<void, const CustomArray&> // native function prototype
-		(fb, // register helper object
-			print, // native function
-			"print", //script function name
-			"void", // return type of the script function
-			"CustomArray&" // parameter type of the function
-			);
+	// map operators 'ostream& operator<<(ostream&, T)' in c++ into operator '<<' in the script
+	registerOperator<ostream&, ostream&, const string&>(fb, operator<<, "<<", "ostream", "ostream,string&");
+	registerOperator<ostream&, ostream&, char>(fb, operator<<, "<<", "ostream", "ostream,char");
+	registerOperator<ostream&, ostream&, const CustomArray&>(fb, operator<<, "<<", "ostream", "ostream,CustomArray&");
 
 	// register add member function
 	registerFunction
@@ -158,47 +145,36 @@ void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 	
 	// register constructors and destructor
 	// default constructor
-	int defaultContructorId = registerFunction
-		<void, CustomArray*> // native function prototype
+	if( registerContructor
+	   <CustomArray*> // native function prototype
 		(fb, // register helper object
-			customArrayCtor, // native function
-			"customArrayCtor", //script function name
-			"void", // return type of the script function
+			__customArrayConstructor, // native function
+			typeId, //contructor corressponding to typeId
 			"ref CustomArray" // parameter type of the function
-			);
-	if (defaultContructorId < 0) {
+			) < 0 ) {
 		return;
 	}
 
 	// copy constructor
-	int copyContructorId = registerFunction
-		<void, CustomArray*, const CustomArray&> // native function prototype
+	if( registerContructor
+		<CustomArray*, const CustomArray&> // native function prototype
 		(fb, // register helper object
-			customArrayCtor, // native function
-			"customArrayCtor", //script function name
-			"void", // return type of the script function
+			__customArrayConstructor, // native function
+			typeId, //contructor corressponding to typeId
 			"ref CustomArray, CustomArray&" // parameter type of the function
-			);
-	if (copyContructorId < 0) {
+			) < 0 ) {
 		return;
 	}
 
 	// destructor
-	int destructorId = registerFunction
-		<void, CustomArray*> // native function prototype
+	if( registerDestructor
+		<CustomArray*> // native function prototype
 		(fb, // register helper object
-			customArrayDtor, // native function
-			"customArrayDtor", //script function name
-			"void", // return type of the script function
-			"ref CustomArray" // parameter type of the function
-			);
-	if (destructorId < 0) {
+			__customArrayDestructor, // native function
+			typeId //destructor corressponding to typeId
+			) < 0) {
 		return;
 	}
-
-	scriptCompiler->registConstructor(typeId, defaultContructorId);
-	scriptCompiler->registConstructor(typeId, copyContructorId);
-	scriptCompiler->registDestructor(typeId, destructorId);
 }
 
 int main(int argc, char* argv[])

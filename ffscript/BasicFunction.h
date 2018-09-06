@@ -32,7 +32,7 @@ namespace ffscript {
 	{
 		int _paramSize;
 	public:
-		UserFunctionFactory(ScriptCompiler* scriptCompiler, const char* returnType, int paramSize);
+		UserFunctionFactory(ScriptCompiler* scriptCompiler, const std::string& returnType, int paramSize);
 		virtual ~UserFunctionFactory();
 		Function* createFunction(const std::string& name, int id);
 		virtual DFunction2Ref createNative() = 0;
@@ -43,7 +43,7 @@ namespace ffscript {
 	{
 		DFunction2Ref _nativeFunction;
 	public:
-		DefaultUserFunctionFactory(DFunction2Ref nativeFunction, ScriptCompiler* scriptCompiler, const char* returnType, int paramSize);
+		DefaultUserFunctionFactory(DFunction2Ref nativeFunction, ScriptCompiler* scriptCompiler, const std::string& returnType, int paramSize);
 		virtual ~DefaultUserFunctionFactory();
 		DFunction2Ref createNative();
 	};

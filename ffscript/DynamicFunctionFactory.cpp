@@ -17,11 +17,11 @@
 //#include "Function.h"
 
 namespace ffscript {
-	DynamicFunctionFactory::DynamicFunctionFactory(const char* returnType, DFunction2* nativeFunction, ScriptCompiler* scriptCompiler) :
+	DynamicFunctionFactory::DynamicFunctionFactory(const std::string& returnType, DFunction2* nativeFunction, ScriptCompiler* scriptCompiler) :
 		FunctionFactory(nullptr, scriptCompiler),
-		_returnType(returnType), _nativeFunction(nativeFunction)
+		_nativeFunction(nativeFunction)
 	{
-		this->setReturnType(ScriptType::parseType(scriptCompiler, _returnType));
+		this->setReturnType(ScriptType::parseType(scriptCompiler, returnType));
 	}
 
 

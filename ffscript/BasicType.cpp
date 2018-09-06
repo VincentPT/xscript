@@ -53,6 +53,8 @@ namespace ffscript {
 	void BasicTypes::registerBasicTypes(ScriptCompiler* scriptCompiler) {
 		TYPE_VOID	= scriptCompiler->registType("void");
 		TYPE_INT = scriptCompiler->registType("int");
+		TYPE_CHAR = scriptCompiler->registType("char");
+		TYPE_WCHAR = scriptCompiler->registType("wchar");
 		TYPE_LONG	= scriptCompiler->registType("long");
 		TYPE_FLOAT	= scriptCompiler->registType("float");
 		TYPE_DOUBLE = scriptCompiler->registType("double");
@@ -72,6 +74,8 @@ namespace ffscript {
 
 		scriptCompiler->setTypeSize(TYPE_VOID, 0);
 		scriptCompiler->setTypeSize(TYPE_INT, 4);
+		scriptCompiler->setTypeSize(TYPE_CHAR, sizeof(char));
+		scriptCompiler->setTypeSize(TYPE_WCHAR, sizeof(wchar_t));
 		scriptCompiler->setTypeSize(TYPE_LONG, 8);
 		scriptCompiler->setTypeSize(TYPE_FLOAT, 4);
 		scriptCompiler->setTypeSize(TYPE_DOUBLE, 8);

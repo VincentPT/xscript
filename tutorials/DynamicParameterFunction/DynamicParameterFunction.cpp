@@ -59,9 +59,7 @@ void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 			);
 
 	//register dynamic function
-	auto sumFunction = createFunctionCdecl<double, SimpleVariantArray*>(sum);
-	auto sumFunctionFactory = new DynamicFunctionFactory("double", sumFunction, scriptCompiler);
-	fb.registDynamicFunction("sum", sumFunctionFactory);
+	registerDynamicFunction<double>(fb, sum, "sum", "double");
 }
 
 int main(int argc, char* argv[])

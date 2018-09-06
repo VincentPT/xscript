@@ -31,6 +31,8 @@ namespace ffscript {
 		int TYPE_FLOAT;
 		int TYPE_DOUBLE;
 		int TYPE_BOOL;
+		int TYPE_CHAR;
+		int TYPE_WCHAR;
 		int TYPE_STRING;
 		int TYPE_WSTRING;
 		int TYPE_VARIANT;

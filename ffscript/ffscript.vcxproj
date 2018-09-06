@@ -289,6 +289,7 @@
     <ClInclude Include="FFScriptArray.hpp" />
     <ClInclude Include="FFStack.h" />
     <ClInclude Include="FuncLibrary.h" />
+    <ClInclude Include="function\CachedFunction.hpp" />
     <ClInclude Include="function\CdeclFunction3.hpp" />
     <ClInclude Include="function\FunctionHelper.hpp" />
     <ClInclude Include="function\MemberFunction2Ref.hpp" />

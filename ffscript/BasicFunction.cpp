@@ -43,7 +43,7 @@ namespace ffscript {
 	{
 	}
 
-	UserFunctionFactory::UserFunctionFactory(ScriptCompiler* scriptCompiler, const char* returnType, int paramSize) : _paramSize(paramSize) {
+	UserFunctionFactory::UserFunctionFactory(ScriptCompiler* scriptCompiler, const std::string& returnType, int paramSize) : _paramSize(paramSize) {
 		this->setReturnType(ScriptType::parseType(scriptCompiler, returnType));
 	}
 
@@ -58,7 +58,7 @@ namespace ffscript {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	DefaultUserFunctionFactory::DefaultUserFunctionFactory(DFunction2Ref nativeFunction, ScriptCompiler* scriptCompiler, const char* returnType, int paramSize) :
+	DefaultUserFunctionFactory::DefaultUserFunctionFactory(DFunction2Ref nativeFunction, ScriptCompiler* scriptCompiler, const std::string& returnType, int paramSize) :
 		_nativeFunction(nativeFunction),
 		UserFunctionFactory(scriptCompiler, returnType, paramSize) {}
 

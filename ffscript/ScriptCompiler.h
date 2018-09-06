@@ -139,7 +139,7 @@ namespace ffscript {
 		int getTypeSize(int) const;
 		int getTypeSizeInStack(int) const;
 		int getTypeSize(const ScriptType&) const;
-		bool setTypeSize(int typeId, int size);
+		void setTypeSize(int typeId, int size);
 		std::string getType(int) const;
 		int getType(const std::string&) const;
 		bool isRefSign(const std::string&) const;

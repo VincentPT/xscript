@@ -94,4 +94,50 @@ namespace ffscript {
 	ScriptCompiler* FunctionRegisterHelper::getSriptCompiler() const {
 		return _scriptCompiler;
 	}
+
+	int FunctionRegisterHelper::registerUserType(const std::string& type, unsigned int size) {
+		int typeId = _scriptCompiler->registType(type);
+		if (IS_UNKNOWN_TYPE(typeId)) {
+			return typeId;
+		}
+
+		_scriptCompiler->setTypeSize(typeId, (int)size);
+		return typeId;
+	}
+
+	int FunctionRegisterHelper::registerTypeAutoOperator(int typeId, const std::string& functionParams, FunctionFactory* factory, bool autoDelete, bool constructor) {
+		if ((typeId & DATA_TYPE_ORIGIN_MASK) != typeId) {
+			// type is not a raw type
+			return -1;
+		}
+		std::string functionNamePrefix(constructor ?  "_ctor_" : "_dtor_");
+		auto typeName = _scriptCompiler->getType(typeId);
+		functionNamePrefix.append(typeName);
+		int functionId = registFunction(functionNamePrefix, functionParams, factory, autoDelete);
+		if (functionId < 0) {
+			functionNamePrefix.append(1, '_');
+			for (int i = 0; functionId < 0; i++) {
+				functionId = registFunction(functionNamePrefix + std::to_string(i), functionParams, factory, autoDelete);
+			}
+		}
+
+		bool res = constructor ? _scriptCompiler->registConstructor(typeId, functionId) :
+			_scriptCompiler->registDestructor(typeId, functionId);
+
+		if (res == false) {
+			_scriptCompiler->unregisterFunction(functionId);
+			functionId = -1;
+		}
+		return functionId;
+	}
+
+	int FunctionRegisterHelper::registerConstructor(int typeId, const std::string& functionParams, FunctionFactory* factory, bool autoDelete) {
+		return registerTypeAutoOperator(typeId, functionParams, factory, autoDelete, true);
+	}
+
+	int FunctionRegisterHelper::registerDestructor(int typeId, FunctionFactory* factory, bool autoDelete) {
+		ScriptType scriptType(typeId, _scriptCompiler->getType(typeId));
+		scriptType = scriptType.makeRef();
+		return registerTypeAutoOperator(typeId, scriptType.sType(), factory, autoDelete, false);
+	}
 }
