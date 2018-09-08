@@ -80,3 +80,5 @@ void main() {
 ```
 
 # Licensing.
+The project is distributed under MIT license.
+For more details, check LICENSE file.
