@@ -10,7 +10,9 @@ Current the project distributes as header files and two bellow static libraries:
 
 # What Cλ language is?
 C Lambda language or Cλ in short is a scripting language but it is not like other programming languages designed to work independently. Working independently means the programming language itself can work with all or many specific domains such as IO operations, networking, databases, graphics.
+
 The Cλ language does not work like that. It is depent on what your application offers. The Cλ only offers some very basic operations(defined in ffscript.lib) such as Addition, Subtraction, Multiplication, Division and some others operators like other programming languages do. It also has framework to allow user map functions, types in C++ side to script side.
+
 So, basically, this language is not designed to compete with other languages but supports for C/C++ language. Giving C/C++ programr library  more power, more flexible.
 
 # Why Cλ language?
