@@ -35,9 +35,20 @@ Any Cλ program can be divided into two bellow parts:
 
 Let's check some main features offered by the language.
 
-* Operators  
+## Operators  
   Support almost of C++ operators.
   ![C Lambda Operator precedences](https://github.com/VincentPT/ffscript/blob/master/doc/images/OperatorPrecedences.png?raw=true)
-  Cλ operator precedence(Based on https://en.cppreference.com/w/cpp/language/operator_precedence).
-
+  Cλ operator precedence(based on https://en.cppreference.com/w/cpp/language/operator_precedence).
+### Register a operator for a exist type.
+```
+// function register helper object
+FunctionRegisterHelper fb(scriptCompiler);
+// register operator<< of ostream and std::string
+registerOperator<ostream&, ostream&, const string&>(fb, operator<<, "<<", "ostream", "ostream,string&");
+```
+### Using in the script.
+```
+// cout is an instance of ostream, which is already defined.
+cout << "this is a sample tring;
+```
 # Licensing.
