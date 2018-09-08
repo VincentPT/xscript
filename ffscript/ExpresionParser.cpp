@@ -360,8 +360,67 @@ namespace ffscript {
 		}
 	}
 
+	/*
+	(Hex codes assume an ASCII-compatible character encoding.)
+		\a = \x07 = alert (bell)
+		\b = \x08 = backspace
+		\t = \x09 = horizonal tab
+		\n = \x0A = newline (or line feed)
+		\v = \x0B = vertical tab
+		\f = \x0C = form feed
+		\r = \x0D = carriage return
+		\e = \x1B = escape (non-standard GCC extension)
+	Punctuation characters:
+		\" = quotation mark (backslash not required for '"')
+		\' = apostrophe (backslash not required for "'")
+		\? = question mark (used to avoid trigraphs)
+		\\ = backslash
+	*/
+
+	inline char escapeChar(char c) {
+		switch (c)
+		{
+		case 'a':
+			return 7;
+		case 'b':
+			return 8;
+		case 't':
+			return 9;
+		case 'n':
+			return 0x0A;
+		case 'v':
+			return 0x0B;
+		case 'f':
+			return 0x0C;
+		case 'r':
+			return 0x0D;
+		case 'e':
+			return 0x1B;
+		case '0':
+			return 0;
+		case '"':
+		case '\'':
+		case '?':
+		case '\\':
+			return c;
+		default:
+			return -1;
+		}
+	}
+
+	inline int escapeChar(const wchar_t* xStr) {
+		wchar_t buff[3] = { *xStr, *(xStr + 1), 0 };
+		wchar_t * p;
+		long n = wcstoul(buff, &p, 16);
+		if (*p != 0) {
+			// not a hex number
+			return -1;
+		}
+		return (int)n;
+	}
+
 	const WCHAR* ExpressionParser::readExpression(const WCHAR* begin, const WCHAR* end, EExpressionResult& eResult, std::list<ExpUnitRef>& expUnitList) {
-		const WCHAR* c, *sMax;
+		const WCHAR* c;
 		WCHAR* s1, *s2, *sToken;
 		WCHAR sToken1[MAX_FUNCTION_LENGTH + 2];
 		WCHAR sToken2[MAX_FUNCTION_LENGTH + 2];
@@ -455,32 +514,71 @@ namespace ffscript {
 						/*			case  ':':
 						pFixedExpUnit = new CConditionChoice();
 						break;*/
-					case '\"':
+					case '\"': {
+						std::wstring constantString;
+						auto beginConstantChar = c;
 						c++;
+						auto lastC = c;
 
-						for (sMax = c + MAX_FUNCTION_LENGTH; *c && *c != '\"'; c++) {
-							if (c > sMax) {
+						for (; c < end && *c != '\"'; c++) {
+							if (constantString.size() > MAX_FUNCTION_LENGTH) {
 								eResult = E_TOKEN_OUTOFLENGTH;
 								scriptCompiler->setErrorText("token is too long");
-								DBG_ERROR(_tprintf(_u_T("\n[#]Error at index %d"), c - sExpressionString));
 								break;
 							}
-							DBG_INFO(_tprintf("%c", *c));
+							if (*c == '\\') {
+								constantString.append(lastC, c);
+								c++;
+								if (c == end) {
+									eResult = E_INCOMPLETED_EXPRESSION;
+									scriptCompiler->setErrorText("missing character after '\\'");
+									break;
+								}
+								if (*c == 'x') {
+									c++;
+									if (c + 1 >= end) {
+										eResult = E_INCOMPLETED_EXPRESSION;
+										scriptCompiler->setErrorText("lack of character after '\\'x");
+										break;
+									}
+									auto res = escapeChar(c);
+									if (res == -1) {
+										eResult = E_TOKEN_INVALID;
+										string errorMsg("invalid escape character, token ");
+										errorMsg += (char)*c;
+										errorMsg += (char)*(c + 1);
+										errorMsg += " is not a number";
+										scriptCompiler->setErrorText(errorMsg);
+										break;
+									}
+									c++;
+									constantString += (wchar_t)res;
+									lastC = c + 1;
+								}
+								else {
+									auto cRes = escapeChar((char)*c);
+									if (cRes == -1) {
+										eResult = E_TOKEN_INVALID;
+										scriptCompiler->setErrorText("invalid escape character after '\\'");
+										break;
+									}
+									constantString += (wchar_t)cRes;
+									lastC = c + 1;
+								}
+							}
+						}
+						if (c > lastC) {
+							constantString.append(lastC, c);
 						}
 
 						if (eResult == E_SUCCESS) {
-							size = (int)(c - (sMax - MAX_FUNCTION_LENGTH));
 							if (*c != '\"') {
 								eResult = E_TOKEN_UNEXPECTED;
 								scriptCompiler->setErrorText("missing '\"'");
-								DBG_ERROR(_tprintf(__T("\n[#]Unexpected token '\"' at index:%d"), c - sExpressionString - size));
 							}
 							else {
-								DBG_INFO(_tprintf("\""));
-								sMax -= MAX_FUNCTION_LENGTH;
-
 								if (sToken != NULL && *sToken == 'L' && *(sToken + 1) == 0) {
-									pStringConst = new CConstOperand<std::wstring>(std::wstring(sMax, size), "wstring");
+									pStringConst = new CConstOperand<std::wstring>(constantString, "wstring");
 									if (sToken == sToken1) {
 										s1 = sToken1;
 									}
@@ -490,13 +588,14 @@ namespace ffscript {
 									sToken = nullptr;
 								}
 								else {
-									pStringConst = new CConstOperand<std::string>(convertToAscii(sMax, size), "string");
+									pStringConst = new CConstOperand<std::string>(convertToAscii(constantString.c_str(), constantString.size()), "string");
 								}
 
-								pStringConst->setSourceCharIndex((int)(sMax - begin));
+								pStringConst->setSourceCharIndex((int)(beginConstantChar - begin));
 							}
 						}
 						break;
+					}
 					case 0:
 						break;
 					default:
