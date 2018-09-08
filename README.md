@@ -33,7 +33,7 @@ Any Cλ program can be divided into two bellow parts:
 2. Script part.  
  Write the script using supported operations from the library and the application specific domain.
 
-Let's check some main features offered by the language.
+Let's check some main features offered by the language(or the library).
 
 ## Operators  
   Support almost of C++ operators.
@@ -41,6 +41,7 @@ Let's check some main features offered by the language.
   Cλ operator precedence(based on https://en.cppreference.com/w/cpp/language/operator_precedence).
 ### Register a operator for a exist type.
 ```
+// C++ part
 // function register helper object
 FunctionRegisterHelper fb(scriptCompiler);
 // register operator<< of ostream and std::string
@@ -48,7 +49,34 @@ registerOperator<ostream&, ostream&, const string&>(fb, operator<<, "<<", "ostre
 ```
 ### Using in the script.
 ```
+// C Lambda part
 // cout is an instance of ostream, which is already defined.
-cout << "this is a sample tring;
+cout << "this is a sample string;
 ```
+## Functions.
+A function written inside a script can be an mapped function from C++ or a script function itself.
+### Mapping a C++ function.
+For function println is defined in C++ as bellow:
+```
+// C++ part
+void println(const std::string& rs) {
+ // do something
+}
+```
+We can map the function to use it inside the script as bellow:
+```
+// C++ part
+registerFunction<void, const std::string&>(fb, println, "println", "void","string&");
+```
+And use it inside the script as bellow:
+```
+// C lambda part
+void doSomething() {
+    println("Hello world!");
+}
+void main() {
+    doSomething();
+}
+```
+
 # Licensing.
