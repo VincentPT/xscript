@@ -34,21 +34,21 @@ Any Cλ program can be divided into two bellow parts:
  Write the script using supported operations from the library and the application specific domain.
 
 Let's check some main features offered by the language(or the library).
-* Register a type.  
+* __Register a type.__  
  use registerUserType method.
-* Map constant.  
+* __Map constant.__  
  use setConstantMap function.
-* Register an operator.  
+* __Register an operator.__  
  use registerOperator function.
-* Register a function.  
+* __Register a function.__  
  use registerFunction function.
-* Register contructor.  
+* __Register contructor.__  
  use registerContructor function.
-* Register destructor.  
+* __Register destructor.__  
  use registerDestructor function.
-* Register dynamic function.  
+* __Register dynamic function.__  
  use registerDynamicFunction function.
-* Using Lambda function.  
+* __Using Lambda function.__  
   ```
   int val = 0;
   // defined lambda function and store function address to a function object
