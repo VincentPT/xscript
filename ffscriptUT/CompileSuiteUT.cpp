@@ -851,5 +851,228 @@ namespace ffscriptUT
 
 			freeRawString(*rws);
 		}
+
+		TEST_METHOD(TestHexNumber1)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"int foo() {"
+				L"	return 0x1234;"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program);
+			int functionId = scriptCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			int* funcRes = (int*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == 0x1234, L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(TestHexNumber2)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"int foo() {"
+				L"	x = 0x1234;"
+				L"	return x;"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program);
+			int functionId = scriptCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			int* funcRes = (int*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == 0x1234, L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(TestHexNumber3)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"int foo() {"
+				L"	return 0x1233 + 1;"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program);
+			int functionId = scriptCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			int* funcRes = (int*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == (0x1233 + 1), L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(TestHexNumber4)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"int sum(int a, int b) {"
+				L"	return a + b;"
+				L"}"
+				L"int foo() {"
+				L"	return sum(0x1233, 1);"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program);
+			int functionId = scriptCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			int* funcRes = (int*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == (0x1233 + 1), L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(TestHexNumber5)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"long sum(int a, long b) {"
+				L"	return a + b;"
+				L"}"
+				L"long foo() {"
+				L"	return sum(0x1233, 0x123456789);"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program);
+			int functionId = scriptCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			long long* funcRes = (long long*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == (0x1233 + 0x123456789), L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(TestHexNumber6)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"int foo() {"
+				L"	return -0x1234;"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program);
+			int functionId = scriptCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			int* funcRes = (int*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == -0x1234, L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(TestHexNumber7)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"long foo() {"
+				L"	return -0x1234l;"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program);
+			int functionId = scriptCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			long long* funcRes = (long long*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == -(0x1234ll), L"program can run but return wrong value");
+		}
+
+		TEST_METHOD(TestHexNumber8)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"long foo() {"
+				L"	return -0x123456789;"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program);
+			int functionId = scriptCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+			long long* funcRes = (long long*)scriptTask.getTaskResult();
+
+			Assert::IsTrue(*funcRes == -(0x123456789), L"program can run but return wrong value");
+		}
 	};
 }

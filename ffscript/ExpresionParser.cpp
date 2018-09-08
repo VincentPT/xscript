@@ -434,6 +434,7 @@ namespace ffscript {
 
 		blHasDot = false;
 		blHasChar = false;
+
 		s1 = sToken1;
 		s2 = sToken2;
 		pLastUnit = NULL;
@@ -749,6 +750,55 @@ namespace ffscript {
 					pExpUnit->setReturnType(pVariable->getDataType());
 				}
 #endif
+				else if (tokenLength >= 2 && sToken[0] == '0') {
+					if (sToken[1] == 'x') {
+						wchar_t* lastChar = sToken + tokenLength - 1;
+						bool takeNumberAsLong = false;
+						if (*lastChar == 'l') {
+							*lastChar = 0;
+							takeNumberAsLong = true;
+						}
+						wchar_t* p;
+						unsigned long long n = wcstoull(&sToken[2], &p, 16);
+						if (*p != 0) {
+							std::string&& stdtoken = convertToAscii(sToken, tokenLength);
+							eResult = E_TOKEN_UNEXPECTED;
+							scriptCompiler->setErrorText("token '" + stdtoken + "' is expected as a hexa number");
+							break;
+						}
+
+						int sign = 1;
+						if (expUnitList.size() > 0) {
+							auto lastUnitIter = expUnitList.end();
+							--lastUnitIter;
+							if ((*lastUnitIter)->getType() == EXP_UNIT_ID_OPERATOR_NEG) {
+								sign = -1;
+								if (expUnitList.size() > 1) {
+									auto beforeLastIter = lastUnitIter;
+									--beforeLastIter;
+									pLastUnit = beforeLastIter->get();
+								}
+								else {
+									pLastUnit = nullptr;
+								}
+								expUnitList.erase(lastUnitIter);
+							}
+						}
+
+						if (takeNumberAsLong == true || n > 0xFFFFFFFF) {
+							pExpUnit = new CConstOperand<__int64>(sign * n, "long");
+						}
+						else {
+							pExpUnit = new CConstOperand<int>(sign * (int)n, "int");
+						}
+					}
+					else {
+						std::string&& stdtoken = convertToAscii(sToken, tokenLength);
+						eResult = E_TOKEN_UNEXPECTED;
+						scriptCompiler->setErrorText("token '" + stdtoken + "' is not expected here");
+						break;
+					}
+				}
 				else if (pLastUnit != nullptr && pLastUnit->getType() == EXP_UNIT_ID_MEMBER_ACCESS) {
 					//expected member name here.
 					//member name will be stored as string constant
