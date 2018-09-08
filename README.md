@@ -23,21 +23,21 @@ So, basically, this language is not designed to compete with other languages but
 
 # Introduce Cλ language.
 Any Cλ program can be divided into two bellow parts:
-1. C++ part.
+1. C++ part.  
  This part has responsibility for
  * Importing Cλ static library.
  * Registering domain specific types, functions.
  * Compile the script.
  * Running the complied script.
 
-2. Script part.
+2. Script part.  
  Write the script using supported operations from the library and the application specific domain.
 
 Let's check some main features offered by the language.
 
-* Operators
+* Operators  
   Support almost of C++ operators.
   ![C Lambda Operator precedences](https://github.com/VincentPT/ffscript/blob/master/doc/images/OperatorPrecedences.png?raw=true)
-  Cλ operator precedence.(Based on https://en.cppreference.com/w/cpp/language/operator_precedence)
+  Cλ operator precedence(Based on https://en.cppreference.com/w/cpp/language/operator_precedence).
 
 # Licensing.
