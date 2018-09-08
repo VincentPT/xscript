@@ -22,5 +22,8 @@ So, basically, this language is not designed to compete with other languages but
 * Cλ language library only offers core operations and work only with application specific domain. So, it is very light and suitable to use in a program which don't want its users to do something that is out of the program bound like a game, an education application or an platform in a programming competition.
 
 # Introduce Cλ language.
+* Operators
+  support almost of C++ operators.
+  ![C Lambda Operator precedences](https://github.com/VincentPT/ffscript/blob/master/doc/images/OperatorPrecedences.png?raw=true)
 
 # Licensing.
