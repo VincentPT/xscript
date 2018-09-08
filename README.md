@@ -1,5 +1,6 @@
 # ffscript
 Introduce C Lambda scripting language, a scripting language makes C++ program even more flexible.
+(https://github.com/VincentPT/ffscript/blob/master/doc/images/C%20Lambda.png?raw=true)
 
 # What ffscript project does?
 The ffscript project builds a compiler and a framework that allow users compile and run the C Lambda code inside a C++ host program.
