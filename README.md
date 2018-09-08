@@ -37,7 +37,7 @@ Let's check some main features offered by the language(or the library).
 
 ## Operators  
   Support almost of C++ operators.
-  <img src="https://github.com/VincentPT/ffscript/blob/master/doc/images/OperatorPrecedences.png?raw=true" width="1030" height="987" />
+  <img src="https://github.com/VincentPT/ffscript/blob/master/doc/images/OperatorPrecedences.png?raw=true" width="500" height="500" />
   Cλ operator precedence(based on https://en.cppreference.com/w/cpp/language/operator_precedence).
 ### Register a operator for a exist type.
 ```
