@@ -173,10 +173,6 @@ namespace ffscript {
 		functionId = helper.registFunction("intersect", "Point&,Point&,Point&,Point&,float&,float&", createUserFunctionFactory<bool,const Point&,const Point&,const Point&,const Point&, float*, float*>(scriptCompiler, "bool", Intersect2D_Lines));
 		functionId = helper.registFunction("project", "Point&,Point&,Point&", createUserFunctionFactory<float, const Point&, const Point&, const Point&>(scriptCompiler, "float", projectPoint));
 
-		auto createConstantFuncObj = make_shared<CdeclFunction<ConstOperandBase*, float, const char*>>(createConsant<float>);
-		static float _MATH_PI = 3.14159f;
-		createConstantFuncObj->pushParam((void*)&_MATH_PI);
-		createConstantFuncObj->pushParam((void*)"float");
-		scriptCompiler->setConstantMap("PI", createConstantFuncObj);
+		setConstantMap(scriptCompiler, "PI", "float", 3.14159f);
 	}
 }

@@ -113,11 +113,6 @@ namespace ffscript {
 		static constexpr int count = sizeof...(Args);
 	};
 
-	template <class T>
-	ConstOperandBase* createConsant(const T& cosnt_val, const std::string& typeStr) {
-		return new CConstOperand<T>(cosnt_val, typeStr);
-	}
-
 	template<class Rt, class ...Types>
 	int registerFunction(FunctionRegisterHelper& fb, Rt(*nativeFunction)(Types...), const std::string& scriptFunction, const std::string& returnType, const std::string& paramTypes) {
 		return fb.registFunction(
