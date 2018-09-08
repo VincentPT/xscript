@@ -72,9 +72,11 @@ registerFunction<void, const std::string&>(fb, println, "println", "void","strin
 ```
 // C lambda part
 void doSomething() {
+    // call a native C++ function
     println("Hello world!");
 }
 void main() {
+    // call another script function
     doSomething();
 }
 ```
