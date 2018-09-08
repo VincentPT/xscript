@@ -1,6 +1,6 @@
 # ffscript
 Introduce C Lambda(Cλ) scripting language, a scripting language makes C++ program even more flexible.
-<p style="text-align:center;"><img src="https://github.com/VincentPT/ffscript/blob/master/doc/images/C%20Lambda.png?raw=true"/></p>
+<p align="center"><img src="https://github.com/VincentPT/ffscript/blob/master/doc/images/C%20Lambda.png?raw=true"/></p>
 
 # What ffscript project does?
 The ffscript project builds a compiler and a framework that allow users compile and run the Cλ code inside a C++ host program.
@@ -37,7 +37,7 @@ Let's check some main features offered by the language(or the library).
 
 ## Operators  
   Support almost of C++ operators.
-  <img src="https://github.com/VincentPT/ffscript/blob/master/doc/images/OperatorPrecedences.png?raw=true" width="100%"/>
+  <img src="https://github.com/VincentPT/ffscript/blob/master/doc/images/OperatorPrecedences.png?raw=true" width="1030" height="987" />
   Cλ operator precedence(based on https://en.cppreference.com/w/cpp/language/operator_precedence).
 ### Register a operator for a exist type.
 ```
