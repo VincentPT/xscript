@@ -14,16 +14,14 @@ CustomArray foo() {
 // a function of script, in this tutorial it act as main function of the script program
 void main() {
     CustomArray a = foo();
-    cout << "a before add element" << endl;
-    cout << "a = " << a << endl;
+    cout << "a before add element\na =" << a << endl;
     
     add(a, 1);
     
     CustomArray b = a;
     add(b, 2);
     
-    cout << "a after add an element" << endl;
-    cout << "a = " << a << endl;
+    cout << "a after add an element\x0Aa = " << a << endl;
     
     cout << "b = " << b << endl;
 }

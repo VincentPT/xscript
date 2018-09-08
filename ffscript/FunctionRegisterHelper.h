@@ -4,7 +4,7 @@
 *              to help users register the function in a script
 *              program.
 *              Define some utility template functions used in
-*              registering function.
+*              registering functions and types.
 * Author:      Vincent Pham
 *
 * (C) Copyright 2018, The ffscript project, All rights reserved.
@@ -19,6 +19,7 @@
 
 #include "function/CdeclFunction3.hpp"
 #include "function/MemberFunction3.hpp"
+#include "function/DynamicFunction.h"
 
 class DFunction2;
 namespace ffscript {
@@ -304,5 +305,31 @@ namespace ffscript {
 				nativeFunction // native function
 				)
 		);
+	}
+
+	template<class T>
+	class ContantFactory : public DFunction {
+		std::string _type;
+		T _val;
+		ConstOperandBase* _retStorage;
+	public:
+		ContantFactory(const T& val, const std::string& type) : _val(val), _type(type) {
+			_ret = &_retStorage;
+		}
+
+		void call() {
+			_retStorage = new CConstOperand<T>(_val, _type);
+		}
+		bool pushParam(void* param) { return false;}
+		void* popParam() { return nullptr;}
+		DFunction* clone() {
+			return new ContantFactory(_val, _type);
+		}
+	};
+
+	template<class T>
+	void setConstantMap(ScriptCompiler* compiler, const std::string& constantName, const std::string& constantType, const T& val) {
+		auto constantFactoryRef = std::make_shared<ContantFactory<T>>(val, constantType);
+		compiler->setConstantMap(constantName, constantFactoryRef);
 	}
 }

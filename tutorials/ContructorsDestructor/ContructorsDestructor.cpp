@@ -101,15 +101,6 @@ void add(CustomArray& obj, float val) {
 	obj.data = newData;
 }
 
-
-ConstOperandBase* createCoutConsant() {
-	return new CConstOperand<size_t>((size_t)_Ptr_cout, "ostream");
-}
-
-ConstOperandBase* createEndlConsant() {
-	return new CConstOperand<char>('\n', "char");
-}
-
 void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 	FunctionRegisterHelper fb(scriptCompiler);
 	scriptCompiler->setLogger(&compilationLogger);
@@ -125,10 +116,14 @@ void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 	if (IS_UNKNOWN_TYPE(streamTypeId)) {
 		return;
 	}
-	scriptCompiler->setConstantMap("cout", make_shared<CdeclFunction<ConstOperandBase*>>(createCoutConsant));
-	scriptCompiler->setConstantMap("endl", make_shared<CdeclFunction<ConstOperandBase*>>(createEndlConsant));
 
-	// map operators 'ostream& operator<<(ostream&, T)' in c++ into operator '<<' in the script
+	// map cout constant as _Ptr_cout. So, we can use 'operator<<' of ostream for some types
+	setConstantMap(scriptCompiler, "cout", "ostream", (size_t)_Ptr_cout);
+	// map endl as break line. So, we can use 'operator<<' of ostream like 'cout << endl'
+	setConstantMap(scriptCompiler, "endl", "char", '\n');
+
+	// map operators 'ostream& operator<<(ostream&, T)' in c++ into operator '<<' in the script.
+	// So, we can use operator<< of these types
 	registerOperator<ostream&, ostream&, const string&>(fb, operator<<, "<<", "ostream", "ostream,string&");
 	registerOperator<ostream&, ostream&, char>(fb, operator<<, "<<", "ostream", "ostream,char");
 	registerOperator<ostream&, ostream&, const CustomArray&>(fb, operator<<, "<<", "ostream", "ostream,CustomArray&");
