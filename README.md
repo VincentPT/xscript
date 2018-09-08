@@ -68,7 +68,7 @@ We can map the function to use it inside the script as bellow:
 // C++ part
 registerFunction<void, const std::string&>(fb, println, "println", "void","string&");
 ```
-And use it inside the script as bellow:
+### Using it in the script.
 ```
 // C lambda part
 void doSomething() {
