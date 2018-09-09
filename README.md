@@ -71,7 +71,7 @@ __Continue read bellow sections and check the [tutorials](tutorials/) to explore
 C Lambda library provides primitive types inside the core. Some very basics operators and functions are built base on these types.
 Here is mapping type table of all buit-in types in the library.
 Cλ | C++
---------
+---|----
 void | void
 int | int, unsigned int
 bool | bool
@@ -83,8 +83,8 @@ long | long long, unsigned long long
 constant string of char(1) | std::string
 constant string of wchar(2) | std::wstring
 
-(1): the string inside double quote. Example "this is a string".
-(2): the string inside double quote, right after character 'L'. Example "this is a string".
+(1): the string inside double quote. Example "this is a string".  
+(2): the string inside double quote, right after character 'L'. Example "this is a string".  
 both types are just supported in read-only functions only. In case you want to modified a string, you must use 'String' type by import the RawString library in ffscriptLibrary.lib. (Fore more details check the [tutorials](tutorials/))
 
 ## Functions.
