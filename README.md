@@ -1,6 +1,6 @@
 # ffscript
 Introduce C Lambda(Cλ) scripting language, a scripting language makes C++ program even more flexible.
-<p align="center"><img src="https://github.com/VincentPT/ffscript/blob/master/doc/images/C%20Lambda.png?raw=true"/></p>
+<p align="center"><img src="doc/images/C%20Lambda.png"/></p>
 
 # What ffscript project does?
  The ffscript project builds a compiler and a framework that allow users compile and run the Cλ code inside a C++ host program.
@@ -16,7 +16,7 @@ Introduce C Lambda(Cλ) scripting language, a scripting language makes C++ progr
  So, basically, this language is not designed to compete with other languages but supports for C/C++ language. Giving C/C++ program or library  more power, more flexible.
  
 # What can Cλ language do?
- Even though Cλ language library supply very limited of buit-in operations, it can be easy extended. So, I can say that its power is unlimited.
+ Even though Cλ language library supplies very limited of buit-in operations, it can be easy extended by combining with C++. So, it is not exaggerated to say that its power is unlimited.
  Let's check the best practice of using Cλ language in [Tank Battle game](https://github.com/VincentPT/tank-battle)
  ![](doc/images/best-practice.gif)
 
@@ -68,7 +68,7 @@ __For more details, continue read bellow sections and check the [tutorials](tuto
 
 ## Operators  
   Support almost of C++ operators.
-  <img src="https://github.com/VincentPT/ffscript/blob/master/doc/images/OperatorPrecedences.png?raw=true" />
+  <img src="doc/images/OperatorPrecedences.png" />
   Cλ operator precedence(based on https://en.cppreference.com/w/cpp/language/operator_precedence).
 ### Register a operator for a exist type.
 ```
