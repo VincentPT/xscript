@@ -4,16 +4,16 @@ Introduce C Lambda(Cλ) scripting language, a scripting language makes C++ progr
 
 # What ffscript project does?
  The ffscript project builds a compiler and a framework that allow users compile and run the Cλ code inside a C++ host program.
- Current the project distributes as header files and two bellow static libraries:
+ Currently, the project distributes as header files and two bellow static libraries:
 * ffscript.lib - contains script compiler, script running engine and framework to embed the script language into a C++ program.
 * ffscriptLibrary.lib - contains some built-in custom libraries such as Math library, Geometry library.
 
 # What Cλ language is?
  C Lambda language or Cλ in short is a scripting language but it is not like other programming languages designed to work independently.  Working independently means the programming language itself can work with all or many specific domains such as IO operations, networking, databases, graphics.
 
- The Cλ language does not work like that. It is depent on what your application offers. The Cλ only offers some very basic operations(defined in ffscript.lib) such as Addition, Subtraction, Multiplication, Division and some others operators like other programming languages do. It also has framework to allow user map functions, types in C++ side to script side.
+ The Cλ language does not work like that. It is dependent on what your application offers. The Cλ only offers some very basic operations (defined in ffscript.lib) such as Addition, Subtraction, Multiplication, Division and some others operators like other programming languages do. It also has framework to allow user map functions, types in C++ side to script side.
 
- So, basically, this language is not designed to compete with other languages but supports for C/C++ language. Giving C/C++ program or library  more power, more flexible.
+ So, basically, this language is not designed to compete with other languages but supports for C/C++ language. Giving C/C++ program or library more power, more flexible.
  
 # What can Cλ language do?
  Even though Cλ language library supplies very limited of buit-in operations, it can be easy extended by combining with C++. So, it is not exaggerated to say that its power is unlimited.
@@ -22,9 +22,9 @@ Introduce C Lambda(Cλ) scripting language, a scripting language makes C++ progr
  ![](doc/images/best-practice.gif)
 
 # Why Cλ language?
-* C Lambda language is a C-style language, however, it also offers some advance features of C++ language such as constructor, destructor and especialy is Lambda function. So, that's why I choose C Lambda to named it.
+* C Lambda language is a C++-style language. However, it offers some basic features of C++ not all such as constructor, destructor and especially is Lambda function. So, that's why it is called as C Lambda.
 * The Cλ language framework and running engine use the same memory layout, calling convention as C and C++. So, there is no cost of marshaling data between its engine and C/C++ program and able to reuse C/C++ functions without wrapper them.
-* Since Cλ language has C-style and base on C and C++, it is easy and quickly to learn Cλ language for C,C++ programmers.
+* Since Cλ language has C-style and base on C and C++, it is easy and quickly to learn Cλ language for C, C++ programmers.
 * Cλ language library only offers core operations and work only with application specific domain. So, it is very light and suitable to use in a program which don't want its users to do something that is out of the program bound like a game, an education application or an platform in a programming competition.
 
 # Introduce Cλ language.
@@ -86,10 +86,10 @@ constant string of wchar(2) | std::wstring
 
 (1): the string inside double quote. Example "this is a string".  
 (2): the string inside double quote, right after character 'L'. Example L"this is a wstring".  
-both types are just supported in read-only functions only. In case you want to modified a string, you must use 'String' type by import the RawString library in ffscriptLibrary.lib. (Fore more details check the [tutorials](tutorials/))
+both types are just supported in read-only functions only. In case you want to modified a string, you must use 'String' type by import the RawString library in ffscriptLibrary.lib. (For more details check the [tutorials](tutorials/))
 
 ## Functions.
-A function written inside a script can be an mapped function from C++ or a script function itself.
+A function written inside a script can be a mapped function from C++ or a script function itself.
 ### Mapping a C++ function.
 For function println is defined in C++ as bellow:
 ```
@@ -118,7 +118,7 @@ void main() {
 ## Operators  
   Support almost of C++ operators.
   <img src="doc/images/OperatorPrecedences.png" />
-  Cλ operator precedence(based on https://en.cppreference.com/w/cpp/language/operator_precedence).
+  Cλ operator precedence (based on https://en.cppreference.com/w/cpp/language/operator_precedence).
 ### Register a operator for a exist type.
 ```
 // C++ part
@@ -163,7 +163,7 @@ cout << "this is a sample string;
 }
  ```
 ### Dynamic functions.
-Dynamic functions is a short term of Dynamic parameters function. Like Constructor and destructor, the library only support to register dynamic function in C++ part now. Here is the way to register and use it.  
+Dynamic function is a short term of Dynamic parameters function. Like Constructor and destructor, the library only supports to register dynamic function in C++ part now. Here is the way to register and use it.  
 First, you must define the function in C++ part.
  ```
  // C++ part
