@@ -46,13 +46,13 @@ Here is a summary of most common features are used in a Cλ program.
  use registerUserType method.
 * __Register an operator.__  
  use registerOperator function.
- * __Map constant.__  
+ * __Map a constant.__  
  use setConstantMap function.
-* __Register contructor.__  
+* __Register a contructor.__  
  use registerContructor function.
-* __Register destructor.__  
+* __Register a destructor.__  
  use registerDestructor function.
-* __Register dynamic function.__  
+* __Register a dynamic function.__  
  use registerDynamicFunction function.
 * __Using Lambda function.__  
   ```
@@ -67,24 +67,6 @@ Here is a summary of most common features are used in a Cλ program.
  
 __Continue read bellow sections and check the [tutorials](tutorials/) to explore more.__
 
-## Operators  
-  Support almost of C++ operators.
-  <img src="doc/images/OperatorPrecedences.png" />
-  Cλ operator precedence(based on https://en.cppreference.com/w/cpp/language/operator_precedence).
-### Register a operator for a exist type.
-```
-// C++ part
-// function register helper object
-FunctionRegisterHelper fb(scriptCompiler);
-// register operator<< of ostream and std::string
-registerOperator<ostream&, ostream&, const string&>(fb, operator<<, "<<", "ostream", "ostream,string&");
-```
-### Using in the script.
-```
-// C Lambda part
-// cout is an instance of ostream, which is already defined.
-cout << "this is a sample string;
-```
 ## Functions.
 A function written inside a script can be an mapped function from C++ or a script function itself.
 ### Mapping a C++ function.
@@ -112,6 +94,53 @@ void main() {
     doSomething();
 }
 ```
+## Operators  
+  Support almost of C++ operators.
+  <img src="doc/images/OperatorPrecedences.png" />
+  Cλ operator precedence(based on https://en.cppreference.com/w/cpp/language/operator_precedence).
+### Register a operator for a exist type.
+```
+// C++ part
+// function register helper object
+FunctionRegisterHelper fb(scriptCompiler);
+// register operator<< of ostream and std::string
+registerOperator<ostream&, ostream&, const string&>(fb, operator<<, "<<", "ostream", "ostream,string&");
+```
+### Using in the script.
+```
+// C Lambda part
+// cout is an instance of ostream, which is already defined.
+cout << "this is a sample string;
+```
+### Constructor/Destructor
+ Constructor and destructor for a type is currently supported to register in C++ part only.
+ For an existing type, constructor and destructor should be implemented like this.
+ ```
+ // C++ part
+ // a constructor of 'SomeType' type.
+ void __constructor(SomeType* obj, int a, float b) {
+     // do something to initialize the object
+ }
+  // a destructor of 'SomeType' type.
+ void __destructor(SomeType* obj) {
+     // do something to uninitialize the object
+ }
+ ```
+ Now, map it to the script like this.
+ ```
+ // C++ part
+ registerContructor<SomeType*>(fb, __constructor, someTypeTypeId, "ref CustomArray");
+ ```
+ Then using it it the script like this.
+ ```
+ // C Lambda part.
+ void main() {
+    // constructor of SomeType will be executed here to construct object 'a'.
+    SomeType a = {1, 2.0f};
+    
+    // before exit this scope object 'a' will be destroyed by destructor of SomeType.
+}
+ ```
 
 # Licensing.
 The project is distributed under MIT license.
