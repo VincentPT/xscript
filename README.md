@@ -20,7 +20,8 @@ Introduce C Lambda(Cλ) scripting language, a scripting language makes C++ progr
  
  Let's check the best practice of using Cλ language in [Tank Battle game](https://github.com/VincentPT/tank-battle)
  ![](doc/images/best-practice.gif)
-
+ In this game, Cλ play a player role to control a tank to fight against other tanks. A tank in game can be an auto bot, C++ player or Cλ player. In above picture, the red tank is a C++ player, the blue tank is a Cλ player, and the others are auto bots.
+ 
 # Why Cλ language?
 * C Lambda language is a C++-style language. However, it offers some basic features of C++ not all such as overloading, constructor, destructor and especially is Lambda function. So, that's why it is called as C Lambda.
 * The Cλ language framework and running engine use the same memory layout, calling convention as C and C++. So, there is no cost of marshaling data between its engine and C/C++ program and able to reuse C/C++ functions without wrapper them.
@@ -65,7 +66,7 @@ Here is a summary of most common features are used in a Cλ program.
   f(0);
   ```
  
-__Continue read bellow sections and check the [tutorials](tutorials/) to explore more.__
+__I strongly recommend you to continue read bellow sections and check the [tutorials](tutorials/) to explore more.__
 
 ## Buit-in types.
 C Lambda library provides primitive types inside the core. Some very basics operators and functions are built base on these types.
