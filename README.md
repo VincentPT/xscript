@@ -67,6 +67,26 @@ Here is a summary of most common features are used in a Cλ program.
  
 __Continue read bellow sections and check the [tutorials](tutorials/) to explore more.__
 
+## Buit-in types.
+C Lambda library provides primitive types inside the core. Some very basics operators and functions are built base on these types.
+Here is mapping type table of all buit-in types in the library.
+Cλ | C++
+--------
+void | void
+int | int, unsigned int
+bool | bool
+char | char, unsigned char
+wchar | wchar_t, short, unsigned short
+float | float
+double | double
+long | long long, unsigned long long
+constant string of char(1) | std::string
+constant string of wchar(2) | std::wstring
+
+(1): the string inside double quote. Example "this is a string".
+(2): the string inside double quote, right after character 'L'. Example "this is a string".
+both types are just supported in read-only functions only. In case you want to modified a string, you must use 'String' type by import the RawString library in ffscriptLibrary.lib. (Fore more details check the [tutorials](tutorials/))
+
 ## Functions.
 A function written inside a script can be an mapped function from C++ or a script function itself.
 ### Mapping a C++ function.
@@ -140,6 +160,47 @@ cout << "this is a sample string;
     
     // before exit this scope object 'a' will be destroyed by destructor of SomeType.
 }
+ ```
+### Dynamic functions.
+Dynamic functions is a short term of Dynamic parameters function. Like Constructor and destructor, the library only support to register dynamic function in C++ part now. Here is the way to register and use it.  
+First, you must define the function in C++ part.
+ ```
+ // C++ part
+ // define a sum function which compute sum of numbers.
+ double sum(SimpleVariantArray* params) {
+    double sum = 0;
+    for (int i = 0; i < params->size; i++) {
+        auto& param = params->elems[i];
+        if (strcmp(param.typeName, "int") == 0) {
+            sum += (double)*(int*)param.pData;
+        }
+        else if (strcmp(param.typeName, "float") == 0) {
+            sum += (double)*(float*)param.pData;
+        }
+        else if (strcmp(param.typeName, "double") == 0) {
+            sum += (double)*(double*)param.pData;
+        }
+        else if (strcmp(param.typeName, "long") == 0) {
+            sum += (double)*(long long*)param.pData;
+        }
+        else {
+            throw std::runtime_error("argument must be a number");
+        }
+    }
+    return sum;
+ }
+ ```
+ Second, register it at the script compiler.
+ ```
+ // C++ part
+ registerDynamicFunction<double>(fb, sum, "sum", "double");
+ ```
+ Then use it in the script.
+ ```
+ void main() {    
+    double val = sum(0, 1.1f, 2.2, 3l);
+    println("sum(0, 1.1f, 2.2, 3l) = " + val);
+ }
  ```
 
 # Licensing.
