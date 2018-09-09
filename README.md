@@ -19,7 +19,7 @@ Introduce C Lambda(Cλ) scripting language, a scripting language makes C++ progr
  Even though Cλ language library supplies very limited of buit-in operations, it can be easy extended by combining with C++. So, it is not exaggerated to say that its power is unlimited.
  
  Let's check the best practice of using Cλ language in [Tank Battle game](https://github.com/VincentPT/tank-battle)
- ![](doc/images/best-practice.gif)
+ ![](doc/images/best-practice.gif)  
  In this game, Cλ play a player role to control a tank to fight against other tanks. A tank in game can be an auto bot, C++ player or Cλ player. In above picture, the red tank is a C++ player, the blue tank is a Cλ player, and the others are auto bots.
  
 # Why Cλ language?
