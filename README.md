@@ -85,7 +85,7 @@ constant string of char(1) | std::string
 constant string of wchar(2) | std::wstring
 
 (1): the string inside double quote. Example "this is a string".  
-(2): the string inside double quote, right after character 'L'. Example "this is a string".  
+(2): the string inside double quote, right after character 'L'. Example L"this is a wstring".  
 both types are just supported in read-only functions only. In case you want to modified a string, you must use 'String' type by import the RawString library in ffscriptLibrary.lib. (Fore more details check the [tutorials](tutorials/))
 
 ## Functions.
