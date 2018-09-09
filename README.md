@@ -207,11 +207,18 @@ First, you must define the function in C++ part.
  Although this project take me alot of effort to build it from a simple expression parser algorithm to an usable scripting library that can compile, embeded an run the script, it needs more effort to make the library more easy to use, cross platform working...
  I share the desire items I want to implement in the future whenever I have a free time.  
  - [ ] Call un-ordered script function.
+ - [ ] Support type cast operator - (Type)a.
+ - [ ] Support cross platform (Linux, Mac). Currently, support on Windows only.
+ - [ ] Support template function and structure.
  - [ ] Register constructor/destructor in script part.
  - [ ] Register dynamic function in script part.
  - [ ] Update overloading algorithm to make it more easy to use the overloading function in the script.
- - [ ] Support cross platform (Linux, Mac). Currently, support on Windows only.
 
+# Feedback
+ The objective of this project is sharing knowledge and contributing a litle of effort to open source community. As a contributor, I am happy if someone use my contribution in their products.  
+ So, if you have any issue, any ideal or even a greeting message you can contact me via Github issue management system or my E-mail: minhpta@outlook.com.  
+ They will be a motivation source help me complete my work.
+ 
 # Licensing.
 The project is distributed under MIT license.
 For more details, check LICENSE file.
