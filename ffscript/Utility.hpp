@@ -4,7 +4,7 @@
 *              a specific function when an its instance is destroyed.
 * Author:      Vincent Pham
 *
-* (C) Copyright 2018, The ffscript project, All rights reserved.
+* Copyright (c) 2018 VincentPT.
 ** Distributed under the MIT License (http://opensource.org/licenses/MIT)
 **
 *

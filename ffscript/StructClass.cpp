@@ -4,7 +4,7 @@
 *              information of struct of the C Lambda language.
 * Author:      Vincent Pham
 *
-* (C) Copyright 2018, The ffscript project, All rights reserved.
+* Copyright (c) 2018 VincentPT.
 ** Distributed under the MIT License (http://opensource.org/licenses/MIT)
 **
 *
