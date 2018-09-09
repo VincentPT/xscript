@@ -13,7 +13,12 @@ Introduce C Lambda(Cλ) scripting language, a scripting language makes C++ progr
 
  The Cλ language does not work like that. It is depent on what your application offers. The Cλ only offers some very basic operations(defined in ffscript.lib) such as Addition, Subtraction, Multiplication, Division and some others operators like other programming languages do. It also has framework to allow user map functions, types in C++ side to script side.
 
- So, basically, this language is not designed to compete with other languages but supports for C/C++ language. Giving C/C++ programr library  more power, more flexible.
+ So, basically, this language is not designed to compete with other languages but supports for C/C++ language. Giving C/C++ program or library  more power, more flexible.
+ 
+# What can Cλ language do?
+ Even though Cλ language library supply very limited of buit-in operations, it can be easy extended. So, I can say that its power is unlimited.
+ Let's check the best practice of using Cλ language in [Tank Battle game](https://github.com/VincentPT/tank-battle)
+ ![](doc/images/best-practice.gif)
 
 # Why Cλ language?
 * C Lambda language is a C-style language, however, it also offers some advance features of C++ language such as constructor, destructor and especialy is Lambda function. So, that's why I choose C Lambda to named it.
