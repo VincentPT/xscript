@@ -17,6 +17,7 @@ Introduce C Lambda(Cλ) scripting language, a scripting language makes C++ progr
  
 # What can Cλ language do?
  Even though Cλ language library supplies very limited of buit-in operations, it can be easy extended by combining with C++. So, it is not exaggerated to say that its power is unlimited.
+ 
  Let's check the best practice of using Cλ language in [Tank Battle game](https://github.com/VincentPT/tank-battle)
  ![](doc/images/best-practice.gif)
 
