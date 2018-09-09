@@ -113,7 +113,7 @@ registerOperator<ostream&, ostream&, const string&>(fb, operator<<, "<<", "ostre
 cout << "this is a sample string;
 ```
 ### Constructor/Destructor
- Constructor and destructor for a type is currently supported to register in C++ part only.
+ Registering constructor and destructor for a type is currently supported in C++ part only.
  For an existing type, constructor and destructor should be implemented like this.
  ```
  // C++ part
