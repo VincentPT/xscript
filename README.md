@@ -22,7 +22,7 @@ Introduce C Lambda(Cλ) scripting language, a scripting language makes C++ progr
  ![](doc/images/best-practice.gif)
 
 # Why Cλ language?
-* C Lambda language is a C++-style language. However, it offers some basic features of C++ not all such as constructor, destructor and especially is Lambda function. So, that's why it is called as C Lambda.
+* C Lambda language is a C++-style language. However, it offers some basic features of C++ not all such as overloading, constructor, destructor and especially is Lambda function. So, that's why it is called as C Lambda.
 * The Cλ language framework and running engine use the same memory layout, calling convention as C and C++. So, there is no cost of marshaling data between its engine and C/C++ program and able to reuse C/C++ functions without wrapper them.
 * Since Cλ language has C-style and base on C and C++, it is easy and quickly to learn Cλ language for C, C++ programmers.
 * Cλ language library only offers core operations and work only with application specific domain. So, it is very light and suitable to use in a program which don't want its users to do something that is out of the program bound like a game, an education application or an platform in a programming competition.
@@ -203,6 +203,14 @@ First, you must define the function in C++ part.
     println("sum(0, 1.1f, 2.2, 3l) = " + val);
  }
  ```
+# Road map
+ Although this project take me alot of effort to build it from a simple expression parser algorithm to an usable scripting library that can compile, embeded an run the script, it needs more effort to make the library more easy to use, cross platform working...
+ I share the desire items I want to implement in the future whenever I have a free time.  
+ - [ ] Call un-ordered script function.
+ - [ ] Register constructor/destructor in script part.
+ - [ ] Register dynamic function in script part.
+ - [ ] Update overloading algorithm to make it more easy to use the overloading function in the script.
+ - [ ] Support cross platform (Linux, Mac). Currently, support on Windows only.
 
 # Licensing.
 The project is distributed under MIT license.
