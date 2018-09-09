@@ -70,8 +70,9 @@ __Continue read bellow sections and check the [tutorials](tutorials/) to explore
 ## Buit-in types.
 C Lambda library provides primitive types inside the core. Some very basics operators and functions are built base on these types.
 Here is mapping type table of all buit-in types in the library.
+
 Cλ | C++
----|----
+---|-----
 void | void
 int | int, unsigned int
 bool | bool
