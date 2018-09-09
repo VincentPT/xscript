@@ -39,15 +39,15 @@ Any Cλ program can be divided into two bellow parts:
 2. Script part.  
  Write the script using supported operations from the library and the application specific domain.
 
-Let's check some main features offered by the language(or the library).
-* __Register a type.__  
- use registerUserType method.
-* __Map constant.__  
- use setConstantMap function.
-* __Register an operator.__  
- use registerOperator function.
+Here is a summary of most common features are used in a Cλ program.
 * __Register a function.__  
  use registerFunction function.
+* __Register a type.__  
+ use registerUserType method.
+* __Register an operator.__  
+ use registerOperator function.
+ * __Map constant.__  
+ use setConstantMap function.
 * __Register contructor.__  
  use registerContructor function.
 * __Register destructor.__  
@@ -65,7 +65,7 @@ Let's check some main features offered by the language(or the library).
   f(0);
   ```
  
-__For more details, continue read bellow sections and check the [tutorials](tutorials/)__
+__Continue read bellow sections and check the [tutorials](tutorials/) to explore more.__
 
 ## Operators  
   Support almost of C++ operators.
