@@ -336,7 +336,8 @@ namespace ffscript {
 
 	inline bool checkPosibilityUnaryPrefix(ExpUnit* pLastUnit) {
 		return pLastUnit == NULL ||
-			pLastUnit->getType() == EXP_UNIT_ID_OPEN_BRACKET ||
+			pLastUnit->getType() == EXP_UNIT_ID_OPEN_ROUND_BRACKET ||
+			pLastUnit->getType() == EXP_UNIT_ID_OPEN_CURLY_BRACKET ||
 			pLastUnit->getType() == EXP_UNIT_ID_OPEN_SQUARE_BRACKET ||
 			pLastUnit->getType() == EXP_UNIT_ID_FUNC_CONDITIONAL ||
 			pLastUnit->getType() == EXP_UNIT_ID_FUNC_CHOICE ||
@@ -479,10 +480,10 @@ namespace ffscript {
 					switch (*c)
 					{
 					case '(':
-						pFixedExpUnit = new OpenBracket();
+						pFixedExpUnit = new OpenRoundBracket();
 						break;
 					case ')':
-						pFixedExpUnit = new ClosedBracket();
+						pFixedExpUnit = new ClosedRoundBracket();
 						break;
 					case '[':
 						pFixedExpUnit = new OpenSquareBracket();
@@ -491,7 +492,7 @@ namespace ffscript {
 						pFixedExpUnit = new ClosedSquareBracket();
 						break;
 					case '}':
-						pFixedExpUnit = new ClosedBracket();
+						pFixedExpUnit = new ClosedCurlyBracket();
 						pArrayExpUnit = nullptr;
 						break;
 					case '{':
@@ -501,7 +502,7 @@ namespace ffscript {
 						pArrayExpUnit = new IncompletedUserFunctionUnit(key_create_array_func);
 						pArrayExpUnit->setSourceCharIndex((int)(c - begin));
 						expUnitList.push_back(ExpUnitRef(pArrayExpUnit));
-						pFixedExpUnit = new OpenBracket();
+						pFixedExpUnit = new OpenCurlyBracket();
 						break;
 						//case '+':
 						//	pFixedExpUnit = new  DynamicParamFunction("+", EXP_UNIT_ID_OPERATOR_ADD, FUNCTION_PRIORITY_ADDITIVE, 2);
@@ -1137,7 +1138,7 @@ namespace ffscript {
 		while (eResult != E_SUCCESS) {
 			if (it != end) {
 				auto& expUnit = *it;
-				if (expUnit->getType() == EXP_UNIT_CLOSED_BRACKET ||
+				if (expUnit->getType() == EXP_UNIT_CLOSED_ROUND_BRACKET ||
 					expUnit->getType() == EXP_UNIT_COMMA) {
 					eResult = E_SUCCESS;
 					break;
@@ -1302,7 +1303,7 @@ namespace ffscript {
 			//push the operand to output stack
 			pOutputStack->push(static_pointer_cast<ExecutableUnit>(expUnit));
 		}
-		else if (expUnit->getType() == EXP_UNIT_ID_OPEN_BRACKET) {
+		else if (expUnit->getType() == EXP_UNIT_ID_OPEN_ROUND_BRACKET || expUnit->getType() == EXP_UNIT_ID_OPEN_CURLY_BRACKET) {
 			//push open bracket to current opertor stack and create new output stack and operator stack for
 			//expression inside brackets
 			pOperatorStack->push(static_pointer_cast<DynamicParamFunction>(expUnit));
@@ -1321,8 +1322,8 @@ namespace ffscript {
 			pOperatorStack = new OperatorStack();
 			inputList.push_back(ExpressionEntry(pOutputStack, pOperatorStack));
 		}
-		else if (expUnit->getType() == EXP_UNIT_ID_CLOSED_BRACKET) {
-
+		else if (expUnit->getType() == EXP_UNIT_ID_CLOSED_ROUND_BRACKET || expUnit->getType() == EXP_UNIT_ID_CLOSED_CURLY_BRACKET) {
+			auto openBracketType = expUnit->getType() == EXP_UNIT_ID_CLOSED_ROUND_BRACKET ? EXP_UNIT_ID_OPEN_ROUND_BRACKET : EXP_UNIT_ID_OPEN_CURLY_BRACKET;
 			eResult = makeExpression(*pOutputStack, *pOperatorStack);
 			if (/*pOutputStack->size() != 1 || */pOperatorStack->size() > 0) {
 				_lastErrorUnit = expUnit;
@@ -1353,7 +1354,7 @@ namespace ffscript {
 				pOutputStack = entry.first;
 				pOperatorStack = entry.second;
 
-				if (pOperatorStack->size() && pOperatorStack->top()->getType() == EXP_UNIT_ID_OPEN_BRACKET) {
+				if (pOperatorStack->size() && pOperatorStack->top()->getType() == openBracketType) {
 					break;
 				}
 				inputList.pop_back();
@@ -1382,7 +1383,7 @@ namespace ffscript {
 				return eResult;
 			}
 
-			if (pOperatorStack->size() == 0 || pOperatorStack->top()->getType() != EXP_UNIT_ID_OPEN_BRACKET) {
+			if (pOperatorStack->size() == 0 || pOperatorStack->top()->getType() != openBracketType) {
 				scriptCompiler->setErrorText("Unexpected token ')'");
 				_lastErrorUnit = expUnit;
 				return E_INCOMPLETED_EXPRESSION;

@@ -126,8 +126,8 @@ namespace ffscriptUT
 		{
 			list<ExpUnitRef> theList;
 
-			theList.push_back(ExpUnitRef(new OpenBracket()));
-			theList.push_back(ExpUnitRef(new ClosedBracket()));
+			theList.push_back(ExpUnitRef(new OpenRoundBracket()));
+			theList.push_back(ExpUnitRef(new ClosedRoundBracket()));
 
 			list<ExecutableUnitRef> theSecondList;
 			theSecondList.push_back(static_pointer_cast<ExecutableUnit>(theList.back()));

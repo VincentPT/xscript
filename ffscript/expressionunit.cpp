@@ -49,29 +49,57 @@ namespace ffscript {
 	}
 
 	////////////////////////////////////////////////////////
-	OpenBracket::OpenBracket() {}
-	OpenBracket::~OpenBracket() {}
-	const std::string& OpenBracket::toString() const {
-		return OpenBracket::getFuncName();
+	OpenCurlyBracket::OpenCurlyBracket() {}
+	OpenCurlyBracket::~OpenCurlyBracket() {}
+	const std::string& OpenCurlyBracket::toString() const {
+		return OpenCurlyBracket::getFuncName();
 	}
-	UNIT_TYPE OpenBracket::getType() const {
-		return EXP_UNIT_ID_OPEN_BRACKET;
+	UNIT_TYPE OpenCurlyBracket::getType() const {
+		return EXP_UNIT_ID_OPEN_CURLY_BRACKET;
 	}
-	const std::string& OpenBracket::getFuncName() {
+	const std::string& OpenCurlyBracket::getFuncName() {
 		static std::string name = "(";
 		return name;
 	}
 
 	////////////////////////////////////////////////////////
-	ClosedBracket::ClosedBracket() {}
-	ClosedBracket::~ClosedBracket() {}
-	const std::string& ClosedBracket::toString() const {
-		return ClosedBracket::getFuncName();
+	ClosedCurlyBracket::ClosedCurlyBracket() {}
+	ClosedCurlyBracket::~ClosedCurlyBracket() {}
+	const std::string& ClosedCurlyBracket::toString() const {
+		return ClosedCurlyBracket::getFuncName();
 	}
-	UNIT_TYPE ClosedBracket::getType() const {
-		return EXP_UNIT_ID_CLOSED_BRACKET;
+	UNIT_TYPE ClosedCurlyBracket::getType() const {
+		return EXP_UNIT_ID_CLOSED_CURLY_BRACKET;
 	}
-	const std::string& ClosedBracket::getFuncName() {
+	const std::string& ClosedCurlyBracket::getFuncName() {
+		static std::string name = ")";
+		return name;
+	}
+
+	////////////////////////////////////////////////////////
+	OpenRoundBracket::OpenRoundBracket() {}
+	OpenRoundBracket::~OpenRoundBracket() {}
+	const std::string& OpenRoundBracket::toString() const {
+		return OpenRoundBracket::getFuncName();
+	}
+	UNIT_TYPE OpenRoundBracket::getType() const {
+		return EXP_UNIT_ID_OPEN_ROUND_BRACKET;
+	}
+	const std::string& OpenRoundBracket::getFuncName() {
+		static std::string name = "(";
+		return name;
+	}
+
+	////////////////////////////////////////////////////////
+	ClosedRoundBracket::ClosedRoundBracket() {}
+	ClosedRoundBracket::~ClosedRoundBracket() {}
+	const std::string& ClosedRoundBracket::toString() const {
+		return ClosedRoundBracket::getFuncName();
+	}
+	UNIT_TYPE ClosedRoundBracket::getType() const {
+		return EXP_UNIT_ID_CLOSED_ROUND_BRACKET;
+	}
+	const std::string& ClosedRoundBracket::getFuncName() {
 		static std::string name = ")";
 		return name;
 	}

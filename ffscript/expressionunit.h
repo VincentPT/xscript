@@ -70,23 +70,45 @@ namespace ffscript {
 		int getSourceCharIndex() const;
 	};
 
-	class FFSCRIPT_API OpenBracket : public ExpUnit
+	class FFSCRIPT_API OpenRoundBracket : public ExpUnit
 	{
 	public:
-		virtual ~OpenBracket();
-		OpenBracket();
+		virtual ~OpenRoundBracket();
+		OpenRoundBracket();
 		const std::string& toString() const;
 		UNIT_TYPE getType() const;
 		static const std::string& getFuncName();
 	};
 
-	class FFSCRIPT_API ClosedBracket : public ExpUnit
+	class FFSCRIPT_API ClosedRoundBracket : public ExpUnit
 	{
 	private:
 	protected:
 	public:
-		virtual ~ClosedBracket();
-		ClosedBracket();
+		virtual ~ClosedRoundBracket();
+		ClosedRoundBracket();
+		const std::string& toString() const;
+		UNIT_TYPE getType() const;
+		static const std::string& getFuncName();
+	};
+
+	class FFSCRIPT_API OpenCurlyBracket : public ExpUnit
+	{
+	public:
+		virtual ~OpenCurlyBracket();
+		OpenCurlyBracket();
+		const std::string& toString() const;
+		UNIT_TYPE getType() const;
+		static const std::string& getFuncName();
+	};
+
+	class FFSCRIPT_API ClosedCurlyBracket : public ExpUnit
+	{
+	private:
+	protected:
+	public:
+		virtual ~ClosedCurlyBracket();
+		ClosedCurlyBracket();
 		const std::string& toString() const;
 		UNIT_TYPE getType() const;
 		static const std::string& getFuncName();
