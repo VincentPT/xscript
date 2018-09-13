@@ -808,90 +808,103 @@ namespace ffscript {
 				}
 				else {
 					std::string&& stdtoken = convertToAscii(sToken, tokenLength);
-
-					if (scriptCompiler->findKeyword(stdtoken) != KEYWORD_UNKNOWN) {
-						eResult = E_TOKEN_UNEXPECTED;
-						scriptCompiler->setErrorText("token '" + stdtoken + "' is not expected here");
-						break;
+					bool foundRefType = false;
+					if (stdtoken == "ref" && *c == ' ') {
+						ScriptType stype;
+						auto newC = scriptCompiler->readType(c + 1, end, stype);
+						if (newC != nullptr && !stype.isUnkownType()) {
+							// this mean pase type successfully.
+							auto typeToken = stdtoken + " " + stype.sType();
+							pExpUnit = new IncompletedUserFunctionUnit(typeToken);
+							c = newC - 1;
+							foundRefType = true;
+						}
 					}
+					if (!foundRefType) {
+						if (scriptCompiler->findKeyword(stdtoken) != KEYWORD_UNKNOWN) {
+							eResult = E_TOKEN_UNEXPECTED;
+							scriptCompiler->setErrorText("token '" + stdtoken + "' is not expected here");
+							break;
+						}
 
-					//try search constant name first
-					auto createConstantFunction = scriptCompiler->findConstantMap(stdtoken);
-					if (createConstantFunction) {
-						createConstantFunction->call();
-						pExpUnit = (ExecutableUnit*)createConstantFunction->getReturnValAsVoidPointer();
-					}
-					else {
-						//try to find token in variables
-						ScriptScope* currentScope = scriptCompiler->currentScope();
-						Variable* pVariable = findVariable(currentScope, stdtoken);
-
-						if (pVariable) {
-							if (pVariable->getDataType().isUnkownType()) {
-								eResult = E_TYPE_UNKNOWN;
-								scriptCompiler->setErrorText("type of '" + pVariable->getName() + "' is unknown");
-								DBG_ERROR(_tprintf(__T("\n[#]varible's type is unknown")));
-								break;
-							}
-							pExpUnit = new CXOperand(pVariable->getScope(), pVariable, pVariable->getDataType());
+						//try search constant name first
+						auto createConstantFunction = scriptCompiler->findConstantMap(stdtoken);
+						if (createConstantFunction) {
+							createConstantFunction->call();
+							pExpUnit = (ExecutableUnit*)createConstantFunction->getReturnValAsVoidPointer();
 						}
 						else {
-							auto ctemp = trimLeft(c, end);
-							//for (ctemp = c; ctemp != end && (*ctemp == ' ' || *ctemp == '\t'); ctemp++);
+							//try to find token in variables
+							ScriptScope* currentScope = scriptCompiler->currentScope();
+							Variable* pVariable = findVariable(currentScope, stdtoken);
 
-							// varible is not declared yet but if after variable is assignment operator, it is an auto type variable
-							if (*ctemp == '=' && *(ctemp + 1) != '=') {
-								if (currentScope == nullptr) {
-									scriptCompiler->setErrorText("internal error: the scope is missing");
-									eResult = E_TOKEN_UNEXPECTED;
-									// keep last char in c
-									c = ctemp;
-									return nullptr;
+							if (pVariable) {
+								if (pVariable->getDataType().isUnkownType()) {
+									eResult = E_TYPE_UNKNOWN;
+									scriptCompiler->setErrorText("type of '" + pVariable->getName() + "' is unknown");
+									DBG_ERROR(_tprintf(__T("\n[#]varible's type is unknown")));
+									break;
 								}
-								pVariable = currentScope->registVariable(stdtoken);
-								//auto variable will be construct by default copy constructor
-								//so we don't need find default construtor to init for it
-								//so, the line below was removed
-								//currentScope->checkVariableToRunConstructor(pVariable);
-
-								//create a variable with default name, auto type variable
-								pExpUnit = new CXOperand(currentScope, pVariable);
+								pExpUnit = new CXOperand(pVariable->getScope(), pVariable, pVariable->getDataType());
 							}
 							else {
-								auto operatorEntry = scriptCompiler->findPredefinedOperator(stdtoken);
-								if (operatorEntry
-									//bellow double check to make sure the declaration in pre-defined operator talbe have at least one instant of implementation in the library
-									/* && (scriptCompiler->findOverloadingFuncRoot(stdtoken) ||
-									(operatorEntry->nameInExpression && scriptCompiler->findOverloadingFuncRoot(operatorEntry->nameInExpression))) */
-									) {
-									pTBDExpUnit = nullptr;
-									if (operatorEntry->operatorType == EXP_UNIT_ID_OPERATOR_PREFIX_INC) {
-										if (pLastUnit && pLastUnit->getType() == EXP_UNIT_ID_XOPERAND) {
-											pTBDExpUnit = new DynamicParamFunction("post_fix_increase", EXP_UNIT_ID_OPERATOR_POSTFIX_INC, FUNCTION_PRIORITY_POSTFIX, 1);
-										}
+								auto ctemp = trimLeft(c, end);
+								//for (ctemp = c; ctemp != end && (*ctemp == ' ' || *ctemp == '\t'); ctemp++);
+
+								// varible is not declared yet but if after variable is assignment operator, it is an auto type variable
+								if (*ctemp == '=' && *(ctemp + 1) != '=') {
+									if (currentScope == nullptr) {
+										scriptCompiler->setErrorText("internal error: the scope is missing");
+										eResult = E_TOKEN_UNEXPECTED;
+										// keep last char in c
+										c = ctemp;
+										return nullptr;
 									}
-									else if (operatorEntry->operatorType == EXP_UNIT_ID_OPERATOR_PREFIX_DEC) {
-										if (pLastUnit && pLastUnit->getType() == EXP_UNIT_ID_XOPERAND) {
-											pTBDExpUnit = new DynamicParamFunction("post_fix_decrease", EXP_UNIT_ID_OPERATOR_POSTFIX_DEC, FUNCTION_PRIORITY_POSTFIX, 1);
-										}
-									}
-									if (!pTBDExpUnit) {
-										pTBDExpUnit = new DynamicParamFunction(stdtoken, operatorEntry->operatorType, operatorEntry->priority, operatorEntry->maxParam);
-									}
+									pVariable = currentScope->registVariable(stdtoken);
+									//auto variable will be construct by default copy constructor
+									//so we don't need find default construtor to init for it
+									//so, the line below was removed
+									//currentScope->checkVariableToRunConstructor(pVariable);
+
+									//create a variable with default name, auto type variable
+									pExpUnit = new CXOperand(currentScope, pVariable);
 								}
 								else {
-									pTBDExpUnit = new IncompletedUserFunctionUnit(stdtoken);
-									//finally find in registerd function
-									/*pTBDExpUnit = scriptCompiler->createExpUnitFromName(stdtoken);
-									if (pTBDExpUnit == NULL) {
-									DBG_ERROR(_tprintf(__T("\n[#]Unexpected token '%s'"), sToken));
-									eResult = E_TOKEN_UNEXPECTED;
-									scriptCompiler->setErrorText("Unexpected token '" + convertToAscii(sToken) + "'");
-									}*/
-								}
+									auto operatorEntry = scriptCompiler->findPredefinedOperator(stdtoken);
+									if (operatorEntry
+										//bellow double check to make sure the declaration in pre-defined operator talbe have at least one instant of implementation in the library
+										/* && (scriptCompiler->findOverloadingFuncRoot(stdtoken) ||
+										(operatorEntry->nameInExpression && scriptCompiler->findOverloadingFuncRoot(operatorEntry->nameInExpression))) */
+										) {
+										pTBDExpUnit = nullptr;
+										if (operatorEntry->operatorType == EXP_UNIT_ID_OPERATOR_PREFIX_INC) {
+											if (pLastUnit && pLastUnit->getType() == EXP_UNIT_ID_XOPERAND) {
+												pTBDExpUnit = new DynamicParamFunction("post_fix_increase", EXP_UNIT_ID_OPERATOR_POSTFIX_INC, FUNCTION_PRIORITY_POSTFIX, 1);
+											}
+										}
+										else if (operatorEntry->operatorType == EXP_UNIT_ID_OPERATOR_PREFIX_DEC) {
+											if (pLastUnit && pLastUnit->getType() == EXP_UNIT_ID_XOPERAND) {
+												pTBDExpUnit = new DynamicParamFunction("post_fix_decrease", EXP_UNIT_ID_OPERATOR_POSTFIX_DEC, FUNCTION_PRIORITY_POSTFIX, 1);
+											}
+										}
+										if (!pTBDExpUnit) {
+											pTBDExpUnit = new DynamicParamFunction(stdtoken, operatorEntry->operatorType, operatorEntry->priority, operatorEntry->maxParam);
+										}
+									}
+									else {
+										pTBDExpUnit = new IncompletedUserFunctionUnit(stdtoken);
+										//finally find in registerd function
+										/*pTBDExpUnit = scriptCompiler->createExpUnitFromName(stdtoken);
+										if (pTBDExpUnit == NULL) {
+										DBG_ERROR(_tprintf(__T("\n[#]Unexpected token '%s'"), sToken));
+										eResult = E_TOKEN_UNEXPECTED;
+										scriptCompiler->setErrorText("Unexpected token '" + convertToAscii(sToken) + "'");
+										}*/
+									}
 
-								if (pTBDExpUnit) {
-									pTBDExpUnit->setSourceCharIndex((int)(c - begin) - tokenLength);
+									if (pTBDExpUnit) {
+										pTBDExpUnit->setSourceCharIndex((int)(c - begin) - tokenLength);
+									}
 								}
 							}
 						}
@@ -1335,7 +1348,7 @@ namespace ffscript {
 			}
 
 			auto paramCollectionUnit = new ParamUnitCollection();
-			ExecutableUnitRef paramCollectionUnitRef = ExecutableUnitRef(paramCollectionUnit);
+			ExecutableUnitRef paramCollectionUnitRef(paramCollectionUnit);
 			auto& params = paramCollectionUnit->getParams();
 
 			// temporary set source char index of paramCollectionUnit is source char index of close bracket
@@ -1395,6 +1408,26 @@ namespace ffscript {
 			// before it is destroyed
 			paramCollectionUnit->setSourceCharIndex(bracket->getSourceCharIndex());
 			pOperatorStack->pop();
+
+			if (params.size() == 1 && openBracketType == EXP_UNIT_ID_OPEN_ROUND_BRACKET) {
+				auto unitInsideBracket = params.front();
+				auto& token = unitInsideBracket->toString();
+				int typeId = DATA_TYPE_UNKNOWN;
+				// check if there is a valid type inside the round brackets...
+				ScriptType stype = ScriptType::parseType(scriptCompiler, token);
+				if (!stype.isUnkownType()) {
+					/// ... then convert all to type cast operator
+					auto typeCastFunction = new DynamicParamFunction(TYPE_CAST_OPERATOR, EXP_UNIT_ID_OPERATOR_TYPE_CAST, FUNCTION_PRIORITY_TYPE_CAST, stype);
+					typeCastFunction->setMaxParam(1);
+					typeCastFunction->setSourceCharIndex(unitInsideBracket->getSourceCharIndex());
+					typeCastFunction->setIndex(unitInsideBracket->getIndex());
+					unitInsideBracket.reset(typeCastFunction);
+
+					pOperatorStack->push(dynamic_pointer_cast<DynamicParamFunction>(unitInsideBracket));
+
+					return eResult;
+				}
+			}
 
 			//get previous unit before open bracket
 			ExpUnit* previousUnit = nullptr;
@@ -1466,7 +1499,6 @@ namespace ffscript {
 			inputList.push_back(ExpressionEntry(pOutputStack, pOperatorStack));
 		}
 		else if (expUnit->getType() == EXP_UNIT_ID_CLOSED_SQUARE_BRACKET) {
-
 			eResult = makeExpression(*pOutputStack, *pOperatorStack);
 			if (pOutputStack->size() != 1 || pOperatorStack->size() > 0) {
 				scriptCompiler->setErrorText("Incompleted expression");
@@ -2243,6 +2275,14 @@ namespace ffscript {
 			originType == basicTypes.TYPE_BOOL);
 	}
 
+	inline bool isIntegerType(const BasicTypes& basicTypes, int originType) {
+		return (originType == basicTypes.TYPE_INT ||
+			originType == basicTypes.TYPE_CHAR ||
+			originType == basicTypes.TYPE_LONG ||
+			originType == basicTypes.TYPE_NULL ||
+			originType == basicTypes.TYPE_WCHAR);
+	}
+
 	CandidateCollectionRef ExpressionParser::completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult) {
 		LOG_I("begin update expression tree for " + POINTER2STRING(function.get()));
 		eResult = E_SUCCESS;
@@ -2430,6 +2470,126 @@ namespace ffscript {
 				newCandidate->setSourceCharIndex(it->get()->getSourceCharIndex());
 
 				functionCandidates->push_back(newCandidate);
+			}
+
+			return functionCandidates;
+		}
+		else if (function->getType() == EXP_UNIT_ID_OPERATOR_TYPE_CAST) {
+			if (n != 1) {
+				eResult = E_TYPE_CONVERSION_ERROR;
+				scriptCompiler->setErrorText("type cast operator can only take one parameter");
+				_lastErrorUnit = function;
+				return nullptr;
+			}
+			auto& returnType = function->getReturnType();
+			if (returnType.isSemiRefType()) {
+				eResult = E_TYPE_CONVERSION_ERROR;
+				scriptCompiler->setErrorText("type cast operator can not apply to " + returnType.sType());
+				_lastErrorUnit = function;
+				return nullptr;
+			}
+			
+			auto& paramUnit = function->getChild(0);
+			param1Candidates = linkForUnit(scriptCompiler, paramUnit, eResult);
+			if (eResult != E_SUCCESS && param1Candidates->size() == 0) {
+				return nullptr;
+			}
+
+			functionCandidates = make_shared<CandidateCollection>();
+
+			for (auto it = param1Candidates->begin(); it != param1Candidates->end(); it++) {
+				auto& unit = *it;
+				auto& param1TypeN = unit->getReturnType();
+				ExecutableUnitRef newCandidate;
+
+			    if (returnType.isRefType()) {
+					if (param1TypeN.isRefType()) {
+						newCandidate = unit;
+					}
+					else if(param1TypeN.isSemiRefType()) {
+						auto param1TypeNOriginType = param1TypeN.deSemiRef();
+						
+						if (basicType.TYPE_INT == param1TypeNOriginType.iType() || basicType.TYPE_LONG == param1TypeNOriginType.iType()) {
+							auto derRefUnit = make_shared<FixParamFunction<1>>(DEREF_OPERATOR, EXP_UNIT_ID_DEREF, FUNCTION_PRIORITY_UNARY_PREFIX, param1TypeNOriginType);
+							derRefUnit->pushParam(unit);
+							derRefUnit->setNative(make_shared<DeRefCommand>(sizeof(void*)));
+
+							newCandidate = derRefUnit;
+
+							if (scriptCompiler->getTypeSize(param1TypeNOriginType.iType()) != sizeof(void*)) {
+								string castingFunction = basicType.TYPE_INT == param1TypeN.iType() ?
+									scriptCompiler->getType(basicType.TYPE_LONG) : scriptCompiler->getType(basicType.TYPE_INT);
+								int functionId = scriptCompiler->findFunction(castingFunction, param1TypeN.sType());
+								if (functionId >= 0) {
+									auto theFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
+									theFunction->pushParam(derRefUnit);
+
+									newCandidate = theFunction;
+								}
+								else {
+									newCandidate = nullptr;
+								}
+							}
+							if (newCandidate) {
+								// keep origin source char in new expression unit
+								newCandidate->setSourceCharIndex(function->getSourceCharIndex());
+							}
+						}
+					}
+					else if (scriptCompiler->getTypeSize(param1TypeN.iType()) == sizeof(void*)) {
+						if (basicType.TYPE_INT == param1TypeN.iType() || basicType.TYPE_LONG == param1TypeN.iType()) {
+							newCandidate = unit;
+						}
+					}
+					else if (basicType.TYPE_INT == param1TypeN.iType() || basicType.TYPE_LONG == param1TypeN.iType()) {
+						string castingFunction = basicType.TYPE_INT == param1TypeN.iType() ?
+							scriptCompiler->getType(basicType.TYPE_LONG) : scriptCompiler->getType(basicType.TYPE_INT);
+						int functionId = scriptCompiler->findFunction(castingFunction, param1TypeN.sType());
+						if (functionId >= 0) {
+							auto theFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
+							theFunction->pushParam(unit);
+
+							newCandidate = theFunction;
+							// keep origin source char in new expression unit
+							newCandidate->setSourceCharIndex(function->getSourceCharIndex());
+						}
+					}
+					if (!newCandidate) {
+						continue;
+					}
+				}
+				else if(returnType == param1TypeN){
+					newCandidate = unit;
+				}
+				else {
+					string castingFunction = returnType.sType();
+					int functionId = scriptCompiler->findFunction(castingFunction, param1TypeN.sType());
+					if (functionId >= 0) {
+						auto theFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
+						theFunction->pushParam(unit);
+
+						newCandidate = theFunction;
+						// keep origin source char in new expression unit
+						newCandidate->setSourceCharIndex(function->getSourceCharIndex());
+					}
+				}
+				if (!newCandidate) {
+					newCandidate = make_shared<FixParamFunction<1>>(function->getName(), function->getType(), function->getPriority(), returnType);
+					// keep origin source char in new expression unit
+					newCandidate->setSourceCharIndex(function->getSourceCharIndex());
+				}
+				else {
+					newCandidate->setReturnType(returnType);
+				}
+
+				functionCandidates->push_back(newCandidate);
+			}
+
+			if (functionCandidates->size() == 0) {
+				eResult = E_TYPE_CONVERSION_ERROR;
+				scriptCompiler->setErrorText("type cast operator can not apply to any candidate of unit '" + paramUnit->toString() + "'");
+				_lastErrorUnit = function;
+				return nullptr;
 			}
 
 			return functionCandidates;

@@ -1074,5 +1074,93 @@ namespace ffscriptUT
 
 			Assert::IsTrue(*funcRes == -(0x123456789), L"program can run but return wrong value");
 		}
+
+		TEST_METHOD(TestTypeCastOperator1)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"ref int foo() {"
+				L"	long val = 1;"
+				L"	ref void p = (ref void)val;"
+				L"	ref int pI = (ref int)p;"
+				L"	return pI;"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program);
+			int functionId = scriptCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+
+			auto res = *(int**) scriptTask.getTaskResult();
+			Assert::AreEqual((size_t)1, (size_t)res);
+		}
+
+		TEST_METHOD(TestTypeCastOperator2)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"ref int foo() {"
+				L"	int val = 1;"
+				L"	ref void p = (ref void)val;"
+				L"	ref int pI = (ref int)p;"
+				L"	return pI;"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program);
+			int functionId = scriptCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+
+			auto res = *(int**)scriptTask.getTaskResult();
+			Assert::AreEqual((size_t)1, (size_t)res);
+		}
+
+		TEST_METHOD(TestTypeCastOperator3)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			const wchar_t* scriptCode =
+				L"int foo() {"
+				L"	long val = 1;"
+				L"	return (int)val;"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program);
+			int functionId = scriptCompiler->findFunction("foo", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			scriptTask.runFunction(functionId, nullptr);
+
+			auto res = *(int*)scriptTask.getTaskResult();
+			Assert::AreEqual(1, res);
+		}
 	};
 }

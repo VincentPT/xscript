@@ -324,6 +324,7 @@ namespace ffscript {
 				auto operatorEntry = scriptCompiler->findPredefinedOperator(DEFAULT_COPY_OPERATOR);
 				auto defaultAssigmentUnit = new DynamicParamFunction(operatorEntry->name, operatorEntry->operatorType, operatorEntry->priority, operatorEntry->maxParam);
 
+				defaultAssigmentUnit->setSourceCharIndex(rootUnit->getSourceCharIndex());
 				// replace operator '=' by operator '<--'
 				rootUnit.reset(defaultAssigmentUnit);
 

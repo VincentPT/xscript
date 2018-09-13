@@ -58,7 +58,7 @@ namespace ffscript {
 		return EXP_UNIT_ID_OPEN_CURLY_BRACKET;
 	}
 	const std::string& OpenCurlyBracket::getFuncName() {
-		static std::string name = "(";
+		static std::string name = "{";
 		return name;
 	}
 
@@ -72,7 +72,7 @@ namespace ffscript {
 		return EXP_UNIT_ID_CLOSED_CURLY_BRACKET;
 	}
 	const std::string& ClosedCurlyBracket::getFuncName() {
-		static std::string name = ")";
+		static std::string name = "}";
 		return name;
 	}
 

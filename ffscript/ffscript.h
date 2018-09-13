@@ -55,6 +55,7 @@ typedef unsigned char byte;
 
 #define MAKING_REF_FUNC "ref"
 #define MAKING_SEMI_REF_FUNC "semiref"
+#define TYPE_CAST_OPERATOR "operator (type)"
 #define SUBSCRIPT_OPERATOR "operator[]"
 #define FUNCTION_OPERATOR "operator()"
 #define DEREF_OPERATOR "operator*"
