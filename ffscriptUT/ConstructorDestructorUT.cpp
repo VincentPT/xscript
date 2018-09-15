@@ -181,7 +181,7 @@ namespace ffscriptUT
 			blRes = rootScope.extractCode(&theProgram);
 			Assert::IsTrue(blRes, L"extract code failed");
 
-			functionId = scriptCompiler.findFunction("test", {});
+			functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
@@ -242,7 +242,7 @@ namespace ffscriptUT
 			blRes = rootScope.extractCode(&theProgram);
 			Assert::IsTrue(blRes, L"extract code failed");
 
-			functionId = scriptCompiler.findFunction("test", {});
+			functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
@@ -299,7 +299,7 @@ namespace ffscriptUT
 			blRes = rootScope.extractCode(&theProgram);
 			Assert::IsTrue(blRes, L"extract code failed");
 
-			functionId = scriptCompiler.findFunction("test", {});
+			functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
@@ -1277,7 +1277,7 @@ namespace ffscriptUT
 			blRes = rootScope.extractCode(&theProgram);
 			Assert::IsTrue(blRes, L"extract code failed");
 
-			functionId = scriptCompiler.findFunction("test", {});
+			functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
@@ -1329,7 +1329,7 @@ namespace ffscriptUT
 			blRes = rootScope.extractCode(&theProgram);
 			Assert::IsTrue(blRes, L"extract code failed");
 
-			functionId = scriptCompiler.findFunction("test", {});
+			functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
@@ -1386,7 +1386,7 @@ namespace ffscriptUT
 			blRes = rootScope.extractCode(&theProgram);
 			Assert::IsTrue(blRes, L"extract code failed");
 
-			functionId = scriptCompiler.findFunction("test", {});
+			functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
@@ -1449,7 +1449,7 @@ namespace ffscriptUT
 			blRes = rootScope.extractCode(&theProgram);
 			Assert::IsTrue(blRes, L"extract code failed");
 
-			functionId = scriptCompiler.findFunction("test", {});
+			functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
@@ -1515,7 +1515,7 @@ namespace ffscriptUT
 			blRes = rootScope.extractCode(&theProgram);
 			Assert::IsTrue(blRes, L"extract code failed");
 
-			functionId = scriptCompiler.findFunction("test", {});
+			functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
@@ -1572,7 +1572,7 @@ namespace ffscriptUT
 			blRes = rootScope.extractCode(&theProgram);
 			Assert::IsTrue(blRes, L"extract code failed");
 
-			functionId = scriptCompiler.findFunction("test", {});
+			functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
@@ -1629,7 +1629,7 @@ namespace ffscriptUT
 			blRes = rootScope.extractCode(&theProgram);
 			Assert::IsTrue(blRes, L"extract code failed");
 
-			functionId = scriptCompiler.findFunction("test", {});
+			functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);

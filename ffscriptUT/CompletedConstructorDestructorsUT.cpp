@@ -206,7 +206,7 @@ namespace ffscriptUT
 			}
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -242,7 +242,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -279,7 +279,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -311,7 +311,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -343,7 +343,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -381,7 +381,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -417,7 +417,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -449,7 +449,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -487,7 +487,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -535,7 +535,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo","");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -589,7 +589,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -652,7 +652,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -707,7 +707,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -771,7 +771,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -820,7 +820,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -871,7 +871,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -909,7 +909,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -938,7 +938,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -967,7 +967,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -996,7 +996,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1035,7 +1035,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1079,7 +1079,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1125,7 +1125,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1168,7 +1168,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1253,7 +1253,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -1325,7 +1325,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -1408,7 +1408,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
@@ -1474,7 +1474,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1517,7 +1517,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1573,7 +1573,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			functionId = scriptCompiler->findFunction("foo", {});
+			functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1628,7 +1628,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			functionId = scriptCompiler->findFunction("foo", {});
+			functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1668,7 +1668,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1711,7 +1711,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1750,7 +1750,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
@@ -1788,7 +1788,7 @@ namespace ffscriptUT
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
 			Assert::IsNotNull(program, L"Compile program failed");
 
-			int functionId = scriptCompiler->findFunction("foo", {});
+			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);

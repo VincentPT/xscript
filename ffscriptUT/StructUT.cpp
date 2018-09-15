@@ -490,7 +490,7 @@ namespace ffscriptUT
 			int idTestStruct = scriptCompiler.getType("TestStruct");
 			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
-			int functionId = scriptCompiler.findFunction("test", {});
+			int functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct* pObj = getVaribleRef<TestStruct>(*rootScope.findVariable("obj"));
@@ -542,7 +542,7 @@ namespace ffscriptUT
 			int idTestStruct = scriptCompiler.getType("TestStruct");
 			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
-			int functionId = scriptCompiler.findFunction("test", {});
+			int functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			//the code in global scope should be executed only once
@@ -605,7 +605,7 @@ namespace ffscriptUT
 			bool blRes = rootScope.extractCode(&theProgram);
 			Assert::IsTrue(blRes, L"extract code failed");
 
-			int functionId = scriptCompiler.findFunction("test", {});
+			int functionId = scriptCompiler.findFunction("test", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
 
 			//the code in global scope should be executed only once
