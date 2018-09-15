@@ -208,7 +208,7 @@ First, you must define the function in C++ part.
  Although this project take me alot of effort to build it from a simple expression parser algorithm to an usable scripting library that can compile, embeded an run the script, it needs more effort to make the library more easy to use, cross platform working...
  I share the desire items I want to implement in the future whenever I have a free time.  
  - [ ] Call un-ordered script function.
- - [ ] Support type cast operator - (Type)a.
+ - [x] Support type cast operator - (Type)a.
  - [ ] Support cross platform (Linux, Mac). Currently, support on Windows only.
  - [ ] Support template function and structure.
  - [ ] Register constructor/destructor in script part.
