@@ -2561,6 +2561,31 @@ namespace ffscript {
 				else if(returnType == param1TypeN){
 					newCandidate = unit;
 				}
+				else if (param1TypeN.isRefType()) {
+					if (basicType.TYPE_INT == returnType.iType() || basicType.TYPE_LONG == returnType.iType()) {
+						if (scriptCompiler->getTypeSize(returnType.iType()) != sizeof(void*)) {
+							string castingFunction = basicType.TYPE_INT == returnType.iType() ?
+								scriptCompiler->getType(basicType.TYPE_LONG) : scriptCompiler->getType(basicType.TYPE_INT);
+							int functionId = scriptCompiler->findFunction(castingFunction, returnType.sType());
+							if (functionId >= 0) {
+								auto theFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
+								theFunction->pushParam(unit);
+
+								newCandidate = theFunction;
+							}
+							else {
+								newCandidate = nullptr;
+							}
+						}
+						else {
+							newCandidate = unit;
+						}
+						if (newCandidate) {
+							// keep origin source char in new expression unit
+							newCandidate->setSourceCharIndex(function->getSourceCharIndex());
+						}
+					}
+				}
 				else {
 					string castingFunction = returnType.sType();
 					int functionId = scriptCompiler->findFunction(castingFunction, param1TypeN.sType());

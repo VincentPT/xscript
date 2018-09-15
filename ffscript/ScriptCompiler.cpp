@@ -177,7 +177,7 @@ namespace ffscript {
 	}
 
 	int ScriptCompiler::getConditionalFunction() {
-		return this->findFunction(CONDITIONAL_FUNCTION, {});
+		return this->findFunction(CONDITIONAL_FUNCTION, "");
 	}
 
 	void ScriptCompiler::setRuntimeInfoConstructor(int functionId) {
@@ -290,6 +290,10 @@ namespace ffscript {
 
 	int ScriptCompiler::findDynamicFunctionOnly(const std::string& name) {
 		return _functionLibRef->findDynamicFunctionOnly(name);
+	}
+
+	int ScriptCompiler::findFunction(const std::string& name, const std::vector<ScriptType>& paramTypes) {
+		return _functionLibRef->findFunction(this, name, paramTypes);
 	}
 
 	int ScriptCompiler::registFunction(const std::string& name, const std::vector<ScriptType>& paramTypes, FunctionFactory* factory) {

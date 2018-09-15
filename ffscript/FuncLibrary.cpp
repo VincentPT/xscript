@@ -48,6 +48,20 @@ namespace ffscript {
 		return overloadingItems.end();
 	}
 
+	int FuncLibrary::findFunction(ScriptCompiler* scriptCompiler, const std::string& name, const std::vector<ScriptType>& paramTypes) {
+		auto overloadingItems = findOverloadingFuncRoot(name);
+		if (overloadingItems == nullptr) {
+			return -1;
+		}
+		
+		auto fit = findOverloadingItem(*overloadingItems, paramTypes);
+		if (fit != overloadingItems->end()) {
+			return fit->functionId;
+		}
+
+		return -1;
+	}
+
 
 	int FuncLibrary::findFunction(ScriptCompiler* scriptCompiler, const std::string& name, const std::string& sargs) {
 		auto overloadingItems = findOverloadingFuncRoot(name);

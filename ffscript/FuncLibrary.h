@@ -43,6 +43,7 @@ namespace ffscript {
 		const std::list<OverLoadingItem>* findOverloadingFuncRoot(const std::string& name) const;
 		int findFunction(ScriptCompiler* scriptCompiler, const std::string& name, const std::string& sargs);
 		int findDynamicFunctionOnly(const std::string& name);
+		int findFunction(ScriptCompiler* scriptCompiler, const std::string& name, const std::vector<ScriptType>& paramTypes);
 		bool mapFunction(const std::string& name, const std::vector<ScriptType>& paramTypes, int functionId);
 		bool mapDynamicFunction(const std::string& name, int functionId);
 		void unmapFunction(const std::string& name, int functionId);		

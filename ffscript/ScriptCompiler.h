@@ -169,6 +169,7 @@ namespace ffscript {
 		const list<OverLoadingItem>* findOverloadingFuncRoot(const std::string& name);
 		int findFunction(const std::string& name, const std::string& sargs);
 		int findDynamicFunctionOnly(const std::string& name);
+		int findFunction(const std::string& name, const std::vector<ScriptType>& paramTypes);
 		FunctionFactory* getFunctionFactory(int functionId) const;
 		 
 		bool registerTypeConversionAccurative(int sourceType, int targetType, int accurative);
