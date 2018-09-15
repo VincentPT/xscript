@@ -75,6 +75,7 @@ namespace ffscript {
 		TargetedCommand* extractParamConditionalOperator(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
 		TargetedCommand* extractParamDefaultCopyOperator(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
 		TargetedCommand* extractParamDefaultCopyOperatorRef(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
+		TargetedCommand* extractParamAssigmentSemiRef(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
 		TargetedCommand* extractParamAccessStaticArray(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
 		TargetedCommand* extractParamForConstructorComposite(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);
 		TargetedCommand* extractParamForFwdConstructor(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset);

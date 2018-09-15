@@ -120,6 +120,40 @@ public:
 	END_INSTRUCTION_COMMAND_DECLARE(PushParam);
 
 	////////////////////////////////////////////////////
+	BEGIN_INSTRUCTION_COMMAND_DECLARE(LeaOffsetToAddress, InstructionCommand);
+private:
+	void* _target;
+	int _sourceOffset;
+public:
+	void setCommandData(int sourceOffset, void* target);
+	END_INSTRUCTION_COMMAND_DECLARE(LeaOffsetToAddress);
+
+	////////////////////////////////////////////////////
+	BEGIN_INSTRUCTION_COMMAND_DECLARE(LeaAddressToAddress, InstructionCommand);
+private:
+	void* _target;
+	void* _source;
+public:
+	void setCommandData(void* source, void* target);
+	END_INSTRUCTION_COMMAND_DECLARE(LeaAddressToAddress);
+
+	////////////////////////////////////////////////////
+	BEGIN_INSTRUCTION_COMMAND_DECLARE(LeaAddressToOffset, TargetedCommand);
+private:
+	void* _source;
+public:
+	void setCommandData(void* source, int targetOffset);
+	END_INSTRUCTION_COMMAND_DECLARE(LeaAddressToOffset);
+
+	////////////////////////////////////////////////////
+	BEGIN_INSTRUCTION_COMMAND_DECLARE(LeaOffsetToOffset, TargetedCommand);
+private:
+	int _sourceOffset;
+public:
+	void setCommandData(int sourceOffset, int targetOffset);
+	END_INSTRUCTION_COMMAND_DECLARE(LeaOffsetToOffset);
+
+	////////////////////////////////////////////////////
 	BEGIN_INSTRUCTION_COMMAND_DECLARE(PushParamOffset, TargetedCommand);
 private:
 	int _sourceOffset;

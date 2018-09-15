@@ -195,6 +195,7 @@ namespace ffscript {
 		bool findMatchingLevel1(const ScriptType& refVoidType, const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo);
 		bool findMatchingLevel2(const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo);
 		bool findMatchingConstructor(const ExecutableUnitRef& objectParam, const ExecutableUnitRef& secondParam, ParamCastingInfo& paramInfo);
+		Function* findCastingFunction(const ScriptType& sourceType, const ScriptType& targetType);
 		///
 		/// return 0 if not find matching, 1 if found matching by using findMatchingLevel1
 		/// 2 if found matching by using findMatchingLevel2

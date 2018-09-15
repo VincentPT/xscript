@@ -215,6 +215,89 @@ namespace ffscript {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
+	LeaOffsetToAddress::LeaOffsetToAddress() : _target(nullptr), _sourceOffset(-1) {}
+	LeaOffsetToAddress::~LeaOffsetToAddress() {}
+	void LeaOffsetToAddress::setCommandData(int sourceOffset, void* target) {
+		_sourceOffset = sourceOffset;
+		_target = target;
+	}
+
+	void LeaOffsetToAddress::buildCommandText(std::list<std::string>& strCommands) {
+		std::stringstream ss;
+		ss << "lea ([" << _sourceOffset << "], " << int_to_hex((size_t)_target) << ")";
+		strCommands.emplace_back(ss.str());
+	}
+
+	void LeaOffsetToAddress::execute() {
+		Context* context = Context::getCurrent();
+		int sourceOffset = _sourceOffset + context->getCurrentOffset();
+		*(size_t*)_target = (size_t)context->getAbsoluteAddress(sourceOffset);
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////
+	LeaAddressToAddress::LeaAddressToAddress() : _target(nullptr), _source(nullptr) {}
+	LeaAddressToAddress::~LeaAddressToAddress() {}
+	void LeaAddressToAddress::setCommandData(void* source, void* target) {
+		_source = source;
+		_target = target;
+	}
+
+	void LeaAddressToAddress::buildCommandText(std::list<std::string>& strCommands) {
+		std::stringstream ss;
+		ss << "lea (" << int_to_hex((size_t)_source) << ", " << int_to_hex((size_t)_target) << ")";
+		strCommands.emplace_back(ss.str());
+	}
+
+	void LeaAddressToAddress::execute() {
+		*(size_t*)_target = (size_t)_source;
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////
+	LeaOffsetToOffset::LeaOffsetToOffset() : _sourceOffset(-1) {}
+	LeaOffsetToOffset::~LeaOffsetToOffset() {}
+	void LeaOffsetToOffset::setCommandData(int sourceOffset, int targetOffset) {
+		_sourceOffset = sourceOffset;
+		setTargetOffset(targetOffset);
+		setTargetSize(sizeof(void*));
+	}
+
+	void LeaOffsetToOffset::buildCommandText(std::list<std::string>& strCommands) {
+		std::stringstream ss;
+		ss << "lea ([" << _sourceOffset << "], [" << getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
+	}
+
+	void LeaOffsetToOffset::execute() {
+		Context* context = Context::getCurrent();
+		int sourceOffset = _sourceOffset + context->getCurrentOffset();
+		int targetOffset = getTargetOffset() + context->getCurrentOffset();
+
+		context->lea(targetOffset, context->getAbsoluteAddress(sourceOffset));
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////
+	LeaAddressToOffset::LeaAddressToOffset() : _source(nullptr) {}
+	LeaAddressToOffset::~LeaAddressToOffset() {}
+	void LeaAddressToOffset::setCommandData(void* source, int targetOffset) {
+		_source = source;
+		setTargetOffset(targetOffset);
+		setTargetSize(sizeof(void*));
+	}
+
+	void LeaAddressToOffset::buildCommandText(std::list<std::string>& strCommands) {
+		std::stringstream ss;
+		ss << "lea (" << int_to_hex((size_t)_source) << "], [" << getTargetOffset() << "])";
+		strCommands.emplace_back(ss.str());
+	}
+
+	void LeaAddressToOffset::execute() {
+		Context* context = Context::getCurrent();
+		int targetOffset = getTargetOffset() + context->getCurrentOffset();
+
+		context->lea(targetOffset, _source);
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////
 	PushParamOffset::PushParamOffset() : _sourceOffset(0) {}
 	PushParamOffset::~PushParamOffset() {}
 

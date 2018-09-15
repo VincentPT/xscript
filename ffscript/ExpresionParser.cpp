@@ -1766,7 +1766,19 @@ namespace ffscript {
 						defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit));
 						continue;
 					}
-					else */if (param1Type.origin() == param2Type.origin() && param1Type.refLevel() == param2Type.refLevel()/* && param2Type.isSemiRefType()*/) {
+					else */
+					if (param1Type.semiRefLevel() - param2Type.semiRefLevel() == 1 &&
+						param1->getType() == EXP_UNIT_ID_XOPERAND && param2->getType() == EXP_UNIT_ID_XOPERAND) {
+						auto defaultOperatorUnit = new FixParamFunction<2>(DEFAULT_COPY_OPERATOR, EXP_UNIT_ID_ASSIGMENT_SEMIREF, FUNCTION_PRIORITY_ASSIGNMENT, param1Type);
+						defaultOperatorUnit->pushParam(param1);
+						defaultOperatorUnit->pushParam(param2);
+						// keep origin source char in new expression unit
+						defaultOperatorUnit->setSourceCharIndex(funcNode->getSourceCharIndex());
+
+						defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit));
+						continue;
+					}
+					else if (param1Type.origin() == param2Type.origin() && param1Type.refLevel() == param2Type.refLevel()/* && param2Type.isSemiRefType()*/) {
 						//default assigment operator for all types
 						if (!param1Type.semiRefLevel()) {
 							if (!scriptCompiler->convertToRef(param1)) {
@@ -1774,6 +1786,7 @@ namespace ffscript {
 							}
 						}
 						FixParamFunction<2>* defaultOperatorUnit;
+						
 						if (param2Type.isSemiRefType() && param2Type.semiRefLevel() >= param1Type.semiRefLevel()) {
 							defaultOperatorUnit = new FixParamFunction<2>(DEFAULT_COPY_OPERATOR, EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR_REF, FUNCTION_PRIORITY_ASSIGNMENT, param2Type);
 						}
@@ -1838,12 +1851,11 @@ namespace ffscript {
 					if (param1Type.isRefType()) {
 						//argument #2 is integer, so we need to find a way to convert current value to integer
 						if (param2Type.iType() != basicTypes.TYPE_INT) {
-							int integerCasting = scriptCompiler->findFunction(scriptCompiler->getType(basicTypes.TYPE_INT), param2Type.sType());
-							if (integerCasting < 0) {
+							//the following code is casting before execute param 2 unit
+							auto castingFunction = scriptCompiler->findCastingFunction(param2Type, ScriptType(basicTypes.TYPE_INT, scriptCompiler->getType(basicTypes.TYPE_INT)));
+							if (!castingFunction) {
 								continue;
 							}
-							//the following code is casting before execute param 2 unit
-							auto castingFunction = scriptCompiler->createFunctionFromId(integerCasting);
 							castingFunction->pushParam(param2);
 							castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
 
@@ -1909,12 +1921,11 @@ namespace ffscript {
 						if (param1Type.isRefType() == false) {
 							//argument #2 is integer, so we need to find a way to convert param2 to integer
 							if (param2Type.iType() != basicTypes.TYPE_INT) {
-								int integerCasting = scriptCompiler->findFunction(scriptCompiler->getType(basicTypes.TYPE_INT), param2Type.sType());
-								if (integerCasting < 0) {
+								//the following code is casting before execute param 2 unit
+								auto castingFunction = scriptCompiler->findCastingFunction(param2Type, ScriptType(basicTypes.TYPE_INT, scriptCompiler->getType(basicTypes.TYPE_INT)));
+								if (!castingFunction) {
 									continue;
 								}
-								//the following code is casting before execute param 2 unit
-								auto castingFunction = scriptCompiler->createFunctionFromId(integerCasting);
 								castingFunction->pushParam(param2);
 								castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
 
@@ -2497,6 +2508,9 @@ namespace ffscript {
 
 			functionCandidates = make_shared<CandidateCollection>();
 
+			ScriptType typeLong(basicType.TYPE_LONG, scriptCompiler->getType(basicType.TYPE_LONG));
+			ScriptType typeInt(basicType.TYPE_INT, scriptCompiler->getType(basicType.TYPE_INT));
+
 			for (auto it = param1Candidates->begin(); it != param1Candidates->end(); it++) {
 				auto& unit = *it;
 				auto& param1TypeN = unit->getReturnType();
@@ -2517,18 +2531,14 @@ namespace ffscript {
 							newCandidate = derRefUnit;
 
 							if (scriptCompiler->getTypeSize(param1TypeNOriginType.iType()) != sizeof(void*)) {
-								string castingFunction = basicType.TYPE_INT == param1TypeN.iType() ?
-									scriptCompiler->getType(basicType.TYPE_LONG) : scriptCompiler->getType(basicType.TYPE_INT);
-								int functionId = scriptCompiler->findFunction(castingFunction, param1TypeN.sType());
-								if (functionId >= 0) {
-									auto theFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
-									theFunction->pushParam(derRefUnit);
+								auto& targetType = typeInt.iType() == param1TypeNOriginType.iType() ?
+									typeLong : typeInt;
+								auto castingFunction = scriptCompiler->findCastingFunction(param1TypeNOriginType, targetType);
+								if (castingFunction) {
+									castingFunction->pushParam(derRefUnit);
+								}
 
-									newCandidate = theFunction;
-								}
-								else {
-									newCandidate = nullptr;
-								}
+								newCandidate.reset(castingFunction);
 							}
 							if (newCandidate) {
 								// keep origin source char in new expression unit
@@ -2542,17 +2552,15 @@ namespace ffscript {
 						}
 					}
 					else if (basicType.TYPE_INT == param1TypeN.iType() || basicType.TYPE_LONG == param1TypeN.iType()) {
-						string castingFunction = basicType.TYPE_INT == param1TypeN.iType() ?
-							scriptCompiler->getType(basicType.TYPE_LONG) : scriptCompiler->getType(basicType.TYPE_INT);
-						int functionId = scriptCompiler->findFunction(castingFunction, param1TypeN.sType());
-						if (functionId >= 0) {
-							auto theFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
-							theFunction->pushParam(unit);
-
-							newCandidate = theFunction;
+						auto& targetType = typeInt.iType() == param1TypeN.iType() ?
+							typeLong : typeInt;
+						auto castingFunction = scriptCompiler->findCastingFunction(param1TypeN, targetType);
+						if (castingFunction) {
+							castingFunction->pushParam(unit);
 							// keep origin source char in new expression unit
-							newCandidate->setSourceCharIndex(function->getSourceCharIndex());
+							castingFunction->setSourceCharIndex(function->getSourceCharIndex());
 						}
+						newCandidate.reset(castingFunction);
 					}
 					if (!newCandidate) {
 						continue;
@@ -2564,18 +2572,16 @@ namespace ffscript {
 				else if (param1TypeN.isRefType()) {
 					if (basicType.TYPE_INT == returnType.iType() || basicType.TYPE_LONG == returnType.iType()) {
 						if (scriptCompiler->getTypeSize(returnType.iType()) != sizeof(void*)) {
-							string castingFunction = basicType.TYPE_INT == returnType.iType() ?
-								scriptCompiler->getType(basicType.TYPE_LONG) : scriptCompiler->getType(basicType.TYPE_INT);
-							int functionId = scriptCompiler->findFunction(castingFunction, returnType.sType());
-							if (functionId >= 0) {
-								auto theFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
-								theFunction->pushParam(unit);
+							// for 32 bit app: int(long)
+							// for 64 bit app: long(int)
+							auto& sourceType = typeInt.iType() == returnType.iType() ?
+								typeLong : typeInt;
 
-								newCandidate = theFunction;
+							auto castingFunction = scriptCompiler->findCastingFunction(sourceType, returnType);
+							if (castingFunction) {
+								castingFunction->pushParam(unit);
 							}
-							else {
-								newCandidate = nullptr;
-							}
+							newCandidate.reset(castingFunction);
 						}
 						else {
 							newCandidate = unit;
@@ -2585,18 +2591,18 @@ namespace ffscript {
 							newCandidate->setSourceCharIndex(function->getSourceCharIndex());
 						}
 					}
+					if (!newCandidate) {
+						continue;
+					}
 				}
 				else {
-					string castingFunction = returnType.sType();
-					int functionId = scriptCompiler->findFunction(castingFunction, param1TypeN.sType());
-					if (functionId >= 0) {
-						auto theFunction = FunctionRef(scriptCompiler->createFunctionFromId(functionId));
-						theFunction->pushParam(unit);
-
-						newCandidate = theFunction;
+					auto castingFunction = scriptCompiler->findCastingFunction(param1TypeN, returnType);
+					if (castingFunction) {
+						castingFunction->pushParam(unit);
 						// keep origin source char in new expression unit
-						newCandidate->setSourceCharIndex(function->getSourceCharIndex());
+						castingFunction->setSourceCharIndex(function->getSourceCharIndex());
 					}
+					newCandidate.reset(castingFunction);
 				}
 				if (!newCandidate) {
 					newCandidate = make_shared<FixParamFunction<1>>(function->getName(), function->getType(), function->getPriority(), returnType);
@@ -2833,14 +2839,12 @@ namespace ffscript {
 					}
 					
 					if (conditionDataType.iType() != basicType.TYPE_BOOL) {
-						auto castingFuncName = scriptCompiler->getType(basicType.TYPE_BOOL);
-						int castingFunctionId = scriptCompiler->findFunction(castingFuncName, conditionDataType.sType());
-						if (castingFunctionId < 0) {
+						auto castingFunction = scriptCompiler->findCastingFunction(conditionDataType, ScriptType(basicType.TYPE_BOOL, scriptCompiler->getType(basicType.TYPE_BOOL)));
+						if (!castingFunction) {
 							eResult = E_TYPE_CONVERSION_ERROR;
-							error = "cannot cast condition type to " + castingFuncName;
+							error = "cannot cast condition type to bool";
 							continue;
 						}
-						auto castingFunction = (Function*)scriptCompiler->createFunctionFromId(castingFunctionId);
 						castingFunction->pushParam(conditionUnit);
 
 						// keep origin source char in new expression unit
@@ -2992,16 +2996,15 @@ namespace ffscript {
 							acceptPath = true;
 						}
 						else {
-							int castingFunctionId = scriptCompiler->findFunction(param1Type.deRef().sType(), param2Type.sType());
-							if (castingFunctionId >= 0) {
-								auto castingFunction = (Function*)scriptCompiler->createFunctionFromId(castingFunctionId);
+							auto castingFunction = scriptCompiler->findCastingFunction(param2Type, param1Type.deRef());
+							if (castingFunction) {
 								castingFunction->pushParam(param2);
 								castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
 
 								// keep origin source char in new expression unit
 								castingFunction->setSourceCharIndex(param2->getSourceCharIndex());
 
-								param2 = ExecutableUnitRef(castingFunction);
+								param2.reset(castingFunction);
 
 								acceptPath = true;
 							}

@@ -601,6 +601,78 @@ namespace ffscript {
 		return assigmentCommand;
 	}
 
+	TargetedCommand* ExpUnitExecutor::extractParamAssigmentSemiRef(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset) {
+		int n = functionUnit->getChildCount();
+		int currentOffset = beginParamOffset;
+
+		ExecutableUnitRef& param1 = functionUnit->getChild(0);
+		ExecutableUnitRef& param2 = functionUnit->getChild(1);
+
+		FunctionCommand1P* assigmentCommand = new FunctionCommand1P();
+		assigmentCommand->setCommand(nullptr);
+		assigmentCommand->pushCommandParam(nullptr);
+
+		Variable* pVariable1 = ((CXOperand*)param1.get())->getVariable();
+		Variable* pVariable2 = ((CXOperand*)param2.get())->getVariable();
+		ScriptScope* ownerScope = pVariable1->getScope();
+		GlobalScope* globalScope = dynamic_cast<GlobalScope*>(ownerScope);
+		ScriptScope* ownerScope2 = pVariable2->getScope();
+		GlobalScope* globalScope2 = dynamic_cast<GlobalScope*>(ownerScope2);
+
+		TargetedCommand* copyCommand = nullptr;
+		TargetedCommand* mainCommand = nullptr;
+		void* paramData = nullptr;
+
+		if (globalScope) {
+			paramData = globalScope->getGlobalAddress(pVariable1->getOffset());
+			if (globalScope2) {
+				auto leaCommand = new LeaAddressToAddress();
+				leaCommand->setCommandData(globalScope2->getGlobalAddress(pVariable2->getOffset()), paramData);
+
+				auto pushParam = new LeaAddressToOffset();
+				pushParam->setCommandData(globalScope2->getGlobalAddress(pVariable2->getOffset()), returnOffset);
+
+				mainCommand = pushParam;
+				copyCommand = (TargetedCommand*)leaCommand;
+			}
+			else {
+				auto leaCommand = new LeaOffsetToAddress();
+				leaCommand->setCommandData(pVariable2->getOffset(), paramData);
+
+				auto pushParam = new LeaOffsetToOffset();
+				pushParam->setCommandData(pVariable2->getOffset(), returnOffset);
+
+				mainCommand = pushParam;
+				copyCommand = (TargetedCommand*)leaCommand;
+			}
+		}
+		else {
+			if (globalScope2) {
+				auto pushParamRefFunc = new PushParamRef();
+				pushParamRefFunc->setCommandData(globalScope2->getGlobalAddress(pVariable2->getOffset()), pVariable1->getOffset());
+				copyCommand = pushParamRefFunc;
+
+				auto pushParam = new LeaAddressToOffset();
+				pushParam->setCommandData(globalScope2->getGlobalAddress(pVariable2->getOffset()), returnOffset);
+				mainCommand = pushParam;
+			}
+			else {
+				auto pushParamRefFunc = new PushParamRefOffset();
+				pushParamRefFunc->setCommandData(pVariable2->getOffset(), pVariable1->getOffset());
+				copyCommand = pushParamRefFunc;
+
+				auto pushParam = new LeaOffsetToOffset();
+				pushParam->setCommandData(pVariable2->getOffset(), returnOffset);
+				mainCommand = pushParam;
+			}
+		}
+
+		assigmentCommand->setCommand(mainCommand);
+		assigmentCommand->pushCommandParam(copyCommand);
+
+		return assigmentCommand;
+	}
+
 	TargetedCommand* ExpUnitExecutor::extractParamAccessStaticArray(ScriptCompiler* scriptCompiler, Function* functionUnit, int beginParamOffset, int returnOffset) {
 		int n = functionUnit->getChildCount();
 		int currentOffset = beginParamOffset;
@@ -959,6 +1031,9 @@ namespace ffscript {
 		}
 		else if (node.get()->getType() == EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR_REF) {
 			assitFunction = extractParamDefaultCopyOperatorRef(scriptCompiler, (Function*)node.get(), beginParamOffset, returnOffset);
+		}
+		else if (node.get()->getType() == EXP_UNIT_ID_ASSIGMENT_SEMIREF) {
+			assitFunction = extractParamAssigmentSemiRef(scriptCompiler, (Function*)node.get(), beginParamOffset, returnOffset);
 		}
 		else if (node.get()->getType() == EXP_UNIT_ID_STATIC_ARRAY_SUBSCRIPT) {
 			assitFunction = extractParamAccessStaticArray(scriptCompiler, (Function*)node.get(), beginParamOffset, returnOffset);

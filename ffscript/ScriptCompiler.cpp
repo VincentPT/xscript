@@ -853,6 +853,23 @@ namespace ffscript {
 		return false;
 	}
 
+	Function* ScriptCompiler::findCastingFunction(const ScriptType& sourceType, const ScriptType& targetType) {
+		int functionId = findFunction(targetType.sType(), { sourceType });
+		if (functionId < 0) {
+			return nullptr;
+		}
+
+		auto theFunction = createFunctionFromId(functionId);
+		if (theFunction) {
+			auto& rt = theFunction->getReturnType();
+			if (targetType.iType() != rt.iType()) {
+				delete theFunction;
+				theFunction = nullptr;
+			}
+		}
+		return theFunction;
+	}
+
 	bool ScriptCompiler::findMatchingLevel2(const ScriptType& argumentType, const ScriptType& paramType, ParamCastingInfo& paramInfo) {
 		//same type => perfect match
 		if (argumentType == paramType) {
@@ -861,23 +878,13 @@ namespace ffscript {
 			return true;
 		}
 		
-		string castingFunction = getType(argumentType.iType());
-		int functionId = findFunction(castingFunction, paramType.sType());
-		if (functionId < 0) {
-			return false;
-		}
-
-		auto theFunction = FunctionRef(createFunctionFromId(functionId));
+		auto theFunction = findCastingFunction(paramType, argumentType);
 		if (!theFunction) {
-			return false;
-		}
-		auto& rt = theFunction->getReturnType();
-		if (argumentType != rt) {
 			return false;
 		}
 
 		paramInfo.accurative = findConversionAccurative(paramType.iType(), argumentType.iType());
-		paramInfo.castingFunction = theFunction;
+		paramInfo.castingFunction = FunctionRef(theFunction);
 
 		return true;
 	}

@@ -87,62 +87,34 @@ namespace ffscript {
 		
 		for (auto it = candidates->begin(); it != candidates->end(); ++it) {
 			auto& candidateUnitRef = *it;
-			auto& actualReturnType = candidateUnitRef->getReturnType();			
-			//if (expectedType != actualReturnType) {
-				ParamCastingInfo paramInfo;
-				int res = 0;
-				if (res = scriptCompiler->findMatchingComposite(expectedType, candidateUnitRef, paramInfo)) {
-					;
+			auto& actualReturnType = candidateUnitRef->getReturnType();	
+			ParamCastingInfo paramInfo;
+			int res = 0;
+			if (res = scriptCompiler->findMatchingComposite(expectedType, candidateUnitRef, paramInfo)) {
+				;
+			}
+			else if (res = scriptCompiler->findMatching(refVoidType, expectedType, actualReturnType, paramInfo, true)) {
+				;
+			}
+			if (res) {
+				if (paramInfo.castingFunction) {
+					auto& castingFunction = paramInfo.castingFunction;
+					castingFunction->setSourceCharIndex(candidateUnitRef->getSourceCharIndex());
+
+					applyCasting(candidateUnitRef, castingFunction);
+					candidateUnitRef->setReturnType(expectedType);
 				}
-				else if (res = scriptCompiler->findMatching(refVoidType, expectedType, actualReturnType, paramInfo, true)) {
-					;
+
+				// check to construct a object for returning in the function
+				if (candidateUnitRef->getType() == EXP_UNIT_ID_DEREF) {						
+					// because the deref just only do a shallow copy
+					// to return a object to outside, the object must be constructed
+					// and not be destructed after out of scope
+					constructObjectForReturning(candidateUnitRef, expectedType);
 				}
-				if (res) {
-					if (paramInfo.castingFunction) {
-						auto& castingFunction = paramInfo.castingFunction;
-						castingFunction->setSourceCharIndex(candidateUnitRef->getSourceCharIndex());
 
-						applyCasting(candidateUnitRef, castingFunction);
-						candidateUnitRef->setReturnType(expectedType);
-					}
-
-					// check to construct a object for returning in the function
-					if (candidateUnitRef->getType() == EXP_UNIT_ID_DEREF) {						
-						// because the deref just only do a shallow copy
-						// to return a object to outside, the object must be constructed
-						// and not be destructed after out of scope
-						constructObjectForReturning(candidateUnitRef, expectedType);
-					}
-
-					return candidateUnitRef;
-				}
-				
-				/*if (expectedType.refLevel() == 0) {
-					int castingFunctionId = scriptCompiler->findFunction(expectedType.sType(), actualReturnType.sType());
-					if (castingFunctionId < 0) {
-						scriptCompiler->setErrorText("cannot casting from " + actualReturnType.sType() + " to " + expectedType.sType());
-						return nullptr;
-					}
-
-					auto castingFunction = scriptCompiler->createFunctionFromId(castingFunctionId);
-					castingFunction->pushParam(candidateUnitRef);
-					candidateUnitRef.reset(castingFunction);
-					return candidateUnitRef;
-				}
-				else if (expectedType.origin() == actualReturnType.origin() &&
-					expectedType.refLevel() - actualReturnType.refLevel() == 1) {
-					int makeRefFunctionId = scriptCompiler->getMakingRefFunction();
-					if (makeRefFunctionId < 0) {
-						scriptCompiler->setErrorText("cannot casting from " + actualReturnType.sType() + " to " + expectedType.sType());
-						return nullptr;
-					}
-
-					auto refFunction = scriptCompiler->createFunctionFromId(makeRefFunctionId);
-					refFunction->pushParam(dynamic_pointer_cast<ExecutableUnit>(candidateUnitRef));
-					candidateUnitRef.reset(refFunction);
-					return candidateUnitRef;
-				}*/
-			//}
+				return candidateUnitRef;
+			}
 		}
 
 		return nullptr;
