@@ -56,7 +56,7 @@ namespace ffscript {
 		int totalAccurative;
 	};
 
-	void applyCasting(ExecutableUnitRef& unit, const FunctionRef& castingUnit);
+	void applyCastingAndOptimize(ExecutableUnitRef& unit, const FunctionRef& castingUnit);
 	
 	class FFSCRIPT_API ExpressionParser
 	{

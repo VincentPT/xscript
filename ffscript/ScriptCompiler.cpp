@@ -880,6 +880,78 @@ namespace ffscript {
 		
 		auto theFunction = findCastingFunction(paramType, argumentType);
 		if (!theFunction) {
+			if (!argumentType.isSemiRefType() && paramType.isSemiRefType()) {
+				auto paramTypeOrigin = paramType.deSemiRef();
+				theFunction = findCastingFunction(paramTypeOrigin, argumentType);
+				if (!theFunction) {
+					return false;
+				}
+
+				DFunction2Ref derefCommand = make_shared<DeRefCommand>(getTypeSize(argumentType));
+				auto derefFunction = make_shared<FixParamFunction<1>>(DEREF_OPERATOR, EXP_UNIT_ID_DEREF, FUNCTION_PRIORITY_UNARY_PREFIX, argumentType);
+				derefFunction->setNative(derefCommand);
+				theFunction->pushParam(derefFunction);
+
+				paramInfo.accurative = findConversionAccurative(paramTypeOrigin.iType(), argumentType.iType()) + 2;
+				paramInfo.castingFunction = FunctionRef(theFunction);
+
+				return true;
+			}
+			else if (argumentType.isSemiRefType() && !paramType.isSemiRefType()) {
+				auto argumentTypeOrigin = argumentType.deSemiRef();
+				theFunction = findCastingFunction(paramType, argumentTypeOrigin);
+				if (!theFunction) {
+					return false;
+				}
+
+				int functionId = getMakingRefFunction();
+				if (functionId == -1) {
+					return false;
+				}
+				auto makeRef = createFunctionFromId(functionId);
+				makeRef->pushParam(FunctionRef(theFunction));
+				makeRef->setReturnType(argumentType);
+				
+				paramInfo.accurative = findConversionAccurative(paramType.iType(), argumentTypeOrigin.iType()) + 2;
+				paramInfo.castingFunction = FunctionRef(makeRef);
+				return true;
+			}
+			else if (argumentType.isSemiRefType() && paramType.isSemiRefType()) {
+				auto argumentTypeOrigin = argumentType.deSemiRef();
+				auto paramTypeOrigin = paramType.deSemiRef();
+				theFunction = findCastingFunction(paramTypeOrigin, argumentTypeOrigin);
+				if (!theFunction) {
+					return false;
+				}
+
+				int functionId = getMakingRefFunction();
+				if (functionId == -1) {
+					return false;
+				}
+				// step to casting
+				// 1. deref unit
+				// 2. casting type of [1] to origin type of argument
+				// 3. make unit of [2] to be ma reference
+
+				// 1. deref unit
+				DFunction2Ref derefCommand = make_shared<DeRefCommand>(getTypeSize(argumentTypeOrigin));
+				auto derefFunction = make_shared<FixParamFunction<1>>(DEREF_OPERATOR, EXP_UNIT_ID_DEREF, FUNCTION_PRIORITY_UNARY_PREFIX, argumentTypeOrigin);
+				derefFunction->setNative(derefCommand);
+				
+				// 2. casting type of [1] to origin type of argument
+				theFunction->pushParam(derefFunction);
+				
+				// 3. make unit of [2] to be ma reference
+				auto makeRef = createFunctionFromId(functionId);
+				makeRef->pushParam(FunctionRef(theFunction));
+
+				makeRef->setReturnType(argumentType);
+
+				paramInfo.accurative = findConversionAccurative(paramType.iType(), argumentTypeOrigin.iType()) + 2;
+				paramInfo.castingFunction = FunctionRef(makeRef);
+				return true;
+			}
+
 			return false;
 		}
 
@@ -1113,11 +1185,10 @@ namespace ffscript {
 			if (pAccurative) *pAccurative = castingInfo.accurative;
 
 			if (castingInfo.castingFunction) {
-				auto& castingFunction = castingInfo.castingFunction;
-				castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
-				castingFunction->pushParam(paramUnit);
+				param = paramUnit;
+				applyCasting(param, castingInfo.castingFunction);
+				param->setMask(param->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
 
-				param = castingFunction;
 				// keep origin source char in new expression unit
 				param->setSourceCharIndex(paramUnit->getSourceCharIndex());
 			}
@@ -1157,7 +1228,7 @@ namespace ffscript {
 			auto& castingF = it->castingFunction;
 			auto& paramRef = *pit;
 			if (castingF) {
-				applyCasting(paramRef, castingF);
+				applyCastingAndOptimize(paramRef, castingF);
 				functionRef->pushParam(paramRef);
 				paramRef->setReturnType(*(argit->get()));
 			}
@@ -1194,11 +1265,8 @@ namespace ffscript {
 
 			//param 2 is not availble for using imediately and need to be cast before use.
 			if (castingInfo.castingFunction) {
-				auto& castingFunction = castingInfo.castingFunction;
-				castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
-				castingFunction->pushParam(param2);
-
-				param2 = castingFunction;
+				applyCasting(param2, castingInfo.castingFunction);
+				param2->setMask(param2->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
 
 				if (pAccurative) {
 					*pAccurative = castingInfo.accurative;
@@ -1272,6 +1340,32 @@ namespace ffscript {
 		param.reset((ExecutableUnit*)(refFunction));
 
 		return true;
+	}
+
+	void ScriptCompiler::applyCasting(ExecutableUnitRef& unit, const FunctionRef& castingUnit) {
+		if (castingUnit->getChildCount() == 1 && EXP_UNIT_ID_CREATE_OBJECT_COMPOSITE != castingUnit->getType()) {
+			// for some cases, the casting unit is alerady fill param
+			// these cases is multiple level casting and the last
+			// casting component unit is the unit that integrate directly
+			// to the origin unit
+			Function* existingCastingComponent = castingUnit.get();
+			do
+			{
+				existingCastingComponent = dynamic_cast<Function*>(existingCastingComponent->getChild(0).get());
+				if (existingCastingComponent == nullptr) {
+					throw std::exception("casting unit is invalid");
+				}
+				if (existingCastingComponent->getChildCount() == 0) {
+					existingCastingComponent->pushParam(unit);
+					break;
+				}
+			} while (true);
+		}
+		else
+		{
+			castingUnit->pushParam(unit);
+		}
+		unit = castingUnit;
 	}
 
 	///
@@ -1473,7 +1567,7 @@ namespace ffscript {
 							// keep origin source char in new expression unit
 							paramCastingInfo.castingFunction->setSourceCharIndex(paramUnit->getSourceCharIndex());
 
-							applyCasting(tranformUnitRef, paramCastingInfo.castingFunction);
+							applyCastingAndOptimize(tranformUnitRef, paramCastingInfo.castingFunction);
 							tranformUnitRef->setReturnType(argumentType);
 						}
 						else {
@@ -2053,7 +2147,7 @@ namespace ffscript {
 				}
 				else {
 					auto paramTemp = param;
-					applyCasting(paramTemp, castingF);
+					applyCastingAndOptimize(paramTemp, castingF);
 					paramTemp->setReturnType(*argTypes[i]);
 
 					f->pushParam(paramTemp);

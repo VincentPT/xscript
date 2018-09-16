@@ -208,6 +208,7 @@ namespace ffscript {
 		Function* applyConstructor(const ExecutableUnitRef& variableUnit, const  ExecutableUnitRef& argUnit, int* pAccurative = nullptr);
 		bool hasConstructor(int iType) const;
 		bool convertToRef(ExecutableUnitRef& param);
+		static void applyCasting(ExecutableUnitRef& unit, const FunctionRef& castingUnit);
 
 		// return
 		bool breakCompositeConstructor(const ExecutableUnitRef& variableUnit,

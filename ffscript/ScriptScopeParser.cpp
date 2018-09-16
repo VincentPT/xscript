@@ -101,7 +101,7 @@ namespace ffscript {
 					auto& castingFunction = paramInfo.castingFunction;
 					castingFunction->setSourceCharIndex(candidateUnitRef->getSourceCharIndex());
 
-					applyCasting(candidateUnitRef, castingFunction);
+					applyCastingAndOptimize(candidateUnitRef, castingFunction);
 					candidateUnitRef->setReturnType(expectedType);
 				}
 
@@ -153,7 +153,7 @@ namespace ffscript {
 					auto candidate = chooseCandidate(candidates, *expectedReturnType);
 					if (!candidate) {
 						scriptCompiler->setErrorText("Cannot cast the return type to '" + expectedReturnType->sType() + "'");
-						return eResult;
+						return E_TYPE_CONVERSION_ERROR;
 					}
 					putCommandUnit(candidate);
 				}

@@ -609,8 +609,6 @@ namespace ffscript {
 		ExecutableUnitRef& param2 = functionUnit->getChild(1);
 
 		FunctionCommand1P* assigmentCommand = new FunctionCommand1P();
-		assigmentCommand->setCommand(nullptr);
-		assigmentCommand->pushCommandParam(nullptr);
 
 		Variable* pVariable1 = ((CXOperand*)param1.get())->getVariable();
 		Variable* pVariable2 = ((CXOperand*)param2.get())->getVariable();

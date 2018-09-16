@@ -1767,18 +1767,23 @@ namespace ffscript {
 						continue;
 					}
 					else */
-					if (param1Type.semiRefLevel() - param2Type.semiRefLevel() == 1 &&
-						param1->getType() == EXP_UNIT_ID_XOPERAND && param2->getType() == EXP_UNIT_ID_XOPERAND) {
-						auto defaultOperatorUnit = new FixParamFunction<2>(DEFAULT_COPY_OPERATOR, EXP_UNIT_ID_ASSIGMENT_SEMIREF, FUNCTION_PRIORITY_ASSIGNMENT, param1Type);
-						defaultOperatorUnit->pushParam(param1);
-						defaultOperatorUnit->pushParam(param2);
-						// keep origin source char in new expression unit
-						defaultOperatorUnit->setSourceCharIndex(funcNode->getSourceCharIndex());
+					if ((param1->getMask() & UMASK_DECLAREINEXPRESSION) && param1Type.isSemiRefType() && param1->getType() == EXP_UNIT_ID_XOPERAND) {
+						if (param2->getType() != EXP_UNIT_ID_XOPERAND) {
+							scriptCompiler->setErrorText(param2->toString() + " must be a variable");
+							return nullptr;
+						}
+						if (param1Type.semiRefLevel() - param2Type.semiRefLevel() == 1) {
+							auto defaultOperatorUnit = new FixParamFunction<2>(DEFAULT_COPY_OPERATOR, EXP_UNIT_ID_ASSIGMENT_SEMIREF, FUNCTION_PRIORITY_ASSIGNMENT, param1Type);
+							defaultOperatorUnit->pushParam(param1);
+							defaultOperatorUnit->pushParam(param2);
+							// keep origin source char in new expression unit
+							defaultOperatorUnit->setSourceCharIndex(funcNode->getSourceCharIndex());
 
-						defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit));
-						continue;
+							defaultOperators->push_back(ExecutableUnitRef(defaultOperatorUnit));
+							continue;
+						}
 					}
-					else if (param1Type.origin() == param2Type.origin() && param1Type.refLevel() == param2Type.refLevel()/* && param2Type.isSemiRefType()*/) {
+					if (param1Type.origin() == param2Type.origin() && param1Type.refLevel() == param2Type.refLevel()/* && param2Type.isSemiRefType()*/) {
 						//default assigment operator for all types
 						if (!param1Type.semiRefLevel()) {
 							if (!scriptCompiler->convertToRef(param1)) {
@@ -1924,7 +1929,7 @@ namespace ffscript {
 								//the following code is casting before execute param 2 unit
 								auto castingFunction = scriptCompiler->findCastingFunction(param2Type, ScriptType(basicTypes.TYPE_INT, scriptCompiler->getType(basicTypes.TYPE_INT)));
 								if (!castingFunction) {
-									continue;
+									return nullptr;
 								}
 								castingFunction->pushParam(param2);
 								castingFunction->setMask(castingFunction->getMask() | UMASK_CASTINGUNITNOTINEXPRESSION);
@@ -2072,7 +2077,7 @@ namespace ffscript {
 		return (T*)&val;
 	}
 
-	void applyCasting(ExecutableUnitRef& unit, const FunctionRef& castingUnit) {
+	void applyCastingAndOptimize(ExecutableUnitRef& unit, const FunctionRef& castingUnit) {
 		if ((castingUnit->getType() == EXP_UNIT_ID_MAKE_REF && unit->getType() == EXP_UNIT_ID_DEREF) ||
 			(castingUnit->getType() == EXP_UNIT_ID_SEMI_REF && unit->getType() == EXP_UNIT_ID_DEREF) ||
 			(castingUnit->getType() == EXP_UNIT_ID_DEREF && unit->getType() == EXP_UNIT_ID_MAKE_REF) ||
@@ -2081,8 +2086,7 @@ namespace ffscript {
 			unit = ((Function*)unit.get())->getChild(0);
 		}
 		else {
-			castingUnit->pushParam(unit);
-			unit = castingUnit;
+			ScriptCompiler::applyCasting(unit, castingUnit);
 		}
 	}
 
@@ -2159,7 +2163,7 @@ namespace ffscript {
 				auto& paramRef = *jt;
 				// keep origin source char in new expression unit
 				castingF->setSourceCharIndex(paramRef->getSourceCharIndex());
-				applyCasting(paramRef, castingF);
+				applyCastingAndOptimize(paramRef, castingF);
 				paramRef->setReturnType(*(kt->get()));
 			}
 			jt++;
@@ -2524,13 +2528,15 @@ namespace ffscript {
 						auto param1TypeNOriginType = param1TypeN.deSemiRef();
 						
 						if (basicType.TYPE_INT == param1TypeNOriginType.iType() || basicType.TYPE_LONG == param1TypeNOriginType.iType()) {
+							auto param1TypeNOriginSize = scriptCompiler->getTypeSize(param1TypeNOriginType.iType());
+
 							auto derRefUnit = make_shared<FixParamFunction<1>>(DEREF_OPERATOR, EXP_UNIT_ID_DEREF, FUNCTION_PRIORITY_UNARY_PREFIX, param1TypeNOriginType);
 							derRefUnit->pushParam(unit);
-							derRefUnit->setNative(make_shared<DeRefCommand>(sizeof(void*)));
+							derRefUnit->setNative(make_shared<DeRefCommand>(param1TypeNOriginSize));
 
 							newCandidate = derRefUnit;
 
-							if (scriptCompiler->getTypeSize(param1TypeNOriginType.iType()) != sizeof(void*)) {
+							if (param1TypeNOriginSize != scriptCompiler->getTypeSize(returnType.iType())) {
 								auto& targetType = typeInt.iType() == param1TypeNOriginType.iType() ?
 									typeLong : typeInt;
 								auto castingFunction = scriptCompiler->findCastingFunction(param1TypeNOriginType, targetType);
@@ -2595,6 +2601,30 @@ namespace ffscript {
 						continue;
 					}
 				}
+				else if (param1TypeN.isSemiRefType()) {
+					auto param1TypeNOriginType = param1TypeN.deSemiRef();
+
+					auto param1TypeNOriginSize = scriptCompiler->getTypeSize(param1TypeNOriginType.iType());
+					auto derRefUnit = make_shared<FixParamFunction<1>>(DEREF_OPERATOR, EXP_UNIT_ID_DEREF, FUNCTION_PRIORITY_UNARY_PREFIX, param1TypeNOriginType);
+					derRefUnit->pushParam(unit);
+					derRefUnit->setNative(make_shared<DeRefCommand>(param1TypeNOriginSize));
+
+					newCandidate = derRefUnit;
+
+					if (param1TypeNOriginType != returnType) {
+						auto castingFunction = scriptCompiler->findCastingFunction(param1TypeNOriginType, returnType);
+						if (castingFunction) {
+							castingFunction->pushParam(derRefUnit);
+						}
+
+						newCandidate.reset(castingFunction);
+					}
+					// keep origin source char in new expression unit
+					newCandidate->setSourceCharIndex(function->getSourceCharIndex());
+					if (!newCandidate) {
+						continue;
+					}
+				}
 				else {
 					auto castingFunction = scriptCompiler->findCastingFunction(param1TypeN, returnType);
 					if (castingFunction) {
@@ -2603,6 +2633,9 @@ namespace ffscript {
 						castingFunction->setSourceCharIndex(function->getSourceCharIndex());
 					}
 					newCandidate.reset(castingFunction);
+					if (!newCandidate) {
+						continue;
+					}
 				}
 				if (!newCandidate) {
 					newCandidate = make_shared<FixParamFunction<1>>(function->getName(), function->getType(), function->getPriority(), returnType);
