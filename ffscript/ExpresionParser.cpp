@@ -3089,7 +3089,7 @@ namespace ffscript {
 				// ...then we try to using assigment operator
 				// find assgiment operator for params
 				functionCandidates = filterCandidate(scriptCompiler, "=", EXP_UNIT_ID_OPERATOR_ASSIGNMENT, candidatesForParams, eResult);
-				if (functionCandidates->size() != 0) {
+				if (functionCandidates && functionCandidates->size() != 0) {
 					//check if param 1 of the function is a X Operand
 					//if param 1 is an X Operand, all candidates of its is also and X operand
 					//so we just need to take the first one to check
@@ -3111,7 +3111,7 @@ namespace ffscript {
 			}
 
 			// check if need call constructor but there is not candidate was create...
-			if (needToCallConstructor && functionCandidates->size() == 0) {
+			if (needToCallConstructor && (!functionCandidates || functionCandidates->size() == 0)) {
 				// ...then its must be and error case
 				eResult = E_FUNCTION_NOT_FOUND;
 				scriptCompiler->setErrorText("there is no copy constructor or a combination of default copy constructor and assigment operator found");
