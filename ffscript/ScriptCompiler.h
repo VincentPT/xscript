@@ -185,9 +185,9 @@ namespace ffscript {
 
 		bool registConstructor(int type, int functionId);
 		int getDefaultConstructor(int type);
-		std::shared_ptr<list<CandidateInfo>> getConstructor(int rootType, const ExecutableUnitRef& paramUnit);
+		std::shared_ptr<list<CandidateInfo>> getConstructor(const ScriptType& rootType, const ExecutableUnitRef& paramUnit);
 		int getBinaryConstructor(int rootType, const ScriptType& paramType);
-		std::shared_ptr<list<CandidateInfo>> getBinaryConstructor(int rootType, const ExecutableUnitRef& paramUnit);
+		std::shared_ptr<list<CandidateInfo>> getBinaryConstructor(const ScriptType& rootType, const ExecutableUnitRef& paramUnit, bool findExtracly = true);
 		void getConstructors(int iType, list<OverLoadingItem*>& overloadingItems) const;
 		bool registDestructor(int type, int functionId);
 		int getDestructor(int type);

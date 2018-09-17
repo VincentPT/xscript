@@ -36,6 +36,7 @@ namespace ffscriptUT
 			//so does not need global memory
 			compiler.initialize(128);
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = compiler.getCompiler();
 
 			const wchar_t scriptCode[] =
 				L"int foo(ref int a) {"
@@ -45,7 +46,7 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");

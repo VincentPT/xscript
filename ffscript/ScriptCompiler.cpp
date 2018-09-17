@@ -617,14 +617,14 @@ namespace ffscript {
 		return -1;
 	}
 
-	std::shared_ptr<list<CandidateInfo>> ScriptCompiler::getBinaryConstructor(int type, const ExecutableUnitRef& paramUnit) {
+	std::shared_ptr<list<CandidateInfo>> ScriptCompiler::getBinaryConstructor(const ScriptType& type, const ExecutableUnitRef& paramUnit, bool findExtracly) {
 		auto key = type;
 		const ScriptType& param2Type = paramUnit->getReturnType();
 		string subKey = param2Type.sType();
 
 		std::shared_ptr<list<CandidateInfo>> candidates;
 
-		auto it = _copyConstructorMap.find(key);
+		auto it = _copyConstructorMap.find(key.iType());
 		if (it == _copyConstructorMap.end()) {
 			return candidates;
 		}
@@ -678,7 +678,7 @@ namespace ffscript {
 		return candidates;
 	}
 
-	std::shared_ptr<list<CandidateInfo>> ScriptCompiler::getConstructor(int type, const ExecutableUnitRef& unit) {
+	std::shared_ptr<list<CandidateInfo>> ScriptCompiler::getConstructor(const ScriptType& type, const ExecutableUnitRef& unit) {
 		if (unit->getType() != EXP_UNIT_ID_DYNAMIC_FUNC) {
 			return getBinaryConstructor(type, unit);
 		}
@@ -690,7 +690,7 @@ namespace ffscript {
 		auto& params = collector->getParams();
 		list<OverLoadingItem*> overloadingItems;
 		
-		auto it = _constructorsMap.find(type);
+		auto it = _constructorsMap.find(type.iType());
 		if (it != _constructorsMap.end()) {
 			auto constructorList = it->second.get();
 			if (constructorList == nullptr || constructorList->size() == 0) return nullptr;
@@ -897,6 +897,10 @@ namespace ffscript {
 
 				return true;
 			}
+
+			// the following commented code should not be used
+			// its may lead to a invalid memory accessment in a function which modify its parameters.
+#if 1
 			else if (argumentType.isSemiRefType() && !paramType.isSemiRefType()) {
 				auto argumentTypeOrigin = argumentType.deSemiRef();
 				theFunction = findCastingFunction(paramType, argumentTypeOrigin);
@@ -951,7 +955,7 @@ namespace ffscript {
 				paramInfo.castingFunction = FunctionRef(makeRef);
 				return true;
 			}
-
+#endif
 			return false;
 		}
 
@@ -1250,7 +1254,7 @@ namespace ffscript {
 		auto& param1Type = param1->getReturnType();
 		auto& param2Type = param2->getReturnType();
 
-		auto constructorCandidates = getConstructor(param1Type.iType(), param2);
+		auto constructorCandidates = getConstructor(param1Type, param2);
 		auto pCandidate = ScriptCompiler::selectSingleCandidate(constructorCandidates);
 
 		//copy constructor found
@@ -2084,12 +2088,17 @@ namespace ffscript {
 			//prevent following expression to be executed by a native assigment function
 			// int b = 1;
 			// ref int a = b;
+			// int& a = b;
 			//but it will be processed by default assignment operator
 			if (functionType == EXP_UNIT_ID_OPERATOR_ASSIGNMENT && path.size() == 2) {
-				auto& param1Type = path[0]->getReturnType();
-				auto& param2Type = path[1]->getReturnType();
+				auto& param1 = path[0];
+				auto& param2 = path[1];
+				auto& param1Type = param1->getReturnType();
+				auto& param2Type = param2->getReturnType();
 
-				if (path[0]->getType() == EXP_UNIT_ID_XOPERAND && param2Type.origin() == param1Type.origin() && param1Type.refLevel() != param2Type.refLevel()) {
+				if ((param1->getType() == EXP_UNIT_ID_XOPERAND && param2Type.origin() == param1Type.origin() && param1Type.refLevel() - param2Type.refLevel() == 1) ||
+					((param1->getMask() & UMASK_DECLAREINEXPRESSION) && param1Type.isSemiRefType() && param1->getType() == EXP_UNIT_ID_XOPERAND && param2->getType() == EXP_UNIT_ID_XOPERAND)
+					) {
 					//continue
 					//following assigment is not allow
 					//ref int b;
@@ -2101,10 +2110,10 @@ namespace ffscript {
 
 			list<CandidateInfo> overloadingCandidates = overloadingCandidatesOrigin;
 			simpleFilter(this, path, overloadingCandidates);
-			if (overloadingCandidates.size() == 0) {
-				overloadingCandidates = overloadingCandidatesOrigin;
-				simpleFilter2(this, path, overloadingCandidates);
-			}
+			//if (overloadingCandidates.size() == 0) {
+			//	overloadingCandidates = overloadingCandidatesOrigin;
+			//	simpleFilter2(this, path, overloadingCandidates);
+			//}
 
 			//copy candidate to map but no duplicate candidate(function) id
 			for (auto cit = overloadingCandidates.begin(); cit != overloadingCandidates.end(); cit++) {

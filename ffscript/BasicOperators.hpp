@@ -47,7 +47,7 @@ namespace ffscript {
 			}
 
 			template <class RT, class T1, class T2>
-			RT assign(T1& a, T2 b) {
+			RT assign(T1 & a, T2 b) {
 				return a = (T1)b;
 			}
 

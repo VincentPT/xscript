@@ -1301,7 +1301,7 @@ namespace ffscriptUT
 				L"}"
 				;
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program);
+			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
@@ -1363,7 +1363,7 @@ namespace ffscriptUT
 				L"}"
 				;
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program);
+			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
@@ -1394,7 +1394,7 @@ namespace ffscriptUT
 				L"}"
 				;
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program);
+			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
@@ -1426,7 +1426,7 @@ namespace ffscriptUT
 				L"}"
 				;
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program);
+			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			int functionId = scriptCompiler->findFunction("foo", "");
 			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
 
@@ -1435,6 +1435,46 @@ namespace ffscriptUT
 
 			auto res = *(unsigned long long*)scriptTask.getTaskResult();
 			Assert::AreEqual(0x12345678ull, res);
+		}
+
+		static RawString customTypeToString(int val) {
+			RawString rws;
+			constantConstructor(rws, std::to_wstring(val));
+
+			return rws;
+		}
+
+		TEST_METHOD(TestSemiRef06)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+			includeRawStringToCompiler(scriptCompiler);
+
+			FunctionRegisterHelper fb(scriptCompiler);
+			int typeId = fb.registerUserType("CustomType", sizeof(int));
+			fb.registFunction("String", "CustomType", createUserFunctionFactory(scriptCompiler, "String", customTypeToString));
+
+			scriptCompiler->beginUserLib();
+
+			const wchar_t* scriptCode =
+				L"void foo(CustomType val) {"
+				L"	String s = \"val =\";"
+				L"	s + val;"
+				L"}"
+				;
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			int functionId = scriptCompiler->findFunction("foo", "CustomType");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+
+			ScriptTask scriptTask(program);
+			ScriptParamBuffer paramBuffer(3);
+			scriptTask.runFunction(functionId, paramBuffer);
 		}
 	};
 }
