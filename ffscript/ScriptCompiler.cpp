@@ -2110,10 +2110,10 @@ namespace ffscript {
 
 			list<CandidateInfo> overloadingCandidates = overloadingCandidatesOrigin;
 			simpleFilter(this, path, overloadingCandidates);
-			//if (overloadingCandidates.size() == 0) {
-			//	overloadingCandidates = overloadingCandidatesOrigin;
-			//	simpleFilter2(this, path, overloadingCandidates);
-			//}
+			if (overloadingCandidates.size() == 0) {
+				overloadingCandidates = overloadingCandidatesOrigin;
+				simpleFilter2(this, path, overloadingCandidates);
+			}
 
 			//copy candidate to map but no duplicate candidate(function) id
 			for (auto cit = overloadingCandidates.begin(); cit != overloadingCandidates.end(); cit++) {

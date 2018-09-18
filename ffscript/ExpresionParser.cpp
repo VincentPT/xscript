@@ -3403,6 +3403,11 @@ namespace ffscript {
 		if (ISFUNCTION(root)) {
 			auto candidateFounds = completeFunctionTree(getCompiler(), dynamic_pointer_cast<Function>(root), eResult);
 			if (eResult == E_SUCCESS && candidateFounds && candidateFounds->size()) {
+				if (candidateFounds->size() > 1) {
+					_scriptCompiler->setErrorText("ambitious call for function '" + root->toString() + "'");
+					_lastErrorUnit = root;
+					return E_TYPE_AMBIOUS_CALL;
+				}
 				//check later - need consider choose r-value and l-value return of candidate
 				root = candidateFounds->front();
 
