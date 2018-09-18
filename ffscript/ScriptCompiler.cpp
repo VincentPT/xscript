@@ -1988,7 +1988,7 @@ namespace ffscript {
 	}
 
 	template <class Container>
-	void simpleFilter(ScriptCompiler* scriptCompiler, const Container& parameterUnits, list<CandidateInfo>& overloadingCandidates) {
+	void simpleFilter(ScriptCompiler* scriptCompiler, const Container& parameterUnits, list<CandidateInfo>& overloadingCandidates, bool forToSearchMatchingLevel2) {
 		ScriptType refVoidType(scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID | DATA_TYPE_POINTER_MASK, "ref void");
 
 		auto pit = parameterUnits.begin();
@@ -2006,39 +2006,7 @@ namespace ffscript {
 				if (scriptCompiler->findMatchingComposite(argumentType, param, paramCasting)) {
 					++it;
 				}
-				else if (scriptCompiler->findMatching(refVoidType, argumentType, paramType, paramCasting, overloadingSize == 1)) {
-					// keep origin source char in new expression unit
-					if (paramCasting.castingFunction) {
-						paramCasting.castingFunction->setSourceCharIndex(param->getSourceCharIndex());
-					}
-					++it;
-				}
-				else {
-					itTemp = it;
-					++it;
-					overloadingCandidates.erase(itTemp);
-				}
-			}
-		}
-	}
-
-	template <class Container>
-	void simpleFilter2(ScriptCompiler* scriptCompiler, const Container& parameterUnits, list<CandidateInfo>& overloadingCandidates) {
-		ScriptType refVoidType(scriptCompiler->getTypeManager()->getBasicTypes().TYPE_VOID | DATA_TYPE_POINTER_MASK, "ref void");
-
-		auto pit = parameterUnits.begin();
-		int n = (int)parameterUnits.size();
-		int overloadingSize = (int)overloadingCandidates.size();
-		for (int i = 0; i < n; i++, pit++) {
-			auto& param = *pit;
-			auto& paramType = param->getReturnType();
-			auto it = overloadingCandidates.begin();
-			decltype(it) itTemp;
-
-			while (it != overloadingCandidates.end()) {
-				auto& argumentType = *(it->item->paramTypes[i]);
-				auto& paramCasting = it->paramCasting.at(i);
-				if (scriptCompiler->findMatchingLevel2(argumentType, paramType, paramCasting)) {
+				else if (scriptCompiler->findMatching(refVoidType, argumentType, paramType, paramCasting, forToSearchMatchingLevel2 ? true : overloadingSize == 1)) {
 					// keep origin source char in new expression unit
 					if (paramCasting.castingFunction) {
 						paramCasting.castingFunction->setSourceCharIndex(param->getSourceCharIndex());
@@ -2109,10 +2077,10 @@ namespace ffscript {
 			}
 
 			list<CandidateInfo> overloadingCandidates = overloadingCandidatesOrigin;
-			simpleFilter(this, path, overloadingCandidates);
+			simpleFilter(this, path, overloadingCandidates, false);
 			if (overloadingCandidates.size() == 0) {
 				overloadingCandidates = overloadingCandidatesOrigin;
-				simpleFilter2(this, path, overloadingCandidates);
+				simpleFilter(this, path, overloadingCandidates, true);
 			}
 
 			//copy candidate to map but no duplicate candidate(function) id

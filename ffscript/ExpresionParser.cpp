@@ -3434,6 +3434,13 @@ namespace ffscript {
 		_lastErrorUnit.reset();
 
 		candidates = linkForUnit(getCompiler(), root, eResult);
+		if (eResult == E_SUCCESS) {
+			if (candidates->size() > 1) {
+				_scriptCompiler->setErrorText("ambitious call for function '" + root->toString() + "'");
+				_lastErrorUnit = root;
+				return E_TYPE_AMBIOUS_CALL;
+			}
+		}
 		return eResult;
 	}
 }
