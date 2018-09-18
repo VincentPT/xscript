@@ -170,7 +170,7 @@ namespace ffscript {
 		//negative operator
 
 		//assigment operator
-		fb.registPredefinedOperators("=", "long,long", "long", createFunctionCdecl(assign<long long, long long, long long>));
+		fb.registPredefinedOperators("=", "long&,long", "long", createFunctionCdecl(assign<long long, long long, long long>));
 		//bitwises
 		fb.registPredefinedOperators("&", "long,long", "long", createFunctionCdecl<long long, long long, long long>(and));
 		fb.registPredefinedOperators("|", "long,long", "long", createFunctionCdecl<long long, long long, long long>(or));
