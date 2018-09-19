@@ -1373,7 +1373,7 @@ namespace ffscriptUT
 			auto res = *(unsigned long long*)scriptTask.getTaskResult();
 			Assert::AreEqual(0x12345678ull, res);
 		}
-
+#if 0
 		TEST_METHOD(TestSemiRef04)
 		{
 			CompilerSuite compiler;
@@ -1508,5 +1508,6 @@ namespace ffscriptUT
 			ScriptParamBuffer paramBuffer(3);
 			scriptTask.runFunction(functionId, paramBuffer);
 		}
+#endif
 	};
 }

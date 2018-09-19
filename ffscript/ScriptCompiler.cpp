@@ -398,7 +398,7 @@ namespace ffscript {
 		if (it != _typeConversionMap.end()) {
 			return it->second;
 		}
-		LOG_COMPILE_MESSAGE(_logger, MESSAGE_WARNING, formatMessage("cannot find accuration of conversion: %d -> %d", sourceType, targetType));
+		LOG_COMPILE_MESSAGE(_logger, MESSAGE_WARNING, formatMessage("cannot find accuration of conversion: %s -> %s", getType(sourceType).c_str(), getType(targetType).c_str()));
 		return -1;
 	}
 
@@ -900,7 +900,7 @@ namespace ffscript {
 
 			// the following commented code should not be used
 			// its may lead to a invalid memory accessment in a function which modify its parameters.
-#if 1
+#if 0
 			else if (argumentType.isSemiRefType() && !paramType.isSemiRefType()) {
 				auto argumentTypeOrigin = argumentType.deSemiRef();
 				theFunction = findCastingFunction(paramType, argumentTypeOrigin);
@@ -2058,12 +2058,11 @@ namespace ffscript {
 			// ref int a = b;
 			// int& a = b;
 			//but it will be processed by default assignment operator
-			if (functionType == EXP_UNIT_ID_OPERATOR_ASSIGNMENT && path.size() == 2) {
+			if (functionType == EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
 				auto& param1 = path[0];
 				auto& param2 = path[1];
 				auto& param1Type = param1->getReturnType();
 				auto& param2Type = param2->getReturnType();
-
 				if ((param1->getType() == EXP_UNIT_ID_XOPERAND && param2Type.origin() == param1Type.origin() && param1Type.refLevel() - param2Type.refLevel() == 1) ||
 					((param1->getMask() & UMASK_DECLAREINEXPRESSION) && param1Type.isSemiRefType() && param1->getType() == EXP_UNIT_ID_XOPERAND && param2->getType() == EXP_UNIT_ID_XOPERAND)
 					) {
@@ -2079,6 +2078,19 @@ namespace ffscript {
 			list<CandidateInfo> overloadingCandidates = overloadingCandidatesOrigin;
 			simpleFilter(this, path, overloadingCandidates, false);
 			if (overloadingCandidates.size() == 0) {
+				// when the code reach here, it means no operator found if we don't try to search matching level 2
+				if (functionType == EXP_UNIT_ID_OPERATOR_ASSIGNMENT) {
+					auto& param1 = path[0];
+					auto& param2 = path[1];
+					auto& param1Type = param1->getReturnType();
+					auto& param2Type = param2->getReturnType();
+					if (param1Type.iType() == param2Type.iType()) {
+						// now, it means no assiment operator defined for the given type
+						// for this case we don't try to search the candicate with matching level 2
+						// because we use default assigment operator
+						continue;
+					}
+				}
 				overloadingCandidates = overloadingCandidatesOrigin;
 				simpleFilter(this, path, overloadingCandidates, true);
 			}
