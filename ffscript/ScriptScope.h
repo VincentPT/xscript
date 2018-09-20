@@ -127,16 +127,16 @@ namespace ffscript {
 		//void setEndExpression(CommandConstRefIter expressionIter);
 		//CommandConstRefIter getEndExpression() const;
 
-		int getExpressionCount() const;
+		int getCommandUnitCount() const;
 		void putCommandUnit(CommandUnitBuilder* commandUnit);
 		void putCommandUnit(const CommandUnitRef& commandUnitRef);
 		void insertCommandUnitBefore(CommandConstRefIter commandRefIter, CommandUnitBuilder* commandUnit);		
 		void remove(CommandConstRefIter commandRefIter);
-		CommandConstRefIter getLastExpression() const;
-		CommandConstRefIter getFirstExpression() const;
-		CommandRefIter getFirstExpression();
-		CommandRefIter getLastExpression();
-		CommandUnitRef* getLastCommandUnit();
+		CommandConstRefIter getLastCommandUnitRefIter() const;
+		CommandConstRefIter getFirstCommandUnitRefIter() const;
+		CommandRefIter getFirstCommandUnitRefIter();
+		CommandRefIter getLastCommandUnitRefIter();
+		CommandUnitRef* getLastCommandUnitRefPtr();
 
 		static int checkAutoOperatorForChildren(ScriptCompiler* scriptCompiler, const std::function<int(int)>& getOperator, const ScriptType& type, int beginOffset, std::list<OperatorBuidItemInfo>* operatorInfoList);
 

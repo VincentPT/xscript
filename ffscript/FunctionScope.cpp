@@ -175,7 +175,7 @@ namespace ffscript {
 			//get exit context scope command to update restore call flag value to flase
 			//if we do not do this, the command exit function will never be executed
 			//last command of a context scope must be exit scope command
-			CommandConstRefIter lastCommand = getLastExpression();
+			CommandConstRefIter lastCommand = getLastCommandUnitRefIter();
 
 			ExitScopeBuilder* exitContextScope = (ExitScopeBuilder*)(*lastCommand).get();
 			exitContextScope->setRestoreCallFlag(false);

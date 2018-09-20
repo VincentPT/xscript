@@ -69,7 +69,7 @@ namespace ffscript {
 			return nullptr;
 		}
 
-		auto conditionUnitIter = parent->getLastExpression();
+		auto conditionUnitIter = parent->getLastCommandUnitRefIter();
 		auto updateLaterMan = CodeUpdater::getInstance(this);
 		updateLaterMan->setUpdateInfo(conditionUnitIter->get(), nullptr);
 
@@ -83,7 +83,7 @@ namespace ffscript {
 
 		// get last command in the context scope is always
 		// the exit scope command
-		CommandConstRefIter lastComandInScope = getLastExpression();
+		CommandConstRefIter lastComandInScope = getLastCommandUnitRefIter();
 
 		if (c != nullptr) {
 			CommandUnitRef lastLoopCommand = *lastComandInScope;
@@ -94,7 +94,7 @@ namespace ffscript {
 			// parse the condition again to create condition at the end of while
 			// after parse condition command is also insert at the end of the scope
 			parseCondition(conditionText, end);
-			conditionUnitIter = getLastExpression();
+			conditionUnitIter = getLastCommandUnitRefIter();
 			_conditionExpression = conditionUnitIter->get();
 			updateLaterMan->setUpdateInfo(conditionUnitIter->get(), nullptr);
 			// build the loop command base on condition command

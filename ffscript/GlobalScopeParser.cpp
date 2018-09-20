@@ -398,9 +398,9 @@ namespace ffscript {
 
 		updateVariableOffset();
 
-		int expressionCount = this->getExpressionCount();
+		int expressionCount = this->getCommandUnitCount();
 		std::list<Executor*> globalExcutors;
-		for (auto it = getFirstExpression(); expressionCount > 0; ++it, --expressionCount) {
+		for (auto it = getFirstCommandUnitRefIter(); expressionCount > 0; ++it, --expressionCount) {
 			const CommandUnitRef& commandUnit = *it;
 			if (extractCodeForUnit(program, this, commandUnit, globalExcutors) == false) {
 				return false;

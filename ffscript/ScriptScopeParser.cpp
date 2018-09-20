@@ -317,7 +317,7 @@ namespace ffscript {
 	//	return _endExpression;
 	//}
 
-	CommandConstRefIter ScriptScope::getLastExpression() const {
+	CommandConstRefIter ScriptScope::getLastCommandUnitRefIter() const {
 		CommandConstRefIter end = _commandBuilder.end();
 		if (_commandBuilder.size()) {
 			--end;
@@ -326,7 +326,7 @@ namespace ffscript {
 		return end;
 	}
 
-	CommandRefIter ScriptScope::getLastExpression() {
+	CommandRefIter ScriptScope::getLastCommandUnitRefIter() {
 		CommandRefIter end = _commandBuilder.end();
 		if (_commandBuilder.size()) {
 			--end;
@@ -335,7 +335,7 @@ namespace ffscript {
 		return end;
 	}
 
-	CommandUnitRef* ScriptScope::getLastCommandUnit() {
+	CommandUnitRef* ScriptScope::getLastCommandUnitRefPtr() {
 		if (_commandBuilder.size() == 0) {
 			return nullptr;
 		}
@@ -343,15 +343,15 @@ namespace ffscript {
 		return &_commandBuilder.back();
 	}
 
-	CommandConstRefIter ScriptScope::getFirstExpression() const {
+	CommandConstRefIter ScriptScope::getFirstCommandUnitRefIter() const {
 		return _commandBuilder.begin();
 	}
 
-	CommandRefIter ScriptScope::getFirstExpression() {
+	CommandRefIter ScriptScope::getFirstCommandUnitRefIter() {
 		return _commandBuilder.begin();
 	}
 
-	int ScriptScope::getExpressionCount() const {
+	int ScriptScope::getCommandUnitCount() const {
 		return (int)_commandBuilder.size();
 	}
 

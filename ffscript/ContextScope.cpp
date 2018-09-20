@@ -104,11 +104,11 @@ namespace ffscript {
 		auto iTypeBool = scriptCompiler->getTypeManager()->getBasicTypes().TYPE_BOOL;
 		ScriptType expectedReturnTypeOfCondition(iTypeBool, scriptCompiler->getType(iTypeBool));
 
-		int lineOfCode1 = getExpressionCount();
+		int commandCount1 = getCommandUnitCount();
 		parseExpressionInternal(d, c - 1, &expectedReturnTypeOfCondition);
-		int lineOfCode2 = getExpressionCount();
+		int commandCount2 = getCommandUnitCount();
 
-		if (lineOfCode2 - lineOfCode1 != 1) {
+		if (commandCount2 - commandCount1 != 1) {
 			if (scriptCompiler->getLastError().size() == 0) {
 				scriptCompiler->setErrorText("invalid condition expression");
 			}
@@ -134,7 +134,7 @@ namespace ffscript {
 			return nullptr;
 		}
 
-		CommandConstRefIter conditionRef = getLastExpression();
+		CommandConstRefIter conditionRef = getLastCommandUnitRefIter();
 		CodeUpdater::getInstance(this)->setUpdateInfo(conditionRef->get(), nullptr);
 
 		IfCommandBuilder* ifCommand = new IfCommandBuilder(this);
@@ -421,7 +421,7 @@ namespace ffscript {
 									scriptCompiler->setErrorText("missing ';'");
 									return nullptr;
 								}
-								auto returnExrpressionIter = getLastExpression();
+								auto returnExrpressionIter = getLastCommandUnitRefIter();
 #if USE_DIRECT_COPY_FOR_RETURN
 								ReturnCommandBuilder2* returnCommand = new ReturnCommandBuilder2(this, _functionScope);
 #else
@@ -544,7 +544,7 @@ namespace ffscript {
 		for (auto it = desctructorList->begin(); it != desctructorList->end(); it++) {
 			putCommandUnit(*it);
 			if (_beginExitScopeUnit == nullptr) {
-				_beginExitScopeUnit = this->getLastCommandUnit()->get();
+				_beginExitScopeUnit = this->getLastCommandUnitRefPtr()->get();
 			}
 		}
 
@@ -561,7 +561,7 @@ namespace ffscript {
 		ExitScopeBuilder* exitSope = new ExitScopeBuilder(this);
 		putCommandUnit(exitSope);
 		if (_beginExitScopeUnit == nullptr) {
-			_beginExitScopeUnit = this->getLastCommandUnit()->get();
+			_beginExitScopeUnit = this->getLastCommandUnitRefPtr()->get();
 		}
 		updateLaterMan->setUpdateInfo(_beginExitScopeUnit, nullptr);
 	}
@@ -591,8 +591,8 @@ namespace ffscript {
 
 		auto updateLaterMan = CodeUpdater::getInstance(this);
 
-		int expressionCount = this->getExpressionCount();
-		for (auto it = getFirstExpression(); expressionCount > 0; ++it, --expressionCount) {
+		int expressionCount = this->getCommandUnitCount();
+		for (auto it = getFirstCommandUnitRefIter(); expressionCount > 0; ++it, --expressionCount) {
 			const CommandUnitRef& commandUnit = *it;
 			const ExecutableUnitRef& extUnit = dynamic_pointer_cast<ExecutableUnit>(commandUnit);
 
