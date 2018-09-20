@@ -248,7 +248,7 @@ namespace ffscript {
 						break;
 					}
 					// ...if not, this is just a normal expression
-					c = parseExpression(e, end);
+					c = parseExpressionInternal(e, end);
 					if (c == nullptr) {
 						break;
 					}
@@ -275,7 +275,7 @@ namespace ffscript {
 				d = c;
 				
 				if (type.isUnkownType()) {
-					c = parseExpression(e, end);
+					c = parseExpressionInternal(e, end);
 					if (c == nullptr) {
 						break;
 					}
@@ -303,7 +303,7 @@ namespace ffscript {
 						errorCompileOfFunction = scriptCompiler->getLastError();
 					}
 					// ...if not success, try to parse the text as an expression
-					c = parseExpression(e, end);
+					c = parseExpressionInternal(e, end);
 					if (c == nullptr) {
 						std::string error("tried compiling as function failed: ");
 						error.append(errorCompileOfFunction);
@@ -320,7 +320,7 @@ namespace ffscript {
 					}
 				}
 				else {
-					c = parseExpression(e, end);
+					c = parseExpressionInternal(e, end);
 					if (c == nullptr) {
 						break;
 					}

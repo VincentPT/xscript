@@ -199,7 +199,7 @@ namespace ffscript {
 		return eResult;
 	}
 
-	const wchar_t* ScriptScope::parseExpressionInternal(const wchar_t* text, const wchar_t* end,  std::wstring& expression, const ScriptType* expectedReturnType) {		
+	const wchar_t* ScriptScope::parseExpressionInternal(const wchar_t* text, const wchar_t* end, const ScriptType* expectedReturnType) {
 		ScriptCompiler* scriptCompiler = getCompiler();
 		std::list<ExpUnitRef> unitList;
 		EExpressionResult eResult = E_FAIL;
@@ -220,24 +220,12 @@ namespace ffscript {
 				
 			return nullptr;
 		}
-		expression = std::wstring(text, c - text);
 
 		eResult = parseExpressionInternal(&parser, unitList, expectedReturnType);
 		if (eResult != E_SUCCESS) {
 			c = nullptr;
 		}
 
-		return c;
-	}
-
-	const wchar_t* ScriptScope::parseExpression(const wchar_t* text, const wchar_t* end, const ScriptType* expectedReturnType) {
-		std::wstring expressionString;
-		const wchar_t* c = parseExpressionInternal(text, end, expressionString, expectedReturnType);
-		if (c == nullptr && !expressionString.empty()) {
-			ScriptCompiler* scriptCompiler = getCompiler();
-			std::string lastError = scriptCompiler->getLastError();
-			std::string expression = convertToAscii(expressionString.c_str());
-		}
 		return c;
 	}
 

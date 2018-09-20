@@ -105,7 +105,7 @@ namespace ffscript {
 		ScriptType expectedReturnTypeOfCondition(iTypeBool, scriptCompiler->getType(iTypeBool));
 
 		int lineOfCode1 = getExpressionCount();
-		parseExpression(d, c - 1, &expectedReturnTypeOfCondition);
+		parseExpressionInternal(d, c - 1, &expectedReturnTypeOfCondition);
 		int lineOfCode2 = getExpressionCount();
 
 		if (lineOfCode2 - lineOfCode1 != 1) {
@@ -415,7 +415,7 @@ namespace ffscript {
 				if (ScriptCompiler::isCommandBreakSign(*c) == false) {
 					if (keywordId == KEYWORD_RETURN) {
 						if (returnType != typeVoid) {
-							c = parseExpression(c, end, &returnType);
+							c = parseExpressionInternal(c, end, &returnType);
 							if (c != nullptr) {
 								if (ScriptCompiler::isCommandBreakSign(*c) == false) {
 									scriptCompiler->setErrorText("missing ';'");
@@ -517,7 +517,7 @@ namespace ffscript {
 			if (type.isUnkownType()) {
 				c = d;
 			}
-			c = parseExpression(c, end);
+			c = parseExpressionInternal(c, end);
 			if (c == nullptr) {
 				return nullptr;
 			}
