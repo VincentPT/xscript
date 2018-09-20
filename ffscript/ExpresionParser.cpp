@@ -1151,8 +1151,9 @@ namespace ffscript {
 		while (eResult != E_SUCCESS) {
 			if (it != end) {
 				auto& expUnit = *it;
-				if (expUnit->getType() == EXP_UNIT_CLOSED_ROUND_BRACKET ||
-					expUnit->getType() == EXP_UNIT_COMMA) {
+				if (expUnit->getType() == EXP_UNIT_ID_CLOSED_ROUND_BRACKET ||
+					expUnit->getType() == EXP_UNIT_ID_CLOSED_CURLY_BRACKET ||
+					expUnit->getType() == EXP_UNIT_ID_FUNC_SEPERATOR) {
 					eResult = E_SUCCESS;
 					break;
 				}
