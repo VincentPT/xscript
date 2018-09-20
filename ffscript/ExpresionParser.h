@@ -73,17 +73,17 @@ namespace ffscript {
 		const WCHAR* readExpression(const WCHAR* begin, const WCHAR* end, EExpressionResult& eResult, std::list<ExpUnitRef>& expList);
 		const WCHAR* readLambdaExression(const WCHAR* begin, const WCHAR* end, EExpressionResult& eResult, FunctionRef& lambdaExpression);
 		EExpressionResult tokenize(const std::wstring& sExpressionString, std::list<ExpUnitRef>& expList);
-		EExpressionResult tokenize(const WCHAR* sExpressionString, const WCHAR* end, std::list<ExpUnitRef>& expList);
-		const WCHAR* getLastCompileChar() const;
-		void setLastCompilerChar(const WCHAR* c);
-		ExpUnitRef getLastErrorUnit() const;
-		static void numberedForUnit(std::list<ExpUnitRef>& expList);
+		EExpressionResult tokenize(const WCHAR* sExpressionString, const WCHAR* end, std::list<ExpUnitRef>& expList);		
 		bool compile(list<ExpUnitRef>& expUnitList, list<ExpressionRef> &expList, EExpressionResult* peResult = nullptr);
 		EExpressionResult link(Expression* pExp);
 		EExpressionResult link(Expression* pExp, CandidateCollectionRef& candidates);
 		CandidateCollectionRef linkForUnit(ScriptCompiler* scriptCompiler, ExecutableUnitRef& unit, EExpressionResult& eResult);
 		CandidateCollectionRef completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult );
 		static void recursiveOffsetSourceCharIndex(Function* expFunc, int offset);
+		const WCHAR* getLastCompileChar() const;
+		void setLastCompilerChar(const WCHAR* c);
+		ExpUnitRef getLastErrorUnit() const;
+		static void numberedForUnit(std::list<ExpUnitRef>& expList);
 	protected:
 		EExpressionResult makeExpression(OutputStack& output, OperatorStack& operators);
 		EExpressionResult compileConditionalExpression(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, ExecutableUnitRef& ifClauseUnit, ExecutableUnitRef& elseClauseUnit);
