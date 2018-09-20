@@ -42,7 +42,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"1 ? 2 : 3", units);
+			EExpressionResult eResult = parser.tokenize(L"1 ? 2 : 3", units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -104,7 +104,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"0 ? 2 : 3", units);
+			EExpressionResult eResult = parser.tokenize(L"0 ? 2 : 3", units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -168,7 +168,7 @@ namespace ffscriptUT
 
 			list<ExpUnitRef> units;
 			scriptCompiler.pushScope(&rootScope);
-			EExpressionResult eResult = parser.stringToExpList(L"y = 1 ? 2 ? 3 : 4 : 5", units);
+			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 ? 3 : 4 : 5", units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -264,7 +264,7 @@ namespace ffscriptUT
 
 			list<ExpUnitRef> units;
 			scriptCompiler.pushScope(&rootScope);
-			EExpressionResult eResult = parser.stringToExpList(L"y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7", units);
+			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7", units);
 			int y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7;
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -344,7 +344,7 @@ namespace ffscriptUT
 
 			list<ExpUnitRef> units;
 			scriptCompiler.pushScope(&rootScope);
-			EExpressionResult eResult = parser.stringToExpList(L"y = 1 ? 2 ? 3 : 4 : 5 + 6", units);
+			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 ? 3 : 4 : 5 + 6", units);
 			int y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7;
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -422,7 +422,7 @@ namespace ffscriptUT
 
 			list<ExpUnitRef> units;
 			scriptCompiler.pushScope(&rootScope);
-			EExpressionResult eResult = parser.stringToExpList(L"y = 1 ? 2 + 3 : 5 ? 6 : 7", units);
+			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 + 3 : 5 ? 6 : 7", units);
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
@@ -499,7 +499,7 @@ namespace ffscriptUT
 
 			list<ExpUnitRef> units;
 			scriptCompiler.pushScope(&rootScope);
-			EExpressionResult eResult = parser.stringToExpList(L"y = 0 + 1 ? 2 ? 3 : 4 : 5 ? 6 : 7", units);
+			EExpressionResult eResult = parser.tokenize(L"y = 0 + 1 ? 2 ? 3 : 4 : 5 ? 6 : 7", units);
 			int y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7;
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 

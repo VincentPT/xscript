@@ -186,10 +186,10 @@ namespace ffscript {
 		return pVariable;
 	}
 
-	EExpressionResult ExpressionParser::stringToExpList(const std::wstring& sExpressionString, std::list<ExpUnitRef>& expUnitList) {
+	EExpressionResult ExpressionParser::tokenize(const std::wstring& sExpressionString, std::list<ExpUnitRef>& expUnitList) {
 		const wchar_t* text = sExpressionString.c_str();
 		const wchar_t* end = text + sExpressionString.size();
-		return stringToExpList(text, end, expUnitList);
+		return tokenize(text, end, expUnitList);
 	}
 
 	void ExpressionParser::numberedForUnit(std::list<ExpUnitRef>& expList) {
@@ -1031,7 +1031,7 @@ namespace ffscript {
 		return c;
 	}
 
-	EExpressionResult ExpressionParser::stringToExpList(const WCHAR* sExpressionString, const WCHAR* end, std::list<ExpUnitRef>& expUnitList) {
+	EExpressionResult ExpressionParser::tokenize(const WCHAR* sExpressionString, const WCHAR* end, std::list<ExpUnitRef>& expUnitList) {
 		EExpressionResult eResult;
 		readExpression(sExpressionString, end, eResult, expUnitList);
 		return eResult;

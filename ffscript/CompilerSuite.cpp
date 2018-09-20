@@ -76,7 +76,7 @@ namespace ffscript{
 		_globalScopeRef->setBeginCompileChar(expression);
 
 		list<ExpUnitRef> units;
-		EExpressionResult eResult = parser.stringToExpList(expression, units);
+		EExpressionResult eResult = parser.tokenize(expression, units);
 		_globalScopeRef->setErrorCompilerChar(parser.getLastCompileChar());
 
 		if (eResult != E_SUCCESS) {

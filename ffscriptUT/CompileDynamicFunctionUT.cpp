@@ -117,7 +117,7 @@ namespace ffscriptUT
 			Assert::AreNotEqual(-1, functionId);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"sum(1,2)", units);
+			EExpressionResult eResult = parser.tokenize(L"sum(1,2)", units);
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
@@ -150,7 +150,7 @@ namespace ffscriptUT
 			Assert::AreNotEqual(-1, functionId);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"sum(1,2,3)", units);
+			EExpressionResult eResult = parser.tokenize(L"sum(1,2,3)", units);
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
@@ -183,7 +183,7 @@ namespace ffscriptUT
 			Assert::AreNotEqual(-1, functionId);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"sum(1,2,3)", units);
+			EExpressionResult eResult = parser.tokenize(L"sum(1,2,3)", units);
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
@@ -210,7 +210,7 @@ namespace ffscriptUT
 			int functionId1 = scriptCompiler.registFunction("sum", "int,int", &sumFactor);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"sum(1,2,3)", units);
+			EExpressionResult eResult = parser.tokenize(L"sum(1,2,3)", units);
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;

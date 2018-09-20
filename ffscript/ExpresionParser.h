@@ -69,11 +69,11 @@ namespace ffscript {
 		bool precheck(const list<ExpUnitRef>& expUnitList);
 		ScriptCompiler* getCompiler() const;
 	public:
-		//EExpressionResult stringToExpList(const WCHAR* sExpressionString, std::list<ExpUnitRef>& expList);
+		//EExpressionResult tokenize(const WCHAR* sExpressionString, std::list<ExpUnitRef>& expList);
 		const WCHAR* readExpression(const WCHAR* begin, const WCHAR* end, EExpressionResult& eResult, std::list<ExpUnitRef>& expList);
 		const WCHAR* readLambdaExression(const WCHAR* begin, const WCHAR* end, EExpressionResult& eResult, FunctionRef& lambdaExpression);
-		EExpressionResult stringToExpList(const std::wstring& sExpressionString, std::list<ExpUnitRef>& expList);
-		EExpressionResult stringToExpList(const WCHAR* sExpressionString, const WCHAR* end, std::list<ExpUnitRef>& expList);
+		EExpressionResult tokenize(const std::wstring& sExpressionString, std::list<ExpUnitRef>& expList);
+		EExpressionResult tokenize(const WCHAR* sExpressionString, const WCHAR* end, std::list<ExpUnitRef>& expList);
 		const WCHAR* getLastCompileChar() const;
 		void setLastCompilerChar(const WCHAR* c);
 		ExpUnitRef getLastErrorUnit() const;

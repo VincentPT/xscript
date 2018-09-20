@@ -74,7 +74,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"1 + 2", units);
+			EExpressionResult eResult = parser.tokenize(L"1 + 2", units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -98,7 +98,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"1 + 2.0", units);
+			EExpressionResult eResult = parser.tokenize(L"1 + 2.0", units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -123,7 +123,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"1 + 2.0", units);
+			EExpressionResult eResult = parser.tokenize(L"1 + 2.0", units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -147,7 +147,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"1 + 2.0 * 3", units);
+			EExpressionResult eResult = parser.tokenize(L"1 + 2.0 * 3", units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -173,7 +173,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"1 + 2.0 * 3", units);
+			EExpressionResult eResult = parser.tokenize(L"1 + 2.0 * 3", units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -201,7 +201,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(L"1 + 2.0 * 3", units);
+			EExpressionResult eResult = parser.tokenize(L"1 + 2.0 * 3", units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -254,7 +254,7 @@ namespace ffscriptUT
 			int functionId4 = funcLibHelper.registFunction("sum", "double,int,int", new FunctionFactoryForTest<3>(&scriptCompiler, basicType.TYPE_DOUBLE, sum4.clone()));
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -294,7 +294,7 @@ namespace ffscriptUT
 			int functionId5 = funcLibHelper.registFunction("sum", "int,int,int", new FunctionFactoryForTest<3>(&scriptCompiler, basicType.TYPE_DOUBLE, nullptr));
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -326,7 +326,7 @@ namespace ffscriptUT
 			int functionId3 = funcLibHelper.registFunction("sum", "double,double,double", new FunctionFactoryForTest<3>(&scriptCompiler, basicType.TYPE_DOUBLE, nullptr));
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 

@@ -61,7 +61,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 + 2";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -101,7 +101,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 * 2";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -140,7 +140,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 * 2 + 3";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -179,7 +179,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 - 2";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -217,7 +217,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 - 2";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -247,7 +247,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 - 2";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -288,7 +288,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 - 2 * 3 + (4 / 2)";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -328,7 +328,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 - (2 + 3) * (4 / 2)";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -366,7 +366,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 - 2.5";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -405,7 +405,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 - 2 * 3.5";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -444,7 +444,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 - 2 * 3.5 + 4*(5 + 6)";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -509,7 +509,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 - 2 * 3.5 + 4*(5 + 6)";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -553,7 +553,7 @@ namespace ffscriptUT
 			wstring functionString = L"1 - 2 * 3.5 + 4*(5 + 6)";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -604,7 +604,7 @@ namespace ffscriptUT
 			wstring functionString = L"12345";
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -653,7 +653,7 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&aScope);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -709,7 +709,7 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&aScope);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -767,7 +767,7 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&aScope);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -822,7 +822,7 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&aScope);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString1.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString1.c_str(), units);
 
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 
@@ -873,7 +873,7 @@ namespace ffscriptUT
 			wstring functionString2 = L"x + 2";
 			
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(functionString1.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(functionString1.c_str(), units);
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -883,7 +883,7 @@ namespace ffscriptUT
 			Assert::IsTrue(eResult == E_SUCCESS, (L"link '" + functionString1 + L"' failed!").c_str());
 
 			list<ExpUnitRef> units2;
-			eResult = parser.stringToExpList(functionString2.c_str(), units2);
+			eResult = parser.tokenize(functionString2.c_str(), units2);
 			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
 			list<ExpressionRef> expList2;
 			res = parser.compile(units2, expList2);
@@ -914,7 +914,7 @@ namespace ffscriptUT
 			scriptCompiler->pushScope(ownerScope);
 
 			list<ExpUnitRef> units;
-			EExpressionResult eResult = parser.stringToExpList(expString.c_str(), units);
+			EExpressionResult eResult = parser.tokenize(expString.c_str(), units);
 			if (eResult != E_SUCCESS) return nullptr;
 
 			list<ExpressionRef> expList;

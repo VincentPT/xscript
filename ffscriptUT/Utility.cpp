@@ -21,7 +21,7 @@ ffscript::ExpUnitExecutor* compileExpression(ScriptCompiler* scriptCompiler, con
 	ExpressionParser parser(scriptCompiler);
 
 	list<ExpUnitRef> units;
-	EExpressionResult eResult = parser.stringToExpList(exp, units);
+	EExpressionResult eResult = parser.tokenize(exp, units);
 
 	if (eResult != E_SUCCESS) return nullptr;
 
