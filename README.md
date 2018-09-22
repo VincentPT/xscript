@@ -116,6 +116,16 @@ void main() {
     doSomething();
 }
 ```
+
+## Casting.
+ C Lambda support implicit casting but in some cases, it needs to explicit casting using function cast or type cast in a expression.
+ These cases are cases that when apply implicit casting there are still alot of overloading functions/operators and compiler don't know which one should be used. So you need to explicit casting to tell the compiler which one should be choose.
+ 
+ To enable casting for a type(source type) to another type(target type), just register function which same name of the target type, return a value of target type and receive a argument of source type.
+ Example:
+ // this is casting function prototype that convert a double to a int.
+ int int(double);
+
 ## Operators  
   Support almost of C++ operators.
   <img src="doc/images/OperatorPrecedences.png" />
@@ -134,7 +144,7 @@ registerOperator<ostream&, ostream&, const string&>(fb, operator<<, "<<", "ostre
 // cout is an instance of ostream, which is already defined.
 cout << "this is a sample string;
 ```
-### Constructor/Destructor
+## Constructor/Destructor
  Registering constructor and destructor for a type is currently supported in C++ part only.
  For an existing type, constructor and destructor should be implemented like this.
  ```
@@ -163,7 +173,7 @@ cout << "this is a sample string;
     // before exit this scope object 'a' will be destroyed by destructor of SomeType.
 }
  ```
-### Dynamic functions.
+## Dynamic functions.
 Dynamic function is a short term of Dynamic parameters function. Like Constructor and destructor, the library only supports to register dynamic function in C++ part now. Here is the way to register and use it.  
 First, you must define the function in C++ part.
  ```
