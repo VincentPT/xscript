@@ -158,16 +158,12 @@ namespace ffscript {
 		auto generalLineTypeInt = scriptCompiler->registType("GeneralLine");
 		scriptCompiler->setTypeSize(generalLineTypeInt, sizeof(GeneralLineF));
 
-		auto fx1 = MFunctionT<GeneralLineF, void, const Point&, const Point&>::convertToFunction(&GeneralLineF::build);
-		functionId = helper.registFunction("GeneralLine", "ref GeneralLine, Point&, Point&", createUserFunctionFactory(scriptCompiler, "void", fx1));
+		functionId = helper.registFunction("GeneralLine", "ref GeneralLine, Point&, Point&", createUserFunctionFactoryContext<GeneralLineF, void, const Point&, const Point&>(scriptCompiler, "void", &GeneralLineF::build));
 		scriptCompiler->registConstructor(generalLineTypeInt, functionId);
 
-		auto fx2 = MFunctionT<GeneralLineF, float, const Point&>::convertToFunction(&GeneralLineF::compute);
-		functionId = helper.registFunction("compute", "GeneralLine&, Point&", createUserFunctionFactory(scriptCompiler, "float", fx2));
-
-		auto fx3 = MFunctionT<GeneralLineF, float, const Point&>::convertToFunction(&GeneralLineF::directionalDistance);
-		functionId = helper.registFunction("distance", "GeneralLine&, Point&", createUserFunctionFactory(scriptCompiler, "float", fx3));
-
+		functionId = helper.registFunction("compute", "GeneralLine&, Point&", createUserFunctionFactoryContext<GeneralLineF, float, const Point&>(scriptCompiler, "float", &GeneralLineF::compute));
+		functionId = helper.registFunction("distance", "GeneralLine&, Point&", createUserFunctionFactoryContext<GeneralLineF, float, const Point&>(scriptCompiler, "float", &GeneralLineF::directionalDistance));
+		
 		functionId = helper.registFunction("angle", "Point&, Point&", createUserFunctionFactory<float, const Point&, const Point&>(scriptCompiler, "float", directionalAngle));
 
 		functionId = helper.registFunction("intersect", "Point&,Point&,Point&,Point&,float&,float&", createUserFunctionFactory<bool,const Point&,const Point&,const Point&,const Point&, float*, float*>(scriptCompiler, "bool", Intersect2D_Lines));

@@ -19,6 +19,7 @@
 
 #include "function/CdeclFunction3.hpp"
 #include "function/MemberFunction3.hpp"
+#include "function/MemberFunction4.hpp"
 #include "function/DynamicFunction.h"
 
 class DFunction2;
@@ -106,6 +107,16 @@ namespace ffscript {
 	template <class Class, class Rt, class... Types>
 	FunctionFactory* createUserFunctionFactoryMember(ScriptCompiler* scriptCompiler, Class* obj, const std::string& rt, Rt(Class::*f)(Types...) const) {
 		return new DefaultUserFunctionFactory(createFunctionMemberRef<Class, Rt, Types...>(obj, f), scriptCompiler, rt, sizeof...(Types));
+	}
+
+	template <class Class, class Rt, class... Types>
+	FunctionFactory* createUserFunctionFactoryContext(ScriptCompiler* scriptCompiler, const std::string& rt, Rt(Class::*f)(Types...)) {
+		return new DefaultUserFunctionFactory(std::make_shared<CtxFunctionT<Class, Rt, Types...>>(f) , scriptCompiler, rt, sizeof...(Types) + 1);
+	}
+
+	template <class Class, class Rt, class... Types>
+	FunctionFactory* createUserFunctionFactoryContext(ScriptCompiler* scriptCompiler, const std::string& rt, Rt(Class::*f)(Types...) const) {
+		return new DefaultUserFunctionFactory(std::make_shared<CtxFunctionT<Class, Rt, Types...>>(f), scriptCompiler, rt, sizeof...(Types) + 1);
 	}
 
 	template <class ...Args>

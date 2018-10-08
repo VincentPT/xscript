@@ -1830,5 +1830,83 @@ namespace ffscriptUT
 			auto fRes = *(float*)scriptTask.getTaskResult();
 			Assert::AreEqual(2.2f, fRes, L"function 'foo' return wrong");
 		}
+
+		TEST_METHOD(TestGeometryLib01)
+		{
+			byte globalData[1024];
+			StaticContext staticContext(globalData, sizeof(globalData));
+			GlobalScope rootScope(&staticContext, &scriptCompiler);
+
+			importBasicfunction(funcLibHelper);
+			includeGeoLibToCompiler(&scriptCompiler);
+
+			//initialize an instance of script program
+			Program theProgram;
+			scriptCompiler.bindProgram(&theProgram);
+
+			const wchar_t* scriptCode =
+				L"float test() {"
+				L"	Point p1 = {1.1f, 2.2f};"
+				L"	Point u = {1, 1};"
+				L"	GeneralLine a = {p1, u};"
+				L"	return compute(a, p1);"
+				L"}"
+				;
+
+			scriptCompiler.beginUserLib();
+
+			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsTrue(res != nullptr, L"compile program failed");
+
+			bool blRes = rootScope.extractCode(&theProgram);
+			Assert::IsTrue(blRes, L"extract code failed");
+
+			int functionId = scriptCompiler.findFunction("test", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+
+			ScriptTask scriptTask(&theProgram);
+			scriptTask.runFunction(functionId, nullptr);
+			auto fRes = *(float*)scriptTask.getTaskResult();
+			Assert::AreEqual(0.0f, fRes, L"function 'foo' return wrong");
+		}
+
+		TEST_METHOD(TestGeometryLib02)
+		{
+			byte globalData[1024];
+			StaticContext staticContext(globalData, sizeof(globalData));
+			GlobalScope rootScope(&staticContext, &scriptCompiler);
+
+			importBasicfunction(funcLibHelper);
+			includeGeoLibToCompiler(&scriptCompiler);
+
+			//initialize an instance of script program
+			Program theProgram;
+			scriptCompiler.bindProgram(&theProgram);
+
+			const wchar_t* scriptCode =
+				L"float test() {"
+				L"	Point p1 = {1.1f, 2.2f};"
+				L"	Point u = {1, 1};"
+				L"	GeneralLine a = {p1, u};"
+				L"	return distance(a, p1);"
+				L"}"
+				;
+
+			scriptCompiler.beginUserLib();
+
+			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
+			Assert::IsTrue(res != nullptr, L"compile program failed");
+
+			bool blRes = rootScope.extractCode(&theProgram);
+			Assert::IsTrue(blRes, L"extract code failed");
+
+			int functionId = scriptCompiler.findFunction("test", "");
+			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+
+			ScriptTask scriptTask(&theProgram);
+			scriptTask.runFunction(functionId, nullptr);
+			auto fRes = *(float*)scriptTask.getTaskResult();
+			Assert::AreEqual(0.0f, fRes, L"function 'foo' return wrong");
+		}
 	};
 }
