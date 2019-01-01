@@ -26,7 +26,7 @@ Introduce C Lambda(Cλ) scripting language, a scripting language makes C++ progr
 * C Lambda language is a C++-style language. However, it offers some basic features of C++ not all such as overloading, constructor, destructor and especially is Lambda function. So, that's why it is called as C Lambda.
 * The Cλ language framework and running engine use the same memory layout, calling convention as C and C++. So, there is no cost of marshaling data between its engine and C/C++ program and able to reuse C/C++ functions without wrapper them.
 * Since Cλ language has C-style and base on C and C++, it is easy and quickly to learn Cλ language for C, C++ programmers.
-* Cλ language library only offers core operations and work only with application specific domain. So, it is very light and suitable to use in a program which don't want its users to do something that is out of the program bound like a game, an education application or an platform in a programming competition.
+* Cλ language library only offers core operations and works only with application specific domain. So, it is very light and suitable to use in a program which don't want its users to do something that is out of the program bound like a game, an education application or an platform in a programming competition.
 
 # Introduce Cλ language.
 Any Cλ program can be divided into two bellow parts:
