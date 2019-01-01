@@ -167,5 +167,8 @@
     <ClCompile Include="MemoryblockUT.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MethodUT.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

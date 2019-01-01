@@ -214,6 +214,7 @@
     <ClCompile Include="MakePathsUT.cpp" />
     <ClCompile Include="MemberFunctionUT.cpp" />
     <ClCompile Include="MemoryblockUT.cpp" />
+    <ClCompile Include="MethodUT.cpp" />
     <ClCompile Include="MultiCompilerUT.cpp">
       <SubType>
       </SubType>

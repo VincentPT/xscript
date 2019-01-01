@@ -2323,55 +2323,100 @@ namespace ffscript {
 
 			DynamicParamFunction* paramCollector = (DynamicParamFunction*)pExeUnit2.get();
 			auto& params = paramCollector->getParams();
+			
+			enum class FlowState
+			{
+				None,
+				MEMBER_ACCESS,
+			};
 
-			if (pExeUnit1->getType() == EXP_UNIT_ID_INCOMPFUNC) {
-				auto& functionName = pExeUnit1->toString();
-				auto newFunction = scriptCompiler->createExpUnitFromName(functionName);
-				if (newFunction == nullptr) {
-					eResult = E_TOKEN_UNEXPECTED;
-					scriptCompiler->setErrorText("Unexpected token '" + functionName + "'");
-					_lastErrorUnit = pExeUnit1;
-					return nullptr;
-				}
+			FlowState prevState = FlowState::None;
 
-				//function operator is replaced by the real function
-				newFunction->setSourceCharIndex(function->getSourceCharIndex());
-				function.reset((Function*)newFunction);
-				for (auto it = params.begin(); it != params.end(); it++) {
-					if (function->pushParam(*it) < 0) {
-						eResult = E_FUNCTION_NOT_FOUND;
-						scriptCompiler->setErrorText("function '" + function->getName() + "' is not compatible with its parameters");
-						_lastErrorUnit = *it;
+			while (true) {
+				if (pExeUnit1->getType() == EXP_UNIT_ID_INCOMPFUNC) {
+					auto& functionName = pExeUnit1->toString();
+					auto newFunction = scriptCompiler->createExpUnitFromName(functionName);
+					if (newFunction == nullptr) {
+						eResult = E_TOKEN_UNEXPECTED;
+						scriptCompiler->setErrorText("Unexpected token '" + functionName + "'");
+						_lastErrorUnit = pExeUnit1;
 						return nullptr;
 					}
-				}
 
-				//update parameter count
-				n = function->getChildCount();
-				candidatesForParams.resize(n);
-			}
-			else if(pExeUnit1->getReturnType().isFunctionType()){
-				candidatesForParams.resize(1 + params.size());
-				auto forwardCallUnitRef = make_shared<DynamicParamFunction>(FUNCTION_OPERATOR, EXP_UNIT_ID_FORWARD_CALL, FUNCTION_PRIORITY_FUNCTIONCALL, 1 + (int)params.size());
-				// keep origin source char in new expression unit
-				forwardCallUnitRef->setSourceCharIndex(function->getSourceCharIndex());
+					//function operator is replaced by the real function
+					newFunction->setSourceCharIndex(function->getSourceCharIndex());
+					function.reset((Function*)newFunction);
+					for (auto it = params.begin(); it != params.end(); it++) {
+						if (function->pushParam(*it) < 0) {
+							eResult = E_FUNCTION_NOT_FOUND;
+							scriptCompiler->setErrorText("function '" + function->getName() + "' is not compatible with its parameters");
+							_lastErrorUnit = *it;
+							return nullptr;
+						}
+					}
 
-				forwardCallUnitRef->pushParam(pExeUnit1);
-				for (auto it = params.begin(); it != params.end(); it++) {
-					forwardCallUnitRef->pushParam(*it);
+					//update parameter count
+					n = function->getChildCount();
+					candidatesForParams.resize(n);
+
+					if (prevState == FlowState::MEMBER_ACCESS) {
+						auto& contextObject = function->getChild(0);
+						auto contextObjectRef = contextObject;
+						scriptCompiler->convertToRef(contextObjectRef);
+						auto candidatesRef = linkForUnit(scriptCompiler, contextObjectRef, eResult);
+						if (eResult != E_SUCCESS) {
+							return nullptr;
+						}
+						candidatesRef->push_back(contextObject);
+						candidatesForParams[0] = candidatesRef;
+					}
+
+					// the case is processed completly. So, it's time to break the flow
+					break;
 				}
-				function = forwardCallUnitRef;
-				n = (int)candidatesForParams.size();
-			}
-			else {
-				//try to find function operator for type
-				//before do that, we need to know data type of first parameter by linking it
-				auto param1CandidatesTmp = linkForUnit(scriptCompiler, pExeUnit1, eResult);
-				if (eResult != E_SUCCESS) {
-					return nullptr;
+			    if (pExeUnit1->getType() == EXP_UNIT_ID_MEMBER_ACCESS) {
+					auto memberAccessFunction = (Function*)pExeUnit1.get();
+					auto contextObject = memberAccessFunction->getChild(0);
+					auto functionUnit = memberAccessFunction->getChild(1);
+
+					auto& contextType = contextObject->getReturnType();
+					auto& functionUnitType = functionUnit->getReturnType();
+					functionUnitType.updateType(scriptCompiler);
+
+					// check if the second unit is a string constant...
+					if (functionUnitType.iType() == basicType.TYPE_STRING && functionUnit->getType() == EXP_UNIT_ID_CONST) {
+						string& memberName = *((string*)functionUnit->Execute());
+						bool processAndMethodCalling = true;
+						auto struct1 = scriptCompiler->getStruct(contextType.origin());
+
+						if (struct1) {
+							MemberInfo memberInfo;
+							// check if the struct contain the member
+							if (struct1->getInfo(memberName, memberInfo)) {
+								// then let further processing deal with this case.
+								processAndMethodCalling = false;
+							}
+						}
+						if (processAndMethodCalling) {
+							auto methodUnitRef = make_shared<IncompletedUserFunctionUnit>(memberName);
+							methodUnitRef->setSourceCharIndex(functionUnit->getSourceCharIndex());
+							// replace the member access unit by the new function
+							pExeUnit1 = methodUnitRef;
+							// push the context object to param collector unit
+							params.push_front(contextObject);
+							// then goto the beginning of the flow
+							prevState = FlowState::MEMBER_ACCESS;
+							continue;
+						}
+						// if it is not a method calling case,
+						// then let it flows to further processing.
+					}
+					else {
+						// if not then this should not be considered at method calling case.
+						// then let it flows to further processing.
+					}
 				}
-				// first check the candidate is a function type...
-				if (param1CandidatesTmp->size() == 1 && param1CandidatesTmp->front()->getReturnType().isFunctionType()) {
+				if (pExeUnit1->getReturnType().isFunctionType()) {
 					candidatesForParams.resize(1 + params.size());
 					auto forwardCallUnitRef = make_shared<DynamicParamFunction>(FUNCTION_OPERATOR, EXP_UNIT_ID_FORWARD_CALL, FUNCTION_PRIORITY_FUNCTIONCALL, 1 + (int)params.size());
 					// keep origin source char in new expression unit
@@ -2385,42 +2430,64 @@ namespace ffscript {
 					n = (int)candidatesForParams.size();
 				}
 				else {
-					// ... or not, then check function operator for type
-					int functionOperator = -1;
-					functionCandidates = make_shared<CandidateCollection>();
-					for (auto it = param1CandidatesTmp->begin(); it != param1CandidatesTmp->end(); it++) {
-						auto& param1Type = (*it)->getReturnType();
-						if (param1Type.refLevel() == 0) {
-							auto checkType = param1Type.isSemiRefType() ? param1Type.deSemiRef() : param1Type;							
-							if ((functionOperator = scriptCompiler->getFunctionOperator(checkType.iType())) >= 0) {
-								auto functionUnit = scriptCompiler->createFunctionFromId(functionOperator);
-								if (functionUnit == nullptr) {
-									eResult = E_FUNCTION_NOT_FOUND;
-									scriptCompiler->setErrorText("Library error function operator for type " + checkType.sType() + " is missing");
-									_lastErrorUnit = *it;
-									return nullptr;
-								}
-								// keep origin source char in new expression unit
-								functionUnit->setSourceCharIndex(function->getSourceCharIndex());
-
-								functionCandidates->push_back(ExecutableUnitRef(functionUnit));
-							}
-						}
-					}
-					if (functionCandidates->size() <= 0) {
-						eResult = E_TOKEN_UNEXPECTED;
-						scriptCompiler->setErrorText("Unexpected operator for token " + pExeUnit1->toString() + " '()'");
-						_lastErrorUnit = pExeUnit1;
+					//try to find function operator for type
+					//before do that, we need to know data type of first parameter by linking it
+					auto param1CandidatesTmp = linkForUnit(scriptCompiler, pExeUnit1, eResult);
+					if (eResult != E_SUCCESS) {
 						return nullptr;
 					}
-					candidatesForParams[0] = param1CandidatesTmp;
+					// first check the candidate is a function type...
+					if (param1CandidatesTmp->size() == 1 && param1CandidatesTmp->front()->getReturnType().isFunctionType()) {
+						candidatesForParams.resize(1 + params.size());
+						auto forwardCallUnitRef = make_shared<DynamicParamFunction>(FUNCTION_OPERATOR, EXP_UNIT_ID_FORWARD_CALL, FUNCTION_PRIORITY_FUNCTIONCALL, 1 + (int)params.size());
+						// keep origin source char in new expression unit
+						forwardCallUnitRef->setSourceCharIndex(function->getSourceCharIndex());
+
+						forwardCallUnitRef->pushParam(pExeUnit1);
+						for (auto it = params.begin(); it != params.end(); it++) {
+							forwardCallUnitRef->pushParam(*it);
+						}
+						function = forwardCallUnitRef;
+						n = (int)candidatesForParams.size();
+					}
+					else {
+						// ... or not, then check function operator for type
+						int functionOperator = -1;
+						functionCandidates = make_shared<CandidateCollection>();
+						for (auto it = param1CandidatesTmp->begin(); it != param1CandidatesTmp->end(); it++) {
+							auto& param1Type = (*it)->getReturnType();
+							if (param1Type.refLevel() == 0) {
+								auto checkType = param1Type.isSemiRefType() ? param1Type.deSemiRef() : param1Type;
+								if ((functionOperator = scriptCompiler->getFunctionOperator(checkType.iType())) >= 0) {
+									auto functionUnit = scriptCompiler->createFunctionFromId(functionOperator);
+									if (functionUnit == nullptr) {
+										eResult = E_FUNCTION_NOT_FOUND;
+										scriptCompiler->setErrorText("Library error function operator for type " + checkType.sType() + " is missing");
+										_lastErrorUnit = *it;
+										return nullptr;
+									}
+									// keep origin source char in new expression unit
+									functionUnit->setSourceCharIndex(function->getSourceCharIndex());
+
+									functionCandidates->push_back(ExecutableUnitRef(functionUnit));
+								}
+							}
+						}
+						if (functionCandidates->size() <= 0) {
+							eResult = E_TOKEN_UNEXPECTED;
+							scriptCompiler->setErrorText("Unexpected operator for token " + pExeUnit1->toString() + " '()'");
+							_lastErrorUnit = pExeUnit1;
+							return nullptr;
+						}
+						candidatesForParams[0] = param1CandidatesTmp;
+					}
+
+					//update parameter count
+					//n = 1 + (int)params.size();
+					//candidatesForParams.resize(n);
 				}
-
-				//update parameter count
-				//n = 1 + (int)params.size();
-				//candidatesForParams.resize(n);
+				break;
 			}
-
 			//take all param of the functions back
 			/*DynamicParamFunction* paramCollector = (DynamicParamFunction*)pExeUnit2.get();
 			auto& params = paramCollector->getParams();
