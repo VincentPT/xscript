@@ -69,19 +69,19 @@ namespace ffscriptUT
 				createFunctionCdeclRef<int, int*>(inc), scriptCompiler, "int", 1)
 			);
 
-			Assert::IsTrue(functionId > 0, L"register function failed");
+			EXPECT_TRUE(functionId > 0, L"register function failed");
 			
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			auto res = *(int*)scriptTask.getTaskResult();
-			Assert::AreEqual(2, res);
+			EXPECT_EQ(2, res);
 		}
 
 		TEST_METHOD(TestMethod02)
@@ -106,19 +106,19 @@ namespace ffscriptUT
 				createFunctionCdeclRef<int, int&>(inc), scriptCompiler, "int", 1)
 			);
 
-			Assert::IsTrue(functionId > 0, L"register function failed");
+			EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			auto res = *(int*)scriptTask.getTaskResult();
-			Assert::AreEqual(2, res);
+			EXPECT_EQ(2, res);
 		}
 
 		TEST_METHOD(TestMethod03)
@@ -143,19 +143,19 @@ namespace ffscriptUT
 				createFunctionCdeclRef<int, int>(inc), scriptCompiler, "int", 1)
 			);
 
-			Assert::IsTrue(functionId > 0, L"register function failed");
+			EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			auto res = *(int*)scriptTask.getTaskResult();
-			Assert::AreEqual(2, res);
+			EXPECT_EQ(2, res);
 		}
 
 		TEST_METHOD(TestMethod04)
@@ -180,19 +180,19 @@ namespace ffscriptUT
 				createFunctionCdeclRef<void, int*, int>(jump), scriptCompiler, "void", 2)
 			);
 
-			Assert::IsTrue(functionId > 0, L"register function failed");
+			EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			auto res = *(int*)scriptTask.getTaskResult();
-			Assert::AreEqual(3, res);
+			EXPECT_EQ(3, res);
 		}
 	};
 }

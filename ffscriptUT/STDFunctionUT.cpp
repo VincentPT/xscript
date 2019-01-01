@@ -294,7 +294,7 @@ namespace ffscriptUT
 			DFunction* dynamicCaller = &stdfunc;
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test one param funtion*/
@@ -306,7 +306,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam("firefly");
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(char*, const float&) - static call*/
@@ -315,7 +315,7 @@ namespace ffscriptUT
 			StdFunction<void, char*, const float&> stdfunc(stdfoo);
 			stdfunc("value of b is ", 1.0f);
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(char*, const float&) - dynamic call*/
@@ -330,7 +330,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue);
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&) - dynamic call*/
@@ -346,7 +346,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue2);
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int>) - dynamic call*/
@@ -363,7 +363,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)3);
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char>) - dynamic call*/
@@ -381,7 +381,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)'4');
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&>) - dynamic call*/
@@ -401,7 +401,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue3);
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*>) - dynamic call*/
@@ -422,7 +422,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)6);
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short>) - dynamic call*/
@@ -444,7 +444,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)7);
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - static call*/
@@ -453,7 +453,7 @@ namespace ffscriptUT
 			StdFunction<void, const float&, const float&, int, char, const double&, void*, __int64> stdfunc(stdfoo);
 			stdfunc(1.0f, 2.0f, 3, '4', 5.0, (void*)6, 7ll);
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - dynamic call*/
@@ -490,7 +490,7 @@ namespace ffscriptUT
 #endif
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - static call*/
@@ -499,7 +499,7 @@ namespace ffscriptUT
 			StdFunction<void, const float&, const float&, int, char, const double&, void*, short, __int64> stdfunc(stdfoo);
 			stdfunc(1.0f, 2.0f, 3, '4', 5.0, (void*)6, 7, 8ll);
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 #ifdef APPLICATION64
@@ -526,7 +526,7 @@ namespace ffscriptUT
 
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 #endif
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -551,7 +551,7 @@ namespace ffscriptUT
 
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -569,7 +569,7 @@ namespace ffscriptUT
 			pushParams(dynamicCaller, &forRefValue1, &forRefValue2, (void*)3, (void*)'4', &forRefValue3, (void*)6, (void*)7, (void*)8);
 			dynamicCaller->call();
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		TEST_METHOD(testSTDFunction18)
@@ -579,7 +579,7 @@ namespace ffscriptUT
 			DFunction* dynamicCaller = &stdfunc;
 			dynamicCaller->call();
 
-			Assert::AreEqual(1.0f, dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test one param funtion*/
@@ -591,7 +591,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam("firefly");
 			dynamicCaller->call();
 
-			Assert::AreEqual(1.0f, dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(char*, const float&) - static call*/
@@ -600,7 +600,7 @@ namespace ffscriptUT
 			StdFunction<float, char*, const float&> stdfunc(stdfoof);
 			float p1 = 1.0f;			
 
-			Assert::AreEqual(1.0f, stdfunc("value of b is ", p1));
+			EXPECT_EQ(1.0f, stdfunc("value of b is ", p1));
 		}
 
 		/*test two params funtion void(char*, const float&) - dynamic call*/
@@ -615,7 +615,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue);
 			dynamicCaller->call();
 
-			Assert::AreEqual(1.0f, dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&) - dynamic call*/
@@ -631,7 +631,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue2);
 			dynamicCaller->call();
 
-			Assert::AreEqual((forRefValue1 + forRefValue2), dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ((forRefValue1 + forRefValue2), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int>) - dynamic call*/
@@ -649,7 +649,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)(size_t)p3);
 			dynamicCaller->call();
 
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3), dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char>) - dynamic call*/
@@ -669,7 +669,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)(size_t)p4);
 			dynamicCaller->call();
 
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3 + p4), dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&>) - dynamic call*/
@@ -691,7 +691,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue3);
 			dynamicCaller->call();
 
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3), dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*>) - dynamic call*/
@@ -715,7 +715,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)p6);
 			dynamicCaller->call();
 
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3), dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short>) - dynamic call*/
@@ -741,7 +741,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)(size_t)p7);
 			dynamicCaller->call();
 
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + p7), dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + p7), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - static call*/
@@ -756,7 +756,7 @@ namespace ffscriptUT
 			__int64 p7 = 7;
 
 			StdFunction<float, const float&, const float&, int, char, const double&, void*, __int64> stdfunc(stdfoof);
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7), stdfunc(forRefValue1, forRefValue2, p3, p4, forRefValue3, p6, p7));
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7), stdfunc(forRefValue1, forRefValue2, p3, p4, forRefValue3, p6, p7));
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - dynamic call*/
@@ -796,7 +796,7 @@ namespace ffscriptUT
 #endif
 			dynamicCaller->call();
 
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7), dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - static call*/
@@ -812,7 +812,7 @@ namespace ffscriptUT
 			__int64 p8 = 8;
 
 			StdFunction<float, const float&, const float&, int, char, const double&, void*, short, __int64> stdfunc(stdfoof);
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), stdfunc(forRefValue1, forRefValue2, p3, p4, forRefValue3, p6, p7, p8));
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), stdfunc(forRefValue1, forRefValue2, p3, p4, forRefValue3, p6, p7, p8));
 		}
 
 #ifdef APPLICATION64
@@ -844,7 +844,7 @@ namespace ffscriptUT
 
 			dynamicCaller->call();
 
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
 		}
 #endif
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -873,7 +873,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)(size_t)p8);
 			dynamicCaller->call();
 
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -895,7 +895,7 @@ namespace ffscriptUT
 			pushParams(dynamicCaller, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 			dynamicCaller->call();
 
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -917,7 +917,7 @@ namespace ffscriptUT
 			pushParams(dynamicCaller, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 			dynamicCaller->call();
 
-			Assert::AreEqual((forRefValue1 + forRefValue2 + p3 + p4 + forRefValue3 + p7 + p8), dynamicCaller->getReturnValAsDouble());
+			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + forRefValue3 + p7 + p8), dynamicCaller->getReturnValAsDouble());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -939,7 +939,7 @@ namespace ffscriptUT
 			pushParams(dynamicCaller, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 			dynamicCaller->call();
 
-			Assert::AreEqual( (int)( (__int64)forRefValue1 + (__int64)forRefValue2 + p3 + p4 + (__int64)forRefValue3 + p7 + p8), (int)dynamicCaller->getReturnValAsInt64());
+			EXPECT_EQ( (int)( (__int64)forRefValue1 + (__int64)forRefValue2 + p3 + p4 + (__int64)forRefValue3 + p7 + p8), (int)dynamicCaller->getReturnValAsInt64());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -961,7 +961,7 @@ namespace ffscriptUT
 			pushParams(dynamicCaller, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 			dynamicCaller->call();
 
-			Assert::AreEqual((int)((unsigned __int64)forRefValue1 + (unsigned __int64)forRefValue2 + p3 + p4 + (unsigned __int64)forRefValue3 + p7 + p8), (int)dynamicCaller->getReturnValAsInt64());
+			EXPECT_EQ((int)((unsigned __int64)forRefValue1 + (unsigned __int64)forRefValue2 + p3 + p4 + (unsigned __int64)forRefValue3 + p7 + p8), (int)dynamicCaller->getReturnValAsInt64());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -972,7 +972,7 @@ namespace ffscriptUT
 			DFunction* dynamicCaller = &stdfunc;			
 			dynamicCaller->call();
 
-			Assert::AreEqual((char)1, (char)dynamicCaller->getReturnValAsInt8());
+			EXPECT_EQ((char)1, (char)dynamicCaller->getReturnValAsInt8());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -984,7 +984,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)1);
 			dynamicCaller->call();
 
-			Assert::AreEqual((short)1, (short)dynamicCaller->getReturnValAsInt16());
+			EXPECT_EQ((short)1, (short)dynamicCaller->getReturnValAsInt16());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -997,7 +997,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)'2');
 			dynamicCaller->call();
 
-			Assert::AreEqual(1.0f, dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -1013,7 +1013,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)&p3);
 			dynamicCaller->call();
 
-			Assert::AreEqual(1, dynamicCaller->getReturnValAsInt32());
+			EXPECT_EQ(1, dynamicCaller->getReturnValAsInt32());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -1031,7 +1031,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)&p4);
 			dynamicCaller->call();
 
-			Assert::AreEqual(1, dynamicCaller->getReturnValAsInt32());
+			EXPECT_EQ(1, dynamicCaller->getReturnValAsInt32());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -1050,7 +1050,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)5);
 			dynamicCaller->call();
 
-			Assert::IsTrue(1000000000000000  == dynamicCaller->getReturnValAsInt64());
+			EXPECT_TRUE(1000000000000000  == dynamicCaller->getReturnValAsInt64());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -1070,7 +1070,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)6);
 			dynamicCaller->call();
 
-			Assert::AreEqual(1000000000000000.0, dynamicCaller->getReturnValAsDouble());
+			EXPECT_EQ(1000000000000000.0, dynamicCaller->getReturnValAsDouble());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -1091,7 +1091,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)7);
 			dynamicCaller->call();
 
-			Assert::AreEqual(1, (int)dynamicCaller->getReturnValAsInt16());
+			EXPECT_EQ(1, (int)dynamicCaller->getReturnValAsInt16());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -1112,12 +1112,12 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)7);
 			dynamicCaller->call();
 
-			Assert::AreEqual(1, (int)dynamicCaller->getReturnValAsInt16());
+			EXPECT_EQ(1, (int)dynamicCaller->getReturnValAsInt16());
 
 			DFunction* pNewInsance = dynamicCaller->clone();
 			pNewInsance->call();
 
-			Assert::AreEqual(1, (int)pNewInsance->getReturnValAsInt16());
+			EXPECT_EQ(1, (int)pNewInsance->getReturnValAsInt16());
 		}
 	};
 }

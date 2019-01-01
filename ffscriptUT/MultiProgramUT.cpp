@@ -81,13 +81,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			ScriptTask scriptTask(&theProgram);
 			int n = 10;
@@ -97,7 +97,7 @@ namespace ffscriptUT
 
 			int cPlusPlusRes = fibonaci(n);
 
-			Assert::IsTrue(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
 
 			//second instance
 			ScriptCompiler scriptCompiler2;
@@ -113,13 +113,13 @@ namespace ffscriptUT
 			scriptCompiler2.bindProgram(&theProgram2);
 
 			res = rootScope2.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			blRes = rootScope2.extractCode(&theProgram2);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			ScriptTask scriptTask2(&theProgram2);
 			n = 15;
@@ -129,7 +129,7 @@ namespace ffscriptUT
 
 			cPlusPlusRes = fibonaci(n);
 
-			Assert::IsTrue(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(MultiInstanceInOtherThreads)
@@ -162,13 +162,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			//second instance
 			ScriptCompiler scriptCompiler2;
@@ -184,13 +184,13 @@ namespace ffscriptUT
 			scriptCompiler2.bindProgram(&theProgram2);
 
 			res = rootScope2.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			blRes = rootScope2.extractCode(&theProgram2);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			int n1 = 10, n2 = 15;
 			ScriptParamBuffer paramBuffer1(n1);
@@ -211,12 +211,12 @@ namespace ffscriptUT
 			int* funcRes = (int*)scriptTask1.getTaskResult();
 			int cPlusPlusRes = fibonaci(n1);
 
-			Assert::IsTrue(*funcRes == cPlusPlusRes, L"program 1 can run but return wrong value");
+			EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program 1 can run but return wrong value");
 
 			funcRes = (int*)scriptTask2.getTaskResult();
 			cPlusPlusRes = fibonaci(n2);
 
-			Assert::IsTrue(*funcRes == cPlusPlusRes, L"program 2 can run but return wrong value");
+			EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program 2 can run but return wrong value");
 		}
 	};
 }

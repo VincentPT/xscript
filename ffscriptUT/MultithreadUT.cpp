@@ -131,10 +131,10 @@ namespace ffscriptUT
 		{
 			wstring exp = L"fibonaciNative(20)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			//Assert::AreEqual(product(4, 5) * 6 + 6, *result, (L"result of expression '" + exp + L"' should be 126").c_str());
+			//EXPECT_EQ(product(4, 5) * 6 + 6, *result, (L"result of expression '" + exp + L"' should be 126").c_str());
 
 			int impossibleValue = -1;;
 
@@ -156,8 +156,8 @@ namespace ffscriptUT
 			thread1.join();
 			thread2.join();
 
-			Assert::AreEqual(result1, result2, L"Run fibonaciNative(20) on two thread returned different values, it's not acceptable");
-			Assert::AreEqual(fibonaci(20), result2, L"fibonaciNative(20) return wrong value");
+			EXPECT_EQ(result1, result2, L"Run fibonaciNative(20) on two thread returned different values, it's not acceptable");
+			EXPECT_EQ(fibonaci(20), result2, L"fibonaciNative(20) return wrong value");
 		}
 
 		TEST_METHOD(MultithreadIndependent2)
@@ -165,10 +165,10 @@ namespace ffscriptUT
 			int n = 30;
 			wstring exp = L"fibonaciNative(" + std::to_wstring(n) + L")";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			//Assert::AreEqual(product(4, 5) * 6 + 6, *result, (L"result of expression '" + exp + L"' should be 126").c_str());
+			//EXPECT_EQ(product(4, 5) * 6 + 6, *result, (L"result of expression '" + exp + L"' should be 126").c_str());
 
 			int impossibleValue = -1;;
 
@@ -190,8 +190,8 @@ namespace ffscriptUT
 			thread1.join();
 			thread2.join();
 
-			Assert::AreEqual(result1, result2, (L"Run " + exp + L"(20) on two thread returned different values, it's not acceptable").c_str());
-			Assert::AreEqual(fibonaci(n), result2, (exp + L" returned wrong value").c_str());
+			EXPECT_EQ(result1, result2, (L"Run " + exp + L"(20) on two thread returned different values, it's not acceptable").c_str());
+			EXPECT_EQ(fibonaci(n), result2, (exp + L" returned wrong value").c_str());
 		}
 
 		TEST_METHOD(MultithreadIndependent3)
@@ -199,10 +199,10 @@ namespace ffscriptUT
 			int n = 30;
 			wstring exp = L"fibonaciNative(" + std::to_wstring(n) + L")";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			//Assert::AreEqual(product(4, 5) * 6 + 6, *result, (L"result of expression '" + exp + L"' should be 126").c_str());
+			//EXPECT_EQ(product(4, 5) * 6 + 6, *result, (L"result of expression '" + exp + L"' should be 126").c_str());
 
 			int impossibleValue = -1;;
 
@@ -240,10 +240,10 @@ namespace ffscriptUT
 			thread3.join();
 			thread4.join();
 
-			Assert::AreEqual(result1, result2, (L"Run " + exp + L" on four threads returned different values, it's not acceptable").c_str());
-			Assert::AreEqual(result3, result4, (L"Run " + exp + L" on four threads returned different values, it's not acceptable").c_str());
-			Assert::AreEqual(result1, result4, (L"Run " + exp + L" on four threads returned different values, it's not acceptable").c_str());
-			Assert::AreEqual(fibonaci(n), result2, (exp + L" return wrong value").c_str());
+			EXPECT_EQ(result1, result2, (L"Run " + exp + L" on four threads returned different values, it's not acceptable").c_str());
+			EXPECT_EQ(result3, result4, (L"Run " + exp + L" on four threads returned different values, it's not acceptable").c_str());
+			EXPECT_EQ(result1, result4, (L"Run " + exp + L" on four threads returned different values, it's not acceptable").c_str());
+			EXPECT_EQ(fibonaci(n), result2, (exp + L" return wrong value").c_str());
 		}
 
 		TEST_METHOD(MultithreadIndependentScriptFunc1)
@@ -270,13 +270,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			int fibonaciFunctionid = overLoadingFuncItems->front().functionId;
 
@@ -310,8 +310,8 @@ namespace ffscriptUT
 			thread1.join();
 			thread2.join();
 
-			Assert::IsTrue(result1 == cPlusPlusRes, L"thread 1 returned wrong value");
-			Assert::IsTrue(result2 == cPlusPlusRes, L"thread 2 returned wrong value");
+			EXPECT_TRUE(result1 == cPlusPlusRes, L"thread 1 returned wrong value");
+			EXPECT_TRUE(result2 == cPlusPlusRes, L"thread 2 returned wrong value");
 		}
 
 		TEST_METHOD(MultithreadIndependentScriptFunc2)
@@ -337,13 +337,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			int fibonaciFunctionid = overLoadingFuncItems->front().functionId;
 
@@ -398,10 +398,10 @@ namespace ffscriptUT
 			thread3.join();
 			thread4.join();
 
-			Assert::IsTrue(result1 == cPlusPlusRes, L"thread 1 returned wrong value");
-			Assert::IsTrue(result2 == cPlusPlusRes, L"thread 2 returned wrong value");
-			Assert::IsTrue(result3 == cPlusPlusRes, L"thread 3 returned wrong value");
-			Assert::IsTrue(result4 == cPlusPlusRes, L"thread 4 returned wrong value");
+			EXPECT_TRUE(result1 == cPlusPlusRes, L"thread 1 returned wrong value");
+			EXPECT_TRUE(result2 == cPlusPlusRes, L"thread 2 returned wrong value");
+			EXPECT_TRUE(result3 == cPlusPlusRes, L"thread 3 returned wrong value");
+			EXPECT_TRUE(result4 == cPlusPlusRes, L"thread 4 returned wrong value");
 		}
 
 		TEST_METHOD(MultithreadIndependentScriptFunc3)
@@ -429,13 +429,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			int fibonaciFunctionid = overLoadingFuncItems->front().functionId;
 
@@ -493,10 +493,10 @@ namespace ffscriptUT
 			thread3.join();
 			thread4.join();
 
-			Assert::IsTrue(result1 == fibonaci(n1), L"thread 1 returned wrong value");
-			Assert::IsTrue(result2 == fibonaci(n2), L"thread 2 returned wrong value");
-			Assert::IsTrue(result3 == fibonaci(n3), L"thread 3 returned wrong value");
-			Assert::IsTrue(result4 == fibonaci(n4), L"thread 4 returned wrong value");
+			EXPECT_TRUE(result1 == fibonaci(n1), L"thread 1 returned wrong value");
+			EXPECT_TRUE(result2 == fibonaci(n2), L"thread 2 returned wrong value");
+			EXPECT_TRUE(result3 == fibonaci(n3), L"thread 3 returned wrong value");
+			EXPECT_TRUE(result4 == fibonaci(n4), L"thread 4 returned wrong value");
 		}
 
 		TEST_METHOD(MultithreadDependentScriptFunc1)
@@ -534,18 +534,18 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			setVariableValue<void*>(*rootScope.findVariable("mutex"), (void*)&_m);
 
 			const list<OverLoadingItem>* overLoadingFuncItems1 = scriptCompiler.findOverloadingFuncRoot("function1");
-			Assert::IsTrue(overLoadingFuncItems1->size() > 0, L"cannot find function 'function1'");
+			EXPECT_TRUE(overLoadingFuncItems1->size() > 0, L"cannot find function 'function1'");
 
 			const list<OverLoadingItem>* overLoadingFuncItems2 = scriptCompiler.findOverloadingFuncRoot("function2");
-			Assert::IsTrue(overLoadingFuncItems2->size() > 0, L"cannot find function 'function2'");
+			EXPECT_TRUE(overLoadingFuncItems2->size() > 0, L"cannot find function 'function2'");
 
 			int function1 = overLoadingFuncItems1->front().functionId;
 			int function2 = overLoadingFuncItems2->front().functionId;
@@ -564,7 +564,7 @@ namespace ffscriptUT
 			
 			thread1.join();
 
-			Assert::IsTrue(result == cPlusPlusRes, L"program can run but return wrong value");
+			EXPECT_TRUE(result == cPlusPlusRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(MultithreadDependentScriptFunc2)
@@ -602,18 +602,18 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			setVariableValue<void*>(*rootScope.findVariable("mutex"), (void*)&_m);
 
 			const list<OverLoadingItem>* overLoadingFuncItems1 = scriptCompiler.findOverloadingFuncRoot("function1");
-			Assert::IsTrue(overLoadingFuncItems1->size() > 0, L"cannot find function 'function1'");
+			EXPECT_TRUE(overLoadingFuncItems1->size() > 0, L"cannot find function 'function1'");
 
 			const list<OverLoadingItem>* overLoadingFuncItems2 = scriptCompiler.findOverloadingFuncRoot("function2");
-			Assert::IsTrue(overLoadingFuncItems2->size() > 0, L"cannot find function 'function2'");
+			EXPECT_TRUE(overLoadingFuncItems2->size() > 0, L"cannot find function 'function2'");
 
 			int function1 = overLoadingFuncItems1->front().functionId;
 			int function2 = overLoadingFuncItems2->front().functionId;
@@ -635,7 +635,7 @@ namespace ffscriptUT
 			thread2.join();
 			thread1.join();
 
-			Assert::IsTrue(result == cPlusPlusRes, L"program can run but return wrong value");
+			EXPECT_TRUE(result == cPlusPlusRes, L"program can run but return wrong value");
 		}
 	};
 }

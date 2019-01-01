@@ -74,7 +74,7 @@ namespace ffscriptUT
 			GlobalScope rootScope(&staticContext, &scriptCompiler);
 
 			auto newType = scriptCompiler.registType("TestType");
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
 			scriptCompiler.setTypeSize(newType, 4);
 			
 			//initialize an instance of script program
@@ -90,13 +90,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
@@ -105,7 +105,7 @@ namespace ffscriptUT
 			auto pVariable = rootScope.findVariable("dummy");
 			void* pDummy = getVaribleRef<void>(*pVariable);
 
-			Assert::AreEqual( (size_t) pDummy, (size_t)*funcRes , L"program can run but return wrong value");
+			EXPECT_EQ( (size_t) pDummy, (size_t)*funcRes , L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(DefaultAssignNewType)
@@ -115,7 +115,7 @@ namespace ffscriptUT
 			GlobalScope rootScope(&staticContext, &scriptCompiler);
 
 			auto newType = scriptCompiler.registType("TestType");
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
 			scriptCompiler.setTypeSize(newType, 4);
 
 			//initialize an instance of script program
@@ -133,13 +133,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("setVal", "TestType");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			int param = 1;
 			ScriptParamBuffer paramBuffer(param);
@@ -150,7 +150,7 @@ namespace ffscriptUT
 			auto pVariable = rootScope.findVariable("dummy");
 			int* pDummy = getVaribleRef<int>(*pVariable);
 
-			Assert::AreEqual(param, *pDummy, L"program can run but return wrong value");
+			EXPECT_EQ(param, *pDummy, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(DefaultAssignForAutoType)
@@ -160,7 +160,7 @@ namespace ffscriptUT
 			GlobalScope rootScope(&staticContext, &scriptCompiler);
 
 			auto newType = scriptCompiler.registType("TestType");
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
 			scriptCompiler.setTypeSize(newType, 4);
 
 			//initialize an instance of script program
@@ -174,19 +174,19 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("setVal", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes, L"program can run but return wrong value");
+			EXPECT_EQ(1, *iRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(DefaultAssignForDeclareTypeInExpression)
@@ -196,7 +196,7 @@ namespace ffscriptUT
 			GlobalScope rootScope(&staticContext, &scriptCompiler);
 
 			auto newType = scriptCompiler.registType("TestType");
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
 			scriptCompiler.setTypeSize(newType, 4);
 
 			//initialize an instance of script program
@@ -211,19 +211,19 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("setVal", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes, L"program can run but return wrong value");
+			EXPECT_EQ(1, *iRes, L"program can run but return wrong value");
 		}
 	};
 }

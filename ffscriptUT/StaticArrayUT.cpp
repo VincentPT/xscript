@@ -97,16 +97,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 
 		TEST_METHOD(StaticArrayUT2)
@@ -126,16 +126,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 
 		TEST_METHOD(StaticArrayUT3)
@@ -155,16 +155,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 
 		TEST_METHOD(StaticArrayUT4)
@@ -184,16 +184,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 
 		TEST_METHOD(StaticArray2DUT1)
@@ -210,16 +210,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 
 		TEST_METHOD(StaticArray2DUT2)
@@ -236,16 +236,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 
 		TEST_METHOD(StaticArray2DUT3)
@@ -262,16 +262,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 
 		TEST_METHOD(StaticArray3DUT1)
@@ -288,16 +288,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 
 		TEST_METHOD(StaticArray1DSortingUT)
@@ -327,10 +327,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "array<int, 10>&");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			int a[] = { 3,2,5,6,7,1,4,0,9,8 };
 			const int n = sizeof(a) / sizeof(a[0]);
@@ -346,7 +346,7 @@ namespace ffscriptUT
 				}
 			}
 
-			Assert::AreEqual(n, i, L"function 'foo' return wrong");
+			EXPECT_EQ(n, i, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(GlobalStaticArray1DUT1)
@@ -362,10 +362,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto pVariable = rootScope->findVariable("ret");
-			Assert::IsNotNull(pVariable, L"cannot find variable ret");
+			EXPECT_NE(nullptr, pVariable, L"cannot find variable ret");
 
 			constexpr int iVal = 1;
 
@@ -373,13 +373,13 @@ namespace ffscriptUT
 			pRet[5] = iVal;
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(iVal, *iRes);
+			EXPECT_EQ(iVal, *iRes);
 		}
 
 		TEST_METHOD(GlobalStaticArray1DUT2)
@@ -396,10 +396,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			rootScope->runGlobalCode();
 
@@ -409,7 +409,7 @@ namespace ffscriptUT
 
 			rootScope->cleanupGlobalMemory();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 
 		TEST_METHOD(GlobalStaticArray3DUT1)
@@ -426,10 +426,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			rootScope->runGlobalCode();
 
@@ -439,7 +439,7 @@ namespace ffscriptUT
 
 			rootScope->cleanupGlobalMemory();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 
 		TEST_METHOD(StaticArray1DInitializeUT1)
@@ -456,16 +456,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 
 		TEST_METHOD(StaticArray1DInitializeUT2)
@@ -483,10 +483,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			rootScope->runGlobalCode();
 
@@ -496,7 +496,7 @@ namespace ffscriptUT
 
 			rootScope->cleanupGlobalMemory();
 
-			Assert::AreEqual(1, *iRes);
+			EXPECT_EQ(1, *iRes);
 		}
 	};
 }

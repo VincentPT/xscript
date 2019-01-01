@@ -34,14 +34,14 @@ namespace ffscriptUT
 				ptrTemp.swap(ptr);
 			}
 
-			Assert::AreEqual(1, *ptr);
+			EXPECT_EQ(1, *ptr);
 		}
 
 		//TEST_METHOD(CheckDetachPointer2)
 		//{
 		//	shared_ptr<int> ptr(nullptr, [](int*) {});
 		//	ptr = make_shared<int>(1);
-		//	Assert::AreEqual(1, *ptr);
+		//	EXPECT_EQ(1, *ptr);
 		//	auto pVal = ptr.get();
 		//	ptr.reset();
 		//	delete pVal;
@@ -123,7 +123,7 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNull(program, L"Compile program should be failed");
+			EXPECT_EQ(nullptr, program, L"Compile program should be failed");
 		}
 
 		TEST_METHOD(CompileLambdaUT2)
@@ -144,7 +144,7 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 		}
 
 		TEST_METHOD(CompileLambdaUT3)
@@ -168,16 +168,16 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			Assert::IsTrue(*funcRes == 1, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLambdaUT4)
@@ -201,16 +201,16 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *funcRes, L"program can run but return wrong value");
+			EXPECT_EQ(1, *funcRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLambdaUT5)
@@ -234,16 +234,16 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *funcRes, L"program can run but return wrong value");
+			EXPECT_EQ(1, *funcRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLambdaUT6)
@@ -271,16 +271,16 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLambdaUT7)
@@ -309,16 +309,16 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileThread1)
@@ -347,16 +347,16 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileThread2)
@@ -380,16 +380,16 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			Assert::IsTrue(*funcRes == 1000000, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 1000000, L"program can run but return wrong value");
 		}
 	};
 }

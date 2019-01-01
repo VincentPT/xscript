@@ -10,8 +10,7 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
+#include <gtest/gtest.h>
 #include "TemplateForTest.hpp"
 #include <functional>
 #include "FunctionRegisterHelper.h"
@@ -24,792 +23,785 @@
 #include "Variable.h"
 #include "ScriptTask.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
+class AssigmentCompoundUT : public ::testing::Test {
+protected:
+	ScriptCompiler scriptCompiler;
+	FunctionRegisterHelper funcLibHelper;
+	const BasicTypes* basicType;
+	StaticContext* _staticContext;
+	unsigned char _buffer[1024];
 
-namespace ffscriptUT
+	AssigmentCompoundUT() : funcLibHelper(&scriptCompiler) {
+		auto typeManager = scriptCompiler.getTypeManager();
+		basicType = &(typeManager->getBasicTypes());
+		typeManager->registerBasicTypes(&scriptCompiler);
+		typeManager->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
+		importBasicfunction(funcLibHelper);
+
+		_staticContext = new StaticContext(_buffer, sizeof(_buffer));
+	}
+
+	~AssigmentCompoundUT() {
+		delete _staticContext;
+	}
+};
+
+TEST_F(AssigmentCompoundUT, AssignmentCompoundAdd1)
 {
-	TEST_CLASS(AssigmentCompoundUT)
-	{
-		ScriptCompiler scriptCompiler;
-		FunctionRegisterHelper funcLibHelper;
-		const BasicTypes* basicType;
-		StaticContext* _staticContext;
-		unsigned char _buffer[1024];
-	public:
-
-		AssigmentCompoundUT() : funcLibHelper(&scriptCompiler) {
-			auto typeManager = scriptCompiler.getTypeManager();
-			basicType = &(typeManager->getBasicTypes());
-			typeManager->registerBasicTypes(&scriptCompiler);
-			typeManager->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
-			importBasicfunction(funcLibHelper);
-
-			_staticContext = new StaticContext(_buffer, sizeof(_buffer));
-		}
-
-		~AssigmentCompoundUT() {
-			delete _staticContext;
-		}		
-
-		TEST_METHOD(AssignmentCompoundAdd1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 			
-			pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
+	pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			int& a = *getVaribleRef<int>(*pA);
-			a = 0;
+	int& a = *getVaribleRef<int>(*pA);
+	a = 0;
 
-			wstring exp(L"a += 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a += 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundSub1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundSub1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
+	pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			int& a = *getVaribleRef<int>(*pA);
-			a = 0;
+	int& a = *getVaribleRef<int>(*pA);
+	a = 0;
 
-			wstring exp(L"a -= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler,exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a -= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler,exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == -2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == -2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundMul1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundMul1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
+	pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			int& a = *getVaribleRef<int>(*pA);
-			a = 1;
+	int& a = *getVaribleRef<int>(*pA);
+	a = 1;
 
-			wstring exp(L"a *= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a *= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundDev1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundDev1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
+	pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			int& a = *getVaribleRef<int>(*pA);
-			a = 5;
+	int& a = *getVaribleRef<int>(*pA);
+	a = 5;
 
-			wstring exp(L"a /= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a /= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundMod1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundMod1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
+	pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			int& a = *getVaribleRef<int>(*pA);
-			a = 5;
+	int& a = *getVaribleRef<int>(*pA);
+	a = 5;
 
-			wstring exp(L"a %= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a %= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 1) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundAnd1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundAnd1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
+	pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			int& a = *getVaribleRef<int>(*pA);
-			a = 5;
+	int& a = *getVaribleRef<int>(*pA);
+	a = 5;
 
-			wstring exp(L"a &= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a &= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == (5&2), (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == (5&2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundOr1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundOr1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
+	pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			int& a = *getVaribleRef<int>(*pA);
-			a = 5;
+	int& a = *getVaribleRef<int>(*pA);
+	a = 5;
 
-			wstring exp(L"a |= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a |= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == (5 | 2), (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == (5 | 2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundXor1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundXor1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
+	pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			int& a = *getVaribleRef<int>(*pA);
-			a = 5;
+	int& a = *getVaribleRef<int>(*pA);
+	a = 5;
 
-			wstring exp(L"a ^= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a ^= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == (5 ^ 2), (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == (5 ^ 2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundShiftLeft1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundShiftLeft1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
+	pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			int& a = *getVaribleRef<int>(*pA);
-			a = 5;
+	int& a = *getVaribleRef<int>(*pA);
+	a = 5;
 
-			wstring exp(L"a <<= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a <<= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == (5 << 2), (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == (5 << 2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundShiftRight1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundShiftRight1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
+	pA->setDataType(ScriptType(basicType->TYPE_INT,"int"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			int& a = *getVaribleRef<int>(*pA);
-			a = 5;
+	int& a = *getVaribleRef<int>(*pA);
+	a = 5;
 
-			wstring exp(L"a >>= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a >>= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == (5 >> 2), (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
-		////////////
-		TEST_METHOD(AssignmentCompoundAddLong1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+	EXPECT_TRUE(a == (5 >> 2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
+////////////
+TEST_F(AssigmentCompoundUT, AssignmentCompoundAddLong1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
+	pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			__int64& a = *getVaribleRef<__int64>(*pA);
-			a = 0;
+	__int64& a = *getVaribleRef<__int64>(*pA);
+	a = 0;
 
-			wstring exp(L"a += 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a += 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundSubLong1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundSubLong1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
+	pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			__int64& a = *getVaribleRef<__int64>(*pA);
-			a = 0;
+	__int64& a = *getVaribleRef<__int64>(*pA);
+	a = 0;
 
-			wstring exp(L"a -= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a -= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == -2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == -2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundMulLong1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundMulLong1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
+	pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			__int64& a = *getVaribleRef<__int64>(*pA);
-			a = 1;
+	__int64& a = *getVaribleRef<__int64>(*pA);
+	a = 1;
 
-			wstring exp(L"a *= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a *= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundDevLong1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundDevLong1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
+	pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			__int64& a = *getVaribleRef<__int64>(*pA);
-			a = 5;
+	__int64& a = *getVaribleRef<__int64>(*pA);
+	a = 5;
 
-			wstring exp(L"a /= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a /= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundModLong1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundModLong1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
+	pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			__int64& a = *getVaribleRef<__int64>(*pA);
-			a = 5;
+	__int64& a = *getVaribleRef<__int64>(*pA);
+	a = 5;
 
-			wstring exp(L"a %= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a %= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 1) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundAndLong1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundAndLong1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
+	pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			__int64& a = *getVaribleRef<__int64>(*pA);
-			a = 5;
+	__int64& a = *getVaribleRef<__int64>(*pA);
+	a = 5;
 
-			wstring exp(L"a &= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a &= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == (5 & 2), (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == (5 & 2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundOrLong1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundOrLong1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
+	pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			__int64& a = *getVaribleRef<__int64>(*pA);
-			a = 5;
+	__int64& a = *getVaribleRef<__int64>(*pA);
+	a = 5;
 
-			wstring exp(L"a |= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a |= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == (5 | 2), (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == (5 | 2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundXorLong1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundXorLong1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
+	pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			__int64& a = *getVaribleRef<__int64>(*pA);
-			a = 5;
+	__int64& a = *getVaribleRef<__int64>(*pA);
+	a = 5;
 
-			wstring exp(L"a ^= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a ^= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == (5 ^ 2), (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == (5 ^ 2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundShiftLeftLong1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundShiftLeftLong1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
+	pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			__int64& a = *getVaribleRef<__int64>(*pA);
-			a = 5;
+	__int64& a = *getVaribleRef<__int64>(*pA);
+	a = 5;
 
-			wstring exp(L"a <<= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a <<= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == (5 << 2), (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == (5 << 2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundShiftRightLong1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundShiftRightLong1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
+	pA->setDataType(ScriptType(basicType->TYPE_LONG,"long"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			__int64& a = *getVaribleRef<__int64>(*pA);
-			a = 5;
+	__int64& a = *getVaribleRef<__int64>(*pA);
+	a = 5;
 
-			wstring exp(L"a >>= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a >>= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == (5 >> 2), (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == (5 >> 2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		////////////////////////////////////////////////////////////////////////////
-		TEST_METHOD(AssignmentCompoundAddFloat1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+////////////////////////////////////////////////////////////////////////////
+TEST_F(AssigmentCompoundUT, AssignmentCompoundAddFloat1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_FLOAT,"float"));
+	pA->setDataType(ScriptType(basicType->TYPE_FLOAT,"float"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			float& a = *getVaribleRef<float>(*pA);
-			a = 0;
+	float& a = *getVaribleRef<float>(*pA);
+	a = 0;
 
-			wstring exp(L"a += 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a += 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundSubFloat1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundSubFloat1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_FLOAT,"float"));
+	pA->setDataType(ScriptType(basicType->TYPE_FLOAT,"float"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			float& a = *getVaribleRef<float>(*pA);
-			a = 0;
+	float& a = *getVaribleRef<float>(*pA);
+	a = 0;
 
-			wstring exp(L"a -= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a -= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == -2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == -2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundMulFloat1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundMulFloat1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_FLOAT,"float"));
+	pA->setDataType(ScriptType(basicType->TYPE_FLOAT,"float"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			float& a = *getVaribleRef<float>(*pA);
-			a = 1;
+	float& a = *getVaribleRef<float>(*pA);
+	a = 1;
 
-			wstring exp(L"a *= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a *= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundDevFloat1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundDevFloat1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_FLOAT,"float"));
+	pA->setDataType(ScriptType(basicType->TYPE_FLOAT,"float"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			float& a = *getVaribleRef<float>(*pA);
-			a = 5;
+	float& a = *getVaribleRef<float>(*pA);
+	a = 5;
 
-			wstring exp(L"a /= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a /= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2.5f, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}		
-		////////////////////////////////////////////////////////////////////////////
-		TEST_METHOD(AssignmentCompoundAddDouble1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+	EXPECT_TRUE(a == 2.5f) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}		
+////////////////////////////////////////////////////////////////////////////
+TEST_F(AssigmentCompoundUT, AssignmentCompoundAddDouble1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_DOUBLE,"double"));
+	pA->setDataType(ScriptType(basicType->TYPE_DOUBLE,"double"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			double& a = *getVaribleRef<double>(*pA);
-			a = 0;
+	double& a = *getVaribleRef<double>(*pA);
+	a = 0;
 
-			wstring exp(L"a += 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a += 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundSubDouble1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundSubDouble1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_DOUBLE,"double"));
+	pA->setDataType(ScriptType(basicType->TYPE_DOUBLE,"double"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			double& a = *getVaribleRef<double>(*pA);
-			a = 0;
+	double& a = *getVaribleRef<double>(*pA);
+	a = 0;
 
-			wstring exp(L"a -= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a -= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == -2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == -2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundMulDouble1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundMulDouble1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_DOUBLE,"double"));
+	pA->setDataType(ScriptType(basicType->TYPE_DOUBLE,"double"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			double& a = *getVaribleRef<double>(*pA);
-			a = 1;
+	double& a = *getVaribleRef<double>(*pA);
+	a = 1;
 
-			wstring exp(L"a *= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a *= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
+	EXPECT_TRUE(a == 2) << (L"result of expression '" + exp + L"' is not correct").c_str();
+}
 
-		TEST_METHOD(AssignmentCompoundDevDouble1)
-		{
-			GlobalScope globalScope(_staticContext, &scriptCompiler);
-			Variable* pA = globalScope.registVariable("a");
+TEST_F(AssigmentCompoundUT, AssignmentCompoundDevDouble1)
+{
+	GlobalScope globalScope(_staticContext, &scriptCompiler);
+	Variable* pA = globalScope.registVariable("a");
 
-			pA->setDataType(ScriptType(basicType->TYPE_DOUBLE,"double"));
+	pA->setDataType(ScriptType(basicType->TYPE_DOUBLE,"double"));
 
-			globalScope.updateVariableOffset();
+	globalScope.updateVariableOffset();
 
-			double& a = *getVaribleRef<double>(*pA);
-			a = 5;
+	double& a = *getVaribleRef<double>(*pA);
+	a = 5;
 
-			wstring exp(L"a /= 2");
-			scriptCompiler.pushScope(&globalScope);
-			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+	wstring exp(L"a /= 2");
+	scriptCompiler.pushScope(&globalScope);
+	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
+	scriptCompiler.popScope();
+	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
-			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
+	unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
-			excutor->runCode();
+	excutor->runCode();
 
-			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
+	PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			Assert::IsTrue(a == 2.5f, (L"result of expression '" + exp + L"' is not correct").c_str());
-		}
-		////////////////////////////////////////////////////////////////////////////
-	};
+	EXPECT_TRUE(a == 2.5f) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }

@@ -110,9 +110,9 @@ namespace ffscriptUT
 
 			listPaths<int,std::vector<int>,int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath02)
@@ -142,9 +142,9 @@ namespace ffscriptUT
 
 			listPaths<int,std::vector<int>,int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath03)
@@ -179,9 +179,9 @@ namespace ffscriptUT
 
 			listPaths<int,std::vector<int>,int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath04)
@@ -215,9 +215,9 @@ namespace ffscriptUT
 
 			listPaths<int,std::vector<int>,int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath04InvalidPath)
@@ -251,9 +251,9 @@ namespace ffscriptUT
 
 			listPaths<int,std::vector<int>,int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsFalse(res, L"At leat one of path must be invalid because of invalid input");
+			EXPECT_FALSE(res, L"At leat one of path must be invalid because of invalid input");
 		}
 
 		TEST_METHOD(makePath05)
@@ -287,9 +287,9 @@ namespace ffscriptUT
 
 			listPaths<int,std::list<int>,int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath05Invalid)
@@ -323,9 +323,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsFalse(res, L"Invalid input(two node are same value) must lead to invalid output");
+			EXPECT_FALSE(res, L"Invalid input(two node are same value) must lead to invalid output");
 		}
 
 
@@ -343,9 +343,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"Path is invalid");
+			EXPECT_TRUE(res, L"Path is invalid");
 		}
 
 		TEST_METHOD(makePath07)
@@ -371,9 +371,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath08)
@@ -400,9 +400,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath09)
@@ -429,9 +429,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath10)
@@ -459,9 +459,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath11)
@@ -490,9 +490,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath12)
@@ -516,9 +516,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath13)
@@ -539,9 +539,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath14)
@@ -562,9 +562,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
 		TEST_METHOD(makePath15)
@@ -586,9 +586,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			Assert::AreEqual(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
+			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			Assert::IsTrue(res, L"At leat one of path is invalid");
+			EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 	};
 }

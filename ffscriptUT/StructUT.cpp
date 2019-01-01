@@ -109,16 +109,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("invoke", "ref TestStruct");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'invoke'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'invoke'");
 
 			TestStruct obj = {1, 2};			
 			ScriptParamBuffer paramBuffer(&obj);
@@ -127,7 +127,7 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("testStruct =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 3, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 3, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStruct2)
@@ -155,16 +155,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("invoke", "TestStruct");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'invoke'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'invoke'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -173,7 +173,7 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("testStruct =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 3, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 3, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStruct3)
@@ -202,16 +202,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "TestStruct");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -220,7 +220,7 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == obj.a, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == obj.a, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStruct4)
@@ -249,16 +249,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "TestStruct");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -267,7 +267,7 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == obj.b, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == obj.b, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStruct5)
@@ -295,16 +295,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "TestStruct");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -313,7 +313,7 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStruct6)
@@ -341,16 +341,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "ref TestStruct");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(&obj);
@@ -359,7 +359,7 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStruct7)
@@ -387,16 +387,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "TestStruct");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -404,8 +404,8 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			TestStruct* funcRes = (TestStruct*)scriptTask.getTaskResult();
-			Assert::IsTrue(funcRes->a == obj.a, L"program can run but return wrong value");
-			Assert::IsTrue(funcRes->b == obj.b, L"program can run but return wrong value");
+			EXPECT_TRUE(funcRes->a == obj.a, L"program can run but return wrong value");
+			EXPECT_TRUE(funcRes->b == obj.b, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStruct8)
@@ -435,16 +435,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "TestStruct");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -452,8 +452,8 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			TestStruct* funcRes = (TestStruct*)scriptTask.getTaskResult();
-			Assert::IsTrue(funcRes->a == 3, L"program can run but return wrong value");
-			//Assert::IsTrue(funcRes->b == 4, L"program can run but return wrong value");
+			EXPECT_TRUE(funcRes->a == 3, L"program can run but return wrong value");
+			//EXPECT_TRUE(funcRes->b == 4, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStruct9)
@@ -482,16 +482,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct* pObj = getVaribleRef<TestStruct>(*rootScope.findVariable("obj"));
 			pObj->a = 1;
@@ -503,7 +503,7 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStruct10)
@@ -534,16 +534,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			//the code in global scope should be executed only once
 			staticContext.run();
@@ -552,7 +552,7 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 8, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 8, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructComplex01)
@@ -600,13 +600,13 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			//the code in global scope should be executed only once
 			staticContext.run();
@@ -614,9 +614,9 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			Assert::AreEqual(1, objRes->a.a, L"program can run but return wrong value");
-			Assert::AreEqual(2, objRes->a.b, L"program can run but return wrong value");
-			Assert::AreEqual(3, objRes->iVal, L"program can run but return wrong value");
+			EXPECT_EQ(1, objRes->a.a, L"program can run but return wrong value");
+			EXPECT_EQ(2, objRes->a.b, L"program can run but return wrong value");
+			EXPECT_EQ(3, objRes->iVal, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructComplex02)
@@ -663,16 +663,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructB");
-			Assert::AreNotEqual(-1, idStruct, L"StructB should be already registered, but not");
+			EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructB");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructB obj;
 			StructA objA;
@@ -685,9 +685,9 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			Assert::AreEqual(1, objRes->a->a, L"program can run but return wrong value");
-			Assert::AreEqual(2, objRes->a->b, L"program can run but return wrong value");
-			Assert::AreEqual(3, objRes->iVal, L"program can run but return wrong value");
+			EXPECT_EQ(1, objRes->a->a, L"program can run but return wrong value");
+			EXPECT_EQ(2, objRes->a->b, L"program can run but return wrong value");
+			EXPECT_EQ(3, objRes->iVal, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructComplex03)
@@ -731,16 +731,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructB");
-			Assert::AreNotEqual(-1, idStruct, L"StructB should be already registered, but not");
+			EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructB");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructB obj;
 			StructA objA;
@@ -755,7 +755,7 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* iRes = (int*)scriptTask.getTaskResult();
-			Assert::AreEqual(*iRes, 6, L"program can run but return wrong value");
+			EXPECT_EQ(*iRes, 6, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructComplex04)
@@ -781,7 +781,7 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::AreEqual(nullptr, res, L"compile program should fail");
+			EXPECT_EQ(nullptr, res, L"compile program should fail");
 		}
 
 		TEST_METHOD(TestStructComplex05)
@@ -812,7 +812,7 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::AreEqual(nullptr, res, L"compile program should fail");
+			EXPECT_EQ(nullptr, res, L"compile program should fail");
 		}
 
 		TEST_METHOD(TestStructComplex06)
@@ -862,16 +862,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructB");
-			Assert::AreNotEqual(-1, idStruct, L"StructB should be already registered, but not");
+			EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructB");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructB obj;
 			StructA objA;
@@ -885,7 +885,7 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* iRes = (int*)scriptTask.getTaskResult();
-			Assert::AreEqual(6, *iRes, L"program can run but return wrong value");
+			EXPECT_EQ(6, *iRes, L"program can run but return wrong value");
 		}
 
 		//TEST_METHOD(TestStructComplex07)
@@ -916,16 +916,16 @@ namespace ffscriptUT
 		//		L"}"
 		//		;
 		//	const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-		//	Assert::IsTrue(res != nullptr, L"compile program failed");
+		//	EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 		//	bool blRes = rootScope.extractCode(&theProgram);
-		//	Assert::IsTrue(blRes, L"extract code failed");
+		//	EXPECT_TRUE(blRes, L"extract code failed");
 
 		//	int idStruct = scriptCompiler.getType("StructB");
-		//	Assert::AreNotEqual(-1, idStruct, L"StructB should be already registered, but not");
+		//	EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 		//	int functionId = scriptCompiler.findFunction("test", "StructB");
-		//	Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+		//	EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 		//	StructB obj;
 		//	StructA objA;
@@ -939,7 +939,7 @@ namespace ffscriptUT
 		//	ScriptTask scriptTask(&theProgram);
 		//	scriptTask.runFunction(functionId, &paramBuffer);
 		//	int* iRes = (int*)scriptTask.getTaskResult();
-		//	Assert::AreEqual(6, *iRes, L"program can run but return wrong value");
+		//	EXPECT_EQ(6, *iRes, L"program can run but return wrong value");
 		//}
 
 		TEST_METHOD(TestStructReturn01)
@@ -966,7 +966,7 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::AreEqual(nullptr, res, L"compile program failed");
+			EXPECT_EQ(nullptr, res, L"compile program failed");
 		}
 
 		TEST_METHOD(TestStructAssigment01)
@@ -1001,16 +1001,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::AreNotEqual(nullptr, res, L"compile program failed");
+			EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructA");
-			Assert::AreNotEqual(-1, idStruct, L"StructA should be already registered, but not");
+			EXPECT_NE(-1, idStruct, L"StructA should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructA");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructA objA;
 			objA.a = 1;
@@ -1020,8 +1020,8 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			StructA* objRes = (StructA*)scriptTask.getTaskResult();
-			Assert::AreEqual(objA.a, objRes->a, L"program can run but return wrong value");
-			Assert::AreEqual(objA.a, objRes->a, L"program can run but return wrong value");
+			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
+			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructAssigment02)
@@ -1058,16 +1058,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::AreNotEqual(nullptr, res, L"compile program failed");
+			EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructA");
-			Assert::AreNotEqual(-1, idStruct, L"StructA should be already registered, but not");
+			EXPECT_NE(-1, idStruct, L"StructA should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructA");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructA objA;
 			objA.a = 1;
@@ -1077,8 +1077,8 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			StructA* objRes = (StructA*)scriptTask.getTaskResult();
-			Assert::AreEqual(objA.a, objRes->a, L"program can run but return wrong value");
-			Assert::AreEqual(objA.a, objRes->a, L"program can run but return wrong value");
+			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
+			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructInitialize1)
@@ -1113,19 +1113,19 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::AreNotEqual(nullptr, res, L"compile program failed");
+			EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructA* objRes = (StructA*)scriptTask.getTaskResult();
-			Assert::AreEqual(1, objRes->a, L"program can run but return wrong value");
-			Assert::AreEqual(2, objRes->b, L"program can run but return wrong value");
+			EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
+			EXPECT_EQ(2, objRes->b, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructInitialize2)
@@ -1172,21 +1172,21 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::AreNotEqual(nullptr, res, L"compile program failed");
+			EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			Assert::AreEqual(1, objRes->a, L"program can run but return wrong value");
-			Assert::AreEqual(2, objRes->b.a, L"program can run but return wrong value");
-			Assert::AreEqual(3, objRes->b.b, L"program can run but return wrong value");
-			Assert::AreEqual(4, objRes->c, L"program can run but return wrong value");
+			EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
+			EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
+			EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
+			EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructInitialize3)
@@ -1220,7 +1220,7 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::AreEqual(nullptr, res, L"compile program should be failed, due to struct assignment's rules");
+			EXPECT_EQ(nullptr, res, L"compile program should be failed, due to struct assignment's rules");
 		}
 
 		TEST_METHOD(TestStructInitialize4)
@@ -1269,21 +1269,21 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::AreNotEqual(nullptr, res, L"compile program failed");
+			EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			Assert::AreEqual(1, objRes->a, L"program can run but return wrong value");
-			Assert::AreEqual(2, objRes->b.a, L"program can run but return wrong value");
-			Assert::AreEqual(3, objRes->b.b, L"program can run but return wrong value");
-			Assert::AreEqual(4, objRes->c, L"program can run but return wrong value");
+			EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
+			EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
+			EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
+			EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructInitialize5)
@@ -1330,21 +1330,21 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::AreNotEqual(nullptr, res, L"compile program failed");
+			EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			Assert::AreEqual(1, objRes->a, L"program can run but return wrong value");
-			Assert::AreEqual(2, objRes->b.a, L"program can run but return wrong value");
-			Assert::AreEqual(3, objRes->b.b, L"program can run but return wrong value");
-			Assert::AreEqual(4, objRes->c, L"program can run but return wrong value");
+			EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
+			EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
+			EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
+			EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
 		}
 
 		///
@@ -1398,21 +1398,21 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::AreNotEqual(nullptr, res, L"compile program failed");
+			EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			Assert::AreEqual(1, objRes->a, L"program can run but return wrong value");
-			Assert::AreEqual(2, objRes->b.a, L"program can run but return wrong value");
-			Assert::AreEqual(3, objRes->b.b, L"program can run but return wrong value");
-			Assert::AreEqual(4, objRes->c, L"program can run but return wrong value");
+			EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
+			EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
+			EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
+			EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructReturnRef)
@@ -1440,16 +1440,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			Assert::AreNotEqual(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "ref TestStruct");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			//the code in global scope should be executed only once
 			staticContext.run();
@@ -1462,7 +1462,7 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int** funcRes = (int**)scriptTask.getTaskResult();
-			Assert::AreEqual((size_t)(&obj.a), (size_t)(*funcRes), L"program can run but return wrong value");
+			EXPECT_EQ((size_t)(&obj.a), (size_t)(*funcRes), L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructAndDeref01)
@@ -1506,16 +1506,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructB");
-			Assert::AreNotEqual(-1, idStruct, L"StructB should be already registered, but not");
+			EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructB");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructB obj;
 			StructA objA;
@@ -1528,8 +1528,8 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			StructA* objRes = (StructA*)scriptTask.getTaskResult();
-			Assert::AreEqual(objA.a, objRes->a, L"program can run but return wrong value");
-			Assert::AreEqual(objA.b, objRes->b, L"program can run but return wrong value");
+			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
+			EXPECT_EQ(objA.b, objRes->b, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(TestStructAndDeref02)
@@ -1573,16 +1573,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructB");
-			Assert::AreNotEqual(-1, idStruct, L"StructB should be already registered, but not");
+			EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructB");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructB obj;
 			StructA objA;
@@ -1594,8 +1594,8 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			StructA* objRes = (StructA*)scriptTask.getTaskResult();
-			Assert::AreEqual(objA.a, objRes->a, L"program can run but return wrong value");
-			Assert::AreEqual(objA.b, objRes->b, L"program can run but return wrong value");
+			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
+			EXPECT_EQ(objA.b, objRes->b, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument1)
@@ -1630,18 +1630,18 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			Assert::AreEqual(1.1f, fRes, L"function 'foo' return wrong");
+			EXPECT_EQ(1.1f, fRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument2)
@@ -1675,18 +1675,18 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			Assert::AreEqual(1.1f, fRes, L"function 'foo' return wrong");
+			EXPECT_EQ(1.1f, fRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument3)
@@ -1720,18 +1720,18 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			Assert::AreEqual(1.1f, fRes, L"function 'foo' return wrong");
+			EXPECT_EQ(1.1f, fRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument4)
@@ -1769,18 +1769,18 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			Assert::AreEqual(2.2f, fRes, L"function 'foo' return wrong");
+			EXPECT_EQ(2.2f, fRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument5)
@@ -1817,18 +1817,18 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			Assert::AreEqual(2.2f, fRes, L"function 'foo' return wrong");
+			EXPECT_EQ(2.2f, fRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(TestGeometryLib01)
@@ -1856,18 +1856,18 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			Assert::AreEqual(0.0f, fRes, L"function 'foo' return wrong");
+			EXPECT_EQ(0.0f, fRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(TestGeometryLib02)
@@ -1895,18 +1895,18 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			Assert::AreEqual(0.0f, fRes, L"function 'foo' return wrong");
+			EXPECT_EQ(0.0f, fRes, L"function 'foo' return wrong");
 		}
 	};
 }

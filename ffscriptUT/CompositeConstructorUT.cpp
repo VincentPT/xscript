@@ -83,10 +83,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, int, int>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo() {"
@@ -98,17 +98,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(3, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(3, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT12)
@@ -118,10 +118,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, int, int>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo(int param) {"
@@ -136,17 +136,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(3, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(3, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT13)
@@ -156,10 +156,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, int, int>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo(int param) {"
@@ -173,17 +173,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(3, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(3, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT21)
@@ -193,10 +193,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, double&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, double&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo() {"
@@ -208,17 +208,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(2, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT22)
@@ -228,10 +228,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, double&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, double&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo(int param) {"
@@ -246,17 +246,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(2, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT31)
@@ -266,10 +266,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, double&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, double&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo() {"				
@@ -280,17 +280,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(2, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT32)
@@ -300,10 +300,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, int, int>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo() {"
@@ -314,17 +314,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(3, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(3, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT40)
@@ -340,17 +340,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT41)
@@ -360,10 +360,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo() {"
@@ -374,17 +374,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(2, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT42)
@@ -394,10 +394,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo() {"
@@ -409,17 +409,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(2, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT43)
@@ -429,10 +429,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo2() {"				
@@ -446,17 +446,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(2, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT44)
@@ -466,10 +466,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo2(int a) {"
@@ -483,10 +483,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
@@ -495,7 +495,7 @@ namespace ffscriptUT
 
 			// optimizing pass parameter through interger constructor
 			// so the constructor is not call to construct int object from constant '1'
-			Assert::AreEqual(1, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT45)
@@ -505,10 +505,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo() {"
@@ -521,17 +521,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(3, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(3, *iRes, L"Construtor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT46)
@@ -541,10 +541,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo() {"
@@ -557,17 +557,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(3, *iRes, L"Construtor is run but result is not correct");
+			EXPECT_EQ(3, *iRes, L"Construtor is run but result is not correct");
 		}
 	};
 }

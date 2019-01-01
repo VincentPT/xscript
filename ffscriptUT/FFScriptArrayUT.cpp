@@ -27,7 +27,7 @@ namespace ffscriptUT
 	public:
 		TEST_METHOD(CheckSizeOfArray) {
 			size_t sizeOfArray = sizeof(FFScriptArray<int>);
-			Assert::AreEqual(4*sizeof(void*), sizeOfArray, L"Size of FFScriptArray should be 16");
+			EXPECT_EQ(4*sizeof(void*), sizeOfArray, L"Size of FFScriptArray should be 16");
 		}
 
 		TEST_METHOD(TestConstructFromStaticArray)
@@ -39,8 +39,8 @@ namespace ffscriptUT
 				a[0] = 0;
 				a[1] = 2;
 
-				Assert::AreEqual(data[0], a[0], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(data[1], a[1], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(data[0], a[0], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(data[1], a[1], L"operator [] of FFScriptArray works incorrectly");
 			}
 		}
 
@@ -54,11 +54,11 @@ namespace ffscriptUT
 				a[3] = 3;
 				a[4] = 4;
 
-				Assert::AreEqual(0, a[0], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(1, a[1], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(2, a[2], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(3, a[3], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(4, a[4], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(0, a[0], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(1, a[1], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(2, a[2], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(3, a[3], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(4, a[4], L"operator [] of FFScriptArray works incorrectly");
 			}
 		}
 
@@ -75,12 +75,12 @@ namespace ffscriptUT
 				a.resize(6);
 				a[5] = 5;
 
-				Assert::AreEqual(0, a[0], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(1, a[1], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(2, a[2], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(3, a[3], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(4, a[4], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(5, a[5], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(0, a[0], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(1, a[1], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(2, a[2], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(3, a[3], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(4, a[4], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(5, a[5], L"operator [] of FFScriptArray works incorrectly");
 			}
 		}
 
@@ -97,11 +97,11 @@ namespace ffscriptUT
 
 				a.sort();
 
-				Assert::AreEqual(0, a[0], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(1, a[1], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(2, a[2], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(3, a[3], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(4, a[4], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(0, a[0], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(1, a[1], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(2, a[2], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(3, a[3], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(4, a[4], L"operator [] of FFScriptArray works incorrectly");
 			}
 		}
 
@@ -119,11 +119,11 @@ namespace ffscriptUT
 					return b < a;
 				});
 
-				Assert::AreEqual(4, a[0], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(3, a[1], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(2, a[2], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(1, a[3], L"operator [] of FFScriptArray works incorrectly");
-				Assert::AreEqual(0, a[4], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(4, a[0], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(3, a[1], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(2, a[2], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(1, a[3], L"operator [] of FFScriptArray works incorrectly");
+				EXPECT_EQ(0, a[4], L"operator [] of FFScriptArray works incorrectly");
 			}
 		}
 
@@ -142,7 +142,7 @@ namespace ffscriptUT
 			void* params[] = { (void*)(size_t) i};
 			mf.call(&ret, params);
 
-			Assert::AreEqual(a[i], *ret, L"MFunction2Ref invoke operator[] incorrectly");
+			EXPECT_EQ(a[i], *ret, L"MFunction2Ref invoke operator[] incorrectly");
 		}
 
 		TEST_METHOD(TestPosibilityRunInScript2)
@@ -162,7 +162,7 @@ namespace ffscriptUT
 			void* params[] = {(void*)(size_t)i };
 			mf.call(&ret, params);
 
-			Assert::AreEqual(a[i], *ret, L"MFunction2Ref invoke operator[] incorrectly");
+			EXPECT_EQ(a[i], *ret, L"MFunction2Ref invoke operator[] incorrectly");
 		}
 
 		TEST_METHOD(TestPosibilityRunInScript3)
@@ -179,11 +179,11 @@ namespace ffscriptUT
 
 			mf.call(nullptr, nullptr);
 
-			Assert::IsTrue((__int64)0 == a[0], L"MFunction2Ref invoke operator[] incorrectly");
-			Assert::IsTrue((__int64)1 == a[1], L"MFunction2Ref invoke operator[] incorrectly");
-			Assert::IsTrue((__int64)2 == a[2], L"MFunction2Ref invoke operator[] incorrectly");
-			Assert::IsTrue((__int64)3 == a[3], L"MFunction2Ref invoke operator[] incorrectly");
-			Assert::IsTrue((__int64)4 == a[4], L"MFunction2Ref invoke operator[] incorrectly");
+			EXPECT_TRUE((__int64)0 == a[0], L"MFunction2Ref invoke operator[] incorrectly");
+			EXPECT_TRUE((__int64)1 == a[1], L"MFunction2Ref invoke operator[] incorrectly");
+			EXPECT_TRUE((__int64)2 == a[2], L"MFunction2Ref invoke operator[] incorrectly");
+			EXPECT_TRUE((__int64)3 == a[3], L"MFunction2Ref invoke operator[] incorrectly");
+			EXPECT_TRUE((__int64)4 == a[4], L"MFunction2Ref invoke operator[] incorrectly");
 		}
 	};
 }

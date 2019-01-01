@@ -6,6 +6,12 @@ conan_basic_setup()
 
 SET (PROJECT_SOURCE_FILES 
 	./CompileSuiteUT.cpp
+	./AssigmentCompoundUT.cpp
+	./Utility.cpp
+	./BitwiseOperatorsUT.cpp
+	./CdeclFunctionUT.cpp
+	./CompileDynamicFunctionUT.cpp
+	./CompileProgramInFile.cpp
 )
 
 add_executable(${PROJECT_NAME} main.cpp ${PROJECT_SOURCE_FILES})
@@ -26,3 +32,4 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} AR
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} ARGS -E copy "${CMAKE_CURRENT_SOURCE_DIR}/scripts/ErrorInStruct2.c955" "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} ARGS -E copy "${CMAKE_CURRENT_SOURCE_DIR}/scripts/ErrorInStruct3.c955" "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} ARGS -E copy "${CMAKE_CURRENT_SOURCE_DIR}/scripts/StringFunctions.c955" "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} ARGS -E copy "${CMAKE_CURRENT_SOURCE_DIR}/testfunctions.hpp" "$<TARGET_FILE_DIR:${PROJECT_NAME}>")

@@ -54,8 +54,8 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
-			Assert::IsTrue(units.size() == 3, L"the units is not 1 + 2");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(units.size() == 3, L"the units is not 1 + 2");
 		}
 
 		TEST_METHOD(testParseFunction2)
@@ -69,8 +69,8 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2 - (3 - 4)", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
-			Assert::IsTrue(units.size() == 9, L"the units is not '1 + 2 - (3 - 4)'");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(units.size() == 9, L"the units is not '1 + 2 - (3 - 4)'");
 		}
 
 		TEST_METHOD(testParseFunction3)
@@ -85,8 +85,8 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + \"hello\"", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
-			Assert::IsTrue(units.size() == 3, L"the units is not '1 + \"hello\"'");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(units.size() == 3, L"the units is not '1 + \"hello\"'");
 		}
 
 		TEST_METHOD(testParseFunction4)
@@ -101,8 +101,8 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + L\"hello\" + 2", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
-			Assert::IsTrue(units.size() == 5, L"the units is not '1 + L\"hello\" + 2'");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(units.size() == 5, L"the units is not '1 + L\"hello\" + 2'");
 		}
 
 		TEST_METHOD(testCompile1)
@@ -117,13 +117,13 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsTrue(res, L"compile '1 + 2' failed!");
-			Assert::IsTrue(expList.size() == 1, L"compile '1 + 2' and retured more than one expression");
+			EXPECT_TRUE(res, L"compile '1 + 2' failed!");
+			EXPECT_TRUE(expList.size() == 1, L"compile '1 + 2' and retured more than one expression");
 		}
 
 		TEST_METHOD(testCompile2)
@@ -138,13 +138,13 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2 + (3 - 4)", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsTrue(res, L"compile '1  + 2 + (3 - 4)' failed!");
-			Assert::IsTrue(expList.size() == 1, L"compile '1  + 2 + (3 - 4)' and retured more than one expression");
+			EXPECT_TRUE(res, L"compile '1  + 2 + (3 - 4)' failed!");
+			EXPECT_TRUE(expList.size() == 1, L"compile '1  + 2 + (3 - 4)' and retured more than one expression");
 		}
 
 		TEST_METHOD(testCompile2_checkfail1)
@@ -159,12 +159,12 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2 + (3 - 4", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsFalse(res, L"compile '1  + 2 + (3 - 4' must be failed!");			
+			EXPECT_FALSE(res, L"compile '1  + 2 + (3 - 4' must be failed!");			
 		}
 
 		TEST_METHOD(testCompile2_checkfail2)
@@ -179,12 +179,12 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2 + 3 - 4)", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsFalse(res, L"compile '1  + 2 + 3 - 4)' must be failed!");
+			EXPECT_FALSE(res, L"compile '1  + 2 + 3 - 4)' must be failed!");
 		}
 
 		TEST_METHOD(testCompile2_checkfail3)
@@ -199,12 +199,12 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2 + )3 - 4)", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsFalse(res, L"compile '1  + 2 + )3 - 4)' must be failed!");
+			EXPECT_FALSE(res, L"compile '1  + 2 + )3 - 4)' must be failed!");
 		}
 
 
@@ -220,12 +220,12 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2 + (3 - 4(", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsFalse(res, L"compile '1  + 2 + (3 - 4(' must be failed!");
+			EXPECT_FALSE(res, L"compile '1  + 2 + (3 - 4(' must be failed!");
 		}
 
 		TEST_METHOD(testCompile3)
@@ -240,13 +240,13 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1+2,3", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsTrue(res, L"compile '1+2,3' failed!");
-			Assert::IsTrue(expList.size() == 2, L"compile '1+2,3' must return two expressions");
+			EXPECT_TRUE(res, L"compile '1+2,3' failed!");
+			EXPECT_TRUE(expList.size() == 2, L"compile '1+2,3' must return two expressions");
 		}
 
 		TEST_METHOD(testCompile4)
@@ -261,13 +261,13 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2, 3", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsTrue(res, L"compile '1  + 2 , 3' failed!");
-			Assert::IsTrue(expList.size() == 2, L"compile '1  + 2, 3' must return two expressions");
+			EXPECT_TRUE(res, L"compile '1  + 2 , 3' failed!");
+			EXPECT_TRUE(expList.size() == 2, L"compile '1  + 2, 3' must return two expressions");
 		}
 
 		TEST_METHOD(testCompile4_checkfail1)
@@ -282,12 +282,12 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L",1  + 2, 3", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsFalse(res, L"compile ',1  + 2, 3' must be failed!");			
+			EXPECT_FALSE(res, L"compile ',1  + 2, 3' must be failed!");			
 		}
 
 		TEST_METHOD(testCompile4_checkfail2)
@@ -302,12 +302,12 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2, 3,", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsFalse(res, L"compile '1  + 2, 3,' must be failed!");
+			EXPECT_FALSE(res, L"compile '1  + 2, 3,' must be failed!");
 		}
 
 
@@ -323,12 +323,12 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L",1  + 2, 3,", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsFalse(res, L"compile ',1  + 2, 3,' must be failed!");
+			EXPECT_FALSE(res, L"compile ',1  + 2, 3,' must be failed!");
 		}
 
 		TEST_METHOD(testCompile5)
@@ -343,13 +343,13 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2, 3 - 4", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsTrue(res, L"compile '1  + 2 + (3 - 4)' failed!");
-			Assert::IsTrue(expList.size() == 2, L"compile '1  + 2, 3 - 4' must return two expressions");
+			EXPECT_TRUE(res, L"compile '1  + 2 + (3 - 4)' failed!");
+			EXPECT_TRUE(expList.size() == 2, L"compile '1  + 2, 3 - 4' must return two expressions");
 		}
 
 		TEST_METHOD(testCompile6)
@@ -364,13 +364,13 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2 * 3 - 4", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsTrue(res, L"compile '1 + 2 * 3 - 4' failed!");
-			Assert::IsTrue(expList.size() == 1, L"compile '1 + 2 * 3 - 4' must return one expression");
+			EXPECT_TRUE(res, L"compile '1 + 2 * 3 - 4' failed!");
+			EXPECT_TRUE(expList.size() == 1, L"compile '1 + 2 * 3 - 4' must return one expression");
 		}
 
 		TEST_METHOD(testCompile6_checkfail1)
@@ -385,12 +385,12 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2 3 * - 4", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsFalse(res, L"compile '1 + 2 3 * - 4' must failed!");
+			EXPECT_FALSE(res, L"compile '1 + 2 3 * - 4' must failed!");
 		}
 
 		TEST_METHOD(testCompile6_1)
@@ -405,20 +405,20 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2 * - 4", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
 			//because 1 + 2 * - 4 equal to 1 + 2 * (-4)
 			//so the expression is valid
-			Assert::IsTrue(res, L"compile '1 + 2 * - 4' must success!");
+			EXPECT_TRUE(res, L"compile '1 + 2 * - 4' must success!");
 
 			eResult = parser.link(expList.front().get());
-			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2 * - 4' failed.");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2 * - 4' failed.");
 
-			Assert::IsTrue(((Function*)expList.front()->getRoot().get())->getChild(0)->toString() == "1", L"first param of root function of '1 + 2 * (- 4)' must be '1'");
-			Assert::IsTrue(((Function*)expList.front()->getRoot().get())->getChild(1)->toString() == "*", L"second param of root function of '1 + 2 * (- 4)' must be '*'");
+			EXPECT_TRUE(((Function*)expList.front()->getRoot().get())->getChild(0)->toString() == "1", L"first param of root function of '1 + 2 * (- 4)' must be '1'");
+			EXPECT_TRUE(((Function*)expList.front()->getRoot().get())->getChild(1)->toString() == "*", L"second param of root function of '1 + 2 * (- 4)' must be '*'");
 		}
 
 		TEST_METHOD(testCompile6_2)
@@ -433,19 +433,19 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2 * (- 4)", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsTrue(res, L"compile '1 + 2 * (- 4)' must success!");
+			EXPECT_TRUE(res, L"compile '1 + 2 * (- 4)' must success!");
 
 			eResult = parser.link(expList.front().get());
-			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2 * (- 4)' failed.");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2 * (- 4)' failed.");
 
-			Assert::IsTrue(expList.front()->getRoot()->toString() == "+", L"root unit of '1 + 2 * (- 4)' must be '+'");
-			Assert::IsTrue(((Function*)expList.front()->getRoot().get())->getChild(0)->toString() == "1", L"first param of root function of '1 + 2 * (- 4)' must be '1'");
-			Assert::IsTrue(((Function*)expList.front()->getRoot().get())->getChild(1)->toString() == "*", L"second param of root function of '1 + 2 * (- 4)' must be '*'");
+			EXPECT_TRUE(expList.front()->getRoot()->toString() == "+", L"root unit of '1 + 2 * (- 4)' must be '+'");
+			EXPECT_TRUE(((Function*)expList.front()->getRoot().get())->getChild(0)->toString() == "1", L"first param of root function of '1 + 2 * (- 4)' must be '1'");
+			EXPECT_TRUE(((Function*)expList.front()->getRoot().get())->getChild(1)->toString() == "*", L"second param of root function of '1 + 2 * (- 4)' must be '*'");
 		}
 
 		TEST_METHOD(testCompile7)
@@ -460,14 +460,14 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 * 2 + 3", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsTrue(res, L"compile '1 * 2 + 3' failed!");
-			Assert::IsTrue(expList.size() == 1, L"compile '1 * 2 + 3' must return one expression");
-			Assert::IsTrue(expList.front()->getRoot()->toString() == "+", L"root unit of '1 * 2 + 3' must be '+'");
+			EXPECT_TRUE(res, L"compile '1 * 2 + 3' failed!");
+			EXPECT_TRUE(expList.size() == 1, L"compile '1 * 2 + 3' must return one expression");
+			EXPECT_TRUE(expList.front()->getRoot()->toString() == "+", L"root unit of '1 * 2 + 3' must be '+'");
 		}
 
 		TEST_METHOD(testCompile8)
@@ -482,14 +482,14 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 * (2 + 3)", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsTrue(res, L"compile '1 * 2 + 3' failed!");
-			Assert::IsTrue(expList.size() == 1, L"compile '1 * (2 + 3)' must return one expression");
-			Assert::IsTrue(expList.front()->getRoot()->toString() == "*", L"root unit of '1 * (2 + 3)' must be '*'");
+			EXPECT_TRUE(res, L"compile '1 * 2 + 3' failed!");
+			EXPECT_TRUE(expList.size() == 1, L"compile '1 * (2 + 3)' must return one expression");
+			EXPECT_TRUE(expList.front()->getRoot()->toString() == "*", L"root unit of '1 * (2 + 3)' must be '*'");
 		}
 
 		TEST_METHOD(testCompile9)
@@ -504,17 +504,17 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
-			Assert::IsTrue(res, L"compile '1 + 2' failed!");
+			EXPECT_TRUE(res, L"compile '1 + 2' failed!");
 
 			eResult = parser.link(expList.front().get());
-			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2' failed.");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2' failed.");
 
-			Assert::IsTrue(expList.front()->getRoot()->toString() == "+", L"root unit of '1 + 2' must be '+'");
-			Assert::IsTrue( ((Function*)expList.front()->getRoot().get())->getChild(0)->toString() == "1", L"first param of '1 + 2' must be '1'");
+			EXPECT_TRUE(expList.front()->getRoot()->toString() == "+", L"root unit of '1 + 2' must be '+'");
+			EXPECT_TRUE( ((Function*)expList.front()->getRoot().get())->getChild(0)->toString() == "1", L"first param of '1 + 2' must be '1'");
 		}
 
 		static Function* createSumFunction(const string& name, int id) {
@@ -537,7 +537,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"sum(1,2)", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -545,10 +545,10 @@ namespace ffscriptUT
 			Expression* expressionPtr = expList.front().get();
 			parser.link(expressionPtr);
 
-			Assert::IsTrue(res, L"compile 'sum(1,2)' failed!");
-			Assert::IsTrue(expList.front()->getRoot()->toString() == "sum", L"root unit of 'sum(1,2)' must be '+'");
-			Assert::IsTrue(((Function*)expList.front()->getRoot().get())->getChild(0)->toString() == "1", L"first param of 'sum(1,2)' must be '1'");
-			Assert::IsTrue(((Function*)expList.front()->getRoot().get())->getChild(1)->toString() == "2", L"second param of 'sum(1,2)' must be '2'");
+			EXPECT_TRUE(res, L"compile 'sum(1,2)' failed!");
+			EXPECT_TRUE(expList.front()->getRoot()->toString() == "sum", L"root unit of 'sum(1,2)' must be '+'");
+			EXPECT_TRUE(((Function*)expList.front()->getRoot().get())->getChild(0)->toString() == "1", L"first param of 'sum(1,2)' must be '1'");
+			EXPECT_TRUE(((Function*)expList.front()->getRoot().get())->getChild(1)->toString() == "2", L"second param of 'sum(1,2)' must be '2'");
 		}
 	};
 }

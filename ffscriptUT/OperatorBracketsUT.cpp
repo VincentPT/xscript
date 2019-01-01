@@ -77,7 +77,7 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNull(program, L"Compile program should be failed");
+			EXPECT_EQ(nullptr, program, L"Compile program should be failed");
 		}
 
 		TEST_METHOD(ForTypeHasNoBreacketOperator2)
@@ -94,7 +94,7 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNull(program, L"Compile program should be failed");
+			EXPECT_EQ(nullptr, program, L"Compile program should be failed");
 		}
 
 		static int int_inc(int a) {
@@ -118,23 +118,23 @@ namespace ffscriptUT
 				;
 			DFunction2* intFunctionOperator = new CdeclFunction2<int, int>(int_inc);
 			int functionId = fb.registFunction("int_function_operator", "int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", intFunctionOperator, scriptCompiler));
-			Assert::IsTrue(functionId > 0, L"register function failed");
+			EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			Assert::IsTrue(res, L"register function operator for integer failed");
+			EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes, L"function operator is run but return value is not correct");
+			EXPECT_EQ(1, *iRes, L"function operator is run but return value is not correct");
 		}
 
 		TEST_METHOD(ForTypeHasBracketOperator2)
@@ -149,23 +149,23 @@ namespace ffscriptUT
 				L"}"
 				;
 			int functionId = scriptCompiler->findFunction("*", "int,int");
-			Assert::IsTrue(functionId > 0, L"operator * is not registered");
+			EXPECT_TRUE(functionId > 0, L"operator * is not registered");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			Assert::IsTrue(res, L"register function operator for integer failed");
+			EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(6, *iRes, L"function operator is run but return value is not correct");
+			EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
 		}
 
 		TEST_METHOD(ForTypeHasBracketOperator3)
@@ -183,23 +183,23 @@ namespace ffscriptUT
 				L"}"
 				;
 			int functionId = scriptCompiler->findFunction("*", "int,int");
-			Assert::IsTrue(functionId > 0, L"operator * is not registered");
+			EXPECT_TRUE(functionId > 0, L"operator * is not registered");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			Assert::IsTrue(res, L"register function operator for integer failed");
+			EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(6, *iRes, L"function operator is run but return value is not correct");
+			EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
 		}
 
 		TEST_METHOD(ForTypeHasBracketOperator4)
@@ -215,23 +215,23 @@ namespace ffscriptUT
 				L"}"
 				;
 			int functionId = scriptCompiler->findFunction("*", "int,int");
-			Assert::IsTrue(functionId > 0, L"operator * is not registered");
+			EXPECT_TRUE(functionId > 0, L"operator * is not registered");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			Assert::IsTrue(res, L"register function operator for integer failed");
+			EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(6, *iRes, L"function operator is run but return value is not correct");
+			EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
 		}
 
 		TEST_METHOD(ForTypeHasBracketOperator5)
@@ -247,23 +247,23 @@ namespace ffscriptUT
 				L"}"
 				;
 			int functionId = scriptCompiler->findFunction("*", "int,int");
-			Assert::IsTrue(functionId > 0, L"operator * is not registered");
+			EXPECT_TRUE(functionId > 0, L"operator * is not registered");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			Assert::IsTrue(res, L"register function operator for integer failed");
+			EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(6, *iRes, L"function operator is run but return value is not correct");
+			EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
 		}
 
 		TEST_METHOD(ForTypeHasBracketOperator6)
@@ -279,23 +279,23 @@ namespace ffscriptUT
 				;
 			DFunction2* intFunctionOperator = new CdeclFunction2<int*, int&>(int_ref);
 			int functionId = fb.registFunction("forward_ref", "int&", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "ref int", intFunctionOperator, scriptCompiler));
-			Assert::IsTrue(functionId > 0, L"register function failed");
+			EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			Assert::IsTrue(res, L"register function operator for integer failed");
+			EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes, L"function operator is run but return value is not correct");
+			EXPECT_EQ(1, *iRes, L"function operator is run but return value is not correct");
 		}
 
 		static int sum(SimpleVariantArray* params) {
@@ -327,23 +327,23 @@ namespace ffscriptUT
 				;
 			DFunction2* intFunctionOperator = new CdeclFunction2<int, int, int, int>(sum);
 			int functionId = fb.registFunction("forward_ref", "int,int,int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", intFunctionOperator, scriptCompiler));
-			Assert::IsTrue(functionId > 0, L"register function failed");
+			EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			Assert::IsTrue(res, L"register function operator for integer failed");
+			EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(6, *iRes, L"function operator is run but return value is not correct");
+			EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
 		}
 
 		TEST_METHOD(ForTypeHasBracketOperator8)
@@ -359,23 +359,23 @@ namespace ffscriptUT
 				;
 			DFunction2* intFunctionOperator = new CdeclFunction2<int, int, int, int, int, int, int>(sum);
 			int functionId = fb.registFunction("forward_ref", "int,int,int,int,int,int", new BasicFunctionFactory<6>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", intFunctionOperator, scriptCompiler));
-			Assert::IsTrue(functionId > 0, L"register function failed");
+			EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			Assert::IsTrue(res, L"register function operator for integer failed");
+			EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(21, *iRes, L"function operator is run but return value is not correct");
+			EXPECT_EQ(21, *iRes, L"function operator is run but return value is not correct");
 		}
 
 		TEST_METHOD(ForTypeHasBracketOperator9)
@@ -392,23 +392,23 @@ namespace ffscriptUT
 			auto theNativeFunction = new CdeclFunction2<int, SimpleVariantArray*>(sum);
 			DynamicFunctionFactory dynamicFunctionFactor("int", theNativeFunction, scriptCompiler);
 			int functionId = fb.registDynamicFunction("sum", &dynamicFunctionFactor, false);
-			Assert::IsTrue(functionId > 0, L"register function failed");
+			EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			Assert::IsTrue(res, L"register function operator for integer failed");
+			EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(21, *iRes, L"function operator is run but return value is not correct");
+			EXPECT_EQ(21, *iRes, L"function operator is run but return value is not correct");
 		}
 	};
 }

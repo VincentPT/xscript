@@ -115,10 +115,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new MFunction2<void, OperatorExecuteCounter, void*>(obj, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler->registFunction("constructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 		}
 
 		void registerDestructor(OperatorExecuteCounter* obj, int type) {
@@ -126,10 +126,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new MFunction2<void, OperatorExecuteCounter, void*>(obj, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler->registFunction("destructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registDestructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register destructor failed");
+			EXPECT_TRUE(blRes, L"Register destructor failed");
 		}
 
 
@@ -139,10 +139,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, void*>(f);
 			int functionId = scriptCompiler->registFunction("constructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 		}
 
 		template <typename T>
@@ -151,10 +151,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new CdeclFunction2<void, void*>(f);
 			int functionId = scriptCompiler->registFunction("destructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registDestructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register destructor failed");
+			EXPECT_TRUE(blRes, L"Register destructor failed");
 		}
 
 		TEST_METHOD(DestructorUT1)
@@ -180,21 +180,21 @@ namespace ffscriptUT
 			// if operator '=' of interger is not defined...
 			if (interferAssigment < 0) {
 				// ...then cannot construct object ret in expression int ret = 1;
-				Assert::IsNull(program, L"compile program should failed");
+				EXPECT_EQ(nullptr, program, L"compile program should failed");
 				return;
 			}
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*) scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes, L"Construtor is run but parameter value is not correct");
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but parameter value is not correct");
-			Assert::AreEqual(1, destructorCounter.getCount(), L"Construtor is run but parameter value is not correct");
+			EXPECT_EQ(1, *iRes, L"Construtor is run but parameter value is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but parameter value is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount(), L"Construtor is run but parameter value is not correct");
 		}
 		
 		TEST_METHOD(DestructorForStructUT2)
@@ -229,18 +229,18 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(1, structConstructorCounter.getCount(), L"Constructor is run but parameter value is not correct");
-			Assert::AreEqual(1, structDestructorCounter.getCount(), L"Destrutor is run but parameter value is not correct");
-			Assert::AreEqual(1, intConstructorCounter.getCount(), L"Constructor is run but parameter value is not correct");
-			Assert::AreEqual(1, intDestructorCounter.getCount(), L"Destrutor is run but parameter value is not correct");
+			EXPECT_EQ(1, structConstructorCounter.getCount(), L"Constructor is run but parameter value is not correct");
+			EXPECT_EQ(1, structDestructorCounter.getCount(), L"Destrutor is run but parameter value is not correct");
+			EXPECT_EQ(1, intConstructorCounter.getCount(), L"Constructor is run but parameter value is not correct");
+			EXPECT_EQ(1, intDestructorCounter.getCount(), L"Destrutor is run but parameter value is not correct");
 		}
 
 		TEST_METHOD(DestructorForStructUT3)
@@ -275,18 +275,18 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(1, structConstructorCounter.getCount(), L"Destrutor is run but parameter value is not correct");
-			Assert::AreEqual(0, structDestructorCounter.getCount(), L"Denstrutor is run but parameter value is not correct");
-			Assert::AreEqual(1, intConstructorCounter.getCount(), L"Destrutor is run but parameter value is not correct");
-			Assert::AreEqual(0, intDestructorCounter.getCount(), L"Denstrutor is run but parameter value is not correct");
+			EXPECT_EQ(1, structConstructorCounter.getCount(), L"Destrutor is run but parameter value is not correct");
+			EXPECT_EQ(0, structDestructorCounter.getCount(), L"Denstrutor is run but parameter value is not correct");
+			EXPECT_EQ(1, intConstructorCounter.getCount(), L"Destrutor is run but parameter value is not correct");
+			EXPECT_EQ(0, intDestructorCounter.getCount(), L"Denstrutor is run but parameter value is not correct");
 		}
 
 		static void DummyStructConstructor(DummyStruct* obj) {
@@ -323,16 +323,16 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			DummyStruct* dummyStruct = (DummyStruct*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *dummyStruct->iVal, L"Destrutor is run but parameter value is not correct");
+			EXPECT_EQ(1, *dummyStruct->iVal, L"Destrutor is run but parameter value is not correct");
 
 			DummyStructDestructor(dummyStruct);
 		}

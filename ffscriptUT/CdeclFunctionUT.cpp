@@ -9,16 +9,14 @@
 **
 *
 **********************************************************************/
+#include <gtest/gtest.h>
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include <functional>
 #include "function\CdeclFunction.hpp"
 #include "function\CdeclFunction2.hpp"
 #include "function\CdeclFunction3.hpp"
 #include "TemplateForTest.hpp"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace FT;
 
@@ -220,666 +218,663 @@ namespace ffscriptUT
 		return 1;
 	}
 
-	TEST_CLASS(CdeclFunctionUT)
+		
+	TEST(CdeclFunction, testCdeclunctionVoid1)
 	{
-	public:		
-		TEST_METHOD(testCdeclunctionVoid1)
-		{
-			CdeclFunction<void> cdeclFunction(&cdeclFoo);
-			cdeclFunction.call();
-		}
+		CdeclFunction<void> cdeclFunction(&cdeclFoo);
+		cdeclFunction.call();
+	}
 
-		TEST_METHOD(testCdeclunctionVoid2)
-		{
-			CdeclFunction<void, const float&> cdeclFunction(&cdeclFoo);
+	TEST(CdeclFunction, testCdeclunctionVoid2)
+	{
+		CdeclFunction<void, const float&> cdeclFunction(&cdeclFoo);
 
-			float forRefValue1 = 1.0f;		
+		float forRefValue1 = 1.0f;		
 
-			pushParams(&cdeclFunction, &forRefValue1);
+		pushParams(&cdeclFunction, &forRefValue1);
 
-			cdeclFunction.call();
-		}
+		cdeclFunction.call();
+	}
 
-		TEST_METHOD(testCdeclunctionVoid3)
-		{
-			CdeclFunction<void, const float&, const float&> cdeclFunction(&cdeclFoo);
+	TEST(CdeclFunction, testCdeclunctionVoid3)
+	{
+		CdeclFunction<void, const float&, const float&> cdeclFunction(&cdeclFoo);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2);
 
-			cdeclFunction.call();
-		}
+		cdeclFunction.call();
+	}
 
-		TEST_METHOD(testCdeclunctionVoid4)
-		{
-			CdeclFunction<void, const float&, const float&, int> cdeclFunction(&cdeclFoo);
+	TEST(CdeclFunction, testCdeclunctionVoid4)
+	{
+		CdeclFunction<void, const float&, const float&, int> cdeclFunction(&cdeclFoo);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3);
 
-			cdeclFunction.call();
-		}
+		cdeclFunction.call();
+	}
 
-		TEST_METHOD(testCdeclunctionVoid5)
-		{
-			CdeclFunction<void, const float&, const float&, int, char> cdeclFunction(&cdeclFoo);
+	TEST(CdeclFunction, testCdeclunctionVoid5)
+	{
+		CdeclFunction<void, const float&, const float&, int, char> cdeclFunction(&cdeclFoo);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
-			char p4 = '4';
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
+		char p4 = '4';
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4);
 
-			cdeclFunction.call();
-		}
+		cdeclFunction.call();
+	}
 
-		TEST_METHOD(testCdeclunctionVoid6)
-		{
-			CdeclFunction<void, const float&,
-				const float&, int, char, const double&> cdeclFunction(&cdeclFoo);
+	TEST(CdeclFunction, testCdeclunctionVoid6)
+	{
+		CdeclFunction<void, const float&,
+			const float&, int, char, const double&> cdeclFunction(&cdeclFoo);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
-			char p4 = '4';
-			double forRefValue3 = 5.0f;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
+		char p4 = '4';
+		double forRefValue3 = 5.0f;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3);
 
-			cdeclFunction.call();
-		}
+		cdeclFunction.call();
+	}
 
-		TEST_METHOD(testCdeclunctionVoid7)
-		{
-			CdeclFunction<void, const float&,
-				const float&, int, char, const double&, void*> cdeclFunction(&cdeclFoo);
+	TEST(CdeclFunction, testCdeclunctionVoid7)
+	{
+		CdeclFunction<void, const float&,
+			const float&, int, char, const double&, void*> cdeclFunction(&cdeclFoo);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
-			char p4 = '4';
-			double forRefValue3 = 5.0f;
-			void* p6 = (void*)6;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
+		char p4 = '4';
+		double forRefValue3 = 5.0f;
+		void* p6 = (void*)6;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6);
 
-			cdeclFunction.call();
-		}
+		cdeclFunction.call();
+	}
 
-		TEST_METHOD(testCdeclunctionVoid8)
-		{
-			CdeclFunction<void, const float&,
-				const float&, int, char, const double&, void*, short> cdeclFunction(&cdeclFoo);
+	TEST(CdeclFunction, testCdeclunctionVoid8)
+	{
+		CdeclFunction<void, const float&,
+			const float&, int, char, const double&, void*, short> cdeclFunction(&cdeclFoo);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
-			char p4 = '4';
-			double forRefValue3 = 5.0f;
-			void* p6 = (void*)6;
-			short p7 = 7;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
+		char p4 = '4';
+		double forRefValue3 = 5.0f;
+		void* p6 = (void*)6;
+		short p7 = 7;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7);
 
-			cdeclFunction.call();
-		}
+		cdeclFunction.call();
+	}
 
-		TEST_METHOD(testCdeclunctionVoid9)
-		{
-			CdeclFunction<void, const float&,
-				const float&, int, char, const double&, void*, short, int> cdeclFunction(&cdeclFoo);
+	TEST(CdeclFunction, testCdeclunctionVoid9)
+	{
+		CdeclFunction<void, const float&,
+			const float&, int, char, const double&, void*, short, int> cdeclFunction(&cdeclFoo);
 			
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
-			char p4 = '4';
-			double forRefValue3 = 5.0f;
-			void* p6 = (void*)6;
-			short p7 = 7;
-			int p8 = 8;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
+		char p4 = '4';
+		double forRefValue3 = 5.0f;
+		void* p6 = (void*)6;
+		short p7 = 7;
+		int p8 = 8;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 
-			cdeclFunction.call();
-		}
+		cdeclFunction.call();
+	}
 
-		TEST_METHOD(testCdeclunctionFloat1)
-		{
-			CdeclFunction<float> cdeclFunction(&cdeclFoof);
-			cdeclFunction.call();
+	TEST(CdeclFunction, testCdeclunctionFloat1)
+	{
+		CdeclFunction<float> cdeclFunction(&cdeclFoof);
+		cdeclFunction.call();
 
-			float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = cdeclFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(1.0f, actualVal);
-		}
+		EXPECT_EQ(1.0f, actualVal);
+	}
 
-		TEST_METHOD(testCdeclunctionFloat2)
-		{
-			CdeclFunction<float, const float&> cdeclFunction(&cdeclFoof);
+	TEST(CdeclFunction, testCdeclunctionFloat2)
+	{
+		CdeclFunction<float, const float&> cdeclFunction(&cdeclFoof);
 
-			float forRefValue1 = 1.0f;
+		float forRefValue1 = 1.0f;
 
-			pushParams(&cdeclFunction, &forRefValue1);
+		pushParams(&cdeclFunction, &forRefValue1);
 
-			cdeclFunction.call();
+		cdeclFunction.call();
 
-			float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = cdeclFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(1.0f, actualVal);
-		}
+		EXPECT_EQ(1.0f, actualVal);
+	}
 
-		TEST_METHOD(testCdeclunctionFloat3)
-		{
-			CdeclFunction<float, const float&, const float&> cdeclFunction(&cdeclFoof);
+	TEST(CdeclFunction, testCdeclunctionFloat3)
+	{
+		CdeclFunction<float, const float&, const float&> cdeclFunction(&cdeclFoof);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2);
 
-			float expectedVal = 3.0f;
+		float expectedVal = 3.0f;
 
-			cdeclFunction.call();
+		cdeclFunction.call();
 
-			float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = cdeclFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(1.0f, actualVal);
-		}
+		EXPECT_EQ(1.0f, actualVal);
+	}
 
-		TEST_METHOD(testCdeclunctionFloat4)
-		{
-			CdeclFunction<float, const float&, const float&, int> cdeclFunction(&cdeclFoof);
+	TEST(CdeclFunction, testCdeclunctionFloat4)
+	{
+		CdeclFunction<float, const float&, const float&, int> cdeclFunction(&cdeclFoof);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3);
-			cdeclFunction.call();
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3);
+		cdeclFunction.call();
 
-			float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = cdeclFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(1.0f, actualVal);
-		}
+		EXPECT_EQ(1.0f, actualVal);
+	}
 
-		TEST_METHOD(testCdeclunctionFloat5)
-		{
-			CdeclFunction<float, const float&, const float&, int, char> cdeclFunction(&cdeclFoof);
+	TEST(CdeclFunction, testCdeclunctionFloat5)
+	{
+		CdeclFunction<float, const float&, const float&, int, char> cdeclFunction(&cdeclFoof);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
-			char p4 = '4';
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
+		char p4 = '4';
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4);
 
-			cdeclFunction.call();
+		cdeclFunction.call();
 
-			float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = cdeclFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(1.0f, actualVal);
-		}
+		EXPECT_EQ(1.0f, actualVal);
+	}
 
-		TEST_METHOD(testCdeclunctionFloat6)
-		{
-			CdeclFunction<float, const float&,
-				const float&, int, char, const double&> cdeclFunction(&cdeclFoof);
+	TEST(CdeclFunction, testCdeclunctionFloat6)
+	{
+		CdeclFunction<float, const float&,
+			const float&, int, char, const double&> cdeclFunction(&cdeclFoof);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
-			char p4 = '4';
-			double forRefValue3 = 5.0f;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
+		char p4 = '4';
+		double forRefValue3 = 5.0f;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3);
 
-			cdeclFunction.call();
+		cdeclFunction.call();
 
-			float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = cdeclFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(1.0f, actualVal);
-		}
+		EXPECT_EQ(1.0f, actualVal);
+	}
 
-		TEST_METHOD(testCdeclunctionFloat7)
-		{
-			CdeclFunction<float, const float&,
-				const float&, int, char, const double&, void*> cdeclFunction(&cdeclFoof);
+	TEST(CdeclFunction, testCdeclunctionFloat7)
+	{
+		CdeclFunction<float, const float&,
+			const float&, int, char, const double&, void*> cdeclFunction(&cdeclFoof);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
-			char p4 = '4';
-			double forRefValue3 = 5.0f;
-			void* p6 = (void*)6;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
+		char p4 = '4';
+		double forRefValue3 = 5.0f;
+		void* p6 = (void*)6;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6);
 
-			cdeclFunction.call();
+		cdeclFunction.call();
 
-			float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = cdeclFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(1.0f, actualVal);
-		}
+		EXPECT_EQ(1.0f, actualVal);
+	}
 
-		TEST_METHOD(testCdeclunctionFloat8)
-		{
-			CdeclFunction<float, const float&,
-				const float&, int, char, const double&, void*, short> cdeclFunction(&cdeclFoof);
+	TEST(CdeclFunction, testCdeclunctionFloat8)
+	{
+		CdeclFunction<float, const float&,
+			const float&, int, char, const double&, void*, short> cdeclFunction(&cdeclFoof);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
-			char p4 = '4';
-			double forRefValue3 = 5.0f;
-			void* p6 = (void*)6;
-			short p7 = 7;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
+		char p4 = '4';
+		double forRefValue3 = 5.0f;
+		void* p6 = (void*)6;
+		short p7 = 7;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7);
 
-			cdeclFunction.call();
+		cdeclFunction.call();
 
-			float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = cdeclFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(1.0f, actualVal);
-		}
+		EXPECT_EQ(1.0f, actualVal);
+	}
 
-		TEST_METHOD(testCdeclunctionFloat9)
-		{
-			CdeclFunction<float, const float&,
-				const float&, int, char, const double&, void*, short, int> cdeclFunction(&cdeclFoof);
+	TEST(CdeclFunction, testCdeclunctionFloat9)
+	{
+		CdeclFunction<float, const float&,
+			const float&, int, char, const double&, void*, short, int> cdeclFunction(&cdeclFoof);
 
-			float forRefValue1 = 1.0f;
-			float forRefValue2 = 2.0f;
-			int p3 = 3;
-			char p4 = '4';
-			double forRefValue3 = 5.0f;
-			void* p6 = (void*)6;
-			short p7 = 7;
-			int p8 = 8;
+		float forRefValue1 = 1.0f;
+		float forRefValue2 = 2.0f;
+		int p3 = 3;
+		char p4 = '4';
+		double forRefValue3 = 5.0f;
+		void* p6 = (void*)6;
+		short p7 = 7;
+		int p8 = 8;
 
-			pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
+		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 			
-			cdeclFunction.call();
+		cdeclFunction.call();
 
-			float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = cdeclFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(1.0f, actualVal);
-		}
+		EXPECT_EQ(1.0f, actualVal);
+	}
 
-		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testCdeclunctionGeneral1)
-		{
-			CdeclFunction<char> cdeclFunction(&cdeclFooGeneral);
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(CdeclFunction, testCdeclunctionGeneral1)
+	{
+		CdeclFunction<char> cdeclFunction(&cdeclFooGeneral);
 
-			DFunction* dynamicCaller = &cdeclFunction;
-			dynamicCaller->call();
+		DFunction* dynamicCaller = &cdeclFunction;
+		dynamicCaller->call();
 
-			Assert::AreEqual((char)1, (char)dynamicCaller->getReturnValAsInt8());
-		}
+		EXPECT_EQ((char)1, (char)dynamicCaller->getReturnValAsInt8());
+	}
 
-		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testCdeclunctionGeneral2)
-		{
-			CdeclFunction<short, int> cdeclFunction(&cdeclFooGeneral);
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(CdeclFunction, testCdeclunctionGeneral2)
+	{
+		CdeclFunction<short, int> cdeclFunction(&cdeclFooGeneral);
 
-			DFunction* dynamicCaller = &cdeclFunction;
-			dynamicCaller->pushParam((void*)1);
-			dynamicCaller->call();
+		DFunction* dynamicCaller = &cdeclFunction;
+		dynamicCaller->pushParam((void*)1);
+		dynamicCaller->call();
 
-			Assert::AreEqual((short)1, (short)dynamicCaller->getReturnValAsInt16());
-		}
+		EXPECT_EQ((short)1, (short)dynamicCaller->getReturnValAsInt16());
+	}
 
-		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testCdeclunctionGeneral3)
-		{
-			CdeclFunction<float, int, char> cdeclFunction(&cdeclFooGeneral);
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(CdeclFunction, testCdeclunctionGeneral3)
+	{
+		CdeclFunction<float, int, char> cdeclFunction(&cdeclFooGeneral);
 
-			DFunction* dynamicCaller = &cdeclFunction;
-			dynamicCaller->pushParam((void*)1);
-			dynamicCaller->pushParam((void*)'2');
-			dynamicCaller->call();
+		DFunction* dynamicCaller = &cdeclFunction;
+		dynamicCaller->pushParam((void*)1);
+		dynamicCaller->pushParam((void*)'2');
+		dynamicCaller->call();
 
-			Assert::AreEqual(1.0f, dynamicCaller->getReturnValAsFloat());
-		}
+		EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
+	}
 
-		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testCdeclunctionGeneral4)
-		{
-			CdeclFunction<int, int, char, const double&> cdeclFunction(&cdeclFooGeneral);
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(CdeclFunction, testCdeclunctionGeneral4)
+	{
+		CdeclFunction<int, int, char, const double&> cdeclFunction(&cdeclFooGeneral);
 
-			double p3 = 3.0f;
+		double p3 = 3.0f;
 
-			DFunction* dynamicCaller = &cdeclFunction;
-			dynamicCaller->pushParam((void*)1);
-			dynamicCaller->pushParam((void*)'2');
-			dynamicCaller->pushParam((void*)&p3);
-			dynamicCaller->call();
+		DFunction* dynamicCaller = &cdeclFunction;
+		dynamicCaller->pushParam((void*)1);
+		dynamicCaller->pushParam((void*)'2');
+		dynamicCaller->pushParam((void*)&p3);
+		dynamicCaller->call();
 
-			Assert::AreEqual(1, dynamicCaller->getReturnValAsInt32());
-		}
+		EXPECT_EQ(1, dynamicCaller->getReturnValAsInt32());
+	}
 
-		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testCdeclunctionGeneral5)
-		{
-			CdeclFunction<long, int, char, const double&, const float&> cdeclFunction(&cdeclFooGeneral);
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(CdeclFunction, testCdeclunctionGeneral5)
+	{
+		CdeclFunction<long, int, char, const double&, const float&> cdeclFunction(&cdeclFooGeneral);
 
-			double p3 = 3.0f;
-			float p4 = 4.0f;
+		double p3 = 3.0f;
+		float p4 = 4.0f;
 
-			DFunction* dynamicCaller = &cdeclFunction;
-			dynamicCaller->pushParam((void*)1);
-			dynamicCaller->pushParam((void*)'2');
-			dynamicCaller->pushParam((void*)&p3);
-			dynamicCaller->pushParam((void*)&p4);
-			dynamicCaller->call();
+		DFunction* dynamicCaller = &cdeclFunction;
+		dynamicCaller->pushParam((void*)1);
+		dynamicCaller->pushParam((void*)'2');
+		dynamicCaller->pushParam((void*)&p3);
+		dynamicCaller->pushParam((void*)&p4);
+		dynamicCaller->call();
 
-			Assert::AreEqual(1, dynamicCaller->getReturnValAsInt32());
-		}
+		EXPECT_EQ(1, dynamicCaller->getReturnValAsInt32());
+	}
 
-		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testCdeclunctionGeneral6)
-		{
-			CdeclFunction<long long, int, char, const double&, const float&, unsigned int> cdeclFunction(&cdeclFooGeneral);
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(CdeclFunction, testCdeclunctionGeneral6)
+	{
+		CdeclFunction<long long, int, char, const double&, const float&, unsigned int> cdeclFunction(&cdeclFooGeneral);
 
-			double p3 = 3.0f;
-			float p4 = 4.0f;
+		double p3 = 3.0f;
+		float p4 = 4.0f;
 
-			DFunction* dynamicCaller = &cdeclFunction;
-			dynamicCaller->pushParam((void*)1);
-			dynamicCaller->pushParam((void*)'2');
-			dynamicCaller->pushParam((void*)&p3);
-			dynamicCaller->pushParam((void*)&p4);
-			dynamicCaller->pushParam((void*)5);
-			dynamicCaller->call();
+		DFunction* dynamicCaller = &cdeclFunction;
+		dynamicCaller->pushParam((void*)1);
+		dynamicCaller->pushParam((void*)'2');
+		dynamicCaller->pushParam((void*)&p3);
+		dynamicCaller->pushParam((void*)&p4);
+		dynamicCaller->pushParam((void*)5);
+		dynamicCaller->call();
 
-			Assert::IsTrue(1000000000000000 == dynamicCaller->getReturnValAsInt64());
-		}
+		EXPECT_TRUE(1000000000000000 == dynamicCaller->getReturnValAsInt64());
+	}
 
-		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testCdeclunctionGeneral7)
-		{
-			CdeclFunction<double, int, char, const double&, const float&, unsigned int, short> cdeclFunction(&cdeclFooGeneral);
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(CdeclFunction, testCdeclunctionGeneral7)
+	{
+		CdeclFunction<double, int, char, const double&, const float&, unsigned int, short> cdeclFunction(&cdeclFooGeneral);
 
-			double p3 = 3.0f;
-			float p4 = 4.0f;
+		double p3 = 3.0f;
+		float p4 = 4.0f;
 
-			DFunction* dynamicCaller = &cdeclFunction;
-			dynamicCaller->pushParam((void*)1);
-			dynamicCaller->pushParam((void*)'2');
-			dynamicCaller->pushParam((void*)&p3);
-			dynamicCaller->pushParam((void*)&p4);
-			dynamicCaller->pushParam((void*)5);
-			dynamicCaller->pushParam((void*)6);
-			dynamicCaller->call();
+		DFunction* dynamicCaller = &cdeclFunction;
+		dynamicCaller->pushParam((void*)1);
+		dynamicCaller->pushParam((void*)'2');
+		dynamicCaller->pushParam((void*)&p3);
+		dynamicCaller->pushParam((void*)&p4);
+		dynamicCaller->pushParam((void*)5);
+		dynamicCaller->pushParam((void*)6);
+		dynamicCaller->call();
 
-			Assert::AreEqual(1000000000000000.0, dynamicCaller->getReturnValAsDouble());
-		}
+		EXPECT_EQ(1000000000000000.0, dynamicCaller->getReturnValAsDouble());
+	}
 
-		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testCdeclunctionGeneral8)
-		{
-			CdeclFunction<unsigned short, int, char, const double&, const float&, unsigned int, short, long> cdeclFunction(&cdeclFooGeneral);
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(CdeclFunction, testCdeclunctionGeneral8)
+	{
+		CdeclFunction<unsigned short, int, char, const double&, const float&, unsigned int, short, long> cdeclFunction(&cdeclFooGeneral);
 
-			double p3 = 3.0f;
-			float p4 = 4.0f;
+		double p3 = 3.0f;
+		float p4 = 4.0f;
 
-			DFunction* dynamicCaller = &cdeclFunction;
-			dynamicCaller->pushParam((void*)1);
-			dynamicCaller->pushParam((void*)'2');
-			dynamicCaller->pushParam((void*)&p3);
-			dynamicCaller->pushParam((void*)&p4);
-			dynamicCaller->pushParam((void*)5);
-			dynamicCaller->pushParam((void*)6);
-			dynamicCaller->pushParam((void*)7);
-			dynamicCaller->call();
+		DFunction* dynamicCaller = &cdeclFunction;
+		dynamicCaller->pushParam((void*)1);
+		dynamicCaller->pushParam((void*)'2');
+		dynamicCaller->pushParam((void*)&p3);
+		dynamicCaller->pushParam((void*)&p4);
+		dynamicCaller->pushParam((void*)5);
+		dynamicCaller->pushParam((void*)6);
+		dynamicCaller->pushParam((void*)7);
+		dynamicCaller->call();
 
-			Assert::AreEqual(1, (int)dynamicCaller->getReturnValAsInt16());
-		}
+		EXPECT_EQ(1, (int)dynamicCaller->getReturnValAsInt16());
+	}
 
-		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testCdeclunctionGeneral9)
-		{
-			CdeclFunction<unsigned short, int, char, const double&, const float&, unsigned int, short, long> cdeclFunction(&cdeclFooGeneral);
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(CdeclFunction, testCdeclunctionGeneral9)
+	{
+		CdeclFunction<unsigned short, int, char, const double&, const float&, unsigned int, short, long> cdeclFunction(&cdeclFooGeneral);
 
-			double p3 = 3.0f;
-			float p4 = 4.0f;
+		double p3 = 3.0f;
+		float p4 = 4.0f;
 
-			DFunction* dynamicCaller = &cdeclFunction;
-			dynamicCaller->pushParam((void*)1);
-			dynamicCaller->pushParam((void*)'2');
-			dynamicCaller->pushParam((void*)&p3);
-			dynamicCaller->pushParam((void*)&p4);
-			dynamicCaller->pushParam((void*)5);
-			dynamicCaller->pushParam((void*)6);
-			dynamicCaller->pushParam((void*)7);
-			dynamicCaller->call();
+		DFunction* dynamicCaller = &cdeclFunction;
+		dynamicCaller->pushParam((void*)1);
+		dynamicCaller->pushParam((void*)'2');
+		dynamicCaller->pushParam((void*)&p3);
+		dynamicCaller->pushParam((void*)&p4);
+		dynamicCaller->pushParam((void*)5);
+		dynamicCaller->pushParam((void*)6);
+		dynamicCaller->pushParam((void*)7);
+		dynamicCaller->call();
 
-			Assert::AreEqual(1, (int)dynamicCaller->getReturnValAsInt16());
+		EXPECT_EQ(1, (int)dynamicCaller->getReturnValAsInt16());
 
-			DFunction* pNewInsance = dynamicCaller->clone();
-			pNewInsance->call();
+		DFunction* pNewInsance = dynamicCaller->clone();
+		pNewInsance->call();
 
-			Assert::AreEqual(1, (int)pNewInsance->getReturnValAsInt16());
-		}
+		EXPECT_EQ(1, (int)pNewInsance->getReturnValAsInt16());
+	}
 
-		/*static double sin(const double& v) {
-			return ::sin(v);
-		}*/
+	/*static double sin(const double& v) {
+		return ::sin(v);
+	}*/
 
-		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testCdeclunctionExternal1)
-		{
-			/*CdeclFunction<double, double> cdeclFunction(cdeclForward<double, double>();
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(CdeclFunction, testCdeclunctionExternal1)
+	{
+		/*CdeclFunction<double, double> cdeclFunction(cdeclForward<double, double>();
 
-			double p = 3.0f;
+		double p = 3.0f;
 
-			double expect = ::sin(p);
+		double expect = ::sin(p);
 
-			cdeclFunction.pushParam(&p);
+		cdeclFunction.pushParam(&p);
 
-			cdeclFunction.call();
+		cdeclFunction.call();
 
-			double val1 = cdeclFunction.getReturnValAsDouble();
-			const void* val2 = cdeclFunction.getReturnValAsReference();
+		double val1 = cdeclFunction.getReturnValAsDouble();
+		const void* val2 = cdeclFunction.getReturnValAsReference();
 
-			Assert::AreEqual(expect, val1);
-			Assert::AreEqual(expect, *((double*)val2));*/
+		EXPECT_EQ(expect, val1);
+		EXPECT_EQ(expect, *((double*)val2));*/
 
-			double p = 3.0f;
-			double val1 = cdeclForward<double, double>(&sin, p);
-			double expect = ::sin(p);
-			Assert::AreEqual(expect, val1);
-		}
+		double p = 3.0f;
+		double val1 = cdeclForward<double, double>(&sin, p);
+		double expect = ::sin(p);
+		EXPECT_EQ(expect, val1);
+	}
 		
 
-		TEST_METHOD(testCdeclunction2_1)
-		{
-			float p1 = 1.0f;
-			float p2 = 2.0f;
-			int p3 = 3;
-			CdeclFunction2<float, const float&, const float&, int> cdelFunction(cdeclFoof);
-			DFunction2* nativeFunction2 = &cdelFunction;
+	TEST(CdeclFunction, testCdeclunction2_1)
+	{
+		float p1 = 1.0f;
+		float p2 = 2.0f;
+		int p3 = 3;
+		CdeclFunction2<float, const float&, const float&, int> cdelFunction(cdeclFoof);
+		DFunction2* nativeFunction2 = &cdelFunction;
 
-			float returnVal;
-			void* params[] = {&p1, &p2, (void*)(size_t)p3};
-			nativeFunction2->call(&returnVal, params);
-			Assert::AreEqual(cdeclFoof(p1, p2, p3), returnVal);
-		}
+		float returnVal;
+		void* params[] = {&p1, &p2, (void*)(size_t)p3};
+		nativeFunction2->call(&returnVal, params);
+		EXPECT_EQ(cdeclFoof(p1, p2, p3), returnVal);
+	}
 #ifndef USE_EXTERNAL_PARAMS_ONLY
-		TEST_METHOD(testCdeclunction2_2)
-		{
-			float fixedParam = 1.0f;
-			float p2 = 2.0f;
-			int p3 = 3;
-			CdeclFunction2<float, const float&, const float&, int> cdelFunction(cdeclFoof);
-			cdelFunction.bind<float*>(&fixedParam);
+	TEST(CdeclFunction, testCdeclunction2_2)
+	{
+		float fixedParam = 1.0f;
+		float p2 = 2.0f;
+		int p3 = 3;
+		CdeclFunction2<float, const float&, const float&, int> cdelFunction(cdeclFoof);
+		cdelFunction.bind<float*>(&fixedParam);
 
-			DFunction2* nativeFunction2 = &cdelFunction;
+		DFunction2* nativeFunction2 = &cdelFunction;
 
-			float returnVal;
-			void* params[] = { &p2, (void*)(size_t)p3 };
-			nativeFunction2->call(&returnVal, params);
-			Assert::AreEqual(cdeclFoof(fixedParam, p2, p3), returnVal);
-		}
+		float returnVal;
+		void* params[] = { &p2, (void*)(size_t)p3 };
+		nativeFunction2->call(&returnVal, params);
+		EXPECT_EQ(cdeclFoof(fixedParam, p2, p3), returnVal);
+	}
 #endif
-		static double sum(int a, float b) {
-			return (double)(a + b);
-		}
+	static double sum(int a, float b) {
+		return (double)(a + b);
+	}
 
 #pragma pack(push)
 #pragma pack(1)
-		struct SampleStruct {
-			int a;
-			double b;
-		};
+	struct SampleStruct {
+		int a;
+		double b;
+	};
 #pragma pack(pop)
 
-		static void sum2(SampleStruct a, int b) {
-			a.b += b;
-		}
+	static void sum2(SampleStruct a, int b) {
+		a.b += b;
+	}
 
-		static void sum21(SampleStruct a, int b, SampleStruct& c) {
-			c.b = a.b + b;
-		}
+	static void sum21(SampleStruct a, int b, SampleStruct& c) {
+		c.b = a.b + b;
+	}
 
-		TEST_METHOD(testCdeclunction3_0)
-		{
-			typedef MemberTypeInfo<0, sizeof(void*), int, SampleStruct, float> AMemberTypeInfo;
-			int offset = 0;
-			Assert::AreEqual(offset, AMemberTypeInfo::offset<0>());
+	TEST(CdeclFunction, testCdeclunction3_0)
+	{
+		typedef MemberTypeInfo<0, sizeof(void*), int, SampleStruct, float> AMemberTypeInfo;
+		int offset = 0;
+		EXPECT_EQ(offset, AMemberTypeInfo::offset<0>());
 
-			offset += sizeof(void*);
-			Assert::AreEqual(offset, AMemberTypeInfo::offset<1>());
+		offset += sizeof(void*);
+		EXPECT_EQ(offset, AMemberTypeInfo::offset<1>());
 
-			constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
-			offset += alignedSizeOfStruct;
+		constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
+		offset += alignedSizeOfStruct;
 
-			Assert::AreEqual(offset, AMemberTypeInfo::offset<2>());
-			offset += sizeof(void*);
+		EXPECT_EQ(offset, AMemberTypeInfo::offset<2>());
+		offset += sizeof(void*);
 
-			Assert::AreEqual((int)sizeof(void*), AMemberTypeInfo::getSize<0>());
-			Assert::AreEqual(alignedSizeOfStruct, AMemberTypeInfo::getSize<1>());
-			Assert::AreEqual((int)sizeof(void*), AMemberTypeInfo::getSize<2>());
-			Assert::AreEqual(offset, AMemberTypeInfo::totalSize());
-		}
+		EXPECT_EQ((int)sizeof(void*), AMemberTypeInfo::getSize<0>());
+		EXPECT_EQ(alignedSizeOfStruct, AMemberTypeInfo::getSize<1>());
+		EXPECT_EQ((int)sizeof(void*), AMemberTypeInfo::getSize<2>());
+		EXPECT_EQ(offset, AMemberTypeInfo::totalSize());
+	}
 
-		TEST_METHOD(testCdeclunction3_1)
-		{
-			int p1 = 123;
-			float p2 = 456.0f;
-			CdelFunction3<double, int, float> cdelFunction(sum);
-			DFunction2* nativeFunction2 = &cdelFunction;
+	TEST(CdeclFunction, testCdeclunction3_1)
+	{
+		int p1 = 123;
+		float p2 = 456.0f;
+		CdelFunction3<double, int, float> cdelFunction(sum);
+		DFunction2* nativeFunction2 = &cdelFunction;
 
-			char paramData[sizeof(void*) * 2];
-			// argument 1
-			*((int*)&paramData[0]) = p1;
-			// argument 2
-			*((float*)&paramData[sizeof(void*)]) = p2;
+		char paramData[sizeof(void*) * 2];
+		// argument 1
+		*((int*)&paramData[0]) = p1;
+		// argument 2
+		*((float*)&paramData[sizeof(void*)]) = p2;
 
-			double returnVal;
+		double returnVal;
 
-			nativeFunction2->call(&returnVal, (void**)&paramData[0]);
-			Assert::AreEqual(sum(p1 , p2), returnVal);
-		}
+		nativeFunction2->call(&returnVal, (void**)&paramData[0]);
+		EXPECT_EQ(sum(p1 , p2), returnVal);
+	}
 
-		TEST_METHOD(testCdeclunction3_2)
-		{
-			SampleStruct p1 = { 456, 789.0f };
-			int p2 = 123;
-			CdelFunction3<void, SampleStruct, int> cdelFunction(sum2);
-			DFunction2* nativeFunction2 = &cdelFunction;
+	TEST(CdeclFunction, testCdeclunction3_2)
+	{
+		SampleStruct p1 = { 456, 789.0f };
+		int p2 = 123;
+		CdelFunction3<void, SampleStruct, int> cdelFunction(sum2);
+		DFunction2* nativeFunction2 = &cdelFunction;
 
-			constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
+		constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
 
-			char paramData[sizeof(void*) + alignedSizeOfStruct];
-			// argument 1
-			*((SampleStruct*)&paramData[0]) = p1;
-			// argument 2
-			*((int*)&paramData[alignedSizeOfStruct]) = p2;
-			nativeFunction2->call(nullptr, (void**)&paramData[0]);
-		}
+		char paramData[sizeof(void*) + alignedSizeOfStruct];
+		// argument 1
+		*((SampleStruct*)&paramData[0]) = p1;
+		// argument 2
+		*((int*)&paramData[alignedSizeOfStruct]) = p2;
+		nativeFunction2->call(nullptr, (void**)&paramData[0]);
+	}
 
-		TEST_METHOD(testCdeclunction3_3)
-		{
-			SampleStruct p1 = { 456, 789.0f };
-			int p2 = 123;
-			SampleStruct p3;
-			constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
+	TEST(CdeclFunction, testCdeclunction3_3)
+	{
+		SampleStruct p1 = { 456, 789.0f };
+		int p2 = 123;
+		SampleStruct p3;
+		constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
 
-			typedef CdelFunction3<void, SampleStruct, int, SampleStruct*> AFunc;
+		typedef CdelFunction3<void, SampleStruct, int, SampleStruct*> AFunc;
 
-			AFunc cdelFunction((AFunc::Fx)sum21);
+		AFunc cdelFunction((AFunc::Fx)sum21);
 
-			DFunction2* nativeFunction2 = &cdelFunction;
+		DFunction2* nativeFunction2 = &cdelFunction;
 
-			char paramData[sizeof(void*) * 2 + alignedSizeOfStruct];
-			// argument 1
-			*((SampleStruct*)&paramData[0]) = p1;
-			// argument 2
-			*((int*)&paramData[alignedSizeOfStruct]) = p2;
-			// argument 3
-			*((SampleStruct**)&paramData[alignedSizeOfStruct + sizeof(void*)]) = &p3;
+		char paramData[sizeof(void*) * 2 + alignedSizeOfStruct];
+		// argument 1
+		*((SampleStruct*)&paramData[0]) = p1;
+		// argument 2
+		*((int*)&paramData[alignedSizeOfStruct]) = p2;
+		// argument 3
+		*((SampleStruct**)&paramData[alignedSizeOfStruct + sizeof(void*)]) = &p3;
 
-			nativeFunction2->call(nullptr, (void**)&paramData[0]);
+		nativeFunction2->call(nullptr, (void**)&paramData[0]);
 
-			SampleStruct p31;
-			sum21(p1, p2, p31);
+		SampleStruct p31;
+		sum21(p1, p2, p31);
 
-			Assert::AreEqual(p31.b, p3.b);
-		}
+		EXPECT_EQ(p31.b, p3.b);
+	}
 
 
-		static double foo(int& p1, double p2) {
-			return p1 + p2;
-		}
+	static double foo(int& p1, double p2) {
+		return p1 + p2;
+	}
 
-		static void doNothing1() {
+	static void doNothing1() {
 
-		}
+	}
 
-		static int doNothing2() {
-			return 123;
-		}
+	static int doNothing2() {
+		return 123;
+	}
 
-		TEST_METHOD(testCdeclunction3_new_1)
-		{
-			double p2 = 789;
-			int p1 = 123;
-			CdelFunction3<double, int&, double> cdelFunction(foo);
-			DFunction2* nativeFunction2 = &cdelFunction;
+	TEST(CdeclFunction, testCdeclunction3_new_1)
+	{
+		double p2 = 789;
+		int p1 = 123;
+		CdelFunction3<double, int&, double> cdelFunction(foo);
+		DFunction2* nativeFunction2 = &cdelFunction;
 
-			char paramData[sizeof(void*) + sizeof(double)];
-			// argument 1
-			*((int**)&paramData[0]) = &p1;
-			// argument 2
-			*((double*)&paramData[sizeof(void*)]) = p2;
+		char paramData[sizeof(void*) + sizeof(double)];
+		// argument 1
+		*((int**)&paramData[0]) = &p1;
+		// argument 2
+		*((double*)&paramData[sizeof(void*)]) = p2;
 
-			double ret;
-			nativeFunction2->call(&ret, (void**)&paramData[0]);
+		double ret;
+		nativeFunction2->call(&ret, (void**)&paramData[0]);
 
-			Assert::AreEqual(foo(p1, p2), ret);
-		}
+		EXPECT_EQ(foo(p1, p2), ret);
+	}
 
-		TEST_METHOD(testCdeclunction3_new_2)
-		{	CdelFunction3<void> cdelFunction(doNothing1);
-			DFunction2* nativeFunction2 = &cdelFunction;
-			nativeFunction2->call(nullptr, nullptr);
-		}
+	TEST(CdeclFunction, testCdeclunction3_new_2)
+	{	CdelFunction3<void> cdelFunction(doNothing1);
+		DFunction2* nativeFunction2 = &cdelFunction;
+		nativeFunction2->call(nullptr, nullptr);
+	}
 
-		TEST_METHOD(testCdeclunction3_new_3)
-		{
-			CdelFunction3<int> cdelFunction(doNothing2);
-			DFunction2* nativeFunction2 = &cdelFunction;
+	TEST(CdeclFunction, testCdeclunction3_new_3)
+	{
+		CdelFunction3<int> cdelFunction(doNothing2);
+		DFunction2* nativeFunction2 = &cdelFunction;
 
-			int ret;
-			nativeFunction2->call(&ret, nullptr);
-			Assert::AreEqual(doNothing2(), ret);
-		}
-	};
+		int ret;
+		nativeFunction2->call(&ret, nullptr);
+		EXPECT_EQ(doNothing2(), ret);
+	}
 }

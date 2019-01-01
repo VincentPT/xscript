@@ -76,15 +76,15 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			Assert::IsTrue(res, L"compile '1 + 2' failed!");
+			EXPECT_TRUE(res, L"compile '1 + 2' failed!");
 
 			eResult = parser.link(expList.front().get());
-			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2' failed!");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2' failed!");
 		}
 
 		TEST_METHOD(testExpressionLink2)
@@ -100,16 +100,16 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2.0", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 			units.clear();
 
-			Assert::IsTrue(res, L"compile '1 + 2.0' failed!");
+			EXPECT_TRUE(res, L"compile '1 + 2.0' failed!");
 
 			eResult = parser.link(expList.front().get());
-			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2.0'  failed!");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2.0'  failed!");
 		}
 
 		TEST_METHOD(testExpressionLink3)
@@ -125,16 +125,16 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2.0", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 			units.clear();
 
-			Assert::IsTrue(res, L"compile '1 + 2.0' failed!");
+			EXPECT_TRUE(res, L"compile '1 + 2.0' failed!");
 
 			eResult = parser.link(expList.front().get());
-			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2.0' failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2.0' failed");
 		}
 
 		TEST_METHOD(testExpressionLink4)
@@ -149,17 +149,17 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2.0 * 3", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 			units.clear();
 
-			Assert::IsTrue(res, L"compile '1 + 2.0 * 3' failed!");
+			EXPECT_TRUE(res, L"compile '1 + 2.0 * 3' failed!");
 
 			eResult = parser.link(expList.front().get());
-			//Assert::IsTrue(eResult != E_SUCCESS, L"link expression '1 + 2.0 * 3'  must failed. To link successfully, program must register casting function");
-			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3'  should be success. To link successfully, program should implement basic function support all basic parameters without registering casting function");
+			//EXPECT_TRUE(eResult != E_SUCCESS, L"link expression '1 + 2.0 * 3'  must failed. To link successfully, program must register casting function");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3'  should be success. To link successfully, program should implement basic function support all basic parameters without registering casting function");
 		}
 
 		TEST_METHOD(testExpressionLink5)
@@ -175,19 +175,19 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2.0 * 3", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 			units.clear();
 
-			Assert::IsTrue(res, L"compile '1 + 2.0 * 3' failed!");
+			EXPECT_TRUE(res, L"compile '1 + 2.0 * 3' failed!");
 
 			eResult = parser.link(expList.front().get());
-			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3' failed.");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3' failed.");
 
-			Assert::IsTrue(expList.front()->getRoot()->toString() == "+", L"Root function must be '+'");
-			Assert::IsTrue(expList.front()->getRoot()->getReturnType().iType() == basicType.TYPE_DOUBLE , L"operator '+' must return double");
+			EXPECT_TRUE(expList.front()->getRoot()->toString() == "+", L"Root function must be '+'");
+			EXPECT_TRUE(expList.front()->getRoot()->getReturnType().iType() == basicType.TYPE_DOUBLE , L"operator '+' must return double");
 		}
 
 		TEST_METHOD(testExpressionLink6)
@@ -203,16 +203,16 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2.0 * 3", units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 			units.clear();
 
-			Assert::IsTrue(res, L"compile '1 + 2.0 * 3' failed!");
+			EXPECT_TRUE(res, L"compile '1 + 2.0 * 3' failed!");
 
 			eResult = parser.link(expList.front().get());
-			Assert::IsTrue(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3' failed.");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3' failed.");
 		}
 
 		double sum(double a) {
@@ -256,18 +256,18 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 			units.clear();
 
-			Assert::IsTrue(res, (L"compile '" + functionString + L"' failed!").c_str());
+			EXPECT_TRUE(res, (L"compile '" + functionString + L"' failed!").c_str());
 
 			eResult = parser.link(expList.front().get());
-			//Assert::IsTrue(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
-			//Assert::IsTrue( dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId3, (L"function '" + functionString + L"' must be linked to sum(double,float,int).").c_str());
-			Assert::IsTrue(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
+			//EXPECT_TRUE(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
+			//EXPECT_TRUE( dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId3, (L"function '" + functionString + L"' must be linked to sum(double,float,int).").c_str());
+			EXPECT_TRUE(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
 		}
 
 		TEST_METHOD(testExpressionLink8)
@@ -296,18 +296,18 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 			units.clear();
 
-			Assert::IsTrue(res, (L"compile '" + functionString + L"' failed!").c_str());
+			EXPECT_TRUE(res, (L"compile '" + functionString + L"' failed!").c_str());
 
 			eResult = parser.link(expList.front().get());
-			//Assert::IsTrue(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
-			//Assert::IsTrue(dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId3, (L"function '" + functionString + L"' must be linked to sum(double,float,int).").c_str());
-			Assert::IsTrue(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
+			//EXPECT_TRUE(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
+			//EXPECT_TRUE(dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId3, (L"function '" + functionString + L"' must be linked to sum(double,float,int).").c_str());
+			EXPECT_TRUE(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
 		}
 
 		TEST_METHOD(testExpressionLink9)
@@ -328,18 +328,18 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
-			Assert::IsTrue(eResult == E_SUCCESS, L"parse string to units failed");
+			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 			units.clear();
 
-			Assert::IsTrue(res, (L"compile '" + functionString + L"' failed!").c_str());
+			EXPECT_TRUE(res, (L"compile '" + functionString + L"' failed!").c_str());
 
 			eResult = parser.link(expList.front().get());
-			//Assert::IsTrue(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
-			//Assert::IsTrue(dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId1, (L"function '" + functionString + L"' must be linked to sum(int,int,int).").c_str());
-			Assert::IsTrue(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
+			//EXPECT_TRUE(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
+			//EXPECT_TRUE(dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId1, (L"function '" + functionString + L"' must be linked to sum(int,int,int).").c_str());
+			EXPECT_TRUE(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
 		}
 	};
 }

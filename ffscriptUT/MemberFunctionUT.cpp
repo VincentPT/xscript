@@ -412,7 +412,7 @@ namespace ffscriptUT
 
 			float actualVal = memberFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(expectedVal, actualVal);
+			EXPECT_EQ(expectedVal, actualVal);
 		}
 
 		TEST_METHOD(testMemberFunctionFloat2)
@@ -430,7 +430,7 @@ namespace ffscriptUT
 
 			float actualVal = memberFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(expectedVal, actualVal);
+			EXPECT_EQ(expectedVal, actualVal);
 		}
 
 		TEST_METHOD(testMemberFunctionFloat3)
@@ -449,7 +449,7 @@ namespace ffscriptUT
 
 			float actualVal = memberFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(expectedVal, actualVal);
+			EXPECT_EQ(expectedVal, actualVal);
 		}
 
 		TEST_METHOD(testMemberFunctionFloat4)
@@ -469,7 +469,7 @@ namespace ffscriptUT
 
 			float actualVal = memberFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(expectedVal, actualVal);
+			EXPECT_EQ(expectedVal, actualVal);
 		}
 
 		TEST_METHOD(testMemberFunctionFloat5)
@@ -490,7 +490,7 @@ namespace ffscriptUT
 
 			float actualVal = memberFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(expectedVal, actualVal);
+			EXPECT_EQ(expectedVal, actualVal);
 		}
 
 		TEST_METHOD(testMemberFunctionFloat6)
@@ -513,7 +513,7 @@ namespace ffscriptUT
 
 			float actualVal = memberFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(expectedVal, actualVal);
+			EXPECT_EQ(expectedVal, actualVal);
 		}
 
 		TEST_METHOD(testMemberFunctionFloat7)
@@ -537,7 +537,7 @@ namespace ffscriptUT
 
 			float actualVal = memberFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(expectedVal, actualVal);
+			EXPECT_EQ(expectedVal, actualVal);
 		}
 
 		TEST_METHOD(testMemberFunctionFloat8)
@@ -562,7 +562,7 @@ namespace ffscriptUT
 
 			float actualVal = memberFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(expectedVal, actualVal);
+			EXPECT_EQ(expectedVal, actualVal);
 		}
 
 		TEST_METHOD(testMemberFunctionFloat9)
@@ -588,7 +588,7 @@ namespace ffscriptUT
 
 			float actualVal = memberFunction.getReturnValAsFloat();
 
-			Assert::AreEqual(expectedVal, actualVal);
+			EXPECT_EQ(expectedVal, actualVal);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -599,7 +599,7 @@ namespace ffscriptUT
 			DFunction* dynamicCaller = &memberFunction;
 			dynamicCaller->call();
 
-			Assert::AreEqual((char)1, (char)dynamicCaller->getReturnValAsInt8());
+			EXPECT_EQ((char)1, (char)dynamicCaller->getReturnValAsInt8());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -611,7 +611,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)1);
 			dynamicCaller->call();
 
-			Assert::AreEqual((short)1, (short)dynamicCaller->getReturnValAsInt16());
+			EXPECT_EQ((short)1, (short)dynamicCaller->getReturnValAsInt16());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -624,7 +624,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)'2');
 			dynamicCaller->call();
 
-			Assert::AreEqual(1.0f, dynamicCaller->getReturnValAsFloat());
+			EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -640,7 +640,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)&p3);
 			dynamicCaller->call();
 
-			Assert::AreEqual(1, dynamicCaller->getReturnValAsInt32());
+			EXPECT_EQ(1, dynamicCaller->getReturnValAsInt32());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -658,7 +658,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)&p4);
 			dynamicCaller->call();
 
-			Assert::AreEqual(1, dynamicCaller->getReturnValAsInt32());
+			EXPECT_EQ(1, dynamicCaller->getReturnValAsInt32());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -677,7 +677,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)5);
 			dynamicCaller->call();
 
-			Assert::IsTrue(1000000000000000 == dynamicCaller->getReturnValAsInt64());
+			EXPECT_TRUE(1000000000000000 == dynamicCaller->getReturnValAsInt64());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -697,7 +697,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)6);
 			dynamicCaller->call();
 
-			Assert::AreEqual(1000000000000000.0, dynamicCaller->getReturnValAsDouble());
+			EXPECT_EQ(1000000000000000.0, dynamicCaller->getReturnValAsDouble());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -718,7 +718,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)7);
 			dynamicCaller->call();
 
-			Assert::AreEqual(1, (int)dynamicCaller->getReturnValAsInt16());
+			EXPECT_EQ(1, (int)dynamicCaller->getReturnValAsInt16());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
@@ -739,12 +739,12 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)7);
 			dynamicCaller->call();
 
-			Assert::AreEqual(1, (int)dynamicCaller->getReturnValAsInt16());
+			EXPECT_EQ(1, (int)dynamicCaller->getReturnValAsInt16());
 
 			DFunction* pNewInsance = dynamicCaller->clone();
 			pNewInsance->call();
 
-			Assert::AreEqual(1, (int)pNewInsance->getReturnValAsInt16());
+			EXPECT_EQ(1, (int)pNewInsance->getReturnValAsInt16());
 		}
 
 		TEST_METHOD(testMemberFunctionCdecl1)
@@ -757,7 +757,7 @@ namespace ffscriptUT
 			function.call();
 
 			double val1 = function.getReturnValAsDouble();
-			Assert::AreEqual(expect, val1);
+			EXPECT_EQ(expect, val1);
 		}
 
 		static double cdelfoo(const double& d) {
@@ -782,7 +782,7 @@ namespace ffscriptUT
 			function.call();
 
 			double val1 = function.getReturnValAsDouble();
-			Assert::AreEqual(expect, val1);
+			EXPECT_EQ(expect, val1);
 		}
 
 		TEST_METHOD(testMemberFunctionStd1)
@@ -795,7 +795,7 @@ namespace ffscriptUT
 			function.call();
 
 			double val1 = function.getReturnValAsDouble();
-			Assert::AreEqual(expect, val1);
+			EXPECT_EQ(expect, val1);
 		}
 
 		TEST_METHOD(testMemberFunctionStd2)
@@ -810,7 +810,7 @@ namespace ffscriptUT
 			function.call();
 
 			double val1 = function.getReturnValAsDouble();
-			Assert::AreEqual(expect, val1);
+			EXPECT_EQ(expect, val1);
 		}
 
 		void memberFoo(float a) {
@@ -847,7 +847,7 @@ namespace ffscriptUT
 			function.call();
 
 			double val1 = function.getReturnValAsDouble();
-			Assert::AreEqual(expect, val1);
+			EXPECT_EQ(expect, val1);
 		}
 
 		TEST_METHOD(testMemberFunctionMember3)
@@ -866,8 +866,8 @@ namespace ffscriptUT
 			double val2 = newInstance->getReturnValAsDouble();
 
 			double val1 = function.getReturnValAsDouble();
-			Assert::AreEqual(expect, val1);
-			Assert::AreEqual(expect, val2);
+			EXPECT_EQ(expect, val1);
+			EXPECT_EQ(expect, val2);
 		}
 	};
 }

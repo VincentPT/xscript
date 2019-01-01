@@ -46,11 +46,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };			
 
@@ -60,7 +60,7 @@ namespace ffscriptUT
 
 			int* iRes = (int*)task.getTaskResult();
 
-			Assert::AreEqual(a[1], *iRes, L"function 'foo' return wrong");
+			EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(ElementAccess2_1)
@@ -79,11 +79,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -93,7 +93,7 @@ namespace ffscriptUT
 
 			int* iRes = (int*)task.getTaskResult();
 
-			Assert::AreEqual(a[1], *iRes, L"function 'foo' return wrong");
+			EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(ElementAccess2_2)
@@ -112,11 +112,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref long");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			__int64 a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -126,7 +126,7 @@ namespace ffscriptUT
 
 			__int64* iRes = (__int64*)task.getTaskResult();
 
-			Assert::IsTrue(a[1] == *iRes, L"function 'foo' return wrong");
+			EXPECT_TRUE(a[1] == *iRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(ElementAccess2_3)
@@ -145,11 +145,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref float");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			float a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -159,7 +159,7 @@ namespace ffscriptUT
 
 			float* iRes = (float*)task.getTaskResult();
 
-			Assert::AreEqual(a[1], *iRes, L"function 'foo' return wrong");
+			EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(ElementAccess2_4)
@@ -178,11 +178,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref double");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			double a[] = { 1,2,3 };
 			double* pa = a;
@@ -193,7 +193,7 @@ namespace ffscriptUT
 
 			double* iRes = (double*)task.getTaskResult();
 
-			Assert::AreEqual(a[1], *iRes, L"function 'foo' return wrong");
+			EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(ElementAccess3)
@@ -212,11 +212,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -226,7 +226,7 @@ namespace ffscriptUT
 
 			size_t* pRes = (size_t*)task.getTaskResult();
 
-			Assert::AreEqual(a[1], *((int*)(*pRes)), L"function 'foo' return wrong");
+			EXPECT_EQ(a[1], *((int*)(*pRes)), L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(ElementAccess4)
@@ -246,11 +246,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -260,7 +260,7 @@ namespace ffscriptUT
 
 			size_t* pRes = (size_t*)task.getTaskResult();
 
-			Assert::AreEqual((size_t)&a[1], *pRes, L"function 'foo' return wrong");
+			EXPECT_EQ((size_t)&a[1], *pRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(ElementAccess5)
@@ -279,11 +279,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -293,7 +293,7 @@ namespace ffscriptUT
 
 			size_t* pRes = (size_t*)task.getTaskResult();
 
-			Assert::AreEqual((size_t)&a[1], *pRes, L"function 'foo' return wrong");
+			EXPECT_EQ((size_t)&a[1], *pRes, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(ElementAccess6)
@@ -312,11 +312,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -324,7 +324,7 @@ namespace ffscriptUT
 			ScriptTask task(program);
 			task.runFunction(functionId, &paramBuffer);
 
-			Assert::AreEqual(1, a[1], L"function 'foo' return wrong");
+			EXPECT_EQ(1, a[1], L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(ElementAccess7)
@@ -344,11 +344,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -356,7 +356,7 @@ namespace ffscriptUT
 			ScriptTask task(program);
 			task.runFunction(functionId, &paramBuffer);
 
-			Assert::AreEqual(5, a[1], L"function 'foo' return wrong");
+			EXPECT_EQ(5, a[1], L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(ElementAccess8)
@@ -376,11 +376,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -388,7 +388,7 @@ namespace ffscriptUT
 			ScriptTask task(program);
 			task.runFunction(functionId, &paramBuffer);
 
-			Assert::AreEqual(5, a[2], L"function 'foo' return wrong");
+			EXPECT_EQ(5, a[2], L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(ElementMemberAccess1)
@@ -414,17 +414,17 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, (L"Compile program failed:" + convertToWstring(scriptCompiler->getLastError())).c_str());
+			EXPECT_NE(nullptr, program, (L"Compile program failed:" + convertToWstring(scriptCompiler->getLastError())).c_str());
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			ScriptTask task(program);
 			task.runFunction(functionId, nullptr);
 			auto res = *(float*)task.getTaskResult();
 
-			Assert::AreEqual(1.1f, res, L"function 'foo' return wrong");
+			EXPECT_EQ(1.1f, res, L"function 'foo' return wrong");
 		}
 
 		TEST_METHOD(TestSorting)
@@ -456,11 +456,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int, int");
-			Assert::IsTrue(functionId >= 0, L"can not find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 3,2,5,6,7,1,4 };
 			const int n = sizeof(a) / sizeof(a[0]);
@@ -478,7 +478,7 @@ namespace ffscriptUT
 				}
 			}
 
-			Assert::AreEqual(n + 1, i, L"function 'foo' return wrong");
+			EXPECT_EQ(n + 1, i, L"function 'foo' return wrong");
 		}
 	};
 }

@@ -33,10 +33,10 @@ namespace ffscriptUT
 			intArray.size = sizeof(arr) / sizeof(arr[0]);
 			std::sort(intArray.elms, intArray.elms + intArray.size);
 
-			Assert::AreEqual(1, arr[0]);
-			Assert::AreEqual(3, arr[1]);
-			Assert::AreEqual(4, arr[2]);
-			Assert::AreEqual(9, arr[3]);
+			EXPECT_EQ(1, arr[0]);
+			EXPECT_EQ(3, arr[1]);
+			EXPECT_EQ(4, arr[2]);
+			EXPECT_EQ(9, arr[3]);
 		}
 
 		TEST_METHOD(CompatibleValidateFloat)
@@ -47,10 +47,10 @@ namespace ffscriptUT
 			floatArray.size = sizeof(arr) / sizeof(arr[0]);
 			std::sort(floatArray.elms, floatArray.elms + floatArray.size);
 
-			Assert::AreEqual(1.0f, arr[0]);
-			Assert::AreEqual(3.0f, arr[1]);
-			Assert::AreEqual(4.0f, arr[2]);
-			Assert::AreEqual(9.0f, arr[3]);
+			EXPECT_EQ(1.0f, arr[0]);
+			EXPECT_EQ(3.0f, arr[1]);
+			EXPECT_EQ(4.0f, arr[2]);
+			EXPECT_EQ(9.0f, arr[3]);
 		}
 
 		TEST_METHOD(CompatibleValidateDouble)
@@ -61,10 +61,10 @@ namespace ffscriptUT
 			floatArray.size = sizeof(arr) / sizeof(arr[0]);
 			std::sort(floatArray.elms, floatArray.elms + floatArray.size);
 
-			Assert::AreEqual(1.0, arr[0]);
-			Assert::AreEqual(3.0, arr[1]);
-			Assert::AreEqual(4.0, arr[2]);
-			Assert::AreEqual(9.0, arr[3]);
+			EXPECT_EQ(1.0, arr[0]);
+			EXPECT_EQ(3.0, arr[1]);
+			EXPECT_EQ(4.0, arr[2]);
+			EXPECT_EQ(9.0, arr[3]);
 		}
 	};
 }

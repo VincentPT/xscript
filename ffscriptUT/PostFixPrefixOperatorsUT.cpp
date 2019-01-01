@@ -84,18 +84,18 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			Assert::IsTrue(*result == (a++), (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == (a++), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PostFixInc2)
@@ -114,18 +114,18 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			Assert::IsTrue(*result == (a++ * 2), (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == (a++ * 2), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PostFixInc3)
@@ -144,17 +144,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PostFixInc5)
@@ -173,17 +173,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PostFixInc4)
@@ -202,18 +202,18 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			Assert::IsTrue(*result == (3 + a++), (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == (3 + a++), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PreFixInc1)
@@ -232,18 +232,18 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			Assert::IsTrue(*result == (++a), (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == (++a), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PreFixInc2)
@@ -262,18 +262,18 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			Assert::IsTrue(*result == (++a * 2), (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == (++a * 2), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PreFixInc3)
@@ -292,18 +292,18 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			Assert::IsTrue(*result == (++a + a), (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == (++a + a), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PreFixInc4)
@@ -322,18 +322,18 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			Assert::IsTrue(*result == (3 - ++a), (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == (3 - ++a), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PostFixInc6)
@@ -352,17 +352,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PostFixIncFloat)
@@ -381,17 +381,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			float* result = (float*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PostFixDecFloat)
@@ -410,17 +410,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			float* result = (float*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PreFixIncFloat)
@@ -439,17 +439,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			float* result = (float*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PreFixDecFloat)
@@ -468,17 +468,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			float* result = (float*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PostFixIncDouble)
@@ -497,17 +497,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			double* result = (double*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PostFixDecDouble)
@@ -526,17 +526,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			double* result = (double*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PreFixIncDouble)
@@ -555,17 +555,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			double* result = (double*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PreFixDecDouble)
@@ -584,17 +584,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			double* result = (double*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PostFixIncLong)
@@ -613,17 +613,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			double* result = (double*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PostFixDecLong)
@@ -642,17 +642,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			__int64* result = (__int64*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PreFixIncLong)
@@ -671,17 +671,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			__int64* result = (__int64*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PreFixDecLong)
@@ -700,17 +700,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			__int64* result = (__int64*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 
@@ -730,20 +730,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = globalScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = globalScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("foo", "int");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(a);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(FunctionAndPreFix1)
@@ -762,20 +762,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = globalScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = globalScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("foo", "int");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(a);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 1, L"program can run but return wrong value");			
+			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");			
 		}
 
 		TEST_METHOD(PreFixInc5)
@@ -794,17 +794,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 		TEST_METHOD(PreFixInc8)
@@ -823,17 +823,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			Assert::IsTrue(*result == -2, (L"result of expression '" + exp + L"' is not correct").c_str());
+			EXPECT_TRUE(*result == -2, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 	};
 }

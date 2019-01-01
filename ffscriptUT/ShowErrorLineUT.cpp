@@ -42,7 +42,7 @@ namespace ffscriptUT
 			compiler.setPreprocessor(std::make_shared<DefaultPreprocessor>());
 			auto program = compiler.compileProgram(script.c_str(), script.c_str() + script.size());
 
-			Assert::IsNull(program, L"compie program should be failed");
+			EXPECT_EQ(nullptr, program, L"compie program should be failed");
 			compiler.getLastCompliedPosition(line, column);
 
 			string errorMsg("error at line = ");
@@ -63,8 +63,8 @@ namespace ffscriptUT
 			complieErrorProgram("ErrorInGlobalScope1.c955", line, column);
 
 			// missing ; at the end of file
-			Assert::AreEqual(2, line);
-			Assert::AreEqual(0, column);
+			EXPECT_EQ(2, line);
+			EXPECT_EQ(0, column);
 		}
 
 		TEST_METHOD(ErrorInGlobalScope2)
@@ -74,8 +74,8 @@ namespace ffscriptUT
 
 			complieErrorProgram("ErrorInGlobalScope2.c955", line, column);
 
-			Assert::AreEqual(1, line);
-			Assert::AreEqual(6, column);
+			EXPECT_EQ(1, line);
+			EXPECT_EQ(6, column);
 		}
 
 		TEST_METHOD(ErrorInStruct1)
@@ -85,8 +85,8 @@ namespace ffscriptUT
 
 			complieErrorProgram("ErrorInStruct1.c955", line, column);
 
-			Assert::AreEqual(3, line);
-			Assert::AreEqual(7, column);
+			EXPECT_EQ(3, line);
+			EXPECT_EQ(7, column);
 		}
 
 		TEST_METHOD(ErrorInStruct2)
@@ -96,8 +96,8 @@ namespace ffscriptUT
 
 			complieErrorProgram("ErrorInStruct2.c955", line, column);
 
-			Assert::AreEqual(3, line);
-			Assert::AreEqual(9, column);
+			EXPECT_EQ(3, line);
+			EXPECT_EQ(9, column);
 		}
 
 		TEST_METHOD(ErrorInStruct3)
@@ -107,8 +107,8 @@ namespace ffscriptUT
 
 			complieErrorProgram("ErrorInStruct3.c955", line, column);
 
-			Assert::AreEqual(5, line);
-			Assert::AreEqual(0, column);
+			EXPECT_EQ(5, line);
+			EXPECT_EQ(0, column);
 		}
 
 		TEST_METHOD(ErrorInFunctionScope1) {
@@ -117,8 +117,8 @@ namespace ffscriptUT
 
 			complieErrorProgram("ErrorInFunctionScope1.c955", line, column);
 
-			Assert::AreEqual(3, line);
-			Assert::AreEqual(18, column);
+			EXPECT_EQ(3, line);
+			EXPECT_EQ(18, column);
 		}
 
 		TEST_METHOD(ErrorInFunctionScope2) {
@@ -127,8 +127,8 @@ namespace ffscriptUT
 
 			complieErrorProgram("ErrorInFunctionScope2.c955", line, column);
 
-			Assert::AreEqual(4, line);
-			Assert::AreEqual(0, column);
+			EXPECT_EQ(4, line);
+			EXPECT_EQ(0, column);
 		}
 
 		TEST_METHOD(ErrorInFunctionScope3) {
@@ -137,8 +137,8 @@ namespace ffscriptUT
 
 			complieErrorProgram("ErrorInFunctionScope3.c955", line, column);
 
-			Assert::AreEqual(4, line);
-			Assert::AreEqual(9, column);
+			EXPECT_EQ(4, line);
+			EXPECT_EQ(9, column);
 		}
 
 		TEST_METHOD(ErrorInFunctionScope4) {
@@ -147,8 +147,8 @@ namespace ffscriptUT
 
 			complieErrorProgram("ErrorInFunctionScope4.c955", line, column);
 
-			Assert::AreEqual(5, line);
-			Assert::AreEqual(0, column);
+			EXPECT_EQ(5, line);
+			EXPECT_EQ(0, column);
 		}
 
 		TEST_METHOD(ErrorInFunctionScope5) {
@@ -157,8 +157,8 @@ namespace ffscriptUT
 
 			complieErrorProgram("ErrorInFunctionScope5.c955", line, column);
 
-			Assert::AreEqual(8, line);
-			Assert::AreEqual(0, column);
+			EXPECT_EQ(8, line);
+			EXPECT_EQ(0, column);
 		}
 
 		TEST_METHOD(ErrorInFunctionScope6) {
@@ -167,8 +167,8 @@ namespace ffscriptUT
 
 			complieErrorProgram("ErrorInFunctionScope6.c955", line, column);
 
-			Assert::AreEqual(8, line);
-			Assert::AreEqual(0, column);
+			EXPECT_EQ(8, line);
+			EXPECT_EQ(0, column);
 		}
 
 		TEST_METHOD(ErrorInFunctionScope7) {
@@ -177,8 +177,8 @@ namespace ffscriptUT
 
 			complieErrorProgram("ErrorInFunctionScope7.c955", line, column);
 
-			Assert::AreEqual(8, line);
-			Assert::AreEqual(4, column);
+			EXPECT_EQ(8, line);
+			EXPECT_EQ(4, column);
 		}
 	};
 }

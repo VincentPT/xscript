@@ -118,10 +118,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new MFunction2<void, T, void*>(obj, &T::operatorFunction);
 			int functionId = scriptCompiler->registFunction("constructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes, L"Register constructor failed");
 		}
 
 		template <class T>
@@ -135,10 +135,10 @@ namespace ffscriptUT
 
 			DFunction2* copyFunction = new MFunction2<void, T, void*, const void*>(obj, &T::operatorFunction);
 			int functionId = scriptCompiler->registFunction("copyConstructor", args, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for copy constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for copy constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register copy constructor failed");
+			EXPECT_TRUE(blRes, L"Register copy constructor failed");
 		}
 
 		template <class T>
@@ -147,10 +147,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new MFunction2<void, T, void*>(obj, &T::operatorFunction);
 			int functionId = scriptCompiler->registFunction("destructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler->registDestructor(type, functionId);
-			Assert::IsTrue(blRes, L"Register destructor failed");
+			EXPECT_TRUE(blRes, L"Register destructor failed");
 		}
 
 	public:
@@ -201,24 +201,24 @@ namespace ffscriptUT
 			// if operator '=' of interger is not defined...
 			if (interferAssigment < 0) {
 				// ...then cannot construct object ret in expression int ret = 1;
-				Assert::IsNull(program, L"compile program should failed");
+				EXPECT_EQ(nullptr, program, L"compile program should failed");
 				return;
 			}
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			// because integer has no copy constructor, so in a declaration assigment expression.
 			// the default constructor is run before operator '=' is run.
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
 
 			// because  operator '=' return an integer value, so after execute the operation int ret = 1;
 			// the destructor for integer is executed. So, destructor count must be 2
-			Assert::AreEqual(2, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(2, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleUT2)
@@ -240,22 +240,22 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			// because integer has copy constructor, so default constructor is not used
-			Assert::AreEqual(0, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(0, constructorCounter.getCount(), L"Construtor is run but result is not correct");
 
-			Assert::AreEqual(1, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
 			// because integer has copy constructor, so operator '=' is replaced by copy constructor
 			// then destructor for return value of operator '=' have no change to run. So, destructor count must be 1
-			Assert::AreEqual(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
 		}
 		
 		TEST_METHOD(StructUT01)
@@ -277,17 +277,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(2, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructUT02)
@@ -309,17 +309,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(4, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(4, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(4, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(4, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructUT03)
@@ -341,17 +341,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructUT04)
@@ -379,21 +379,21 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructUT05)
@@ -415,17 +415,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructUT06)
@@ -447,17 +447,17 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructUT07)
@@ -485,21 +485,21 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructUT08)
@@ -533,25 +533,25 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo","");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(4, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(4, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(4, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(4, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructUT09)
@@ -587,10 +587,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
@@ -605,17 +605,17 @@ namespace ffscriptUT
 				expectedDestructorCount = 2;
 			}
 
-			Assert::AreEqual(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(expectedDestructorCount, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(expectedDestructorCount, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(0, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(0, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(0, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(0, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructUT10)
@@ -650,25 +650,25 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);			
 
-			Assert::AreEqual(6, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(6, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(6, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(6, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructUT11)
@@ -705,10 +705,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
@@ -723,17 +723,17 @@ namespace ffscriptUT
 				expectedDestructorCount = 6;
 			}
 
-			Assert::AreEqual(6, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(expectedDestructorCount, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(6, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(expectedDestructorCount, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructUT12)
@@ -769,25 +769,25 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(6, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(6, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(6, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(6, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(CopyConstructorStructUT01)
@@ -818,21 +818,21 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(4, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(4, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(4, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(4, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(1, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(1, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(CopyConstructorStructUT02)
@@ -869,25 +869,25 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(8, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(8, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(8, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(8, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(1, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(1, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleArrayUT1)
@@ -907,16 +907,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(10, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(10, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(10, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(10, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
 		}
 
 		TEST_METHOD(SimpleArray2DUT1)
@@ -936,16 +936,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(100, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(100, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(100, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(100, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
 		}
 
 		TEST_METHOD(ComplexArrayUT1)
@@ -965,16 +965,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(20, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(20, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(20, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(20, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
 		}
 
 		TEST_METHOD(ComplexArray2DUT1)
@@ -994,16 +994,16 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(200, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(200, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(200, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(200, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructArrayUT1)
@@ -1033,21 +1033,21 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(20, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(20, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(20, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(20, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(10, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(10, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(10, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(10, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(StructArray2DUT1)
@@ -1077,21 +1077,21 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(200, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(200, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(200, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(200, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 
-			Assert::AreEqual(100, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(100, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(100, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(100, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(ArrayInStructUT1)
@@ -1106,14 +1106,14 @@ namespace ffscriptUT
 
 			ScriptType typeInt(basicType->TYPE_INT, "int");
 			int iArrayType = scriptCompiler->registArrayType(L"array<int,10>");
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iArrayType, L"Register array type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iArrayType, L"Register array type failed");
 			ScriptType arrayType(iArrayType, scriptCompiler->getType(iArrayType));
 
 			StructClass* structSimpleArray = new StructClass(scriptCompiler, "SimpleArray");
 			structSimpleArray->addMember(typeInt, "size");
 			structSimpleArray->addMember(arrayType, "data");
 			int iSimpleArrayType = scriptCompiler->registStruct(structSimpleArray);
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iSimpleArrayType, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iSimpleArrayType, L"Register struct type failed");
 
 			const wchar_t scriptCode[] =
 				L"void foo() {"
@@ -1123,17 +1123,17 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(11, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(11, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(11, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(11, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		// assignment
@@ -1149,14 +1149,14 @@ namespace ffscriptUT
 
 			ScriptType typeInt(basicType->TYPE_INT, "int");
 			int iArrayType = scriptCompiler->registArrayType(L"array<int,10>");
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iArrayType, L"Register array type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iArrayType, L"Register array type failed");
 			ScriptType arrayType(iArrayType, scriptCompiler->getType(iArrayType));
 
 			StructClass* structSimpleArray = new StructClass(scriptCompiler, "SimpleArray");
 			structSimpleArray->addMember(typeInt, "size");
 			structSimpleArray->addMember(arrayType, "data");
 			int iSimpleArrayType = scriptCompiler->registStruct(structSimpleArray);
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iSimpleArrayType, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iSimpleArrayType, L"Register struct type failed");
 
 			const wchar_t scriptCode[] =
 				L"void foo() {"
@@ -1166,17 +1166,17 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(8, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(11, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(3, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(8, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(11, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(3, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		// assignment
@@ -1191,14 +1191,14 @@ namespace ffscriptUT
 
 			ScriptType typeInt(basicType->TYPE_INT, "int");
 			int iArrayType = scriptCompiler->registArrayType(L"array<int,10>");
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iArrayType, L"Register array type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iArrayType, L"Register array type failed");
 			ScriptType arrayType(iArrayType, scriptCompiler->getType(iArrayType));
 
 			StructClass* structSimpleArray = new StructClass(scriptCompiler, "SimpleArray");
 			structSimpleArray->addMember(typeInt, "size");
 			structSimpleArray->addMember(arrayType, "data");
 			int iSimpleArrayType = scriptCompiler->registStruct(structSimpleArray);
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iSimpleArrayType, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iSimpleArrayType, L"Register struct type failed");
 
 			const wchar_t scriptCode[] =
 				L"void foo() {"
@@ -1208,7 +1208,7 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNull(program, L"Compile program should failed due to no default constructor for int but copy constructor was defined for int");
+			EXPECT_EQ(nullptr, program, L"Compile program should failed due to no default constructor for int but copy constructor was defined for int");
 		}
 
 		/// check oder of calling operator for single object
@@ -1251,10 +1251,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
@@ -1270,7 +1270,7 @@ namespace ffscriptUT
 				2, 2  // destructor for { location.x, location.y }
 			};
 
-			Assert::AreEqual(expected_order.size(), recorder.size(), L"constructor and destructor does not work properly");
+			EXPECT_EQ(expected_order.size(), recorder.size(), L"constructor and destructor does not work properly");
 
 			auto jt = recorder.begin();
 			for (auto it = expected_order.begin(); it != expected_order.end(); it++, jt++) {
@@ -1279,7 +1279,7 @@ namespace ffscriptUT
 				}
 			}
 
-			Assert::IsTrue(jt == recorder.end(), L"constructor or destructor is executed in wrong order");
+			EXPECT_TRUE(jt == recorder.end(), L"constructor or destructor is executed in wrong order");
 		}
 
 		/// check oder of calling operator for multi object and use copy constructor
@@ -1323,10 +1323,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
@@ -1353,7 +1353,7 @@ namespace ffscriptUT
 				2, 2,  // destructor for { location.x, location.y }
 			};
 
-			Assert::AreEqual(expected_order.size(), recorder.size(), L"constructor and destructor does not work properly");
+			EXPECT_EQ(expected_order.size(), recorder.size(), L"constructor and destructor does not work properly");
 
 			auto jt = recorder.begin();
 			for (auto it = expected_order.begin(); it != expected_order.end(); it++, jt++) {
@@ -1362,7 +1362,7 @@ namespace ffscriptUT
 				}
 			}
 
-			Assert::IsTrue(jt == recorder.end(), L"constructor or destructor is executed in wrong order");
+			EXPECT_TRUE(jt == recorder.end(), L"constructor or destructor is executed in wrong order");
 		}
 
 		/// check oder of calling operator for multi object and multi type
@@ -1406,10 +1406,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
@@ -1432,7 +1432,7 @@ namespace ffscriptUT
 				2, 2, // destructor { point.x, point.y }				
 			};
 
-			Assert::AreEqual(expected_order.size(), recorder.size(), L"constructor and destructor does not work properly");
+			EXPECT_EQ(expected_order.size(), recorder.size(), L"constructor and destructor does not work properly");
 
 			auto jt = recorder.begin();
 			for (auto it = expected_order.begin(); it != expected_order.end(); it++, jt++) {
@@ -1441,7 +1441,7 @@ namespace ffscriptUT
 				}
 			}
 
-			Assert::IsTrue(jt == recorder.end(), L"constructor or destructor is executed in wrong order");
+			EXPECT_TRUE(jt == recorder.end(), L"constructor or destructor is executed in wrong order");
 		}
 
 		TEST_METHOD(CompositeTypeInParametersUT1)
@@ -1460,7 +1460,7 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt, "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
 
 			const wchar_t scriptCode[] =
 				L"void foo(Point2i ret) {"
@@ -1472,17 +1472,17 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		// this bellow test case is not released at this time, it will be checked again soon
@@ -1503,7 +1503,7 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt, "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
 
 			const wchar_t scriptCode[] =
 				L"void foo(Point2i ret) {"
@@ -1515,17 +1515,17 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 #endif // _DEBUG
 		static void constructPoint(void* p, int x, int y) {
@@ -1551,14 +1551,14 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt, "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
 
 			DFunction2* constructFunction = new CdeclFunction2<void, void*, int, int>(constructPoint);
 			int functionId = scriptCompiler->registFunction("constructPoint", "ref Point2i, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constructFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for copy constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for copy constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(iPoint, functionId);
-			Assert::IsTrue(blRes, L"Register copy constructor failed");
+			EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo(Point2i p) {"
@@ -1571,20 +1571,20 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int*iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(3, *iRes, L"default construtor for children is not run");
+			EXPECT_EQ(3, *iRes, L"default construtor for children is not run");
 
-			Assert::AreEqual(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 		// this bellow test case is not released at this time, it will be checked again soon
 #ifdef _DEBUG
@@ -1606,14 +1606,14 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt, "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
 
 			DFunction2* constructFunction = new CdeclFunction2<void, void*, int, int>(constructPoint);
 			int functionId = scriptCompiler->registFunction("constructPoint", "ref Point2i, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constructFunction, scriptCompiler));
-			Assert::IsTrue(functionId >= 0, L"Register function for copy constructor failed");
+			EXPECT_TRUE(functionId >= 0, L"Register function for copy constructor failed");
 
 			bool blRes = scriptCompiler->registConstructor(iPoint, functionId);
-			Assert::IsTrue(blRes, L"Register copy constructor failed");
+			EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo(Point2i& p) {"
@@ -1626,20 +1626,20 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int*iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(3, *iRes, L"default construtor for children is not run");
+			EXPECT_EQ(3, *iRes, L"default construtor for children is not run");
 
-			Assert::AreEqual(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 #endif // _DEBUG
 
@@ -1653,7 +1653,7 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt.makeSemiRef(), "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
 
 			const wchar_t scriptCode[] =
 				L"int foo() {"
@@ -1666,16 +1666,16 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int*iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(1, *iRes, L"accessing member in struct does not works properly");
+			EXPECT_EQ(1, *iRes, L"accessing member in struct does not works properly");
 		}
 
 		TEST_METHOD(CompositeTypeInParametersUT3_2)
@@ -1696,7 +1696,7 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt.makeSemiRef(), "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			Assert::AreNotEqual(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");			
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");			
 			
 			const wchar_t scriptCode[] =
 				L"int foo(Point2i p) {"
@@ -1709,20 +1709,20 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int*iRes = (int*)scriptTask.getTaskResult();
 
-			Assert::AreEqual(3, *iRes, L"constructor for ref type does not work properly");
+			EXPECT_EQ(3, *iRes, L"constructor for ref type does not work properly");
 /*
-			Assert::AreEqual(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");*/
+			EXPECT_EQ(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");*/
 		}
 
 		TEST_METHOD(CompositeTypeInParametersUT4)
@@ -1748,17 +1748,17 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(1, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(1, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(1, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 
 		TEST_METHOD(CompositeTypeInParametersUT5)
@@ -1786,17 +1786,17 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			Assert::IsNotNull(program, L"Compile program failed");
+			EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			Assert::AreEqual(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			Assert::AreEqual(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			Assert::AreEqual(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
 		}
 	};
 }

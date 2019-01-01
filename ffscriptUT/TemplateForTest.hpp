@@ -71,4 +71,5 @@ public:
 	int f(int val, Args... args) { return val + sum<int, Args...>(args...); }
 };
 
-#define PRINT_TEST_MESSAGE Logger::WriteMessage
+//#define PRINT_TEST_MESSAGE Logger::WriteMessage
+#define PRINT_TEST_MESSAGE(x)

@@ -60,10 +60,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
 
-			Assert::IsNotNull(program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 
 			int functionId = scriptCompiler->findFunction("test", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);

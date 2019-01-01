@@ -153,56 +153,56 @@ namespace ffscriptUT
 		{
 			void* theFunction = getFunctionPointer<Internal, void> (&Internal::foo);
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 		
 		TEST_METHOD(testFunctionTemplate2)
 		{
 			void* theFunction = getFunctionPointer<Internal, void, int>(&Internal::foo);
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		TEST_METHOD(testFunctionTemplate3)
 		{
 			void* theFunction = getFunctionPointer<Internal, void*, char*>(&Internal::foo);
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		TEST_METHOD(testFunctionTemplate4)
 		{
 			void* theFunction = getFunctionPointer<Internal, void*, char*, float>(&Internal::foo);
 
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		TEST_METHOD(testSTDFunction)
 		{
 			STDFunc func = stdfunc;
 			func(nullptr, 1.0f);
-			Assert::IsTrue(true);
+			EXPECT_TRUE(true);
 		}
 
 		TEST_METHOD(testTemplateSpecialization1)
 		{
 			//it shoud call classA for general
 			classA<float> aa;
-			Assert::IsTrue(aa.f(1.0f) == 0);
+			EXPECT_TRUE(aa.f(1.0f) == 0);
 		}
 
 		TEST_METHOD(testTemplateSpecialization2)
 		{
 			//it shoud call classA for general
 			classA<float, float, float> aa;
-			Assert::IsTrue(aa.f(1.0f, 1, 2) == 3);
+			EXPECT_TRUE(aa.f(1.0f, 1, 2) == 3);
 		}
 
 		TEST_METHOD(testTemplateSpecialization3)
 		{
 			//it shoud call classA for specialized int
 			classA<int, char, int> aa;
-			Assert::IsTrue(aa.f(1, 1, 2) == 4);
+			EXPECT_TRUE(aa.f(1, 1, 2) == 4);
 		}
 		
 		TEST_METHOD(testScriptCompiler1)
@@ -214,12 +214,12 @@ namespace ffscriptUT
 			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
 			int functionId1 = scriptCompiler.registFunction("sin", "", &dummyFactory);
 			int functionId2 = scriptCompiler.registFunction("sin", "double", &dummyFactory);
-			Assert::IsTrue(functionId1 >= 0, L"register failed sin()");
-			Assert::IsTrue(functionId2 >= 0, L"register failed sin(double)");
-			Assert::IsTrue(functionId2 != functionId1, L"register failed: two different function with same function id returned");
+			EXPECT_TRUE(functionId1 >= 0, L"register failed sin()");
+			EXPECT_TRUE(functionId2 >= 0, L"register failed sin(double)");
+			EXPECT_TRUE(functionId2 != functionId1, L"register failed: two different function with same function id returned");
 
 			functionId2 = scriptCompiler.registFunction("sin", "double", &dummyFactory);
-			Assert::IsTrue(functionId2 < 0, L"register same function but success return ");
+			EXPECT_TRUE(functionId2 < 0, L"register same function but success return ");
 		}
 	};
 }

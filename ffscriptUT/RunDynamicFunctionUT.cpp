@@ -98,96 +98,96 @@ namespace ffscriptUT
 		{
 			wstring exp = L"sum(1,2,3)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			
-			Assert::AreEqual(6, *result, (L"result of expression '" + exp + L"' should be 6").c_str());
+			EXPECT_EQ(6, *result, (L"result of expression '" + exp + L"' should be 6").c_str());
 		}
 
 		TEST_METHOD(RunDynamicFunction2)
 		{
 			wstring exp = L"sumTypes(1,2,3)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			Assert::AreEqual(3* basicType.TYPE_INT, *result, (L"result of expression '" + exp + L"' should be 3").c_str());
+			EXPECT_EQ(3* basicType.TYPE_INT, *result, (L"result of expression '" + exp + L"' should be 3").c_str());
 		}
 
 		TEST_METHOD(RunDynamicFunction3)
 		{
 			wstring exp = L"productTypes(1,2,3)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			Assert::AreEqual(basicType.TYPE_INT, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
+			EXPECT_EQ(basicType.TYPE_INT, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
 		}
 
 		TEST_METHOD(RunDynamicFunction4)
 		{
 			wstring exp = L"sumTypes(1,2,3.5)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			Assert::AreEqual(basicType.TYPE_INT*2 + basicType.TYPE_DOUBLE, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
+			EXPECT_EQ(basicType.TYPE_INT*2 + basicType.TYPE_DOUBLE, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
 		}
 
 		TEST_METHOD(RunDynamicFunction5)
 		{
 			wstring exp = L"productTypes(1,2.5,3)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			Assert::AreEqual(basicType.TYPE_INT*basicType.TYPE_DOUBLE, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
+			EXPECT_EQ(basicType.TYPE_INT*basicType.TYPE_DOUBLE, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
 		}
 
 		TEST_METHOD(RunDynamicCombine1)
 		{
 			wstring exp = L"4 + 5 * sum(1,2,3)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			Assert::AreEqual(4 + 5*6, *result, (L"result of expression '" + exp + L"' should be 34").c_str());
+			EXPECT_EQ(4 + 5*6, *result, (L"result of expression '" + exp + L"' should be 34").c_str());
 		}
 
 		static int product(int a, int b) {
@@ -209,16 +209,16 @@ namespace ffscriptUT
 
 			wstring exp = L"sum(4, 5) * sum(1,2,3) + 6";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			Assert::IsTrue(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			Assert::IsTrue(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			Assert::AreEqual(product(4,5) * 6 + 6, *result, (L"result of expression '" + exp + L"' should be 126").c_str());
+			EXPECT_EQ(product(4,5) * 6 + 6, *result, (L"result of expression '" + exp + L"' should be 126").c_str());
 		}
 	};
 }

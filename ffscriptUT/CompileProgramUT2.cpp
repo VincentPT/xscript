@@ -96,20 +96,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			Assert::IsTrue(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
 			
 			PRINT_TEST_MESSAGE(("fibonaci =" + std::to_string(*funcRes)).c_str());
 		}
@@ -135,20 +135,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::AreEqual(n-1, *funcRes, L"program can run but return wrong value");
+			EXPECT_EQ(n-1, *funcRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileSubScope2)
@@ -173,20 +173,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 			
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::AreEqual(n - 1, *funcRes, L"program can run but return wrong value");
+			EXPECT_EQ(n - 1, *funcRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileSubScope3)
@@ -213,20 +213,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::AreEqual(n - 1, *funcRes, L"program can run but return wrong value");
+			EXPECT_EQ(n - 1, *funcRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLoop)
@@ -250,20 +250,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLoop2)
@@ -290,20 +290,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLoop3)
@@ -330,20 +330,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileIfElse)
@@ -370,20 +370,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == -1, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == -1, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileIfElse1)
@@ -410,20 +410,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileIfElse2)
@@ -450,20 +450,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileIfElse3)
@@ -490,20 +490,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == -1, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == -1, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileIfElse4)
@@ -533,20 +533,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == -2, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == -2, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileIfElse5)
@@ -576,20 +576,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == -1, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == -1, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileIfElse10)
@@ -613,20 +613,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 1, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLoopAndIf1)
@@ -654,20 +654,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLoopAndIf2)
@@ -695,20 +695,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 1, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLoopAndIfElse1)
@@ -739,20 +739,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 1, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLoopAndIfElse2)
@@ -783,20 +783,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 1, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLoopAndIfElse3)
@@ -827,20 +827,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLoopAndIfElse4)
@@ -871,20 +871,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileIfElse6)
@@ -912,20 +912,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 1, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileIfElse7)
@@ -953,20 +953,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileIfElse8)
@@ -994,20 +994,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			double* funcRes = (double*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 7.5, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 7.5, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileIfElse9)
@@ -1035,20 +1035,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			double* funcRes = (double*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 7.5, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 7.5, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileFunctionHasRefParam1)
@@ -1069,19 +1069,19 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(&n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			scriptTask.getTaskResult();			
-			Assert::IsTrue(n == 0, L"program can run but return wrong value");
+			EXPECT_TRUE(n == 0, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileFunctionHasRefParam2)
@@ -1102,19 +1102,19 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(&n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			scriptTask.getTaskResult();
-			Assert::IsTrue(n == 9, L"program can run but return wrong value");
+			EXPECT_TRUE(n == 9, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileFunctionBool1)
@@ -1135,19 +1135,19 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			bool* funcRes = (bool*)scriptTask.getTaskResult();
-			Assert::IsTrue(*funcRes == true, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == true, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileFunctionBool2)
@@ -1168,19 +1168,19 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			bool* funcRes = (bool*)scriptTask.getTaskResult();
-			Assert::IsTrue(*funcRes == false, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == false, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLooAndBreak1)
@@ -1207,20 +1207,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == 5, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == 5, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLooAndBreak2)
@@ -1256,20 +1256,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == (n - 2 + 1), L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == (n - 2 + 1), L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLooAndBreak3)
@@ -1294,20 +1294,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == n, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == n, L"program can run but return wrong value");
 		}
 
 		int fibonacci(int n) {
@@ -1358,20 +1358,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonacci");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonacci'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonacci'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("fibonacci =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == fibonacci(n), L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == fibonacci(n), L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLoopContinue)
@@ -1401,20 +1401,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == (n - 2), L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == (n - 2), L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileLoopContinue2)
@@ -1442,20 +1442,20 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("foo", "int");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(n);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::IsTrue(*funcRes == n, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == n, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileFunctionTwoParams)
@@ -1478,19 +1478,19 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("foo", "");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::AreEqual(2, *funcRes, L"program can run but return wrong value");
+			EXPECT_EQ(2, *funcRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileFunctionOneParams)
@@ -1510,19 +1510,19 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("foo", "bool");
-			Assert::IsTrue(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, true);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			Assert::AreEqual(0, *funcRes, L"program can run but return wrong value");
+			EXPECT_EQ(0, *funcRes, L"program can run but return wrong value");
 		}
 	};
 }

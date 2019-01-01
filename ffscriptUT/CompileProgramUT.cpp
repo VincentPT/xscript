@@ -72,7 +72,7 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile a simple code failed!");
+			EXPECT_TRUE(res != nullptr, L"compile a simple code failed!");
 		}
 
 		TEST_METHOD(CompileProgram1_failed)
@@ -99,7 +99,7 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res == nullptr, L"compile a simple code must failed due to declare a variable twice");
+			EXPECT_TRUE(res == nullptr, L"compile a simple code must failed due to declare a variable twice");
 		}
 
 		TEST_METHOD(CompileProgram2)
@@ -127,7 +127,7 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr);
+			EXPECT_TRUE(res != nullptr);
 		}
 
 		TEST_METHOD(CompileProgram3)
@@ -155,7 +155,7 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr);
+			EXPECT_TRUE(res != nullptr);
 		}
 
 		TEST_METHOD(CompileProgram4)
@@ -183,10 +183,10 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			staticContex.run();
 
@@ -201,7 +201,7 @@ namespace ffscriptUT
 			message.append(std::to_string((size_t)&globalData[0]));
 			PRINT_TEST_MESSAGE(message.c_str());
 
-			Assert::IsTrue(*x == 2, L"the code is run but return incorrect result");
+			EXPECT_TRUE(*x == 2, L"the code is run but return incorrect result");
 		}
 
 		TEST_METHOD(CompileProgram5)
@@ -229,10 +229,10 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			staticContex.run();
 
@@ -247,7 +247,7 @@ namespace ffscriptUT
 			message.append(std::to_string((size_t)&globalData[0]));
 			PRINT_TEST_MESSAGE(message.c_str());
 
-			Assert::IsTrue(*x == 4, L"the code is run but return incorrect result");
+			EXPECT_TRUE(*x == 4, L"the code is run but return incorrect result");
 		}
 
 		TEST_METHOD(CompileProgram6)
@@ -280,10 +280,10 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 		}
 
 		int fibonaci(int n) {
@@ -324,13 +324,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			ScriptTask scriptTask(&theProgram);
 			int n = 10;
@@ -340,7 +340,7 @@ namespace ffscriptUT
 
 			int cPlusPlusRes = fibonaci(n);
 
-			Assert::IsTrue(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
 		}
 
 		TEST_METHOD(CompileProgram8)
@@ -369,13 +369,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			Assert::IsTrue(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, nullptr);
@@ -411,22 +411,22 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			Assert::IsTrue(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			Assert::IsTrue(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes, L"extract code failed");
 
 			auto pVariable = rootScope.findVariable("a");
-			Assert::IsNotNull(pVariable, L"cannot find variable 'a'");
+			EXPECT_NE(nullptr, pVariable, L"cannot find variable 'a'");
 
-			//Assert::IsTrue(false, L"Current the engine cannot call a script function in global code");
+			//EXPECT_TRUE(false, L"Current the engine cannot call a script function in global code");
 			//staticContex.run();
 
 			rootScope.runGlobalCode();
 			rootScope.cleanupGlobalMemory();
 
 			int* iRes = (int*)staticContex.getAbsoluteAddress(pVariable->getOffset());
-			Assert::AreEqual(1, *iRes, L"program does not run properly");
+			EXPECT_EQ(1, *iRes, L"program does not run properly");
 		}
 	};
 }
