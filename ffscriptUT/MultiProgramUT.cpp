@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "ExpresionParser.h"
 #include <functional>
 #include "TemplateForTest.hpp"
@@ -27,7 +26,6 @@
 #include <Program.h>
 #include <ScriptTask.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
@@ -41,7 +39,7 @@ using namespace ffscript;
 
 namespace ffscriptUT
 {		
-	TEST_CLASS(MultiProgramUT)
+	namespace MultiProgramUT
 	{
 		int fibonaci(int n) {
 			if (n < 2) {
@@ -50,8 +48,8 @@ namespace ffscriptUT
 			int res = fibonaci(n - 1) + fibonaci(n - 2);
 			return res;
 		}
-	public:
-		TEST_METHOD(MultiInstanceInSameThread)
+
+		FF_TEST_FUNCTION(MultiProgram, MultiInstanceInSameThread)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -81,13 +79,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			FF_EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			ScriptTask scriptTask(&theProgram);
 			int n = 10;
@@ -97,7 +95,7 @@ namespace ffscriptUT
 
 			int cPlusPlusRes = fibonaci(n);
 
-			EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
 
 			//second instance
 			ScriptCompiler scriptCompiler2;
@@ -113,13 +111,13 @@ namespace ffscriptUT
 			scriptCompiler2.bindProgram(&theProgram2);
 
 			res = rootScope2.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			blRes = rootScope2.extractCode(&theProgram2);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			FF_EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			ScriptTask scriptTask2(&theProgram2);
 			n = 15;
@@ -129,10 +127,10 @@ namespace ffscriptUT
 
 			cPlusPlusRes = fibonaci(n);
 
-			EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(MultiInstanceInOtherThreads)
+		FF_TEST_FUNCTION(MultiProgram, MultiInstanceInOtherThreads)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -162,13 +160,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			FF_EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			//second instance
 			ScriptCompiler scriptCompiler2;
@@ -184,13 +182,13 @@ namespace ffscriptUT
 			scriptCompiler2.bindProgram(&theProgram2);
 
 			res = rootScope2.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			blRes = rootScope2.extractCode(&theProgram2);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			FF_EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
 
 			int n1 = 10, n2 = 15;
 			ScriptParamBuffer paramBuffer1(n1);
@@ -211,12 +209,12 @@ namespace ffscriptUT
 			int* funcRes = (int*)scriptTask1.getTaskResult();
 			int cPlusPlusRes = fibonaci(n1);
 
-			EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program 1 can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program 1 can run but return wrong value");
 
 			funcRes = (int*)scriptTask2.getTaskResult();
 			cPlusPlusRes = fibonaci(n2);
 
-			EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program 2 can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program 2 can run but return wrong value");
 		}
 	};
 }

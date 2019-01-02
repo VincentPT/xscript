@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "ExpresionParser.h"
 #include <functional>
 #include "TemplateForTest.hpp"
@@ -20,13 +19,13 @@
 #include "BasicFunction.h"
 #include "BasicType.h"
 #include "FunctionFactory.h"
-#include "function\MemberFunction.hpp"
+#include "function/MemberFunction.hpp"
 #include "Context.h"
 #include <thread>
 #include <future>
 #include <Program.h>
 #include <ScriptTask.h>
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
 using namespace std;
 using namespace ffscript;
 
@@ -38,7 +37,7 @@ using namespace ffscript;
 #include "Executor.h"
 #include "Utils.h"
 #include "BasicFunctionFactory.hpp"
-#include "function\MemberFunction2.hpp"
+#include "function/MemberFunction2.hpp"
 #include "expressionunit.h"
 #include "DynamicFunctionFactory.h"
 #include "MemoryBlock.h"
@@ -46,17 +45,17 @@ using namespace ffscript;
 
 namespace ffscriptUT
 {
-	TEST_CLASS(StaticArrayUT)
+	FF_TEST_CLASS(StaticArray)
 	{
+	protected:
 		CompilerSuite compiler;
 		const BasicTypes* basicType;
 		ScriptCompiler* scriptCompiler;
 
 		ScriptType typePoint;
-		ScriptType typeRectangle;	
+		ScriptType typeRectangle;
 
-	public:
-		StaticArrayUT()
+		StaticArray()
 		{
 			//the code does not contain any global scope'code and only a variable
 			//so does not need global memory
@@ -80,9 +79,10 @@ namespace ffscriptUT
 			int iRectangleType = scriptCompiler->registStruct(structRectangle);
 			typeRectangle.setType(iRectangleType);
 			typeRectangle.setTypeStr(structRectangle->getName());
-		}		
-
-		TEST_METHOD(StaticArrayUT1)
+		}
+	};
+	namespace StaticArrayUT {
+		FF_TEST_METHOD(StaticArray, StaticArrayUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -97,19 +97,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 
-		TEST_METHOD(StaticArrayUT2)
+		FF_TEST_METHOD(StaticArray, PStaticArrayUT2)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			const wchar_t scriptCode[] =
@@ -126,19 +126,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 
-		TEST_METHOD(StaticArrayUT3)
+		FF_TEST_METHOD(StaticArray, PStaticArrayUT3)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			const wchar_t scriptCode[] =
@@ -155,19 +155,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 
-		TEST_METHOD(StaticArrayUT4)
+		FF_TEST_METHOD(StaticArray, StaticArrayUT4)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			const wchar_t scriptCode[] =
@@ -184,19 +184,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 
-		TEST_METHOD(StaticArray2DUT1)
+		FF_TEST_METHOD(StaticArray, StaticArray2DUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			const wchar_t scriptCode[] =
@@ -210,19 +210,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 
-		TEST_METHOD(StaticArray2DUT2)
+		FF_TEST_METHOD(StaticArray, StaticArray2DUT2)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			const wchar_t scriptCode[] =
@@ -236,19 +236,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 
-		TEST_METHOD(StaticArray2DUT3)
+		FF_TEST_METHOD(StaticArray, StaticArray2DUT3)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			const wchar_t scriptCode[] =
@@ -262,19 +262,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 
-		TEST_METHOD(StaticArray3DUT1)
+		FF_TEST_METHOD(StaticArray, StaticArray3DUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			const wchar_t scriptCode[] =
@@ -288,19 +288,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 
-		TEST_METHOD(StaticArray1DSortingUT)
+		FF_TEST_METHOD(StaticArray, StaticArray1DSortingUT)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			
@@ -327,10 +327,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "array<int, 10>&");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			int a[] = { 3,2,5,6,7,1,4,0,9,8 };
 			const int n = sizeof(a) / sizeof(a[0]);
@@ -346,10 +346,10 @@ namespace ffscriptUT
 				}
 			}
 
-			EXPECT_EQ(n, i, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(n, i, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(GlobalStaticArray1DUT1)
+		FF_TEST_METHOD(StaticArray, GlobalStaticArray1DUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			const wchar_t scriptCode[] =
@@ -362,10 +362,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto pVariable = rootScope->findVariable("ret");
-			EXPECT_NE(nullptr, pVariable, L"cannot find variable ret");
+			FF_EXPECT_NE(nullptr, pVariable, L"cannot find variable ret");
 
 			constexpr int iVal = 1;
 
@@ -373,16 +373,16 @@ namespace ffscriptUT
 			pRet[5] = iVal;
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(iVal, *iRes);
+			FF_EXPECT_EQ(iVal, *iRes);
 		}
 
-		TEST_METHOD(GlobalStaticArray1DUT2)
+		FF_TEST_METHOD(StaticArray, GlobalStaticArray1DUT2)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			const wchar_t scriptCode[] =
@@ -396,10 +396,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			rootScope->runGlobalCode();
 
@@ -409,10 +409,10 @@ namespace ffscriptUT
 
 			rootScope->cleanupGlobalMemory();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 
-		TEST_METHOD(GlobalStaticArray3DUT1)
+		FF_TEST_METHOD(StaticArray, GlobalStaticArray3DUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			const wchar_t scriptCode[] =
@@ -426,10 +426,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			rootScope->runGlobalCode();
 
@@ -439,10 +439,10 @@ namespace ffscriptUT
 
 			rootScope->cleanupGlobalMemory();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 
-		TEST_METHOD(StaticArray1DInitializeUT1)
+		FF_TEST_METHOD(StaticArray, StaticArray1DInitializeUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -456,19 +456,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 
-		TEST_METHOD(StaticArray1DInitializeUT2)
+		FF_TEST_METHOD(StaticArray, StaticArray1DInitializeUT2)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -483,10 +483,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			rootScope->runGlobalCode();
 
@@ -496,7 +496,7 @@ namespace ffscriptUT
 
 			rootScope->cleanupGlobalMemory();
 
-			EXPECT_EQ(1, *iRes);
+			FF_EXPECT_EQ(1, *iRes);
 		}
 	};
 }

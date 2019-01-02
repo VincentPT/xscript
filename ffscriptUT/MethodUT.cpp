@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include <CompilerSuite.h>
 #include <ScriptTask.h>
 #include <Utils.h>
@@ -20,16 +19,14 @@
 
 #include "Utils.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
 
 namespace ffscriptUT
 {	
-	TEST_CLASS(MethodUT)
+	namespace MethodUT
 	{
-	private:
 		static int inc(int* thiz) {
 			return ++ *thiz;
 		}
@@ -46,8 +43,7 @@ namespace ffscriptUT
 			*thiz += step;
 		}
 
-	public:
-		TEST_METHOD(TestMethod01)
+		FF_TEST_FUNCTION(MethodTest, TestMethod01)
 		{
 			CompilerSuite compiler;
 
@@ -69,22 +65,22 @@ namespace ffscriptUT
 				createFunctionCdeclRef<int, int*>(inc), scriptCompiler, "int", 1)
 			);
 
-			EXPECT_TRUE(functionId > 0, L"register function failed");
+			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 			
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			FF_EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			auto res = *(int*)scriptTask.getTaskResult();
-			EXPECT_EQ(2, res);
+			FF_EXPECT_EQ(2, res);
 		}
 
-		TEST_METHOD(TestMethod02)
+		FF_TEST_FUNCTION(MethodTest, TestMethod02)
 		{
 			CompilerSuite compiler;
 
@@ -106,22 +102,22 @@ namespace ffscriptUT
 				createFunctionCdeclRef<int, int&>(inc), scriptCompiler, "int", 1)
 			);
 
-			EXPECT_TRUE(functionId > 0, L"register function failed");
+			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			FF_EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			auto res = *(int*)scriptTask.getTaskResult();
-			EXPECT_EQ(2, res);
+			FF_EXPECT_EQ(2, res);
 		}
 
-		TEST_METHOD(TestMethod03)
+		FF_TEST_FUNCTION(MethodTest, TestMethod03)
 		{
 			CompilerSuite compiler;
 
@@ -143,22 +139,22 @@ namespace ffscriptUT
 				createFunctionCdeclRef<int, int>(inc), scriptCompiler, "int", 1)
 			);
 
-			EXPECT_TRUE(functionId > 0, L"register function failed");
+			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			FF_EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			auto res = *(int*)scriptTask.getTaskResult();
-			EXPECT_EQ(2, res);
+			FF_EXPECT_EQ(2, res);
 		}
 
-		TEST_METHOD(TestMethod04)
+		FF_TEST_FUNCTION(MethodTest, TestMethod04)
 		{
 			CompilerSuite compiler;
 
@@ -180,19 +176,19 @@ namespace ffscriptUT
 				createFunctionCdeclRef<void, int*, int>(jump), scriptCompiler, "void", 2)
 			);
 
-			EXPECT_TRUE(functionId > 0, L"register function failed");
+			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			FF_EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 			functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			auto res = *(int*)scriptTask.getTaskResult();
-			EXPECT_EQ(3, res);
+			FF_EXPECT_EQ(3, res);
 		}
 	};
 }

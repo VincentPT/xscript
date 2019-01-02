@@ -11,9 +11,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "ExpresionParser.h"
 #include <functional>
 #include "TemplateForTest.hpp"
@@ -29,7 +28,6 @@
 #include <Program.h>
 #include <ScriptTask.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
@@ -55,26 +53,29 @@ namespace ffscriptUT
 	};
 #pragma pack(pop)
 
-	TEST_CLASS(DefaultOperatorsUT)
+	FF_TEST_CLASS(DefaultOperators)
 	{
+	protected:
 		ScriptCompiler scriptCompiler;
 		FunctionRegisterHelper funcLibHelper;
 		const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
 	public:
-		DefaultOperatorsUT() : funcLibHelper(&scriptCompiler) {
+		DefaultOperators() : funcLibHelper(&scriptCompiler) {
 			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 			importBasicfunction(funcLibHelper);
 		}
+	};
 
-		TEST_METHOD(DefaultAssignRef)
+	namespace DefaultOperatorsUT {
+		FF_TEST_METHOD(DefaultOperators, DefaultAssignRef)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext, &scriptCompiler);
 
 			auto newType = scriptCompiler.registType("TestType");
-			EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
+			FF_EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
 			scriptCompiler.setTypeSize(newType, 4);
 			
 			//initialize an instance of script program
@@ -90,13 +91,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
@@ -105,17 +106,17 @@ namespace ffscriptUT
 			auto pVariable = rootScope.findVariable("dummy");
 			void* pDummy = getVaribleRef<void>(*pVariable);
 
-			EXPECT_EQ( (size_t) pDummy, (size_t)*funcRes , L"program can run but return wrong value");
+			FF_EXPECT_EQ( (size_t) pDummy, (size_t)*funcRes , L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(DefaultAssignNewType)
+		FF_TEST_METHOD(DefaultOperators, DefaultAssignNewType)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext, &scriptCompiler);
 
 			auto newType = scriptCompiler.registType("TestType");
-			EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
+			FF_EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
 			scriptCompiler.setTypeSize(newType, 4);
 
 			//initialize an instance of script program
@@ -133,13 +134,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("setVal", "TestType");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			int param = 1;
 			ScriptParamBuffer paramBuffer(param);
@@ -150,17 +151,17 @@ namespace ffscriptUT
 			auto pVariable = rootScope.findVariable("dummy");
 			int* pDummy = getVaribleRef<int>(*pVariable);
 
-			EXPECT_EQ(param, *pDummy, L"program can run but return wrong value");
+			FF_EXPECT_EQ(param, *pDummy, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(DefaultAssignForAutoType)
+		FF_TEST_METHOD(DefaultOperators, DefaultAssignForAutoType)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext, &scriptCompiler);
 
 			auto newType = scriptCompiler.registType("TestType");
-			EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
+			FF_EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
 			scriptCompiler.setTypeSize(newType, 4);
 
 			//initialize an instance of script program
@@ -174,29 +175,29 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("setVal", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes, L"program can run but return wrong value");
+			FF_EXPECT_EQ(1, *iRes, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(DefaultAssignForDeclareTypeInExpression)
+		FF_TEST_METHOD(DefaultOperators, DefaultAssignForDeclareTypeInExpression)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext, &scriptCompiler);
 
 			auto newType = scriptCompiler.registType("TestType");
-			EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
+			FF_EXPECT_NE(DATA_TYPE_UNKNOWN, newType, L"Regist new type failed");
 			scriptCompiler.setTypeSize(newType, 4);
 
 			//initialize an instance of script program
@@ -211,19 +212,19 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("setVal", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes, L"program can run but return wrong value");
+			FF_EXPECT_EQ(1, *iRes, L"program can run but return wrong value");
 		}
 	};
 }

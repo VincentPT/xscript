@@ -9,24 +9,20 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include <CompilerSuite.h>
 #include <ScriptTask.h>
 #include <Utils.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
 namespace ffscriptUT
 {		
-	TEST_CLASS(FunctionPointerUT)
+	namespace FunctionPointerUT
 	{
-	public:
-
-		TEST_METHOD(ParseNormalTypeUT1)
+		FF_TEST_FUNCTION(FunctionPointer, ParseNormalTypeUT1)
 		{
 			CompilerSuite compiler;
 			compiler.initialize(8);
@@ -39,11 +35,11 @@ namespace ffscriptUT
 			ScriptType stype;
 			auto c = scriptCompiler->readType(scriptCode, end, stype);
 
-			EXPECT_NE(nullptr, c, L"parse type should be success");
-			EXPECT_EQ("int", stype.sType().c_str(), L"Parse type is incorrect");
+			FF_EXPECT_NE(nullptr, c, L"parse type should be success");
+			FF_EXPECT_STREQ("int", stype.sType().c_str(), L"Parse type is incorrect");
 		}
 
-		TEST_METHOD(ParseNormalTypeUT2)
+		FF_TEST_FUNCTION(FunctionPointer, ParseNormalTypeUT2)
 		{
 			CompilerSuite compiler;
 			compiler.initialize(8);
@@ -56,11 +52,11 @@ namespace ffscriptUT
 			ScriptType stype;
 			auto c = scriptCompiler->readType(scriptCode, end, stype);
 
-			EXPECT_NE(nullptr, c, L"parse type should be success");
-			EXPECT_EQ("int", stype.sType().c_str(), L"Parse type is incorrect");
+			FF_EXPECT_NE(nullptr, c, L"parse type should be success");
+			FF_EXPECT_STREQ("int", stype.sType().c_str(), L"Parse type is incorrect");
 		}
 
-		TEST_METHOD(ParseRefTypeUT1)
+		FF_TEST_FUNCTION(FunctionPointer, ParseRefTypeUT1)
 		{
 			CompilerSuite compiler;
 			compiler.initialize(8);
@@ -73,11 +69,11 @@ namespace ffscriptUT
 			ScriptType stype;
 			auto c = scriptCompiler->readType(scriptCode, end, stype);
 
-			EXPECT_NE(nullptr, c, L"parse type should be success");
-			EXPECT_EQ("ref float", stype.sType().c_str(), L"Parse type is incorrect");
+			FF_EXPECT_NE(nullptr, c, L"parse type should be success");
+			FF_EXPECT_STREQ("ref float", stype.sType().c_str(), L"Parse type is incorrect");
 		}
 
-		TEST_METHOD(ParseFunctionTypeUT1)
+		FF_TEST_FUNCTION(FunctionPointer, ParseFunctionTypeUT1)
 		{
 			CompilerSuite compiler;
 			compiler.initialize(8);
@@ -90,11 +86,11 @@ namespace ffscriptUT
 			ScriptType stype;
 			auto c = scriptCompiler->readType(scriptCode, end, stype);
 
-			EXPECT_NE(nullptr, c, L"parse type should be success");
-			EXPECT_EQ("function<double()>", stype.sType().c_str(), L"Parse type is incorrect");
+			FF_EXPECT_NE(nullptr, c, L"parse type should be success");
+			FF_EXPECT_STREQ("function<double()>", stype.sType().c_str(), L"Parse type is incorrect");
 		}
 
-		TEST_METHOD(ParseFunctionTypeUT2)
+		FF_TEST_FUNCTION(FunctionPointer, ParseFunctionTypeUT2)
 		{
 			CompilerSuite compiler;
 			compiler.initialize(8);
@@ -107,11 +103,11 @@ namespace ffscriptUT
 			ScriptType stype;
 			auto c = scriptCompiler->readType(scriptCode, end, stype);
 
-			EXPECT_NE(nullptr, c, L"parse type should be success");
-			EXPECT_EQ("function<double()>", stype.sType().c_str(), L"Parse type is incorrect");
+			FF_EXPECT_NE(nullptr, c, L"parse type should be success");
+			FF_EXPECT_STREQ("function<double()>", stype.sType().c_str(), L"Parse type is incorrect");
 		}
 
-		TEST_METHOD(ParseFunctionTypeUT3)
+		FF_TEST_FUNCTION(FunctionPointer, ParseFunctionTypeUT3)
 		{
 			CompilerSuite compiler;
 			compiler.initialize(8);
@@ -124,11 +120,11 @@ namespace ffscriptUT
 			ScriptType stype;
 			auto c = scriptCompiler->readType(scriptCode, end, stype);
 
-			EXPECT_NE(nullptr, c, L"parse type should be success");
-			EXPECT_EQ("function<ref double(int)>", stype.sType().c_str(), L"Parse type is incorrect");
+			FF_EXPECT_NE(nullptr, c, L"parse type should be success");
+			FF_EXPECT_STREQ("function<ref double(int)>", stype.sType().c_str(), L"Parse type is incorrect");
 		}
 
-		TEST_METHOD(ParseFunctionTypeUT4)
+		FF_TEST_FUNCTION(FunctionPointer, ParseFunctionTypeUT4)
 		{
 			CompilerSuite compiler;
 			compiler.initialize(8);
@@ -141,11 +137,11 @@ namespace ffscriptUT
 			ScriptType stype;
 			auto c = scriptCompiler->readType(scriptCode, end, stype);
 
-			EXPECT_NE(nullptr, c, L"parse type should be success");
-			EXPECT_EQ("function<ref double(int,ref float)>", stype.sType().c_str(), L"Parse type is incorrect");
+			FF_EXPECT_NE(nullptr, c, L"parse type should be success");
+			FF_EXPECT_STREQ("function<ref double(int,ref float)>", stype.sType().c_str(), L"Parse type is incorrect");
 		}
 
-		TEST_METHOD(ParseFunctionTypeUT5)
+		FF_TEST_FUNCTION(FunctionPointer, ParseFunctionTypeUT5)
 		{
 			CompilerSuite compiler;
 			compiler.initialize(8);
@@ -158,11 +154,11 @@ namespace ffscriptUT
 			ScriptType stype;
 			auto c = scriptCompiler->readType(scriptCode, end, stype);
 
-			EXPECT_NE(nullptr, c, L"parse type should be success");
-			EXPECT_EQ("function<function<ref int(int)>(int)>", stype.sType().c_str(), L"Parse type is incorrect");
+			FF_EXPECT_NE(nullptr, c, L"parse type should be success");
+			FF_EXPECT_STREQ("function<function<ref int(int)>(int)>", stype.sType().c_str(), L"Parse type is incorrect");
 		}
 
-		TEST_METHOD(ParseFunctionTypeUT6)
+		FF_TEST_FUNCTION(FunctionPointer, ParseFunctionTypeUT6)
 		{
 			CompilerSuite compiler;
 			compiler.initialize(8);
@@ -175,11 +171,11 @@ namespace ffscriptUT
 			ScriptType stype;
 			auto c = scriptCompiler->readType(scriptCode, end, stype);
 
-			EXPECT_NE(nullptr, c, L"parse type should be success");
-			EXPECT_EQ("function<int(function<ref int(int)>,int)>", stype.sType().c_str(), L"Parse type is incorrect");
+			FF_EXPECT_NE(nullptr, c, L"parse type should be success");
+			FF_EXPECT_STREQ("function<int(function<ref int(int)>,int)>", stype.sType().c_str(), L"Parse type is incorrect");
 		}
 
-		TEST_METHOD(ParseFunctionTypeUT7)
+		FF_TEST_FUNCTION(FunctionPointer, ParseFunctionTypeUT7)
 		{
 			CompilerSuite compiler;
 			compiler.initialize(8);
@@ -192,8 +188,8 @@ namespace ffscriptUT
 			ScriptType stype;
 			auto c = scriptCompiler->readType(scriptCode, end, stype);
 
-			EXPECT_NE(nullptr, c, L"parse type should be success");
-			EXPECT_EQ("function<int(ref float)>", stype.sType().c_str(), L"Parse type is incorrect");
+			FF_EXPECT_NE(nullptr, c, L"parse type should be success");
+			FF_EXPECT_STREQ("function<int(ref float)>", stype.sType().c_str(), L"Parse type is incorrect");
 		}
 
 		static int test() {
@@ -204,7 +200,7 @@ namespace ffscriptUT
 			return a + 1;
 		}
 
-		TEST_METHOD(NativeUT_NoParam1)
+		FF_TEST_FUNCTION(FunctionPointer, NativeUT_NoParam1)
 		{
 			CompilerSuite compiler;
 
@@ -225,19 +221,19 @@ namespace ffscriptUT
 			
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(NativeUT_NoParam2)
+		FF_TEST_FUNCTION(FunctionPointer, NativeUT_NoParam2)
 		{
 			CompilerSuite compiler;
 
@@ -262,19 +258,19 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(NativeUT_OneParam1)
+		FF_TEST_FUNCTION(FunctionPointer, NativeUT_OneParam1)
 		{
 			CompilerSuite compiler;
 
@@ -298,19 +294,19 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(NativeUT_OneParam2)
+		FF_TEST_FUNCTION(FunctionPointer, NativeUT_OneParam2)
 		{
 			CompilerSuite compiler;
 
@@ -335,19 +331,19 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(ScriptUT_NoParam1)
+		FF_TEST_FUNCTION(FunctionPointer, ScriptUT_NoParam1)
 		{
 			CompilerSuite compiler;
 
@@ -369,19 +365,19 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(ScriptUT_OneParam1)
+		FF_TEST_FUNCTION(FunctionPointer, ScriptUT_OneParam1)
 		{
 			CompilerSuite compiler;
 
@@ -406,19 +402,19 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(ScriptUT_OneParam2)
+		FF_TEST_FUNCTION(FunctionPointer, ScriptUT_OneParam2)
 		{
 			CompilerSuite compiler;
 
@@ -445,19 +441,19 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(setToNull1)
+		FF_TEST_FUNCTION(FunctionPointer, setToNull1)
 		{
 			CompilerSuite compiler;
 
@@ -476,20 +472,20 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			RuntimeFunctionInfo* funcRes = (RuntimeFunctionInfo*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(nullptr, funcRes->address, L"program can run but return wrong value");
-			EXPECT_EQ((int)RuntimeFunctionType::Null, (int)funcRes->info.type, L"program can run but return wrong value");
+			FF_EXPECT_EQ(nullptr, funcRes->address, L"program can run but return wrong value");
+			FF_EXPECT_EQ((int)RuntimeFunctionType::Null, (int)funcRes->info.type, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(setToNull2)
+		FF_TEST_FUNCTION(FunctionPointer, setToNull2)
 		{
 			CompilerSuite compiler;
 
@@ -509,20 +505,20 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			RuntimeFunctionInfo* funcRes = (RuntimeFunctionInfo*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(nullptr, funcRes->address, L"program can run but return wrong value");
-			EXPECT_EQ((int)RuntimeFunctionType::Null, (int)funcRes->info.type, L"program can run but return wrong value");
+			FF_EXPECT_EQ(nullptr, funcRes->address, L"program can run but return wrong value");
+			FF_EXPECT_EQ((int)RuntimeFunctionType::Null, (int)funcRes->info.type, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CompareToNull1)
+		FF_TEST_FUNCTION(FunctionPointer, CompareToNull1)
 		{
 			CompilerSuite compiler;
 
@@ -546,20 +542,20 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			bool* funcRes = (bool*)scriptTask.getTaskResult();
 			char* s = (char*)funcRes;
 
-			EXPECT_FALSE(*funcRes, (L"program can run but return wrong value: " + std::to_wstring(*s)).c_str());
+			FF_EXPECT_FALSE(*funcRes, (L"program can run but return wrong value: " + std::to_wstring(*s)).c_str());
 		}
 
-		TEST_METHOD(CompareToNull2)
+		FF_TEST_FUNCTION(FunctionPointer, CompareToNull2)
 		{
 			CompilerSuite compiler;
 
@@ -581,19 +577,19 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			bool* funcRes = (bool*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CompareToFunc1)
+		FF_TEST_FUNCTION(FunctionPointer, CompareToFunc1)
 		{
 			CompilerSuite compiler;
 
@@ -616,20 +612,20 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			bool* funcRes = (bool*)scriptTask.getTaskResult();
 			char* s = (char*)funcRes;
 
-			EXPECT_TRUE(*funcRes, (L"program can run but return wrong value: " + std::to_wstring(*s)).c_str());
+			FF_EXPECT_TRUE(*funcRes, (L"program can run but return wrong value: " + std::to_wstring(*s)).c_str());
 		}
 
-		TEST_METHOD(CompareToFunc2)
+		FF_TEST_FUNCTION(FunctionPointer, CompareToFunc2)
 		{
 			CompilerSuite compiler;
 
@@ -655,17 +651,17 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'square'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			bool* funcRes = (bool*)scriptTask.getTaskResult();
 			char* s = (char*)funcRes;
 
-			EXPECT_FALSE(*funcRes, (L"program can run but return wrong value: " + std::to_wstring(*s)).c_str());
+			FF_EXPECT_FALSE(*funcRes, (L"program can run but return wrong value: " + std::to_wstring(*s)).c_str());
 		}
 	};
 }

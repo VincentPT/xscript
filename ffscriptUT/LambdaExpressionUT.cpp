@@ -9,24 +9,20 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include <CompilerSuite.h>
 #include <ScriptTask.h>
 #include <Utils.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
 namespace ffscriptUT
 {		
-	TEST_CLASS(LambdaExpressionUT)
+	namespace LambdaExpressionUT
 	{
-	public:
-
-		TEST_METHOD(CheckDetachPointer1)
+		FF_TEST_FUNCTION(LambdaExpression, CheckDetachPointer1)
 		{
 			shared_ptr<int> ptr(nullptr);
 			{
@@ -34,14 +30,14 @@ namespace ffscriptUT
 				ptrTemp.swap(ptr);
 			}
 
-			EXPECT_EQ(1, *ptr);
+			FF_EXPECT_EQ(1, *ptr);
 		}
 
-		//TEST_METHOD(CheckDetachPointer2)
+		//FF_TEST_FUNCTION(LambdaExpression, CheckDetachPointer2)
 		//{
 		//	shared_ptr<int> ptr(nullptr, [](int*) {});
 		//	ptr = make_shared<int>(1);
-		//	EXPECT_EQ(1, *ptr);
+		//	FF_EXPECT_EQ(1, *ptr);
 		//	auto pVal = ptr.get();
 		//	ptr.reset();
 		//	delete pVal;
@@ -94,7 +90,7 @@ namespace ffscriptUT
 			return ptr.get();
 		}
 
-		TEST_METHOD(CheckDetachPointer3)
+		FF_TEST_FUNCTION(LambdaExpression, CheckDetachPointer3)
 		{
 			int* pVal;
 			{
@@ -106,7 +102,7 @@ namespace ffscriptUT
 			delete pVal;
 		}
 
-		TEST_METHOD(CompileLambdaUT1)
+		FF_TEST_FUNCTION(LambdaExpression, CompileLambdaUT1)
 		{
 			CompilerSuite compiler;
 
@@ -123,10 +119,10 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_EQ(nullptr, program, L"Compile program should be failed");
+			FF_EXPECT_EQ(nullptr, program, L"Compile program should be failed");
 		}
 
-		TEST_METHOD(CompileLambdaUT2)
+		FF_TEST_FUNCTION(LambdaExpression, CompileLambdaUT2)
 		{
 			CompilerSuite compiler;
 
@@ -144,10 +140,10 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 		}
 
-		TEST_METHOD(CompileLambdaUT3)
+		FF_TEST_FUNCTION(LambdaExpression, CompileLambdaUT3)
 		{
 			CompilerSuite compiler;
 
@@ -168,19 +164,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CompileLambdaUT4)
+		FF_TEST_FUNCTION(LambdaExpression, CompileLambdaUT4)
 		{
 			CompilerSuite compiler;
 
@@ -201,19 +197,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *funcRes, L"program can run but return wrong value");
+			FF_EXPECT_EQ(1, *funcRes, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CompileLambdaUT5)
+		FF_TEST_FUNCTION(LambdaExpression, CompileLambdaUT5)
 		{
 			CompilerSuite compiler;
 
@@ -234,19 +230,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *funcRes, L"program can run but return wrong value");
+			FF_EXPECT_EQ(1, *funcRes, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CompileLambdaUT6)
+		FF_TEST_FUNCTION(LambdaExpression, CompileLambdaUT6)
 		{
 			CompilerSuite compiler;
 
@@ -271,19 +267,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CompileLambdaUT7)
+		FF_TEST_FUNCTION(LambdaExpression, CompileLambdaUT7)
 		{
 			CompilerSuite compiler;
 
@@ -309,19 +305,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CompileThread1)
+		FF_TEST_FUNCTION(LambdaExpression, CompileThread1)
 		{
 			CompilerSuite compiler;
 
@@ -347,19 +343,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CompileThread2)
+		FF_TEST_FUNCTION(LambdaExpression, CompileThread2)
 		{
 			CompilerSuite compiler;
 
@@ -380,16 +376,16 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 1000000, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 1000000, L"program can run but return wrong value");
 		}
 	};
 }

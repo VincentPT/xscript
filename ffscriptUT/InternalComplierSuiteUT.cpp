@@ -10,59 +10,56 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "InternalCompilerSuite.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace ffscript;
 
 namespace ffscriptUT
 {		
-	TEST_CLASS(InternalComplierSuiteUT)
+	namespace InternalComplierSuiteUT
 	{
-	public:
-		TEST_METHOD(SimpleExpression1)
+		FF_TEST_FUNCTION(InternalComplierSuiteTest, SimpleExpression1)
 		{
 			InternalCompilerSuite internalCompilerSuite;
 			internalCompilerSuite.initialize(1024);
 			auto excutor = internalCompilerSuite.compileExpression(L"2");
-			EXPECT_NE(nullptr, excutor, L"compile simple expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"compile simple expression failed");
 			excutor->runCode();
 			int* iRes = (int*)excutor->getReturnData();
-			EXPECT_EQ((int)2, *iRes, L"Simple expression is calculated wrongly");
+			FF_EXPECT_EQ((int)2, *iRes, L"Simple expression is calculated wrongly");
 		}
 
-		TEST_METHOD(SimpleExpression2)
+		FF_TEST_FUNCTION(InternalComplierSuiteTest, SimpleExpression2)
 		{
 			InternalCompilerSuite internalCompilerSuite;
 			internalCompilerSuite.initialize(1024);
 			auto excutor = internalCompilerSuite.compileExpression(L"2.5");
-			EXPECT_EQ(nullptr, excutor, L"internal compiler should not support double data type");
+			FF_EXPECT_EQ(nullptr, excutor, L"internal compiler should not support double data type");
 		}
 
 		//current conditional operator is not support
-		TEST_METHOD(ConstantExpression1)
+		FF_TEST_FUNCTION(InternalComplierSuiteTest, ConstantExpression1)
 		{
 			InternalCompilerSuite internalCompilerSuite;
 			internalCompilerSuite.initialize(1024);
 			auto excutor = internalCompilerSuite.compileExpression(L"1 ? 2 : 3");
-			EXPECT_NE(nullptr, excutor, L"compile simple expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"compile simple expression failed");
 			excutor->runCode();
 			int* iRes = (int*)excutor->getReturnData();
-			EXPECT_EQ((int)2, *iRes, L"Simple expression is calculated wrongly");
+			FF_EXPECT_EQ((int)2, *iRes, L"Simple expression is calculated wrongly");
 		}
 
-		TEST_METHOD(ConstantExpression2)
+		FF_TEST_FUNCTION(InternalComplierSuiteTest, ConstantExpression2)
 		{
 			InternalCompilerSuite internalCompilerSuite;
 			internalCompilerSuite.initialize(1024);
 			auto excutor = internalCompilerSuite.compileExpression(L"1 + 3 * 2 / 1");
-			EXPECT_NE(nullptr, excutor, L"compile simple expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"compile simple expression failed");
 			excutor->runCode();
 			int* iRes = (int*)excutor->getReturnData();
-			EXPECT_EQ((int)7, *iRes, L"Simple expression is calculated wrongly");
+			FF_EXPECT_EQ((int)7, *iRes, L"Simple expression is calculated wrongly");
 		}
 	};
 }

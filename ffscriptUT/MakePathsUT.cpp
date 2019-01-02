@@ -10,20 +10,16 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include <Utils.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace ffscript;
 
 namespace ffscriptUT
 {
-	TEST_CLASS(MakePathsUT)
+	namespace MakePathsUT
 	{
-	public:
-
 		template <class T, class NodeCollection>
 		bool isContain(const std::vector<std::shared_ptr<NodeCollection>>& nodeCollections, const T& val) {
 			for (auto it = nodeCollections.begin(); it != nodeCollections.end(); ++it) {
@@ -84,7 +80,7 @@ namespace ffscriptUT
 		}
 		
 
-		TEST_METHOD(makePath01)
+		FF_TEST_FUNCTION(MakePaths, makePath01)
 		{
 			std::vector<std::shared_ptr<std::vector<int>>> nodesCollection;
 
@@ -110,12 +106,12 @@ namespace ffscriptUT
 
 			listPaths<int,std::vector<int>,int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath02)
+		FF_TEST_FUNCTION(MakePaths, makePath02)
 		{
 			std::vector<std::shared_ptr<std::vector<int>>> nodesCollection;
 
@@ -142,12 +138,12 @@ namespace ffscriptUT
 
 			listPaths<int,std::vector<int>,int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath03)
+		FF_TEST_FUNCTION(MakePaths, makePath03)
 		{
 			std::vector<std::shared_ptr<std::vector<int>>> nodesCollection;
 
@@ -179,12 +175,12 @@ namespace ffscriptUT
 
 			listPaths<int,std::vector<int>,int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath04)
+		FF_TEST_FUNCTION(MakePaths, makePath04)
 		{
 			std::vector<std::shared_ptr<std::vector<int>>> nodesCollection;
 
@@ -215,12 +211,12 @@ namespace ffscriptUT
 
 			listPaths<int,std::vector<int>,int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath04InvalidPath)
+		FF_TEST_FUNCTION(MakePaths, makePath04InvalidPath)
 		{
 			std::vector<std::shared_ptr<std::vector<int>>> nodesCollection;
 
@@ -251,12 +247,12 @@ namespace ffscriptUT
 
 			listPaths<int,std::vector<int>,int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_FALSE(res, L"At leat one of path must be invalid because of invalid input");
+			FF_EXPECT_FALSE(res, L"At leat one of path must be invalid because of invalid input");
 		}
 
-		TEST_METHOD(makePath05)
+		FF_TEST_FUNCTION(MakePaths, makePath05)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -287,12 +283,12 @@ namespace ffscriptUT
 
 			listPaths<int,std::list<int>,int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath05Invalid)
+		FF_TEST_FUNCTION(MakePaths, makePath05Invalid)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -323,13 +319,13 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_FALSE(res, L"Invalid input(two node are same value) must lead to invalid output");
+			FF_EXPECT_FALSE(res, L"Invalid input(two node are same value) must lead to invalid output");
 		}
 
 
-		TEST_METHOD(makePath06)
+		FF_TEST_FUNCTION(MakePaths, makePath06)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -343,12 +339,12 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"Path is invalid");
+			FF_EXPECT_TRUE(res, L"Path is invalid");
 		}
 
-		TEST_METHOD(makePath07)
+		FF_TEST_FUNCTION(MakePaths, makePath07)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -371,12 +367,12 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath08)
+		FF_TEST_FUNCTION(MakePaths, makePath08)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -400,12 +396,12 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath09)
+		FF_TEST_FUNCTION(MakePaths, makePath09)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -429,12 +425,12 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath10)
+		FF_TEST_FUNCTION(MakePaths, makePath10)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -459,12 +455,12 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath11)
+		FF_TEST_FUNCTION(MakePaths, makePath11)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -490,12 +486,12 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size() * nodeLevel4->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath12)
+		FF_TEST_FUNCTION(MakePaths, makePath12)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -516,12 +512,12 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size() * nodeLevel3->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath13)
+		FF_TEST_FUNCTION(MakePaths, makePath13)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -539,12 +535,12 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath14)
+		FF_TEST_FUNCTION(MakePaths, makePath14)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -562,12 +558,12 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 
-		TEST_METHOD(makePath15)
+		FF_TEST_FUNCTION(MakePaths, makePath15)
 		{
 			std::vector<std::shared_ptr<std::list<int>>> nodesCollection;
 
@@ -586,9 +582,9 @@ namespace ffscriptUT
 
 			listPaths<int, std::list<int>, int>(nodesCollection, paramsPaths);
 
-			EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
+			FF_EXPECT_EQ(nodeLevel1->size() * nodeLevel2->size(), paramsPaths.size(), L"Paths is not fully covered");
 			bool res = checkPath(nodesCollection, paramsPaths);
-			EXPECT_TRUE(res, L"At leat one of path is invalid");
+			FF_EXPECT_TRUE(res, L"At leat one of path is invalid");
 		}
 	};
 }

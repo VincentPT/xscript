@@ -9,24 +9,20 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include <CompilerSuite.h>
 #include <ScriptTask.h>
 #include <Utils.h>
 
-
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
 namespace ffscriptUT
 {	
-	TEST_CLASS(ScriptTypeUT)
+	namespace ScriptTypeUT
 	{
-	public:
-		TEST_METHOD(RefFunctionUT1)
+		FF_TEST_FUNCTION(ScriptTypeTest, RefFunctionUT1)
 		{
 			CompilerSuite compiler;
 
@@ -38,7 +34,7 @@ namespace ffscriptUT
 			auto pX = rootScope->registVariable("x");
 			pX->setDataType(ScriptType(compiler.getTypeManager()->getBasicTypes().TYPE_INT,"int"));
 			auto excutor = compiler.compileExpression(L"ref(x)");
-			EXPECT_NE(nullptr, excutor, L"compile expression with ref operator failed");
+			FF_EXPECT_NE(nullptr, excutor, L"compile expression with ref operator failed");
 
 			int* addressX = (int*)rootScope->getGlobalAddress(pX->getOffset());
 
@@ -46,10 +42,10 @@ namespace ffscriptUT
 			void* res = excutor->getReturnData();
 			int* iRes = *((int**)res);
 
-			EXPECT_EQ(addressX, iRes, L"ref function return wrong");
+			FF_EXPECT_EQ(addressX, iRes, L"ref function return wrong");
 		}
 
-		TEST_METHOD(RefFunctionUT2)
+		FF_TEST_FUNCTION(ScriptTypeTest, RefFunctionUT2)
 		{
 			CompilerSuite compiler;
 
@@ -61,7 +57,7 @@ namespace ffscriptUT
 			auto pX = rootScope->registVariable("x");
 			pX->setDataType(ScriptType(compiler.getTypeManager()->getBasicTypes().TYPE_INT, "int"));
 			auto excutor = compiler.compileExpression(L"a = ref x");
-			EXPECT_NE(nullptr, excutor, L"compile expression with ref operator failed");
+			FF_EXPECT_NE(nullptr, excutor, L"compile expression with ref operator failed");
 
 			int* addressX = (int*)rootScope->getGlobalAddress(pX->getOffset());
 			auto pA = rootScope->findVariable("a");
@@ -72,11 +68,11 @@ namespace ffscriptUT
 			void* res = *(void**)excutor->getReturnData();
 			int* iRes = *((int**)res);
 
-			EXPECT_EQ(addressX, iRes, L"ref function return wrong");
-			EXPECT_EQ(*addressA, (size_t)iRes, L"ref function return wrong");
+			FF_EXPECT_EQ(addressX, iRes, L"ref function return wrong");
+			FF_EXPECT_EQ(*addressA, (size_t)iRes, L"ref function return wrong");
 		}
 
-		TEST_METHOD(RefFunctionUT4)
+		FF_TEST_FUNCTION(ScriptTypeTest, RefFunctionUT4)
 		{
 			CompilerSuite compiler;
 
@@ -88,9 +84,9 @@ namespace ffscriptUT
 			auto X = rootScope->registVariable("x");
 			X->setDataType(ScriptType(compiler.getTypeManager()->getBasicTypes().TYPE_INT, "int"));
 			auto excutor1 = compiler.compileExpression(L"a = ref x");
-			EXPECT_NE(nullptr, excutor1, L"compile expression with ref operator failed");
+			FF_EXPECT_NE(nullptr, excutor1, L"compile expression with ref operator failed");
 			auto excutor2 = compiler.compileExpression(L"b = ref a");
-			EXPECT_NE(nullptr, excutor2, L"compile expression with ref operator failed");
+			FF_EXPECT_NE(nullptr, excutor2, L"compile expression with ref operator failed");
 
 			int* pX = (int*)rootScope->getGlobalAddress(X->getOffset());
 			*pX = 1;
@@ -104,19 +100,19 @@ namespace ffscriptUT
 			void* res = *((void**)excutor1->getReturnData());
 			int* iRes = *((int**)res);
 
-			EXPECT_EQ(pX, iRes, L"ref function return wrong");
-			EXPECT_EQ(*addressA, (size_t)iRes, L"ref function return wrong");
+			FF_EXPECT_EQ(pX, iRes, L"ref function return wrong");
+			FF_EXPECT_EQ(*addressA, (size_t)iRes, L"ref function return wrong");
 
 			int* pA = (int*)*addressA;
-			EXPECT_EQ(*pX, *pA, L"value of A is wrong");
+			FF_EXPECT_EQ(*pX, *pA, L"value of A is wrong");
 
 			excutor2->runCode();
-			EXPECT_EQ((size_t)addressA, *addressB, L"ref of ref gone wrong");
+			FF_EXPECT_EQ((size_t)addressA, *addressB, L"ref of ref gone wrong");
 			int** pB = (int**)*addressB;
-			EXPECT_EQ(*pX, *(*pB), L"value of B is wrong");
+			FF_EXPECT_EQ(*pX, *(*pB), L"value of B is wrong");
 		}
 
-		TEST_METHOD(RefFunctionUT5)
+		FF_TEST_FUNCTION(ScriptTypeTest, RefFunctionUT5)
 		{
 			CompilerSuite compiler;
 
@@ -132,11 +128,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref ref int, ref int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int n = 1;
 			int* pn;
@@ -146,10 +142,10 @@ namespace ffscriptUT
 			ScriptTask task(program);
 			task.runFunction(functionId, &paramBuffer);
 
-			EXPECT_EQ(n, *pn, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(n, *pn, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(RefFunctionUT6)
+		FF_TEST_FUNCTION(ScriptTypeTest, RefFunctionUT6)
 		{
 			CompilerSuite compiler;
 
@@ -165,11 +161,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref ref int, ref ref int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a = 1;
 			int b = 2;
@@ -182,11 +178,11 @@ namespace ffscriptUT
 			ScriptTask task(program);
 			task.runFunction(functionId, &paramBuffer);
 
-			EXPECT_EQ(a, *pa, L"function 'foo' return wrong");
-			EXPECT_EQ(b, *pb, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(a, *pa, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(b, *pb, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(RefFunctionUT7)
+		FF_TEST_FUNCTION(ScriptTypeTest, RefFunctionUT7)
 		{
 			CompilerSuite compiler;
 
@@ -202,11 +198,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int n = 2;
 			ScriptParamBuffer paramBuffer(&n);
@@ -214,7 +210,7 @@ namespace ffscriptUT
 			task.runFunction(functionId, &paramBuffer);
 
 			int* res = (int*)task.getTaskResult();
-			EXPECT_EQ(4, *res, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(4, *res, L"function 'foo' return wrong");
 		}
 	};
 }

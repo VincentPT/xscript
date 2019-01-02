@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "ExpresionParser.h"
 #include <functional>
 #include "TemplateForTest.hpp"
@@ -27,7 +26,6 @@
 #include <Program.h>
 #include <ScriptTask.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
@@ -137,20 +135,22 @@ namespace ffscriptUT
 		}
 	};
 
-	TEST_CLASS(ConstructorDestructorUT)
+	FF_TEST_CLASS(ConstructorDestructor)
 	{
+	protected:
 		ScriptCompiler scriptCompiler;
 		FunctionRegisterHelper funcLibHelper;
 		const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
 
 	public:
-		ConstructorDestructorUT() : funcLibHelper(&scriptCompiler){
+		ConstructorDestructor() : funcLibHelper(&scriptCompiler) {
 			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 			importBasicfunction(funcLibHelper);
 		}
-
-		TEST_METHOD(ConstructorUT1)
+	};
+	namespace ConstructorDestructorUT {
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorUT1)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -164,10 +164,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new MFunction2<void, CustomIntegerInitor, int*>(&initor, &CustomIntegerInitor::initFunction);
 			int functionId = scriptCompiler.registFunction("DefaultInteger", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const wchar_t* scriptCode =
 				L"int test() {"
@@ -176,22 +176,22 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(checkVal, *iRes, L"Construtor is run but parameter value is not correct");
+			FF_EXPECT_EQ(checkVal, *iRes, L"Construtor is run but parameter value is not correct");
 		}
 
-		TEST_METHOD(DestructorUT1)
+		FF_TEST_METHOD(ConstructorDestructor, DestructorUT1)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -204,10 +204,10 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new MFunction2<void, CustomIntegerInitor, int*>(&initor, &CustomIntegerInitor::initFunction);
 			int functionId = scriptCompiler.registFunction("DefaultInteger", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			const int checkVal = 0;
 			CustomIntegerUninitor uninitor;
@@ -215,10 +215,10 @@ namespace ffscriptUT
 
 			DFunction2* uninitFunction = new MFunction2<void, CustomIntegerUninitor, int*>(&uninitor, &CustomIntegerUninitor::uninitFunction);
 			functionId = scriptCompiler.registFunction("UninitInteger", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", uninitFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			/*in bellow function, destuctor will not run for 'ret' because*/
 			/*function will copy it directly to return address of the function*/
@@ -234,24 +234,24 @@ namespace ffscriptUT
 			// if operator '=' of interger is not defined...
 			if (interferAssigment < 0) {
 				// ...then cannot construct object ret in expression int ret = 1;
-				EXPECT_EQ(nullptr, res, L"compile program should failed");
+				FF_EXPECT_EQ(nullptr, res, L"compile program should failed");
 				return;
 			}
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(0, uninitor.getData(), L"Construtor is run but parameter value is not correct");
+			FF_EXPECT_EQ(0, uninitor.getData(), L"Construtor is run but parameter value is not correct");
 		}
 
-		TEST_METHOD(ConstructorDestructorUT1)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorUT1)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -265,16 +265,16 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			/*in bellow function, destuctor will not run for 'ret' because*/
 			/*function will copy it directly to return address of the function*/
@@ -291,25 +291,25 @@ namespace ffscriptUT
 			// if operator '=' of interger is not defined...
 			if (interferAssigment < 0) {
 				// ...then cannot construct object ret in expression int ret = 1;
-				EXPECT_EQ(nullptr, res, L"compile program should failed");
+				FF_EXPECT_EQ(nullptr, res, L"compile program should failed");
 				return;
 			}			
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor is not executed");
-			EXPECT_EQ(0, destuctorCounter.getCount(), L"Construtor and destrutor is not working properly");
+			FF_EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor is not executed");
+			FF_EXPECT_EQ(0, destuctorCounter.getCount(), L"Construtor and destrutor is not working properly");
 		}
 
-		TEST_METHOD(ConstructorDestructorUT2)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorUT2)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -323,16 +323,16 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 			
 			/*in bellow function, destuctor will not run for 'ret' because*/
 			/*function will copy it directly to return address of the function*/
@@ -348,16 +348,16 @@ namespace ffscriptUT
 			// if operator '=' of interger is not defined...
 			if (interferAssigment < 0) {
 				// ...then cannot construct object ret in expression int ret = 1;
-				EXPECT_EQ(nullptr, res, L"compile program should failed");
+				FF_EXPECT_EQ(nullptr, res, L"compile program should failed");
 				return;
 			}
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			int param = 1;
 			ScriptParamBuffer paramBuffer(param);
@@ -366,14 +366,14 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, param, L"Construtor is not working properly(1)");
-			EXPECT_EQ(param, *iRes, L"Construtor is not working properly(2)");
+			FF_EXPECT_EQ(1, param, L"Construtor is not working properly(1)");
+			FF_EXPECT_EQ(param, *iRes, L"Construtor is not working properly(2)");
 
-			EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor is not properly(3)");
-			EXPECT_EQ(0, destuctorCounter.getCount(), L"Construtor and destrutor is not working properly");
+			FF_EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor is not properly(3)");
+			FF_EXPECT_EQ(0, destuctorCounter.getCount(), L"Construtor and destrutor is not working properly");
 		}
 
-		TEST_METHOD(ConstructorDestructorUT3)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorUT3)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -387,16 +387,16 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&destuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			/*in bellow function, destuctor will not run for 'ret' because*/
 			/*function will copy it directly to return address of the function*/
@@ -412,16 +412,16 @@ namespace ffscriptUT
 			// if operator '=' of interger is not defined...
 			if (interferAssigment < 0) {
 				// ...then cannot construct object ret in expression int ret = 1;
-				EXPECT_EQ(nullptr, res, L"compile program should failed");
+				FF_EXPECT_EQ(nullptr, res, L"compile program should failed");
 				return;
 			}
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			int param = 1;
 			ScriptParamBuffer paramBuffer(param);
@@ -430,14 +430,14 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, param, L"Construtor does not working properly(1)");
-			EXPECT_EQ(param, *iRes, L"Construtor does not working properly(2)");
+			FF_EXPECT_EQ(1, param, L"Construtor does not working properly(1)");
+			FF_EXPECT_EQ(param, *iRes, L"Construtor does not working properly(2)");
 
-			EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor does not work properly(3)");
-			EXPECT_EQ(0, destuctorCounter.getCount(), L"Construtor and destrutor is not working properly");
+			FF_EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor does not work properly(3)");
+			FF_EXPECT_EQ(0, destuctorCounter.getCount(), L"Construtor and destrutor is not working properly");
 		}
 
-		TEST_METHOD(ConstructorDestructorUT4)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorUT4)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -450,16 +450,16 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction3);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			/*in bellow function, destuctor will not run for 'ret' because*/
 			/*function will copy it directly to return address of the function*/
@@ -475,16 +475,16 @@ namespace ffscriptUT
 			// if operator '=' of interger is not defined...
 			if (interferAssigment < 0) {
 				// ...then cannot construct object ret in expression int ret = 1;
-				EXPECT_EQ(nullptr, res, L"compile program should failed");
+				FF_EXPECT_EQ(nullptr, res, L"compile program should failed");
 				return;
 			}
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			int param = 1;
 			ScriptParamBuffer paramBuffer(param);
@@ -493,10 +493,10 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 		}
 
-		TEST_METHOD(ConstructorDestructorUT5)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorUT5)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -509,16 +509,16 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction3);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			/*in 'test' function, destuctor will not run for 'ret' because*/
 			/*function will copy it directly to return address of the function*/
@@ -532,16 +532,16 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			int iRes = rootScope.correctAndOptimize(&theProgram);
-			EXPECT_EQ(0, iRes, L"correct and optimize program failed");
+			FF_EXPECT_EQ(0, iRes, L"correct and optimize program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			int param = 1;
 			ScriptParamBuffer paramBuffer(param);
@@ -550,10 +550,10 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			scriptTask.getTaskResult();
 
-			EXPECT_EQ(0, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(0, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 		}
 
-		TEST_METHOD(ConstructorDestructorUT6)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorUT6)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -568,23 +568,23 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			DFunction2* copyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor (basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register copy constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
 			/*in bellow function, destuctor will not run for 'ret' because*/
 			/*function will copy it directly to return address of the function*/
@@ -595,13 +595,13 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			int param = 1;
 			ScriptParamBuffer paramBuffer(param);
@@ -610,13 +610,13 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes, L"Construtor and destructor does not work properly");
-			EXPECT_EQ(0, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
-			EXPECT_EQ(1, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
-			EXPECT_EQ(constuctorCounter.getCount() + copyConstructorCounter.getCount() - 1, destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(1, *iRes, L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(0, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(1, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(constuctorCounter.getCount() + copyConstructorCounter.getCount() - 1, destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 		}
 
-		TEST_METHOD(ConstructorDestructorUT7)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorUT7)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -647,37 +647,37 @@ namespace ffscriptUT
 			//register constructor/destructor
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			DFunction2* copyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register copy constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
 			DFunction2* structCopyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, DummyStruct2*, DummyStruct2*>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator1);
 			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, DummyStruct2&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(structType2, functionId);
-			EXPECT_TRUE(blRes, L"Register copy constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
 			DFunction2* structDestuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("StructUninitor", "ref DummyStruct2", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structDestuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(structType2, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			//compile code and run code
 			const wchar_t* scriptCode =
@@ -687,13 +687,13 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "DummyStruct2");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			DummyStruct2 param;
 			param.structVal.iVal = 1;
@@ -703,15 +703,15 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(param.structVal.iVal, *iRes, L"Construtor and destructor does not work properly");
-			EXPECT_EQ(2, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(param.structVal.iVal, *iRes, L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(2, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 			// one for initialize ret, one for initialize return value from ret.structVal.iVal
-			EXPECT_EQ(2, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(2, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
 			// destructor for return value is not called because its scope is outside of test function
-			EXPECT_EQ(constuctorCounter.getCount() + copyConstructorCounter.getCount() - 1, destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(constuctorCounter.getCount() + copyConstructorCounter.getCount() - 1, destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 		}
 
-		TEST_METHOD(ConstructorDestructorUT8)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorUT8)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -742,37 +742,37 @@ namespace ffscriptUT
 			//register constructor/destructor
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			DFunction2* copyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register copy constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
 			DFunction2* structCopyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, DummyStruct2*, DummyStruct2*>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator2);
 			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, DummyStruct2&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(structType2, functionId);
-			EXPECT_TRUE(blRes, L"Register copy constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
 			DFunction2* structDestuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("StructUninitor", "ref DummyStruct2", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structDestuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(structType2, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			//compile code and run code
 			const wchar_t* scriptCode =
@@ -782,13 +782,13 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "DummyStruct2");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			DummyStruct2 param;
 			param.structVal.iVal = 1;
@@ -800,15 +800,15 @@ namespace ffscriptUT
 
 			//function structCopyOperator2 do nothing
 			//so integer value is still keep value when it is constructed
-			EXPECT_EQ(0, *iRes, L"Construtor and destructor does not work properly");
-			EXPECT_EQ(2, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(0, *iRes, L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(2, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 			// one for initialize ret, one for initialize return value from ret.structVal.iVal
-			EXPECT_EQ(2, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(2, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
 			// destructor for return value is not called because its scope is outside of test function
-			EXPECT_EQ(constuctorCounter.getCount() + copyConstructorCounter.getCount() - 1, destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(constuctorCounter.getCount() + copyConstructorCounter.getCount() - 1, destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 		}
 
-		TEST_METHOD(ConstructorDestructorUT9)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorUT9)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -839,37 +839,37 @@ namespace ffscriptUT
 			//register constructor/destructor
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			DFunction2* copyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register copy constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
 			DFunction2* structCopyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, DummyStruct2*, int>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator3);
 			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(structType2, functionId);
-			EXPECT_TRUE(blRes, L"Register copy constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
 			DFunction2* structDestuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("StructUninitor", "ref DummyStruct2", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structDestuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(structType2, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			//compile code and run code
 			const wchar_t* scriptCode =
@@ -879,13 +879,13 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			int param;
 			ScriptParamBuffer paramBuffer(param);
@@ -896,15 +896,15 @@ namespace ffscriptUT
 
 			//function structCopyOperator2 do nothing
 			//so integer value is still keep value when it is constructed
-			EXPECT_EQ(param, *iRes, L"Construtor and destructor does not work properly");
-			EXPECT_EQ(2, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(param, *iRes, L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(2, constuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 			// one for initialize ret, one for initialize return value from ret.iVal
-			EXPECT_EQ(2, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(2, copyConstructorCounter.getCount(), L"Construtor and destructor does not work properly");
 			// destructor for return value is not called because its scope is outside of test function
-			EXPECT_EQ(constuctorCounter.getCount() + copyConstructorCounter.getCount() - 1, destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
+			FF_EXPECT_EQ(constuctorCounter.getCount() + copyConstructorCounter.getCount() - 1, destuctorCounter.getCount(), L"Construtor and destructor does not work properly");
 		}
 
-		TEST_METHOD(ConstructorDestructorWithIf)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorWithIf)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -918,16 +918,16 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			/*in bellow function, destuctor will not run for 'ret' because*/
 			/*function will copy it directly to return address of the function*/
@@ -947,16 +947,16 @@ namespace ffscriptUT
 			// if operator '=' of interger is not defined...
 			if (interferAssigment < 0) {
 				// ...then cannot construct object ret in expression int ret = 1;
-				EXPECT_EQ(nullptr, res, L"compile program should failed");
+				FF_EXPECT_EQ(nullptr, res, L"compile program should failed");
 				return;
 			}
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 
@@ -966,9 +966,9 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int ret1 = *(int*)(scriptTask.getTaskResult());
 
-			EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor does not work properly");
-			EXPECT_EQ(0, destuctorCounter.getCount(), L"Destructor does not work properly");
-			EXPECT_EQ(0, ret1, L"Construtor does not work properly");
+			FF_EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor does not work properly");
+			FF_EXPECT_EQ(0, destuctorCounter.getCount(), L"Destructor does not work properly");
+			FF_EXPECT_EQ(0, ret1, L"Construtor does not work properly");
 
 			param = 1;
 			ScriptParamBuffer paramBuffer2(param);
@@ -976,12 +976,12 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer2);
 			int ret2 = *(int*)(scriptTask.getTaskResult());
 
-			EXPECT_EQ(2, constuctorCounter.getCount(), L"Construtor does not work properly");
-			EXPECT_EQ(0, destuctorCounter.getCount(), L"Destructor does not work properly");
-			EXPECT_EQ(1, ret2, L"Construtor does not work properly");
+			FF_EXPECT_EQ(2, constuctorCounter.getCount(), L"Construtor does not work properly");
+			FF_EXPECT_EQ(0, destuctorCounter.getCount(), L"Destructor does not work properly");
+			FF_EXPECT_EQ(1, ret2, L"Construtor does not work properly");
 		}
 
-		TEST_METHOD(ConstructorDestructorWithIfElse)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorWithIfElse)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -995,16 +995,16 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			/*in bellow function, destuctor will not run for 'ret' because*/
 			/*function will copy it directly to return address of the function*/
@@ -1028,16 +1028,16 @@ namespace ffscriptUT
 			// if operator '=' of interger is not defined...
 			if (interferAssigment < 0) {
 				// ...then cannot construct object ret in expression int ret = 1;
-				EXPECT_EQ(nullptr, res, L"compile program should failed");
+				FF_EXPECT_EQ(nullptr, res, L"compile program should failed");
 				return;
 			}
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 
@@ -1047,21 +1047,21 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int ret1 = *(int*)(scriptTask.getTaskResult());
 
-			EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor does not work properly");
-			EXPECT_EQ(0, destuctorCounter.getCount(), L"Destructor does not work properly");
-			EXPECT_EQ(0, ret1, L"Construtor does not work properly");
+			FF_EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor does not work properly");
+			FF_EXPECT_EQ(0, destuctorCounter.getCount(), L"Destructor does not work properly");
+			FF_EXPECT_EQ(0, ret1, L"Construtor does not work properly");
 
 			param = 1;
 			ScriptParamBuffer paramBuffer2(param);
 			scriptTask.runFunction(functionId, &paramBuffer2);
 			int ret2 = *(int*)(scriptTask.getTaskResult());
 
-			EXPECT_EQ(1 + 3, constuctorCounter.getCount(), L"Construtor does not work properly");
-			EXPECT_EQ(2, destuctorCounter.getCount(), L"Destructor does not work properly");
-			EXPECT_EQ(1, ret2, L"Construtor does not work properly");
+			FF_EXPECT_EQ(1 + 3, constuctorCounter.getCount(), L"Construtor does not work properly");
+			FF_EXPECT_EQ(2, destuctorCounter.getCount(), L"Destructor does not work properly");
+			FF_EXPECT_EQ(1, ret2, L"Construtor does not work properly");
 		}
 
-		TEST_METHOD(ConstructorDestructorWithLoop)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorWithLoop)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1075,16 +1075,16 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			const wchar_t* scriptCode =
 				L"void test(int param) {"
@@ -1094,13 +1094,13 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 
@@ -1108,11 +1108,11 @@ namespace ffscriptUT
 			ScriptParamBuffer paramBuffer(param);
 			scriptTask.runFunction(functionId, &paramBuffer);	
 
-			EXPECT_EQ(param, constuctorCounter.getCount(), L"Construtor does not work properly in loop");
-			EXPECT_EQ(param, destuctorCounter.getCount(), L"Destructor does not work properly in loop");
+			FF_EXPECT_EQ(param, constuctorCounter.getCount(), L"Construtor does not work properly in loop");
+			FF_EXPECT_EQ(param, destuctorCounter.getCount(), L"Destructor does not work properly in loop");
 		}
 
-		TEST_METHOD(ConstructorDestructorWithLoopAndBreak)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorWithLoopAndBreak)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1126,16 +1126,16 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			const wchar_t* scriptCode =
 				L"void test(int param) {"
@@ -1149,13 +1149,13 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 
@@ -1164,11 +1164,11 @@ namespace ffscriptUT
 
 			scriptTask.runFunction(functionId, &paramBuffer);
 
-			EXPECT_EQ( param < 2 ? param : param - 1, constuctorCounter.getCount(), L"Construtor does not work properly in loop");
-			EXPECT_EQ(param < 2 ? param : param - 1, destuctorCounter.getCount(), L"Destructor does not work properly in loop");
+			FF_EXPECT_EQ( param < 2 ? param : param - 1, constuctorCounter.getCount(), L"Construtor does not work properly in loop");
+			FF_EXPECT_EQ(param < 2 ? param : param - 1, destuctorCounter.getCount(), L"Destructor does not work properly in loop");
 		}
 
-		TEST_METHOD(ConstructorDestructorWithLoopAndContinue)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorWithLoopAndContinue)
 		{
 			byte globalData[1024];
 			//register constants, so we can use 'true' and 'false' for bool
@@ -1185,16 +1185,16 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			const wchar_t* scriptCode =
 				L"void test(int param) {"
@@ -1211,13 +1211,13 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 
@@ -1226,12 +1226,12 @@ namespace ffscriptUT
 
 			scriptTask.runFunction(functionId, &paramBuffer);
 
-			EXPECT_EQ(param + 2, constuctorCounter.getCount(), L"Construtor does not work properly in loop");
-			EXPECT_EQ(param + 2, destuctorCounter.getCount(), L"Destructor does not work properly in loop");
+			FF_EXPECT_EQ(param + 2, constuctorCounter.getCount(), L"Construtor does not work properly in loop");
+			FF_EXPECT_EQ(param + 2, destuctorCounter.getCount(), L"Destructor does not work properly in loop");
 		}
 
 		/* case: struct type has constructor and member has*/
-		TEST_METHOD(ConstructorForStructUT1)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorForStructUT1)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1253,17 +1253,17 @@ namespace ffscriptUT
 
 			DFunction2* structInitFunction = new MFunction2<void, OperatorExecuteCounter, void*>(&structConstuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("constructorCounter", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structInitFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler.registConstructor(structType, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor for struct failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor for struct failed");
 
 			DFunction2* doubleInitFunction = new MFunction2<void, OperatorExecuteCounter, double&>(&doubleConstuctorCounter, &OperatorExecuteCounter::doubleOperatorFunction);
 			functionId = scriptCompiler.registFunction("DdoubleConstructorCounter", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", doubleInitFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			
 			blRes = scriptCompiler.registConstructor(basicType.TYPE_DOUBLE, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor for double failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor for double failed");
 
 			const wchar_t* scriptCode =
 				L"double test() {"
@@ -1272,26 +1272,26 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			double* dRes = (double*)scriptTask.getTaskResult();
 
-			//EXPECT_EQ(1, *iRes, L"Construtor is run but parameter value is not correct");
-			EXPECT_EQ(1, structConstuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
-			EXPECT_EQ(1, doubleConstuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
-			EXPECT_EQ(1.0, *dRes, L"Construtor is run but parameter value is not correct");
+			//FF_EXPECT_EQ(1, *iRes, L"Construtor is run but parameter value is not correct");
+			FF_EXPECT_EQ(1, structConstuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
+			FF_EXPECT_EQ(1, doubleConstuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
+			FF_EXPECT_EQ(1.0, *dRes, L"Construtor is run but parameter value is not correct");
 		}
 
 		/* case: struct type don't has destructor but member has*/
-		TEST_METHOD(ConstructorForStructUT2)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorForStructUT2)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1312,10 +1312,10 @@ namespace ffscriptUT
 
 			DFunction2* doubleInitFunction = new MFunction2<void, OperatorExecuteCounter, double&>(&doubleConstuctorCounter, &OperatorExecuteCounter::doubleOperatorFunction);
 			int functionId = scriptCompiler.registFunction("DdoubleConstructorCounter", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", doubleInitFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_DOUBLE, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor for double failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor for double failed");
 
 			const wchar_t* scriptCode =
 				L"double test() {"
@@ -1324,25 +1324,25 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			double* dRes = (double*)scriptTask.getTaskResult();
 
-			//EXPECT_EQ(1, *iRes, L"Construtor is run but parameter value is not correct");
-			EXPECT_EQ(1, doubleConstuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
-			EXPECT_EQ(1.0, *dRes, L"Construtor is run but parameter value is not correct");
+			//FF_EXPECT_EQ(1, *iRes, L"Construtor is run but parameter value is not correct");
+			FF_EXPECT_EQ(1, doubleConstuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
+			FF_EXPECT_EQ(1.0, *dRes, L"Construtor is run but parameter value is not correct");
 		}
 
 		/* case: struct type doesn't have constructor and member either, but member of member has*/
-		TEST_METHOD(ConstructorForStructUT3)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorForStructUT3)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1369,10 +1369,10 @@ namespace ffscriptUT
 
 			DFunction2* inInitFunction = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
 			int functionId = scriptCompiler.registFunction("what_ever_you_want", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", inInitFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor for integer failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor for integer failed");
 
 			const wchar_t* scriptCode =
 				L"int test() {"
@@ -1381,24 +1381,24 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
-			EXPECT_EQ(2, *iRes, L"function return a wrong value");
+			FF_EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
+			FF_EXPECT_EQ(2, *iRes, L"function return a wrong value");
 		}
 
 		/* case: struct type has constructor and member either, but member of member has*/
-		TEST_METHOD(ConstructorForStructUT4)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorForStructUT4)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1425,17 +1425,17 @@ namespace ffscriptUT
 
 			DFunction2* structInitFunction = new MFunction2<void, OperatorExecuteCounter, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("structInitor", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structInitFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler.registConstructor(structType2, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor for integer failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor for integer failed");
 
 			DFunction2* inInitFunction = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
 			functionId = scriptCompiler.registFunction("what_ever_you_want", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", inInitFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor for integer failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor for integer failed");
 
 			const wchar_t* scriptCode =
 				L"int test() {"
@@ -1444,24 +1444,24 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(2, constuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
-			EXPECT_EQ(2, *iRes, L"function return a wrong value");
+			FF_EXPECT_EQ(2, constuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
+			FF_EXPECT_EQ(2, *iRes, L"function return a wrong value");
 		}
 
 		/* case: struct type has constructor and member either, but member of member has*/
-		TEST_METHOD(ConstructorForStructUT5)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorForStructUT5)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1488,20 +1488,20 @@ namespace ffscriptUT
 
 			DFunction2* structInitFunction = new MFunction2<void, OperatorExecuteCounter, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("structInitor", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structInitFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler.registConstructor(structType2, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor for integer failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor for integer failed");
 
 			blRes = scriptCompiler.registConstructor(structType1, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor for integer failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor for integer failed");
 
 			DFunction2* inInitFunction = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
 			functionId = scriptCompiler.registFunction("what_ever_you_want", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", inInitFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor for integer failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor for integer failed");
 
 			const wchar_t* scriptCode =
 				L"int test() {"
@@ -1510,24 +1510,24 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(3, constuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
-			EXPECT_EQ(2, *iRes, L"function return a wrong value");
+			FF_EXPECT_EQ(3, constuctorCounter.getCount(), L"Construtor is run but parameter value is not correct");
+			FF_EXPECT_EQ(2, *iRes, L"function return a wrong value");
 		}
 
 		/* case: struct type has destructor and member has*/
-		TEST_METHOD(DestructorForStructUT1)
+		FF_TEST_METHOD(ConstructorDestructor, DestructorForStructUT1)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1549,17 +1549,17 @@ namespace ffscriptUT
 
 			DFunction2* structInitFunction = new MFunction2<void, OperatorExecuteCounter, void*>(&structConstuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("constructorCounter", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structInitFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler.registDestructor(structType, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor for struct failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor for struct failed");
 
 			DFunction2* doubleInitFunction = new MFunction2<void, OperatorExecuteCounter, double&>(&doubleConstuctorCounter, &OperatorExecuteCounter::doubleOperatorFunction);
 			functionId = scriptCompiler.registFunction("DoubleDestructorCounter", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", doubleInitFunction, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_DOUBLE, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor for double failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor for double failed");
 			
 			const wchar_t* scriptCode =
 				L"void test() {"
@@ -1567,24 +1567,24 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			scriptTask.getTaskResult();
 
-			//EXPECT_EQ(1, *iRes, L"Construtor is run but parameter value is not correct");
-			EXPECT_EQ(1, structConstuctorCounter.getCount(), L"Destrutor is run but parameter value is not correct");
-			EXPECT_EQ(1, doubleConstuctorCounter.getCount(), L"Denstrutor is run but parameter value is not correct");			
+			//FF_EXPECT_EQ(1, *iRes, L"Construtor is run but parameter value is not correct");
+			FF_EXPECT_EQ(1, structConstuctorCounter.getCount(), L"Destrutor is run but parameter value is not correct");
+			FF_EXPECT_EQ(1, doubleConstuctorCounter.getCount(), L"Denstrutor is run but parameter value is not correct");			
 		}
 
-		TEST_METHOD(ConstructorDestructorUT10)
+		FF_TEST_METHOD(ConstructorDestructor, ConstructorDestructorUT10)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1598,16 +1598,16 @@ namespace ffscriptUT
 
 			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("ctor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
 			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("dtor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
+			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
 			const wchar_t* scriptCode =
 				L"int test() {"
@@ -1621,22 +1621,22 @@ namespace ffscriptUT
 			// if operator '=' of interger is not defined...
 			if (interferAssigment < 0) {
 				// ...then cannot construct object ret in expression int ret = 1;
-				EXPECT_EQ(nullptr, res, L"compile program should failed");
+				FF_EXPECT_EQ(nullptr, res, L"compile program should failed");
 				return;
 			}
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 
-			//EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor is not executed");
-			//EXPECT_EQ(0, destuctorCounter.getCount(), L"Construtor and destrutor is not working properly");
+			//FF_EXPECT_EQ(1, constuctorCounter.getCount(), L"Construtor is not executed");
+			//FF_EXPECT_EQ(0, destuctorCounter.getCount(), L"Construtor and destrutor is not working properly");
 		}
 	};
 }

@@ -9,24 +9,21 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include <CompilerSuite.h>
 #include <ScriptTask.h>
 #include <Utils.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
 
 namespace ffscriptUT
 {		
-	TEST_CLASS(SemiRefUT)
+	namespace SemiRefUT
 	{
-	public:
-		TEST_METHOD(SemeRefTestCompile1)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestCompile1)
 		{
 			CompilerSuite compiler;
 
@@ -44,10 +41,10 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program should be success");
+			FF_EXPECT_NE(nullptr, program, L"Compile program should be success");
 		}
 
-		TEST_METHOD(SemeRefTestCompile2)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestCompile2)
 		{
 			CompilerSuite compiler;
 
@@ -66,10 +63,10 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program should be success");
+			FF_EXPECT_NE(nullptr, program, L"Compile program should be success");
 		}
 
-		TEST_METHOD(SemeRefTestRun1)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun1)
 		{
 			CompilerSuite compiler;
 
@@ -88,19 +85,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program should be failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program should be failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(SemeRefTestRun2)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun2)
 		{
 			CompilerSuite compiler;
 
@@ -120,19 +117,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program should be failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program should be failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 3, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 3, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(SemeRefTestRun3)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun3)
 		{
 			CompilerSuite compiler;
 
@@ -154,19 +151,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program should be success");
+			FF_EXPECT_NE(nullptr, program, L"Compile program should be success");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(SemeRefTestRun4)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun4)
 		{
 			CompilerSuite compiler;
 
@@ -188,19 +185,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program should be success");
+			FF_EXPECT_NE(nullptr, program, L"Compile program should be success");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(SemeRefTestRun5)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun5)
 		{
 			CompilerSuite compiler;
 
@@ -222,19 +219,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program should be success");
+			FF_EXPECT_NE(nullptr, program, L"Compile program should be success");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(SemeRefTestRun6)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun6)
 		{
 			CompilerSuite compiler;
 
@@ -261,19 +258,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program should be success");
+			FF_EXPECT_NE(nullptr, program, L"Compile program should be success");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(SemeRefTestRun7)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun7)
 		{
 			CompilerSuite compiler;
 
@@ -290,10 +287,10 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program should be success");
+			FF_EXPECT_NE(nullptr, program, L"Compile program should be success");
 
 			int functionId = scriptCompiler->findFunction("test", "ref int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			int n = 2;
@@ -301,11 +298,11 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int** funcRes = (int**)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == &n, L"program can run but return wrong value");
-			EXPECT_TRUE(**funcRes == n, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == &n, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(**funcRes == n, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(SemeRefTestRun8)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun8)
 		{
 			CompilerSuite compiler;
 
@@ -327,19 +324,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program should be success");
+			FF_EXPECT_NE(nullptr, program, L"Compile program should be success");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(SemeRefTestRun9)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun9)
 		{
 			CompilerSuite compiler;
 
@@ -361,12 +358,12 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_EQ(nullptr, program, L"Compile program should be failed");
+			FF_EXPECT_EQ(nullptr, program, L"Compile program should be failed");
 
-			EXPECT_NE("", scriptCompiler->getLastError().c_str(), L"Error text should contain a content");
+			FF_EXPECT_NE("", scriptCompiler->getLastError().c_str(), L"Error text should contain a content");
 		}
 
-		TEST_METHOD(SemeRefTestRun10)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun10)
 		{
 			CompilerSuite compiler;
 
@@ -388,12 +385,12 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_EQ(nullptr, program, L"Compile program should be failed");
+			FF_EXPECT_EQ(nullptr, program, L"Compile program should be failed");
 
-			EXPECT_NE("", scriptCompiler->getLastError().c_str(), L"Error text should contain a content");
+			FF_EXPECT_NE("", scriptCompiler->getLastError().c_str(), L"Error text should contain a content");
 		}
 
-		TEST_METHOD(SemeRefTestRun11)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun11)
 		{
 			CompilerSuite compiler;
 
@@ -413,19 +410,19 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 2, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(SemeRefTestRun12)
+		FF_TEST_FUNCTION(SemiRef, SemeRefTestRun12)
 		{
 			CompilerSuite compiler;
 
@@ -445,16 +442,16 @@ namespace ffscriptUT
 				;
 
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			float* funcRes = (float*)scriptTask.getTaskResult();
 
-			EXPECT_TRUE(*funcRes == 1.0f, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 1.0f, L"program can run but return wrong value");
 		}
 	};
 }

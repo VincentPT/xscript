@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "ExpresionParser.h"
 #include <functional>
 #include "TemplateForTest.hpp"
@@ -27,7 +26,6 @@
 #include <Program.h>
 #include <ScriptTask.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
@@ -47,23 +45,24 @@ using namespace ffscript;
 
 namespace ffscriptUT
 {		
-	TEST_CLASS(OperatorBracketsUT)
+	FF_TEST_CLASS(OperatorBrackets)
 	{
+	protected:
 		CompilerSuite compiler;
 		const BasicTypes* basicType;
 		ScriptCompiler* scriptCompiler;
-	public:
-
-		OperatorBracketsUT()
+		OperatorBrackets()
 		{
 			//the code does not contain any global scope'code and only a variable
 			//so does not need global memory
 			compiler.initialize(128);
 			scriptCompiler = compiler.getCompiler().get();
-			basicType = &compiler.getTypeManager()->getBasicTypes();			
+			basicType = &compiler.getTypeManager()->getBasicTypes();
 		}
+	};
 
-		TEST_METHOD(ForTypeHasNoBreacketOperator1)
+	namespace OperatorBracketsUT {
+		FF_TEST_METHOD(OperatorBrackets, ForTypeHasNoBreacketOperator1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			
@@ -77,10 +76,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_EQ(nullptr, program, L"Compile program should be failed");
+			FF_EXPECT_EQ(nullptr, program, L"Compile program should be failed");
 		}
 
-		TEST_METHOD(ForTypeHasNoBreacketOperator2)
+		FF_TEST_METHOD(OperatorBrackets, ForTypeHasNoBreacketOperator2)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -94,7 +93,7 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_EQ(nullptr, program, L"Compile program should be failed");
+			FF_EXPECT_EQ(nullptr, program, L"Compile program should be failed");
 		}
 
 		static int int_inc(int a) {
@@ -105,7 +104,7 @@ namespace ffscriptUT
 			return &a;
 		}
 
-		TEST_METHOD(ForTypeHasBracketOperator1)
+		FF_TEST_METHOD(OperatorBrackets, ForTypeHasBracketOperator1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			FunctionRegisterHelper fb(scriptCompiler);
@@ -118,26 +117,26 @@ namespace ffscriptUT
 				;
 			DFunction2* intFunctionOperator = new CdeclFunction2<int, int>(int_inc);
 			int functionId = fb.registFunction("int_function_operator", "int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", intFunctionOperator, scriptCompiler));
-			EXPECT_TRUE(functionId > 0, L"register function failed");
+			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			EXPECT_TRUE(res, L"register function operator for integer failed");
+			FF_EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes, L"function operator is run but return value is not correct");
+			FF_EXPECT_EQ(1, *iRes, L"function operator is run but return value is not correct");
 		}
 
-		TEST_METHOD(ForTypeHasBracketOperator2)
+		FF_TEST_METHOD(OperatorBrackets, ForTypeHasBracketOperator2)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			FunctionRegisterHelper fb(scriptCompiler);
@@ -149,26 +148,26 @@ namespace ffscriptUT
 				L"}"
 				;
 			int functionId = scriptCompiler->findFunction("*", "int,int");
-			EXPECT_TRUE(functionId > 0, L"operator * is not registered");
+			FF_EXPECT_TRUE(functionId > 0, L"operator * is not registered");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			EXPECT_TRUE(res, L"register function operator for integer failed");
+			FF_EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
+			FF_EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
 		}
 
-		TEST_METHOD(ForTypeHasBracketOperator3)
+		FF_TEST_METHOD(OperatorBrackets, ForTypeHasBracketOperator3)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			FunctionRegisterHelper fb(scriptCompiler);
@@ -183,26 +182,26 @@ namespace ffscriptUT
 				L"}"
 				;
 			int functionId = scriptCompiler->findFunction("*", "int,int");
-			EXPECT_TRUE(functionId > 0, L"operator * is not registered");
+			FF_EXPECT_TRUE(functionId > 0, L"operator * is not registered");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			EXPECT_TRUE(res, L"register function operator for integer failed");
+			FF_EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
+			FF_EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
 		}
 
-		TEST_METHOD(ForTypeHasBracketOperator4)
+		FF_TEST_METHOD(OperatorBrackets, ForTypeHasBracketOperator4)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			FunctionRegisterHelper fb(scriptCompiler);
@@ -215,26 +214,26 @@ namespace ffscriptUT
 				L"}"
 				;
 			int functionId = scriptCompiler->findFunction("*", "int,int");
-			EXPECT_TRUE(functionId > 0, L"operator * is not registered");
+			FF_EXPECT_TRUE(functionId > 0, L"operator * is not registered");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			EXPECT_TRUE(res, L"register function operator for integer failed");
+			FF_EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
+			FF_EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
 		}
 
-		TEST_METHOD(ForTypeHasBracketOperator5)
+		FF_TEST_METHOD(OperatorBrackets, ForTypeHasBracketOperator5)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			FunctionRegisterHelper fb(scriptCompiler);
@@ -247,26 +246,26 @@ namespace ffscriptUT
 				L"}"
 				;
 			int functionId = scriptCompiler->findFunction("*", "int,int");
-			EXPECT_TRUE(functionId > 0, L"operator * is not registered");
+			FF_EXPECT_TRUE(functionId > 0, L"operator * is not registered");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			EXPECT_TRUE(res, L"register function operator for integer failed");
+			FF_EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
+			FF_EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
 		}
 
-		TEST_METHOD(ForTypeHasBracketOperator6)
+		FF_TEST_METHOD(OperatorBrackets, ForTypeHasBracketOperator6)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			FunctionRegisterHelper fb(scriptCompiler);
@@ -279,23 +278,23 @@ namespace ffscriptUT
 				;
 			DFunction2* intFunctionOperator = new CdeclFunction2<int*, int&>(int_ref);
 			int functionId = fb.registFunction("forward_ref", "int&", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "ref int", intFunctionOperator, scriptCompiler));
-			EXPECT_TRUE(functionId > 0, L"register function failed");
+			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			EXPECT_TRUE(res, L"register function operator for integer failed");
+			FF_EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes, L"function operator is run but return value is not correct");
+			FF_EXPECT_EQ(1, *iRes, L"function operator is run but return value is not correct");
 		}
 
 		static int sum(SimpleVariantArray* params) {
@@ -314,7 +313,7 @@ namespace ffscriptUT
 			return (a + b + c + d + e + f);
 		}
 
-		TEST_METHOD(ForTypeHasBracketOperator7)
+		FF_TEST_METHOD(OperatorBrackets, ForTypeHasBracketOperator7)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			FunctionRegisterHelper fb(scriptCompiler);
@@ -327,26 +326,26 @@ namespace ffscriptUT
 				;
 			DFunction2* intFunctionOperator = new CdeclFunction2<int, int, int, int>(sum);
 			int functionId = fb.registFunction("forward_ref", "int,int,int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", intFunctionOperator, scriptCompiler));
-			EXPECT_TRUE(functionId > 0, L"register function failed");
+			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			EXPECT_TRUE(res, L"register function operator for integer failed");
+			FF_EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
+			FF_EXPECT_EQ(6, *iRes, L"function operator is run but return value is not correct");
 		}
 
-		TEST_METHOD(ForTypeHasBracketOperator8)
+		FF_TEST_METHOD(OperatorBrackets, ForTypeHasBracketOperator8)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			FunctionRegisterHelper fb(scriptCompiler);
@@ -359,26 +358,26 @@ namespace ffscriptUT
 				;
 			DFunction2* intFunctionOperator = new CdeclFunction2<int, int, int, int, int, int, int>(sum);
 			int functionId = fb.registFunction("forward_ref", "int,int,int,int,int,int", new BasicFunctionFactory<6>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", intFunctionOperator, scriptCompiler));
-			EXPECT_TRUE(functionId > 0, L"register function failed");
+			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			EXPECT_TRUE(res, L"register function operator for integer failed");
+			FF_EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(21, *iRes, L"function operator is run but return value is not correct");
+			FF_EXPECT_EQ(21, *iRes, L"function operator is run but return value is not correct");
 		}
 
-		TEST_METHOD(ForTypeHasBracketOperator9)
+		FF_TEST_METHOD(OperatorBrackets, ForTypeHasBracketOperator9)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			FunctionRegisterHelper fb(scriptCompiler);
@@ -392,23 +391,23 @@ namespace ffscriptUT
 			auto theNativeFunction = new CdeclFunction2<int, SimpleVariantArray*>(sum);
 			DynamicFunctionFactory dynamicFunctionFactor("int", theNativeFunction, scriptCompiler);
 			int functionId = fb.registDynamicFunction("sum", &dynamicFunctionFactor, false);
-			EXPECT_TRUE(functionId > 0, L"register function failed");
+			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
 			bool res = scriptCompiler->registFunctionOperator(basicType->TYPE_INT, functionId);
-			EXPECT_TRUE(res, L"register function operator for integer failed");
+			FF_EXPECT_TRUE(res, L"register function operator for integer failed");
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			functionId = scriptCompiler->findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int* iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(21, *iRes, L"function operator is run but return value is not correct");
+			FF_EXPECT_EQ(21, *iRes, L"function operator is run but return value is not correct");
 		}
 	};
 }

@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include <gtest/gtest.h>
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "ExpresionParser.h"
 #include <functional>
 #include "TemplateForTest.hpp"
@@ -27,7 +26,6 @@
 #include <Program.h>
 #include <ScriptTask.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
@@ -103,25 +101,25 @@ namespace ffscriptUT
 		}
 	};
 
-	TEST_CLASS(CompletedConstructorDestructorsUT)
-	{
+	class CompletedConstructorDestructors : public ::testing::Test {
+	protected:
 		CompilerSuite compiler;
 		const BasicTypes* basicType;
 		ScriptCompiler* scriptCompiler;
 
 		ScriptType typePoint;
 		ScriptType typeRectangle;
-		
+
 		template <class T>
 		void registerConstructor(T* obj, int type) {
 			ScriptType stype(type, scriptCompiler->getType(type));
 
 			DFunction2* initFunction = new MFunction2<void, T, void*>(obj, &T::operatorFunction);
 			int functionId = scriptCompiler->registFunction("constructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0) << L"Register function for constructor failed";
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			EXPECT_TRUE(blRes, L"Register constructor failed");
+			EXPECT_TRUE(blRes) << L"Register constructor failed";
 		}
 
 		template <class T>
@@ -135,10 +133,10 @@ namespace ffscriptUT
 
 			DFunction2* copyFunction = new MFunction2<void, T, void*, const void*>(obj, &T::operatorFunction);
 			int functionId = scriptCompiler->registFunction("copyConstructor", args, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyFunction, scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for copy constructor failed");
+			EXPECT_TRUE(functionId >= 0) << L"Register function for copy constructor failed";
 
 			bool blRes = scriptCompiler->registConstructor(type, functionId);
-			EXPECT_TRUE(blRes, L"Register copy constructor failed");
+			EXPECT_TRUE(blRes) << L"Register copy constructor failed";
 		}
 
 		template <class T>
@@ -147,14 +145,13 @@ namespace ffscriptUT
 
 			DFunction2* initFunction = new MFunction2<void, T, void*>(obj, &T::operatorFunction);
 			int functionId = scriptCompiler->registFunction("destructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
+			EXPECT_TRUE(functionId >= 0) << L"Register function for constructor failed";
 
 			bool blRes = scriptCompiler->registDestructor(type, functionId);
-			EXPECT_TRUE(blRes, L"Register destructor failed");
+			EXPECT_TRUE(blRes) << L"Register destructor failed";
 		}
 
-	public:
-		CompletedConstructorDestructorsUT()
+		CompletedConstructorDestructors()
 		{
 			//the code does not contain any global scope'code and only a variable
 			//so does not need global memory
@@ -178,9 +175,12 @@ namespace ffscriptUT
 			int iRectangleType = scriptCompiler->registStruct(structRectangle);
 			typeRectangle.setType(iRectangleType);
 			typeRectangle.setTypeStr(structRectangle->getName());
-		}		
+		}
+	};
 
-		TEST_METHOD(SimpleUT1)
+	namespace CompletedConstructorDestructorsUT
+	{
+		TEST_F(CompletedConstructorDestructors, SimpleUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -201,27 +201,27 @@ namespace ffscriptUT
 			// if operator '=' of interger is not defined...
 			if (interferAssigment < 0) {
 				// ...then cannot construct object ret in expression int ret = 1;
-				EXPECT_EQ(nullptr, program, L"compile program should failed");
+				EXPECT_EQ(nullptr, program) << L"compile program should failed";
 				return;
 			}
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			// because integer has no copy constructor, so in a declaration assigment expression.
 			// the default constructor is run before operator '=' is run.
-			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
 
 			// because  operator '=' return an integer value, so after execute the operation int ret = 1;
 			// the destructor for integer is executed. So, destructor count must be 2
-			EXPECT_EQ(2, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(2, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
 		}
 
-		TEST_METHOD(SimpleUT2)
+		TEST_F(CompletedConstructorDestructors, SimpleUT2)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -240,25 +240,25 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
 			// because integer has copy constructor, so default constructor is not used
-			EXPECT_EQ(0, constructorCounter.getCount(), L"Construtor is run but result is not correct");
+			EXPECT_EQ(0, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
 
-			EXPECT_EQ(1, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
 			// because integer has copy constructor, so operator '=' is replaced by copy constructor
 			// then destructor for return value of operator '=' have no change to run. So, destructor count must be 1
-			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(1, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
 		}
 		
-		TEST_METHOD(StructUT01)
+		TEST_F(CompletedConstructorDestructors, StructUT01)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -277,20 +277,20 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(2, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructUT02)
+		TEST_F(CompletedConstructorDestructors, StructUT02)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -309,20 +309,20 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(4, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(4, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(4, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(4, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructUT03)
+		TEST_F(CompletedConstructorDestructors, StructUT03)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -341,20 +341,20 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructUT04)
+		TEST_F(CompletedConstructorDestructors, StructUT04)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -379,24 +379,24 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructUT05)
+		TEST_F(CompletedConstructorDestructors, StructUT05)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -415,20 +415,20 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructUT06)
+		TEST_F(CompletedConstructorDestructors, StructUT06)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -447,20 +447,20 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructUT07)
+		TEST_F(CompletedConstructorDestructors, StructUT07)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -485,24 +485,24 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, pointConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, pointDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructUT08)
+		TEST_F(CompletedConstructorDestructors, StructUT08)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -533,28 +533,28 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo","");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(4, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(4, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(4, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(4, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, pointConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, pointDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructUT09)
+		TEST_F(CompletedConstructorDestructors, StructUT09)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -587,10 +587,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
@@ -605,20 +605,20 @@ namespace ffscriptUT
 				expectedDestructorCount = 2;
 			}
 
-			EXPECT_EQ(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(expectedDestructorCount, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(expectedDestructorCount, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, pointConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, pointDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(0, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(0, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(0, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(0, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructUT10)
+		TEST_F(CompletedConstructorDestructors, StructUT10)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -650,28 +650,28 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);			
 
-			EXPECT_EQ(6, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(6, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(6, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(6, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, pointConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, pointDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructUT11)
+		TEST_F(CompletedConstructorDestructors, StructUT11)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -705,10 +705,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
@@ -723,20 +723,20 @@ namespace ffscriptUT
 				expectedDestructorCount = 6;
 			}
 
-			EXPECT_EQ(6, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(expectedDestructorCount, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(6, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(expectedDestructorCount, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, pointConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, pointDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructUT12)
+		TEST_F(CompletedConstructorDestructors, StructUT12)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -769,28 +769,28 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(6, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(6, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(6, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(6, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, pointConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, pointDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(CopyConstructorStructUT01)
+		TEST_F(CompletedConstructorDestructors, CopyConstructorStructUT01)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -818,24 +818,24 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(4, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(4, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(4, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(4, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(1, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(1, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, pointConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, pointDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(1, pointCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(CopyConstructorStructUT02)
+		TEST_F(CompletedConstructorDestructors, CopyConstructorStructUT02)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -869,28 +869,28 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(8, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(8, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(8, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(8, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(2, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, pointConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, pointDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(1, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(1, copyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(1, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(1, copyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(SimpleArrayUT1)
+		TEST_F(CompletedConstructorDestructors, SimpleArrayUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -907,19 +907,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(10, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(10, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(10, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(10, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
 		}
 
-		TEST_METHOD(SimpleArray2DUT1)
+		TEST_F(CompletedConstructorDestructors, SimpleArray2DUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -936,19 +936,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(100, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(100, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(100, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(100, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
 		}
 
-		TEST_METHOD(ComplexArrayUT1)
+		TEST_F(CompletedConstructorDestructors, ComplexArrayUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -965,19 +965,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(20, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(20, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(20, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(20, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
 		}
 
-		TEST_METHOD(ComplexArray2DUT1)
+		TEST_F(CompletedConstructorDestructors, ComplexArray2DUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -994,19 +994,19 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(200, constructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(200, destructorCounter.getCount(), L"Destrutor is run but result is not correct");
+			EXPECT_EQ(200, constructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(200, destructorCounter.getCount()) << L"Destrutor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructArrayUT1)
+		TEST_F(CompletedConstructorDestructors, StructArrayUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1033,24 +1033,24 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(20, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(20, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(20, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(20, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(10, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(10, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(10, pointConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(10, pointDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(StructArray2DUT1)
+		TEST_F(CompletedConstructorDestructors, StructArray2DUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1077,24 +1077,24 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(200, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(200, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(200, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(200, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 
-			EXPECT_EQ(100, pointConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(100, pointDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, pointCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(100, pointConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(100, pointDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, pointCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(ArrayInStructUT1)
+		TEST_F(CompletedConstructorDestructors, ArrayInStructUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1106,14 +1106,14 @@ namespace ffscriptUT
 
 			ScriptType typeInt(basicType->TYPE_INT, "int");
 			int iArrayType = scriptCompiler->registArrayType(L"array<int,10>");
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iArrayType, L"Register array type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iArrayType) << L"Register array type failed";
 			ScriptType arrayType(iArrayType, scriptCompiler->getType(iArrayType));
 
 			StructClass* structSimpleArray = new StructClass(scriptCompiler, "SimpleArray");
 			structSimpleArray->addMember(typeInt, "size");
 			structSimpleArray->addMember(arrayType, "data");
 			int iSimpleArrayType = scriptCompiler->registStruct(structSimpleArray);
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iSimpleArrayType, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iSimpleArrayType) << L"Register struct type failed";
 
 			const wchar_t scriptCode[] =
 				L"void foo() {"
@@ -1123,21 +1123,21 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(11, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(11, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(11, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(11, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
 		// assignment
-		TEST_METHOD(ArrayInStructUT2)
+		TEST_F(CompletedConstructorDestructors, ArrayInStructUT2)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1149,14 +1149,14 @@ namespace ffscriptUT
 
 			ScriptType typeInt(basicType->TYPE_INT, "int");
 			int iArrayType = scriptCompiler->registArrayType(L"array<int,10>");
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iArrayType, L"Register array type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iArrayType) << L"Register array type failed";
 			ScriptType arrayType(iArrayType, scriptCompiler->getType(iArrayType));
 
 			StructClass* structSimpleArray = new StructClass(scriptCompiler, "SimpleArray");
 			structSimpleArray->addMember(typeInt, "size");
 			structSimpleArray->addMember(arrayType, "data");
 			int iSimpleArrayType = scriptCompiler->registStruct(structSimpleArray);
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iSimpleArrayType, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iSimpleArrayType) << L"Register struct type failed";
 
 			const wchar_t scriptCode[] =
 				L"void foo() {"
@@ -1166,21 +1166,21 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(8, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(11, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(3, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(8, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(11, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(3, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
 		// assignment
-		TEST_METHOD(ArrayInStructUT3)
+		TEST_F(CompletedConstructorDestructors, ArrayInStructUT3)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1191,14 +1191,14 @@ namespace ffscriptUT
 
 			ScriptType typeInt(basicType->TYPE_INT, "int");
 			int iArrayType = scriptCompiler->registArrayType(L"array<int,10>");
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iArrayType, L"Register array type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iArrayType) << L"Register array type failed";
 			ScriptType arrayType(iArrayType, scriptCompiler->getType(iArrayType));
 
 			StructClass* structSimpleArray = new StructClass(scriptCompiler, "SimpleArray");
 			structSimpleArray->addMember(typeInt, "size");
 			structSimpleArray->addMember(arrayType, "data");
 			int iSimpleArrayType = scriptCompiler->registStruct(structSimpleArray);
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iSimpleArrayType, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iSimpleArrayType) << L"Register struct type failed";
 
 			const wchar_t scriptCode[] =
 				L"void foo() {"
@@ -1208,11 +1208,11 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_EQ(nullptr, program, L"Compile program should failed due to no default constructor for int but copy constructor was defined for int");
+			EXPECT_EQ(nullptr, program) << L"Compile program should failed due to no default constructor for int but copy constructor was defined for int";
 		}
 
 		/// check oder of calling operator for single object
-		TEST_METHOD(OperatorOrderUT1)
+		TEST_F(CompletedConstructorDestructors, OperatorOrderUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1251,10 +1251,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
@@ -1270,7 +1270,7 @@ namespace ffscriptUT
 				2, 2  // destructor for { location.x, location.y }
 			};
 
-			EXPECT_EQ(expected_order.size(), recorder.size(), L"constructor and destructor does not work properly");
+			EXPECT_EQ(expected_order.size(), recorder.size()) << L"constructor and destructor does not work properly";
 
 			auto jt = recorder.begin();
 			for (auto it = expected_order.begin(); it != expected_order.end(); it++, jt++) {
@@ -1279,11 +1279,11 @@ namespace ffscriptUT
 				}
 			}
 
-			EXPECT_TRUE(jt == recorder.end(), L"constructor or destructor is executed in wrong order");
+			EXPECT_TRUE(jt == recorder.end()) << L"constructor or destructor is executed in wrong order";
 		}
 
 		/// check oder of calling operator for multi object and use copy constructor
-		TEST_METHOD(OperatorOrderUT2)
+		TEST_F(CompletedConstructorDestructors, OperatorOrderUT2)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1323,10 +1323,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
@@ -1353,7 +1353,7 @@ namespace ffscriptUT
 				2, 2,  // destructor for { location.x, location.y }
 			};
 
-			EXPECT_EQ(expected_order.size(), recorder.size(), L"constructor and destructor does not work properly");
+			EXPECT_EQ(expected_order.size(), recorder.size()) << L"constructor and destructor does not work properly";
 
 			auto jt = recorder.begin();
 			for (auto it = expected_order.begin(); it != expected_order.end(); it++, jt++) {
@@ -1362,11 +1362,11 @@ namespace ffscriptUT
 				}
 			}
 
-			EXPECT_TRUE(jt == recorder.end(), L"constructor or destructor is executed in wrong order");
+			EXPECT_TRUE(jt == recorder.end()) << L"constructor or destructor is executed in wrong order";
 		}
 
 		/// check oder of calling operator for multi object and multi type
-		TEST_METHOD(OperatorOrderUT3)
+		TEST_F(CompletedConstructorDestructors, OperatorOrderUT3)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1406,10 +1406,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'test'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
@@ -1432,7 +1432,7 @@ namespace ffscriptUT
 				2, 2, // destructor { point.x, point.y }				
 			};
 
-			EXPECT_EQ(expected_order.size(), recorder.size(), L"constructor and destructor does not work properly");
+			EXPECT_EQ(expected_order.size(), recorder.size()) << L"constructor and destructor does not work properly";
 
 			auto jt = recorder.begin();
 			for (auto it = expected_order.begin(); it != expected_order.end(); it++, jt++) {
@@ -1441,10 +1441,10 @@ namespace ffscriptUT
 				}
 			}
 
-			EXPECT_TRUE(jt == recorder.end(), L"constructor or destructor is executed in wrong order");
+			EXPECT_TRUE(jt == recorder.end()) << L"constructor or destructor is executed in wrong order";
 		}
 
-		TEST_METHOD(CompositeTypeInParametersUT1)
+		TEST_F(CompletedConstructorDestructors, CompositeTypeInParametersUT1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1460,7 +1460,7 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt, "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint) << L"Register struct type failed";
 
 			const wchar_t scriptCode[] =
 				L"void foo(Point2i ret) {"
@@ -1472,22 +1472,22 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(0, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(2, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
 		// this bellow test case is not released at this time, it will be checked again soon
 #ifdef _DEBUG
-		TEST_METHOD(CompositeTypeInParametersUT2)
+		TEST_F(CompletedConstructorDestructors, CompositeTypeInParametersUT2)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1503,7 +1503,7 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt, "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint) << L"Register struct type failed";
 
 			const wchar_t scriptCode[] =
 				L"void foo(Point2i ret) {"
@@ -1515,17 +1515,17 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(0, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(2, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 #endif // _DEBUG
 		static void constructPoint(void* p, int x, int y) {
@@ -1533,7 +1533,7 @@ namespace ffscriptUT
 			*((int*)p + 1) = *((int*)p + 1) + y;
 		}
 		
-		TEST_METHOD(CompositeTypeInParametersUT3)
+		TEST_F(CompletedConstructorDestructors, CompositeTypeInParametersUT3)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1551,14 +1551,14 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt, "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint) << L"Register struct type failed";
 
 			DFunction2* constructFunction = new CdeclFunction2<void, void*, int, int>(constructPoint);
 			int functionId = scriptCompiler->registFunction("constructPoint", "ref Point2i, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constructFunction, scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for copy constructor failed");
+			EXPECT_TRUE(functionId >= 0) << L"Register function for copy constructor failed";
 
 			bool blRes = scriptCompiler->registConstructor(iPoint, functionId);
-			EXPECT_TRUE(blRes, L"Register copy constructor failed");
+			EXPECT_TRUE(blRes) << L"Register copy constructor failed";
 
 			const wchar_t scriptCode[] =
 				L"int foo(Point2i p) {"
@@ -1571,24 +1571,24 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int*iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(3, *iRes, L"default construtor for children is not run");
+			EXPECT_EQ(3, *iRes) << L"default construtor for children is not run";
 
-			EXPECT_EQ(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 		// this bellow test case is not released at this time, it will be checked again soon
 #ifdef _DEBUG
-		TEST_METHOD(CompositeTypeInParametersUT3_1)
+		TEST_F(CompletedConstructorDestructors, CompositeTypeInParametersUT3_1)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1606,14 +1606,14 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt, "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint) << L"Register struct type failed";
 
 			DFunction2* constructFunction = new CdeclFunction2<void, void*, int, int>(constructPoint);
 			int functionId = scriptCompiler->registFunction("constructPoint", "ref Point2i, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constructFunction, scriptCompiler));
-			EXPECT_TRUE(functionId >= 0, L"Register function for copy constructor failed");
+			EXPECT_TRUE(functionId >= 0) << L"Register function for copy constructor failed";
 
 			bool blRes = scriptCompiler->registConstructor(iPoint, functionId);
-			EXPECT_TRUE(blRes, L"Register copy constructor failed");
+			EXPECT_TRUE(blRes) << L"Register copy constructor failed";
 
 			const wchar_t scriptCode[] =
 				L"int foo(Point2i& p) {"
@@ -1626,24 +1626,24 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int*iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(3, *iRes, L"default construtor for children is not run");
+			EXPECT_EQ(3, *iRes) << L"default construtor for children is not run";
 
-			EXPECT_EQ(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(2, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 #endif // _DEBUG
 
-		TEST_METHOD(CompositeTypeInParametersUT3_2_PreTest)
+		TEST_F(CompletedConstructorDestructors, CompositeTypeInParametersUT3_2_PreTest)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1653,7 +1653,7 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt.makeSemiRef(), "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint) << L"Register struct type failed";
 
 			const wchar_t scriptCode[] =
 				L"int foo() {"
@@ -1666,19 +1666,19 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int*iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(1, *iRes, L"accessing member in struct does not works properly");
+			EXPECT_EQ(1, *iRes) << L"accessing member in struct does not works properly";
 		}
 
-		TEST_METHOD(CompositeTypeInParametersUT3_2)
+		TEST_F(CompletedConstructorDestructors, CompositeTypeInParametersUT3_2)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1696,7 +1696,7 @@ namespace ffscriptUT
 			pStructPoint->addMember(typeInt.makeSemiRef(), "x");
 			pStructPoint->addMember(typeInt, "y");
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
-			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint, L"Register struct type failed");			
+			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint) << L"Register struct type failed";			
 			
 			const wchar_t scriptCode[] =
 				L"int foo(Point2i p) {"
@@ -1709,23 +1709,23 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 			int*iRes = (int*)scriptTask.getTaskResult();
 
-			EXPECT_EQ(3, *iRes, L"constructor for ref type does not work properly");
+			EXPECT_EQ(3, *iRes) << L"constructor for ref type does not work properly";
 /*
-			EXPECT_EQ(2, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(0, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");*/
+			EXPECT_EQ(2, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(0, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";*/
 		}
 
-		TEST_METHOD(CompositeTypeInParametersUT4)
+		TEST_F(CompletedConstructorDestructors, CompositeTypeInParametersUT4)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1748,20 +1748,20 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(1, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(1, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(0, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(1, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(1, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
 
-		TEST_METHOD(CompositeTypeInParametersUT5)
+		TEST_F(CompletedConstructorDestructors, CompositeTypeInParametersUT5)
 		{
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 
@@ -1786,17 +1786,17 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			EXPECT_NE(nullptr, program) << L"Compile program failed";
 
 			int functionId = scriptCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);
 
-			EXPECT_EQ(0, intConstructorCounter.getCount(), L"Construtor is run but result is not correct");
-			EXPECT_EQ(2, intDestructorCounter.getCount(), L"Destrutor is run but result is not correct");
-			EXPECT_EQ(2, intCopyConstructorCounter.getCount(), L"copy constructor is run but result is not correct");
+			EXPECT_EQ(0, intConstructorCounter.getCount()) << L"Construtor is run but result is not correct";
+			EXPECT_EQ(2, intDestructorCounter.getCount()) << L"Destrutor is run but result is not correct";
+			EXPECT_EQ(2, intCopyConstructorCounter.getCount()) << L"copy constructor is run but result is not correct";
 		}
-	};
+	}
 }

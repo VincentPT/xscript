@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "TemplateForTest.hpp"
 #include <functional>
 #include "FunctionRegisterHelper.h"
@@ -26,14 +25,14 @@
 #include "DynamicFunctionFactory.h"
 #include "function\CdeclFunction2.hpp"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;	
 
 namespace ffscriptUT
 {		
-	TEST_CLASS(RunDynamicFunctionUT)
+	FF_TEST_CLASS(RunDynamicFunction)
 	{
+	protected:
 		ScriptCompiler scriptCompiler;
 		FunctionRegisterHelper funcLibHelper;
 		const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
@@ -64,25 +63,24 @@ namespace ffscriptUT
 			return prod;
 		}
 
-	public:
-		RunDynamicFunctionUT() :funcLibHelper(&scriptCompiler) {
+		RunDynamicFunction() :funcLibHelper(&scriptCompiler) {
 			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 			importBasicfunction(funcLibHelper);
 
 			//register dynamic functions
 			auto theNativeFunction1 = new CdeclFunction2<int, SimpleVariantArray*>(sum);
-			auto dynamicFunctionFactory1 = new DynamicFunctionFactory("int", theNativeFunction1, &scriptCompiler);			
+			auto dynamicFunctionFactory1 = new DynamicFunctionFactory("int", theNativeFunction1, &scriptCompiler);
 			funcLibHelper.getSriptCompiler()->registDynamicFunction("sum", dynamicFunctionFactory1);
 			funcLibHelper.addFactory(dynamicFunctionFactory1);
 
 			auto theNativeFunction2 = new CdeclFunction2<int, SimpleVariantArray*>(sumTypes);
-			auto dynamicFunctionFactory2 = new DynamicFunctionFactory("int", theNativeFunction2, &scriptCompiler);			
+			auto dynamicFunctionFactory2 = new DynamicFunctionFactory("int", theNativeFunction2, &scriptCompiler);
 			funcLibHelper.getSriptCompiler()->registDynamicFunction("sumTypes", dynamicFunctionFactory2);
 			funcLibHelper.addFactory(dynamicFunctionFactory2);
 
 			auto theNativeFunction3 = new CdeclFunction2<int, SimpleVariantArray*>(productTypes);
-			auto dynamicFunctionFactory3 = new DynamicFunctionFactory("int", theNativeFunction3, &scriptCompiler);			
+			auto dynamicFunctionFactory3 = new DynamicFunctionFactory("int", theNativeFunction3, &scriptCompiler);
 			funcLibHelper.getSriptCompiler()->registDynamicFunction("productTypes", dynamicFunctionFactory3);
 			funcLibHelper.addFactory(dynamicFunctionFactory3);
 
@@ -90,104 +88,106 @@ namespace ffscriptUT
 			_staticContext = new StaticContext(_buffer, sizeof(_buffer));
 		}
 
-		~RunDynamicFunctionUT() {
+		~RunDynamicFunction() {
 			delete _staticContext;
 		}
+	};
 
-		TEST_METHOD(RunDynamicFunction1)
+	namespace RunDynamicFunctionUT {
+		FF_TEST_METHOD(RunDynamicFunction, RunDynamicFunction1)
 		{
 			wstring exp = L"sum(1,2,3)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			
-			EXPECT_EQ(6, *result, (L"result of expression '" + exp + L"' should be 6").c_str());
+			FF_EXPECT_EQ(6, *result, (L"result of expression '" + exp + L"' should be 6").c_str());
 		}
 
-		TEST_METHOD(RunDynamicFunction2)
+		FF_TEST_METHOD(RunDynamicFunction, RunDynamicFunction2)
 		{
 			wstring exp = L"sumTypes(1,2,3)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			EXPECT_EQ(3* basicType.TYPE_INT, *result, (L"result of expression '" + exp + L"' should be 3").c_str());
+			FF_EXPECT_EQ(3* basicType.TYPE_INT, *result, (L"result of expression '" + exp + L"' should be 3").c_str());
 		}
 
-		TEST_METHOD(RunDynamicFunction3)
+		FF_TEST_METHOD(RunDynamicFunction, RunDynamicFunction3)
 		{
 			wstring exp = L"productTypes(1,2,3)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			EXPECT_EQ(basicType.TYPE_INT, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
+			FF_EXPECT_EQ(basicType.TYPE_INT, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
 		}
 
-		TEST_METHOD(RunDynamicFunction4)
+		FF_TEST_METHOD(RunDynamicFunction, RunDynamicFunction4)
 		{
 			wstring exp = L"sumTypes(1,2,3.5)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			EXPECT_EQ(basicType.TYPE_INT*2 + basicType.TYPE_DOUBLE, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
+			FF_EXPECT_EQ(basicType.TYPE_INT*2 + basicType.TYPE_DOUBLE, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
 		}
 
-		TEST_METHOD(RunDynamicFunction5)
+		FF_TEST_METHOD(RunDynamicFunction, RunDynamicFunction5)
 		{
 			wstring exp = L"productTypes(1,2.5,3)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			EXPECT_EQ(basicType.TYPE_INT*basicType.TYPE_DOUBLE, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
+			FF_EXPECT_EQ(basicType.TYPE_INT*basicType.TYPE_DOUBLE, *result, (L"result of expression '" + exp + L"' should be 1").c_str());
 		}
 
-		TEST_METHOD(RunDynamicCombine1)
+		FF_TEST_METHOD(RunDynamicFunction, RunDynamicCombine1)
 		{
 			wstring exp = L"4 + 5 * sum(1,2,3)";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			EXPECT_EQ(4 + 5*6, *result, (L"result of expression '" + exp + L"' should be 34").c_str());
+			FF_EXPECT_EQ(4 + 5*6, *result, (L"result of expression '" + exp + L"' should be 34").c_str());
 		}
 
 		static int product(int a, int b) {
@@ -201,7 +201,7 @@ namespace ffscriptUT
 			return pFunc;
 		}
 
-		TEST_METHOD(RunDynamicCombine2)
+		FF_TEST_METHOD(RunDynamicFunction, RunDynamicCombine2)
 		{
 			//register a custom function
 			auto sumFactor = new FunctionFactoryCdecl(createSumFunction, ScriptType(basicType.TYPE_INT, "int"));
@@ -209,16 +209,16 @@ namespace ffscriptUT
 
 			wstring exp = L"sum(4, 5) * sum(1,2,3) + 6";
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 
-			EXPECT_EQ(product(4,5) * 6 + 6, *result, (L"result of expression '" + exp + L"' should be 126").c_str());
+			FF_EXPECT_EQ(product(4,5) * 6 + 6, *result, (L"result of expression '" + exp + L"' should be 126").c_str());
 		}
 	};
 }

@@ -9,25 +9,21 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "..\ffscript\ScriptCompiler.h"
 #include "BasicFunction.h"
 #include "FunctionFactory.h"
 #include "BasicType.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
 namespace ffscriptUT
 {
-	TEST_CLASS(ScriptCompilerUT)
+	namespace ScriptCompilerUT
 	{
-	public:
-
-		TEST_METHOD(testScriptCompiler1)
+		FF_TEST_FUNCTION(ScriptCompilerTest,testScriptCompiler1)
 		{
 			ScriptCompiler scriptCompiler;
 			string type = "int";
@@ -35,12 +31,12 @@ namespace ffscriptUT
 			auto registType = scriptCompiler.getType(id);
 			
 			//regist type must be success
-			EXPECT_NE(-1, id);
+			FF_EXPECT_NE(-1, id);
 			//registered type must be same the type using to regist
-			EXPECT_EQ(type, registType);
+			FF_EXPECT_EQ(type, registType);
 		}
 
-		TEST_METHOD(testScriptCompiler2)
+		FF_TEST_FUNCTION(ScriptCompilerTest,testScriptCompiler2)
 		{
 			ScriptCompiler scriptCompiler;
 			string type = "int";
@@ -48,10 +44,10 @@ namespace ffscriptUT
 			id = scriptCompiler.registType(type);			
 
 			//regist type must be failed at second time
-			EXPECT_TRUE(IS_UNKNOWN_TYPE(id));
+			FF_EXPECT_TRUE(IS_UNKNOWN_TYPE(id));
 		}
 
-		TEST_METHOD(testScriptCompiler3)
+		FF_TEST_FUNCTION(ScriptCompilerTest,testScriptCompiler3)
 		{
 			ScriptCompiler scriptCompiler;
 			string type1 = "int";
@@ -60,13 +56,13 @@ namespace ffscriptUT
 			int id2 = scriptCompiler.registType(type2);
 
 			//regist type must be success
-			EXPECT_NE(-1, id1);
-			EXPECT_NE(-1, id2);
+			FF_EXPECT_NE(-1, id1);
+			FF_EXPECT_NE(-1, id2);
 			//registered type must be difference each time
-			EXPECT_NE(id1, id2);
+			FF_EXPECT_NE(id1, id2);
 		}
 
-		TEST_METHOD(testScriptCompiler4)
+		FF_TEST_FUNCTION(ScriptCompilerTest,testScriptCompiler4)
 		{
 			ScriptCompiler scriptCompiler;
 			string type = "int";
@@ -74,12 +70,12 @@ namespace ffscriptUT
 			int id2 = scriptCompiler.getType(type);
 
 			//regist type must be success
-			EXPECT_NE(-1, id1);
+			FF_EXPECT_NE(-1, id1);
 			//registered type must be same the type using to regist
-			EXPECT_EQ(id1, id2);
+			FF_EXPECT_EQ(id1, id2);
 		}
 
-		TEST_METHOD(testRegisterFunction1)
+		FF_TEST_FUNCTION(ScriptCompilerTest,testRegisterFunction1)
 		{
 			ScriptCompiler scriptCompiler;
 			FunctionFactoryCdecl sumFactor(nullptr, ScriptType());
@@ -97,18 +93,18 @@ namespace ffscriptUT
 			int id7 = scriptCompiler.registFunction("sum", "int,double", &sumFactor);
 			int id8 = scriptCompiler.registFunction("sum", "int,float,float", &sumFactor);
 
-			EXPECT_TRUE(id0 != -1, L"function 'test' must be registerd successfully!");
-			EXPECT_TRUE(id1 != -1, L"function 'sum()' must be registerd successfully!");
-			EXPECT_TRUE(id2 != -1, L"function 'sum(int)' must be registerd successfully!");
-			EXPECT_TRUE(id3 != -1, L"function 'sum(int,double)' must be registerd successfully!");
-			EXPECT_TRUE(id4 != -1, L"function 'sum(int,float)' must be registerd successfully!");
-			EXPECT_TRUE(id5 != -1, L"function 'sum(int,float,float)' must be registerd successfully!");
+			FF_EXPECT_TRUE(id0 != -1, L"function 'test' must be registerd successfully!");
+			FF_EXPECT_TRUE(id1 != -1, L"function 'sum()' must be registerd successfully!");
+			FF_EXPECT_TRUE(id2 != -1, L"function 'sum(int)' must be registerd successfully!");
+			FF_EXPECT_TRUE(id3 != -1, L"function 'sum(int,double)' must be registerd successfully!");
+			FF_EXPECT_TRUE(id4 != -1, L"function 'sum(int,float)' must be registerd successfully!");
+			FF_EXPECT_TRUE(id5 != -1, L"function 'sum(int,float,float)' must be registerd successfully!");
 
-			EXPECT_TRUE(id0 != id1, L"function 'test' and 'sum' must be registerd with diffrent id");	
+			FF_EXPECT_TRUE(id0 != id1, L"function 'test' and 'sum' must be registerd with diffrent id");	
 
-			EXPECT_TRUE(id6 == -1, L"function 'sum()' is register twice and should not regiser at second time");
-			EXPECT_TRUE(id7 == -1, L"function 'sum(int,double)' is register twice and should not regiser at second time");
-			EXPECT_TRUE(id8 == -1, L"function 'sum(int,float,float)' is register twice and should not regiser at second time");
+			FF_EXPECT_TRUE(id6 == -1, L"function 'sum()' is register twice and should not regiser at second time");
+			FF_EXPECT_TRUE(id7 == -1, L"function 'sum(int,double)' is register twice and should not regiser at second time");
+			FF_EXPECT_TRUE(id8 == -1, L"function 'sum(int,float,float)' is register twice and should not regiser at second time");
 		}
 	};
 }

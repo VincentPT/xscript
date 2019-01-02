@@ -4,7 +4,8 @@ project(ffscriptUT C CXX)
 include(${CMAKE_CURRENT_SOURCE_DIR}/conan/conanbuildinfo_multi.cmake)
 conan_basic_setup()
 
-SET (PROJECT_SOURCE_FILES 
+SET (PROJECT_SOURCE_FILES
+	./fftest.hpp
 	./CompileSuiteUT.cpp
 	./AssigmentCompoundUT.cpp
 	./Utility.cpp
@@ -12,6 +13,44 @@ SET (PROJECT_SOURCE_FILES
 	./CdeclFunctionUT.cpp
 	./CompileDynamicFunctionUT.cpp
 	./CompileProgramInFile.cpp
+	./CompileProgramUT.cpp
+	./CompileProgramUT2.cpp
+	./CompletedConstructorDestructorsUT.cpp
+	./CompositeConstructorUT.cpp
+	ConditionalOperatorUT.cpp
+	ConstructorDestructorForCodeUT.cpp
+	ConstructorDestructorUT.cpp
+	DefaultOperatorsUT.cpp
+	Expression2PlainCodeUT.cpp
+	ExpressionLinkUT.cpp
+	ExpressionUT.cpp
+	FFScriptArrayUT.cpp
+	FunctionHelperUT.cpp
+	FuntionPointerUT.cpp
+	InternalComplierSuiteUT.cpp
+	LambdaExpressionUT.cpp
+	MakePathsUT.cpp
+	MemberFunctionUT.cpp
+	MemoryblockUT.cpp
+	MultiCompilerUT.cpp
+	MultiProgramUT.cpp
+	MultithreadUT.cpp
+	OperatorBracketsUT.cpp
+	PostFixPrefixOperatorsUT.cpp
+	ReusingCompilerUT.cpp
+	RunDynamicFunctionUT.cpp
+	STDFunctionUT.cpp
+	ScriptCompilerUT.cpp
+	ScriptTypeUT.cpp
+	SemiRefUT.cpp
+	ShowErrorLineUT.cpp
+	StaticArrayUT.cpp
+	StructUT.cpp
+	SubscriptionUT.cpp
+	UserLibraryUT.cpp
+	VectorCompatibleUT.cpp
+	ffscriptUT.cpp
+	MethodUT.cpp
 )
 
 add_executable(${PROJECT_NAME} main.cpp ${PROJECT_SOURCE_FILES})

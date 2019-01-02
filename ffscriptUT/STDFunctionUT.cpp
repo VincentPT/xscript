@@ -8,9 +8,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "ExpresionParser.h"
 #include "function\STDFunction.hpp"
 #include "TemplateForTest.hpp"
@@ -18,7 +17,6 @@
 #include <functional>
 #include <math.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 
 namespace ffscriptUT
@@ -283,22 +281,21 @@ namespace ffscriptUT
 		return 1;
 	}
 
-	TEST_CLASS(STDFunctionUT)
+	namespace STDFunctionUT
 	{
-	public:	
 		/*test no param funtion*/
-		TEST_METHOD(testSTDFunction1)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction1)
 		{
 			StdFunction<void> stdfunc(sayHello);
 
 			DFunction* dynamicCaller = &stdfunc;
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test one param funtion*/
-		TEST_METHOD(testSTDFunction2)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction2)
 		{
 			StdFunction<void, char*> stdfunc(sayHello);
 
@@ -306,20 +303,20 @@ namespace ffscriptUT
 			dynamicCaller->pushParam("firefly");
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(char*, const float&) - static call*/
-		TEST_METHOD(testSTDFunction3)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction3)
 		{
 			StdFunction<void, char*, const float&> stdfunc(stdfoo);
 			stdfunc("value of b is ", 1.0f);
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(char*, const float&) - dynamic call*/
-		TEST_METHOD(testSTDFunction4)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction4)
 		{
 			StdFunction<void, char*, const float&> stdfunc(stdfoo);
 
@@ -330,11 +327,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue);
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&) - dynamic call*/
-		TEST_METHOD(testSTDFunction5)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction5)
 		{
 			StdFunction<void, const float&, const float&> stdfunc(stdfoo);
 
@@ -346,11 +343,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue2);
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int>) - dynamic call*/
-		TEST_METHOD(testSTDFunction6)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction6)
 		{
 			StdFunction<void, const float&, const float&, int> stdfunc(stdfoo);
 
@@ -363,11 +360,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)3);
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char>) - dynamic call*/
-		TEST_METHOD(testSTDFunction7)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction7)
 		{
 			StdFunction<void, const float&, const float&, int, char> stdfunc(stdfoo);
 
@@ -381,11 +378,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)'4');
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&>) - dynamic call*/
-		TEST_METHOD(testSTDFunction8)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction8)
 		{
 			StdFunction<void, const float&, const float&, int, char, const double&> stdfunc(stdfoo);
 
@@ -401,11 +398,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue3);
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*>) - dynamic call*/
-		TEST_METHOD(testSTDFunction9)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction9)
 		{
 			StdFunction<void, const float&, const float&, int, char, const double&, void*> stdfunc(stdfoo);
 
@@ -422,11 +419,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)6);
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short>) - dynamic call*/
-		TEST_METHOD(testSTDFunction10)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction10)
 		{
 			StdFunction<void, const float&, const float&, int, char, const double&, void*, short> stdfunc(stdfoo);
 
@@ -444,22 +441,22 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)7);
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - static call*/
-		TEST_METHOD(testSTDFunction11)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction11)
 		{
 			StdFunction<void, const float&, const float&, int, char, const double&, void*, __int64> stdfunc(stdfoo);
 			stdfunc(1.0f, 2.0f, 3, '4', 5.0, (void*)6, 7ll);
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - dynamic call*/
-		TEST_METHOD(testSTDFunction12)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction12)
 		{
-#ifdef APPLICATION64
+#ifdef ENVIRONMENT64
 			StdFunction<void, const float&, const float&, int, char, const double&, void*, __int64> stdfunc(stdfoo);
 #else
 			typedef void(__stdcall *STDFunc)(const float&, const float&, int, char, const double&, void*, __int64);
@@ -481,7 +478,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)'4');
 			dynamicCaller->pushParam(&forRefValue3);
 			dynamicCaller->pushParam((void*)6);
-#ifdef APPLICATION64
+#ifdef ENVIRONMENT64
 			dynamicCaller->pushParam((void*)(param8th));
 			
 #else
@@ -490,21 +487,21 @@ namespace ffscriptUT
 #endif
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - static call*/
-		TEST_METHOD(testSTDFunction13)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction13)
 		{
 			StdFunction<void, const float&, const float&, int, char, const double&, void*, short, __int64> stdfunc(stdfoo);
 			stdfunc(1.0f, 2.0f, 3, '4', 5.0, (void*)6, 7, 8ll);
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
-#ifdef APPLICATION64
+#ifdef ENVIRONMENT64
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction15)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction15)
 		{
 			/*This test case can run on 64bit platform only*/
 			StdFunction<void, const float&, const float&, int, char, const double&, void*, short, __int64> stdfunc(stdfoo);
@@ -526,11 +523,11 @@ namespace ffscriptUT
 
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 #endif
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction16)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction16)
 		{
 			StdFunction<void, const float&, const float&, int, char, const double&, void*, short, int> stdfunc(stdfoo);
 			
@@ -551,11 +548,11 @@ namespace ffscriptUT
 
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction17)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction17)
 		{
 			StdFunction<void, const float&, const float&, int, char, const double&, void*, short, int> stdfunc(stdfoo);
 
@@ -569,21 +566,21 @@ namespace ffscriptUT
 			pushParams(dynamicCaller, &forRefValue1, &forRefValue2, (void*)3, (void*)'4', &forRefValue3, (void*)6, (void*)7, (void*)8);
 			dynamicCaller->call();
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
-		TEST_METHOD(testSTDFunction18)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction18)
 		{
 			StdFunction<float> stdfunc(sayHellof);
 
 			DFunction* dynamicCaller = &stdfunc;
 			dynamicCaller->call();
 
-			EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test one param funtion*/
-		TEST_METHOD(testSTDFunction19)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction19)
 		{
 			StdFunction<float, char*> stdfunc(sayHellof);
 
@@ -591,20 +588,20 @@ namespace ffscriptUT
 			dynamicCaller->pushParam("firefly");
 			dynamicCaller->call();
 
-			EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(char*, const float&) - static call*/
-		TEST_METHOD(testSTDFunction20)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction20)
 		{
 			StdFunction<float, char*, const float&> stdfunc(stdfoof);
 			float p1 = 1.0f;			
 
-			EXPECT_EQ(1.0f, stdfunc("value of b is ", p1));
+			FF_EXPECT_EQ(1.0f, stdfunc("value of b is ", p1));
 		}
 
 		/*test two params funtion void(char*, const float&) - dynamic call*/
-		TEST_METHOD(testSTDFunction21)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction21)
 		{
 			StdFunction<float, char*, const float&> stdfunc(stdfoof);
 
@@ -615,11 +612,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue);
 			dynamicCaller->call();
 
-			EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&) - dynamic call*/
-		TEST_METHOD(testSTDFunction22)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction22)
 		{
 			StdFunction<float, const float&, const float&> stdfunc(stdfoof);
 
@@ -631,11 +628,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue2);
 			dynamicCaller->call();
 
-			EXPECT_EQ((forRefValue1 + forRefValue2), dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int>) - dynamic call*/
-		TEST_METHOD(testSTDFunction23)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction23)
 		{
 			StdFunction<float, const float&, const float&, int> stdfunc(stdfoof);
 
@@ -649,11 +646,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)(size_t)p3);
 			dynamicCaller->call();
 
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3), dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char>) - dynamic call*/
-		TEST_METHOD(testSTDFunction24)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction24)
 		{
 			StdFunction<float, const float&, const float&, int, char> stdfunc(stdfoof);
 
@@ -669,11 +666,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)(size_t)p4);
 			dynamicCaller->call();
 
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4), dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&>) - dynamic call*/
-		TEST_METHOD(testSTDFunction25)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction25)
 		{
 			StdFunction<float, const float&, const float&, int, char, const double&> stdfunc(stdfoof);
 
@@ -691,11 +688,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam(&forRefValue3);
 			dynamicCaller->call();
 
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3), dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*>) - dynamic call*/
-		TEST_METHOD(testSTDFunction26)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction26)
 		{
 			StdFunction<float, const float&, const float&, int, char, const double&, void*> stdfunc(stdfoof);
 
@@ -715,11 +712,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)p6);
 			dynamicCaller->call();
 
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3), dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short>) - dynamic call*/
-		TEST_METHOD(testSTDFunction27)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction27)
 		{
 			StdFunction<float, const float&, const float&, int, char, const double&, void*, short> stdfunc(stdfoof);
 
@@ -741,11 +738,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)(size_t)p7);
 			dynamicCaller->call();
 
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + p7), dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + p7), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - static call*/
-		TEST_METHOD(testSTDFunction28)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction28)
 		{
 			float forRefValue1 = 1.0f;
 			float forRefValue2 = 2.0f;
@@ -756,13 +753,13 @@ namespace ffscriptUT
 			__int64 p7 = 7;
 
 			StdFunction<float, const float&, const float&, int, char, const double&, void*, __int64> stdfunc(stdfoof);
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7), stdfunc(forRefValue1, forRefValue2, p3, p4, forRefValue3, p6, p7));
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7), stdfunc(forRefValue1, forRefValue2, p3, p4, forRefValue3, p6, p7));
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - dynamic call*/
-		TEST_METHOD(testSTDFunction29)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction29)
 		{
-#ifdef APPLICATION64
+#ifdef ENVIRONMENT64
 			StdFunction<float, const float&, const float&, int, char, const double&, void*, __int64> stdfunc(stdfoof);
 #else
 			typedef float(__stdcall *STDFunc)(const float&, const float&, int, char, const double&, void*, __int64);
@@ -787,7 +784,7 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)(size_t)p4);
 			dynamicCaller->pushParam(&forRefValue3);
 			dynamicCaller->pushParam((void*)p6);
-#ifdef APPLICATION64
+#ifdef ENVIRONMENT64
 			dynamicCaller->pushParam((void*)(p7));
 
 #else
@@ -796,11 +793,11 @@ namespace ffscriptUT
 #endif
 			dynamicCaller->call();
 
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7), dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, __int64>) - static call*/
-		TEST_METHOD(testSTDFunction30)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction30)
 		{
 			float forRefValue1 = 1.0f;
 			float forRefValue2 = 2.0f;
@@ -812,12 +809,12 @@ namespace ffscriptUT
 			__int64 p8 = 8;
 
 			StdFunction<float, const float&, const float&, int, char, const double&, void*, short, __int64> stdfunc(stdfoof);
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), stdfunc(forRefValue1, forRefValue2, p3, p4, forRefValue3, p6, p7, p8));
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), stdfunc(forRefValue1, forRefValue2, p3, p4, forRefValue3, p6, p7, p8));
 		}
 
-#ifdef APPLICATION64
+#ifdef ENVIRONMENT64
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction31)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction31)
 		{
 			/*This test case can run on 64bit platform only*/
 			StdFunction<float, const float&, const float&, int, char, const double&, void*, short, __int64> stdfunc(stdfoof);
@@ -844,11 +841,11 @@ namespace ffscriptUT
 
 			dynamicCaller->call();
 
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
 		}
 #endif
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction32)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction32)
 		{
 			StdFunction<float, const float&, const float&, int, char, const double&, void*, short, int> stdfunc(stdfoof);
 
@@ -873,11 +870,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)(size_t)p8);
 			dynamicCaller->call();
 
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction33)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction33)
 		{
 			StdFunction<float, const float&, const float&, int, char, const double&, void*, short, int> stdfunc(stdfoof);
 
@@ -895,11 +892,11 @@ namespace ffscriptUT
 			pushParams(dynamicCaller, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 			dynamicCaller->call();
 
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + (float)forRefValue3 + (float)p7 + (float)p8), dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction34)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction34)
 		{
 			StdFunction<double, const float&, const float&, int, char, const double&, void*, short, int> stdfunc(stdfood);
 
@@ -917,11 +914,11 @@ namespace ffscriptUT
 			pushParams(dynamicCaller, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 			dynamicCaller->call();
 
-			EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + forRefValue3 + p7 + p8), dynamicCaller->getReturnValAsDouble());
+			FF_EXPECT_EQ((forRefValue1 + forRefValue2 + p3 + p4 + forRefValue3 + p7 + p8), dynamicCaller->getReturnValAsDouble());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction35)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction35)
 		{
 			StdFunction<__int64, const float&, const float&, int, char, const double&, void*, short, int> stdfunc(stdfooi64);
 
@@ -939,11 +936,11 @@ namespace ffscriptUT
 			pushParams(dynamicCaller, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 			dynamicCaller->call();
 
-			EXPECT_EQ( (int)( (__int64)forRefValue1 + (__int64)forRefValue2 + p3 + p4 + (__int64)forRefValue3 + p7 + p8), (int)dynamicCaller->getReturnValAsInt64());
+			FF_EXPECT_EQ( (int)( (__int64)forRefValue1 + (__int64)forRefValue2 + p3 + p4 + (__int64)forRefValue3 + p7 + p8), (int)dynamicCaller->getReturnValAsInt64());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction36)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction36)
 		{
 			StdFunction<unsigned __int64, const float&, const float&, int, char, const double&, void*, short, int> stdfunc(stdfooui64);
 
@@ -961,22 +958,22 @@ namespace ffscriptUT
 			pushParams(dynamicCaller, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 			dynamicCaller->call();
 
-			EXPECT_EQ((int)((unsigned __int64)forRefValue1 + (unsigned __int64)forRefValue2 + p3 + p4 + (unsigned __int64)forRefValue3 + p7 + p8), (int)dynamicCaller->getReturnValAsInt64());
+			FF_EXPECT_EQ((int)((unsigned __int64)forRefValue1 + (unsigned __int64)forRefValue2 + p3 + p4 + (unsigned __int64)forRefValue3 + p7 + p8), (int)dynamicCaller->getReturnValAsInt64());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction37)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction37)
 		{
 			StdFunction<char> stdfunc(stdFooGeneral);
 
 			DFunction* dynamicCaller = &stdfunc;			
 			dynamicCaller->call();
 
-			EXPECT_EQ((char)1, (char)dynamicCaller->getReturnValAsInt8());
+			FF_EXPECT_EQ((char)1, (char)dynamicCaller->getReturnValAsInt8());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction38)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction38)
 		{
 			StdFunction<short, int> stdfunc(stdFooGeneral);
 
@@ -984,11 +981,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)1);
 			dynamicCaller->call();
 
-			EXPECT_EQ((short)1, (short)dynamicCaller->getReturnValAsInt16());
+			FF_EXPECT_EQ((short)1, (short)dynamicCaller->getReturnValAsInt16());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction39)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction39)
 		{
 			StdFunction<float, int, char> stdfunc(stdFooGeneral);
 
@@ -997,11 +994,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)'2');
 			dynamicCaller->call();
 
-			EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
+			FF_EXPECT_EQ(1.0f, dynamicCaller->getReturnValAsFloat());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction40)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction40)
 		{
 			StdFunction<int, int, char, const double&> stdfunc(stdFooGeneral);
 
@@ -1013,11 +1010,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)&p3);
 			dynamicCaller->call();
 
-			EXPECT_EQ(1, dynamicCaller->getReturnValAsInt32());
+			FF_EXPECT_EQ(1, dynamicCaller->getReturnValAsInt32());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction41)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction41)
 		{
 			StdFunction<long, int, char, const double&, const float&> stdfunc(stdFooGeneral);
 
@@ -1031,11 +1028,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)&p4);
 			dynamicCaller->call();
 
-			EXPECT_EQ(1, dynamicCaller->getReturnValAsInt32());
+			FF_EXPECT_EQ(1, dynamicCaller->getReturnValAsInt32());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction42)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction42)
 		{
 			StdFunction<long long, int, char, const double&, const float&, unsigned int> stdfunc(stdFooGeneral);
 
@@ -1050,11 +1047,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)5);
 			dynamicCaller->call();
 
-			EXPECT_TRUE(1000000000000000  == dynamicCaller->getReturnValAsInt64());
+			FF_EXPECT_TRUE(1000000000000000  == dynamicCaller->getReturnValAsInt64());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction43)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction43)
 		{
 			StdFunction<double, int, char, const double&, const float&, unsigned int, short> stdfunc(stdFooGeneral);
 
@@ -1070,11 +1067,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)6);
 			dynamicCaller->call();
 
-			EXPECT_EQ(1000000000000000.0, dynamicCaller->getReturnValAsDouble());
+			FF_EXPECT_EQ(1000000000000000.0, dynamicCaller->getReturnValAsDouble());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction44)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction44)
 		{
 			StdFunction<unsigned short, int, char, const double&, const float&, unsigned int, short, long> stdfunc(stdFooGeneral);
 
@@ -1091,11 +1088,11 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)7);
 			dynamicCaller->call();
 
-			EXPECT_EQ(1, (int)dynamicCaller->getReturnValAsInt16());
+			FF_EXPECT_EQ(1, (int)dynamicCaller->getReturnValAsInt16());
 		}
 
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-		TEST_METHOD(testSTDFunction45)
+		FF_TEST_FUNCTION(STDFunction, testSTDFunction45)
 		{
 			StdFunction<unsigned short, int, char, const double&, const float&, unsigned int, short, long> stdfunc(stdFooGeneral);
 
@@ -1112,12 +1109,12 @@ namespace ffscriptUT
 			dynamicCaller->pushParam((void*)7);
 			dynamicCaller->call();
 
-			EXPECT_EQ(1, (int)dynamicCaller->getReturnValAsInt16());
+			FF_EXPECT_EQ(1, (int)dynamicCaller->getReturnValAsInt16());
 
 			DFunction* pNewInsance = dynamicCaller->clone();
 			pNewInsance->call();
 
-			EXPECT_EQ(1, (int)pNewInsance->getReturnValAsInt16());
+			FF_EXPECT_EQ(1, (int)pNewInsance->getReturnValAsInt16());
 		}
 	};
 }

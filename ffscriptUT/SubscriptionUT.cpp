@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include <CompilerSuite.h>
 #include <ScriptTask.h>
 #include <Utils.h>
@@ -19,16 +18,14 @@
 #include <GeometryLib.h>
 
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
 namespace ffscriptUT
 {	
-	TEST_CLASS(SubscriptionUT)
+	namespace SubscriptionUT
 	{
-	public:
-		TEST_METHOD(ElementAccess1)
+		FF_TEST_FUNCTION(Subscription, ElementAccess1)
 		{
 			CompilerSuite compiler;
 
@@ -46,11 +43,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			FF_EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };			
 
@@ -60,10 +57,10 @@ namespace ffscriptUT
 
 			int* iRes = (int*)task.getTaskResult();
 
-			EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(ElementAccess2_1)
+		FF_TEST_FUNCTION(Subscription, ElementAccess2_1)
 		{
 			CompilerSuite compiler;
 
@@ -79,11 +76,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -93,10 +90,10 @@ namespace ffscriptUT
 
 			int* iRes = (int*)task.getTaskResult();
 
-			EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(ElementAccess2_2)
+		FF_TEST_FUNCTION(Subscription, ElementAccess2_2)
 		{
 			CompilerSuite compiler;
 
@@ -112,11 +109,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref long");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			__int64 a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -126,10 +123,10 @@ namespace ffscriptUT
 
 			__int64* iRes = (__int64*)task.getTaskResult();
 
-			EXPECT_TRUE(a[1] == *iRes, L"function 'foo' return wrong");
+			FF_EXPECT_TRUE(a[1] == *iRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(ElementAccess2_3)
+		FF_TEST_FUNCTION(Subscription, ElementAccess2_3)
 		{
 			CompilerSuite compiler;
 
@@ -145,11 +142,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref float");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			float a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -159,10 +156,10 @@ namespace ffscriptUT
 
 			float* iRes = (float*)task.getTaskResult();
 
-			EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(ElementAccess2_4)
+		FF_TEST_FUNCTION(Subscription, ElementAccess2_4)
 		{
 			CompilerSuite compiler;
 
@@ -178,11 +175,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref double");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			double a[] = { 1,2,3 };
 			double* pa = a;
@@ -193,10 +190,10 @@ namespace ffscriptUT
 
 			double* iRes = (double*)task.getTaskResult();
 
-			EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(a[1], *iRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(ElementAccess3)
+		FF_TEST_FUNCTION(Subscription, ElementAccess3)
 		{
 			CompilerSuite compiler;
 
@@ -212,11 +209,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -226,10 +223,10 @@ namespace ffscriptUT
 
 			size_t* pRes = (size_t*)task.getTaskResult();
 
-			EXPECT_EQ(a[1], *((int*)(*pRes)), L"function 'foo' return wrong");
+			FF_EXPECT_EQ(a[1], *((int*)(*pRes)), L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(ElementAccess4)
+		FF_TEST_FUNCTION(Subscription, ElementAccess4)
 		{
 			CompilerSuite compiler;
 
@@ -246,11 +243,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -260,10 +257,10 @@ namespace ffscriptUT
 
 			size_t* pRes = (size_t*)task.getTaskResult();
 
-			EXPECT_EQ((size_t)&a[1], *pRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ((size_t)&a[1], *pRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(ElementAccess5)
+		FF_TEST_FUNCTION(Subscription, ElementAccess5)
 		{
 			CompilerSuite compiler;
 
@@ -279,11 +276,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -293,10 +290,10 @@ namespace ffscriptUT
 
 			size_t* pRes = (size_t*)task.getTaskResult();
 
-			EXPECT_EQ((size_t)&a[1], *pRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ((size_t)&a[1], *pRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(ElementAccess6)
+		FF_TEST_FUNCTION(Subscription, ElementAccess6)
 		{
 			CompilerSuite compiler;
 
@@ -312,11 +309,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -324,10 +321,10 @@ namespace ffscriptUT
 			ScriptTask task(program);
 			task.runFunction(functionId, &paramBuffer);
 
-			EXPECT_EQ(1, a[1], L"function 'foo' return wrong");
+			FF_EXPECT_EQ(1, a[1], L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(ElementAccess7)
+		FF_TEST_FUNCTION(Subscription, ElementAccess7)
 		{
 			CompilerSuite compiler;
 
@@ -344,11 +341,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -356,10 +353,10 @@ namespace ffscriptUT
 			ScriptTask task(program);
 			task.runFunction(functionId, &paramBuffer);
 
-			EXPECT_EQ(5, a[1], L"function 'foo' return wrong");
+			FF_EXPECT_EQ(5, a[1], L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(ElementAccess8)
+		FF_TEST_FUNCTION(Subscription, ElementAccess8)
 		{
 			CompilerSuite compiler;
 
@@ -376,11 +373,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 1,2,3 };
 			ScriptParamBuffer paramBuffer(&a[0]);
@@ -388,10 +385,10 @@ namespace ffscriptUT
 			ScriptTask task(program);
 			task.runFunction(functionId, &paramBuffer);
 
-			EXPECT_EQ(5, a[2], L"function 'foo' return wrong");
+			FF_EXPECT_EQ(5, a[2], L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(ElementMemberAccess1)
+		FF_TEST_FUNCTION(Subscription, ElementMemberAccess1)
 		{
 			CompilerSuite compiler;
 
@@ -414,20 +411,20 @@ namespace ffscriptUT
 
 			scriptCompiler->beginUserLib();
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, (L"Compile program failed:" + convertToWstring(scriptCompiler->getLastError())).c_str());
+			FF_EXPECT_NE(nullptr, program, (L"Compile program failed:" + convertToWstring(scriptCompiler->getLastError())).c_str());
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			ScriptTask task(program);
 			task.runFunction(functionId, nullptr);
 			auto res = *(float*)task.getTaskResult();
 
-			EXPECT_EQ(1.1f, res, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(1.1f, res, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(TestSorting)
+		FF_TEST_FUNCTION(Subscription, TestSorting)
 		{
 			CompilerSuite compiler;
 
@@ -456,11 +453,11 @@ namespace ffscriptUT
 				;
 
 			auto program = compiler.compileProgram(scriptCode, scriptCode + sizeof(scriptCode) / sizeof(scriptCode[0]) - 1);
-			EXPECT_NE(nullptr, program, L"Compile program failed");
+			FF_EXPECT_NE(nullptr, program, L"Compile program failed");
 
 			auto nativeCompiler = compiler.getCompiler();
 			int functionId = nativeCompiler->findFunction("foo", "ref int, int");
-			EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"can not find function 'foo'");
 
 			int a[] = { 3,2,5,6,7,1,4 };
 			const int n = sizeof(a) / sizeof(a[0]);
@@ -478,7 +475,7 @@ namespace ffscriptUT
 				}
 			}
 
-			EXPECT_EQ(n + 1, i, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(n + 1, i, L"function 'foo' return wrong");
 		}
 	};
 }

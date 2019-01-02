@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "ExpresionParser.h"
 #include <functional>
 #include "TemplateForTest.hpp"
@@ -27,7 +26,6 @@
 #include <Program.h>
 #include <ScriptTask.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
@@ -55,17 +53,19 @@ namespace ffscriptUT
 	};
 #pragma pack(pop)
 
-	TEST_CLASS(StructUT)
+	FF_TEST_CLASS(Struct)
 	{
+	protected:
 		ScriptCompiler scriptCompiler;
 		FunctionRegisterHelper funcLibHelper;
 		const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
-	public:
-		StructUT() : funcLibHelper(&scriptCompiler) {
+
+		Struct() : funcLibHelper(&scriptCompiler) {
 			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 		}
 
+	public:
 		int testStruct1(TestStruct& obj) {
 			return obj.a + obj.b;
 		}
@@ -84,14 +84,16 @@ namespace ffscriptUT
 			}
 			return sum;
 		}
+	};
 
-		TEST_METHOD(TestStruct1)
+	namespace StructUT {
+		FF_TEST_METHOD(Struct, TestStruct1)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, StructUT, TestStruct&>(this, &StructUT::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 
 			//initialize an instance of script program
 			Program theProgram;
@@ -109,16 +111,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			FF_EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("invoke", "ref TestStruct");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'invoke'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'invoke'");
 
 			TestStruct obj = {1, 2};			
 			ScriptParamBuffer paramBuffer(&obj);
@@ -127,16 +129,16 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("testStruct =" + std::to_string(*funcRes)).c_str());
-			EXPECT_TRUE(*funcRes == 3, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 3, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStruct2)
+		FF_TEST_METHOD(Struct, TestStruct2)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, StructUT, TestStruct&>(this, &StructUT::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -155,16 +157,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			FF_EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("invoke", "TestStruct");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'invoke'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'invoke'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -173,16 +175,16 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("testStruct =" + std::to_string(*funcRes)).c_str());
-			EXPECT_TRUE(*funcRes == 3, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 3, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStruct3)
+		FF_TEST_METHOD(Struct, TestStruct3)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, StructUT, TestStruct&>(this, &StructUT::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -202,16 +204,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			FF_EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "TestStruct");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -220,16 +222,16 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			EXPECT_TRUE(*funcRes == obj.a, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == obj.a, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStruct4)
+		FF_TEST_METHOD(Struct, TestStruct4)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, StructUT, TestStruct&>(this, &StructUT::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -249,16 +251,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			FF_EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "TestStruct");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -267,16 +269,16 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			EXPECT_TRUE(*funcRes == obj.b, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == obj.b, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStruct5)
+		FF_TEST_METHOD(Struct, TestStruct5)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, StructUT, TestStruct&>(this, &StructUT::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -295,16 +297,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			FF_EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "TestStruct");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -313,16 +315,16 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			EXPECT_TRUE(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStruct6)
+		FF_TEST_METHOD(Struct, TestStruct6)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, StructUT, TestStruct&>(this, &StructUT::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -341,16 +343,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			FF_EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "ref TestStruct");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(&obj);
@@ -359,16 +361,16 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			EXPECT_TRUE(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStruct7)
+		FF_TEST_METHOD(Struct, TestStruct7)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, StructUT, TestStruct&>(this, &StructUT::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -387,16 +389,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			FF_EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "TestStruct");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -404,17 +406,17 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			TestStruct* funcRes = (TestStruct*)scriptTask.getTaskResult();
-			EXPECT_TRUE(funcRes->a == obj.a, L"program can run but return wrong value");
-			EXPECT_TRUE(funcRes->b == obj.b, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(funcRes->a == obj.a, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(funcRes->b == obj.b, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStruct8)
+		FF_TEST_METHOD(Struct, TestStruct8)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, StructUT, TestStruct&>(this, &StructUT::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -435,16 +437,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			FF_EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "TestStruct");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct obj = { 1, 2 };
 			ScriptParamBuffer paramBuffer(obj);
@@ -452,17 +454,17 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			TestStruct* funcRes = (TestStruct*)scriptTask.getTaskResult();
-			EXPECT_TRUE(funcRes->a == 3, L"program can run but return wrong value");
-			//EXPECT_TRUE(funcRes->b == 4, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(funcRes->a == 3, L"program can run but return wrong value");
+			//FF_EXPECT_TRUE(funcRes->b == 4, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStruct9)
+		FF_TEST_METHOD(Struct, TestStruct9)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, StructUT, TestStruct&>(this, &StructUT::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -482,16 +484,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			FF_EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			TestStruct* pObj = getVaribleRef<TestStruct>(*rootScope.findVariable("obj"));
 			pObj->a = 1;
@@ -503,16 +505,16 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			EXPECT_TRUE(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == obj.b + obj.a, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStruct10)
+		FF_TEST_METHOD(Struct, TestStruct10)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, StructUT, TestStruct&>(this, &StructUT::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -534,16 +536,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			FF_EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			//the code in global scope should be executed only once
 			staticContext.run();
@@ -552,10 +554,10 @@ namespace ffscriptUT
 			scriptTask.runFunction(functionId, nullptr);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("test =" + std::to_string(*funcRes)).c_str());
-			EXPECT_TRUE(*funcRes == 8, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 8, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructComplex01)
+		FF_TEST_METHOD(Struct, TestStructComplex01)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -600,13 +602,13 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			//the code in global scope should be executed only once
 			staticContext.run();
@@ -614,12 +616,12 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			EXPECT_EQ(1, objRes->a.a, L"program can run but return wrong value");
-			EXPECT_EQ(2, objRes->a.b, L"program can run but return wrong value");
-			EXPECT_EQ(3, objRes->iVal, L"program can run but return wrong value");
+			FF_EXPECT_EQ(1, objRes->a.a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(2, objRes->a.b, L"program can run but return wrong value");
+			FF_EXPECT_EQ(3, objRes->iVal, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructComplex02)
+		FF_TEST_METHOD(Struct, TestStructComplex02)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -663,16 +665,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructB");
-			EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
+			FF_EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructB");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructB obj;
 			StructA objA;
@@ -685,12 +687,12 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			EXPECT_EQ(1, objRes->a->a, L"program can run but return wrong value");
-			EXPECT_EQ(2, objRes->a->b, L"program can run but return wrong value");
-			EXPECT_EQ(3, objRes->iVal, L"program can run but return wrong value");
+			FF_EXPECT_EQ(1, objRes->a->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(2, objRes->a->b, L"program can run but return wrong value");
+			FF_EXPECT_EQ(3, objRes->iVal, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructComplex03)
+		FF_TEST_METHOD(Struct, TestStructComplex03)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -731,16 +733,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructB");
-			EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
+			FF_EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructB");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructB obj;
 			StructA objA;
@@ -755,10 +757,10 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* iRes = (int*)scriptTask.getTaskResult();
-			EXPECT_EQ(*iRes, 6, L"program can run but return wrong value");
+			FF_EXPECT_EQ(*iRes, 6, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructComplex04)
+		FF_TEST_METHOD(Struct, TestStructComplex04)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -781,10 +783,10 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_EQ(nullptr, res, L"compile program should fail");
+			FF_EXPECT_EQ(nullptr, res, L"compile program should fail");
 		}
 
-		TEST_METHOD(TestStructComplex05)
+		FF_TEST_METHOD(Struct, TestStructComplex05)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -812,10 +814,10 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_EQ(nullptr, res, L"compile program should fail");
+			FF_EXPECT_EQ(nullptr, res, L"compile program should fail");
 		}
 
-		TEST_METHOD(TestStructComplex06)
+		FF_TEST_METHOD(Struct, TestStructComplex06)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -862,16 +864,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructB");
-			EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
+			FF_EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructB");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructB obj;
 			StructA objA;
@@ -885,10 +887,10 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* iRes = (int*)scriptTask.getTaskResult();
-			EXPECT_EQ(6, *iRes, L"program can run but return wrong value");
+			FF_EXPECT_EQ(6, *iRes, L"program can run but return wrong value");
 		}
 
-		//TEST_METHOD(TestStructComplex07)
+		//FF_TEST_METHOD(Struct, TestStructComplex07)
 		//{
 		//	byte globalData[1024];
 		//	StaticContext staticContext(globalData, sizeof(globalData));
@@ -916,16 +918,16 @@ namespace ffscriptUT
 		//		L"}"
 		//		;
 		//	const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-		//	EXPECT_TRUE(res != nullptr, L"compile program failed");
+		//	FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 		//	bool blRes = rootScope.extractCode(&theProgram);
-		//	EXPECT_TRUE(blRes, L"extract code failed");
+		//	FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 		//	int idStruct = scriptCompiler.getType("StructB");
-		//	EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
+		//	FF_EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 		//	int functionId = scriptCompiler.findFunction("test", "StructB");
-		//	EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+		//	FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 		//	StructB obj;
 		//	StructA objA;
@@ -939,10 +941,10 @@ namespace ffscriptUT
 		//	ScriptTask scriptTask(&theProgram);
 		//	scriptTask.runFunction(functionId, &paramBuffer);
 		//	int* iRes = (int*)scriptTask.getTaskResult();
-		//	EXPECT_EQ(6, *iRes, L"program can run but return wrong value");
+		//	FF_EXPECT_EQ(6, *iRes, L"program can run but return wrong value");
 		//}
 
-		TEST_METHOD(TestStructReturn01)
+		FF_TEST_METHOD(Struct, TestStructReturn01)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -966,10 +968,10 @@ namespace ffscriptUT
 				L"}"
 				;
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_EQ(nullptr, res, L"compile program failed");
+			FF_EXPECT_EQ(nullptr, res, L"compile program failed");
 		}
 
-		TEST_METHOD(TestStructAssigment01)
+		FF_TEST_METHOD(Struct, TestStructAssigment01)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1001,16 +1003,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructA");
-			EXPECT_NE(-1, idStruct, L"StructA should be already registered, but not");
+			FF_EXPECT_NE(-1, idStruct, L"StructA should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructA");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructA objA;
 			objA.a = 1;
@@ -1020,11 +1022,11 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			StructA* objRes = (StructA*)scriptTask.getTaskResult();
-			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
-			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructAssigment02)
+		FF_TEST_METHOD(Struct, TestStructAssigment02)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1058,16 +1060,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructA");
-			EXPECT_NE(-1, idStruct, L"StructA should be already registered, but not");
+			FF_EXPECT_NE(-1, idStruct, L"StructA should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructA");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructA objA;
 			objA.a = 1;
@@ -1077,11 +1079,11 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			StructA* objRes = (StructA*)scriptTask.getTaskResult();
-			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
-			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructInitialize1)
+		FF_TEST_METHOD(Struct, TestStructInitialize1)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1113,22 +1115,22 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructA* objRes = (StructA*)scriptTask.getTaskResult();
-			EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
-			EXPECT_EQ(2, objRes->b, L"program can run but return wrong value");
+			FF_EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(2, objRes->b, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructInitialize2)
+		FF_TEST_METHOD(Struct, TestStructInitialize2)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1172,24 +1174,24 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
-			EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
-			EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
-			EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
+			FF_EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
+			FF_EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructInitialize3)
+		FF_TEST_METHOD(Struct, TestStructInitialize3)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1220,10 +1222,10 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_EQ(nullptr, res, L"compile program should be failed, due to struct assignment's rules");
+			FF_EXPECT_EQ(nullptr, res, L"compile program should be failed, due to struct assignment's rules");
 		}
 
-		TEST_METHOD(TestStructInitialize4)
+		FF_TEST_METHOD(Struct, TestStructInitialize4)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1269,24 +1271,24 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
-			EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
-			EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
-			EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
+			FF_EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
+			FF_EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructInitialize5)
+		FF_TEST_METHOD(Struct, TestStructInitialize5)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1330,27 +1332,27 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
-			EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
-			EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
-			EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
+			FF_EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
+			FF_EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
 		}
 
 		///
 		/// Check initializing struct with a dynamic array and function inside the dynamic array
 		///
-		TEST_METHOD(TestStructInitialize6)
+		FF_TEST_METHOD(Struct, TestStructInitialize6)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1398,30 +1400,30 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_NE(nullptr, res, L"compile program failed");
+			FF_EXPECT_NE(nullptr, res, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			StructB* objRes = (StructB*)scriptTask.getTaskResult();
-			EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
-			EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
-			EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
-			EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
+			FF_EXPECT_EQ(1, objRes->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(2, objRes->b.a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(3, objRes->b.b, L"program can run but return wrong value");
+			FF_EXPECT_EQ(4, objRes->c, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructReturnRef)
+		FF_TEST_METHOD(Struct, TestStructReturnRef)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext, &scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, StructUT, TestStruct&>(this, &StructUT::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -1440,16 +1442,16 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idTestStruct = scriptCompiler.getType("TestStruct");
-			EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
+			FF_EXPECT_NE(-1, idTestStruct, L"TestStruct should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "ref TestStruct");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			//the code in global scope should be executed only once
 			staticContext.run();
@@ -1462,10 +1464,10 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int** funcRes = (int**)scriptTask.getTaskResult();
-			EXPECT_EQ((size_t)(&obj.a), (size_t)(*funcRes), L"program can run but return wrong value");
+			FF_EXPECT_EQ((size_t)(&obj.a), (size_t)(*funcRes), L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructAndDeref01)
+		FF_TEST_METHOD(Struct, TestStructAndDeref01)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1506,16 +1508,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructB");
-			EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
+			FF_EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructB");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructB obj;
 			StructA objA;
@@ -1528,11 +1530,11 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			StructA* objRes = (StructA*)scriptTask.getTaskResult();
-			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
-			EXPECT_EQ(objA.b, objRes->b, L"program can run but return wrong value");
+			FF_EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(objA.b, objRes->b, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(TestStructAndDeref02)
+		FF_TEST_METHOD(Struct, TestStructAndDeref02)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1573,16 +1575,16 @@ namespace ffscriptUT
 			};
 #pragma pack(pop)
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int idStruct = scriptCompiler.getType("StructB");
-			EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
+			FF_EXPECT_NE(-1, idStruct, L"StructB should be already registered, but not");
 
 			int functionId = scriptCompiler.findFunction("test", "StructB");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			StructB obj;
 			StructA objA;
@@ -1594,11 +1596,11 @@ namespace ffscriptUT
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			StructA* objRes = (StructA*)scriptTask.getTaskResult();
-			EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
-			EXPECT_EQ(objA.b, objRes->b, L"program can run but return wrong value");
+			FF_EXPECT_EQ(objA.a, objRes->a, L"program can run but return wrong value");
+			FF_EXPECT_EQ(objA.b, objRes->b, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument1)
+		FF_TEST_METHOD(Struct, AccessPointerInStructAndCheckPassingArgument1)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1630,21 +1632,21 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			EXPECT_EQ(1.1f, fRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(1.1f, fRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument2)
+		FF_TEST_METHOD(Struct, AccessPointerInStructAndCheckPassingArgument2)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1675,21 +1677,21 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			EXPECT_EQ(1.1f, fRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(1.1f, fRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument3)
+		FF_TEST_METHOD(Struct, AccessPointerInStructAndCheckPassingArgument3)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1720,21 +1722,21 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			EXPECT_EQ(1.1f, fRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(1.1f, fRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument4)
+		FF_TEST_METHOD(Struct, AccessPointerInStructAndCheckPassingArgument4)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1769,21 +1771,21 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			EXPECT_EQ(2.2f, fRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(2.2f, fRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(AccessPointerInStructAndCheckPassingArgument5)
+		FF_TEST_METHOD(Struct, AccessPointerInStructAndCheckPassingArgument5)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1817,21 +1819,21 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			EXPECT_EQ(2.2f, fRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(2.2f, fRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(TestGeometryLib01)
+		FF_TEST_METHOD(Struct, TestGeometryLib01)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1856,21 +1858,21 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			EXPECT_EQ(0.0f, fRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(0.0f, fRes, L"function 'foo' return wrong");
 		}
 
-		TEST_METHOD(TestGeometryLib02)
+		FF_TEST_METHOD(Struct, TestGeometryLib02)
 		{
 			byte globalData[1024];
 			StaticContext staticContext(globalData, sizeof(globalData));
@@ -1895,18 +1897,18 @@ namespace ffscriptUT
 			scriptCompiler.beginUserLib();
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, nullptr);
 			auto fRes = *(float*)scriptTask.getTaskResult();
-			EXPECT_EQ(0.0f, fRes, L"function 'foo' return wrong");
+			FF_EXPECT_EQ(0.0f, fRes, L"function 'foo' return wrong");
 		}
 	};
 }

@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "ExpresionParser.h"
 #include <functional>
 #include "TemplateForTest.hpp"
@@ -21,7 +20,6 @@
 #include "BasicType.h"
 #include <memory>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
@@ -80,11 +78,9 @@ namespace ffscriptUT
 
 	typedef shared_ptr<DemoAutoPtr> DemoAutoPtrRef;
 
-	TEST_CLASS(ffscriptUT)
+	namespace ffscriptUT
 	{
-	public:
-
-		TEST_METHOD(testAutoPtr)
+		FF_TEST_FUNCTION(ffscriptUTTest, testAutoPtr)
 		{
 			list<DemoAutoPtrRef> theList;	
 
@@ -94,7 +90,7 @@ namespace ffscriptUT
 		}
 
 
-		TEST_METHOD(testAutoPtr2)
+		FF_TEST_FUNCTION(ffscriptUTTest, testAutoPtr2)
 		{
 			list<DemoAutoPtrRef> theList;
 			list<DemoAutoPtrRef> theSecondList;
@@ -107,7 +103,7 @@ namespace ffscriptUT
 			theSecondList.push_back(theList.back());
 		}
 
-		TEST_METHOD(testAutoPtr3)
+		FF_TEST_FUNCTION(ffscriptUTTest, testAutoPtr3)
 		{
 			list<DemoAutoPtrRef> theList;
 			list<DemoAutoPtrRef>* theSecondList = new list<DemoAutoPtrRef>();
@@ -122,7 +118,7 @@ namespace ffscriptUT
 			theSecondList->push_back(theList.back());
 		}
 
-		TEST_METHOD(testAutoPtr4)
+		FF_TEST_FUNCTION(ffscriptUTTest, testAutoPtr4)
 		{
 			list<ExpUnitRef> theList;
 
@@ -134,7 +130,7 @@ namespace ffscriptUT
 		}
 
 
-		//TEST_METHOD(testAutoPtr5)
+		//FF_TEST_FUNCTION(ffscriptUTTest, testAutoPtr5)
 		//{
 		//	list<DemoAutoPtrRef> theList;
 		//	list<DemoAutoPtrRef> theSecondList;
@@ -149,63 +145,63 @@ namespace ffscriptUT
 		//}
 
 
-		TEST_METHOD(testFunctionTemplate1)
+		FF_TEST_FUNCTION(ffscriptUTTest, testFunctionTemplate1)
 		{
 			void* theFunction = getFunctionPointer<Internal, void> (&Internal::foo);
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 		
-		TEST_METHOD(testFunctionTemplate2)
+		FF_TEST_FUNCTION(ffscriptUTTest, testFunctionTemplate2)
 		{
 			void* theFunction = getFunctionPointer<Internal, void, int>(&Internal::foo);
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
-		TEST_METHOD(testFunctionTemplate3)
+		FF_TEST_FUNCTION(ffscriptUTTest, testFunctionTemplate3)
 		{
 			void* theFunction = getFunctionPointer<Internal, void*, char*>(&Internal::foo);
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
-		TEST_METHOD(testFunctionTemplate4)
+		FF_TEST_FUNCTION(ffscriptUTTest, testFunctionTemplate4)
 		{
 			void* theFunction = getFunctionPointer<Internal, void*, char*, float>(&Internal::foo);
 
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
-		TEST_METHOD(testSTDFunction)
+		FF_TEST_FUNCTION(ffscriptUTTest, testSTDFunction)
 		{
 			STDFunc func = stdfunc;
 			func(nullptr, 1.0f);
-			EXPECT_TRUE(true);
+			FF_EXPECT_TRUE(true);
 		}
 
-		TEST_METHOD(testTemplateSpecialization1)
+		FF_TEST_FUNCTION(ffscriptUTTest, testTemplateSpecialization1)
 		{
 			//it shoud call classA for general
 			classA<float> aa;
-			EXPECT_TRUE(aa.f(1.0f) == 0);
+			FF_EXPECT_TRUE(aa.f(1.0f) == 0);
 		}
 
-		TEST_METHOD(testTemplateSpecialization2)
+		FF_TEST_FUNCTION(ffscriptUTTest, testTemplateSpecialization2)
 		{
 			//it shoud call classA for general
 			classA<float, float, float> aa;
-			EXPECT_TRUE(aa.f(1.0f, 1, 2) == 3);
+			FF_EXPECT_TRUE(aa.f(1.0f, 1, 2) == 3);
 		}
 
-		TEST_METHOD(testTemplateSpecialization3)
+		FF_TEST_FUNCTION(ffscriptUTTest, testTemplateSpecialization3)
 		{
 			//it shoud call classA for specialized int
 			classA<int, char, int> aa;
-			EXPECT_TRUE(aa.f(1, 1, 2) == 4);
+			FF_EXPECT_TRUE(aa.f(1, 1, 2) == 4);
 		}
 		
-		TEST_METHOD(testScriptCompiler1)
+		FF_TEST_FUNCTION(ffscriptUTTest, testScriptCompiler1)
 		{
 			DummyFactory dummyFactory;
 
@@ -214,12 +210,12 @@ namespace ffscriptUT
 			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
 			int functionId1 = scriptCompiler.registFunction("sin", "", &dummyFactory);
 			int functionId2 = scriptCompiler.registFunction("sin", "double", &dummyFactory);
-			EXPECT_TRUE(functionId1 >= 0, L"register failed sin()");
-			EXPECT_TRUE(functionId2 >= 0, L"register failed sin(double)");
-			EXPECT_TRUE(functionId2 != functionId1, L"register failed: two different function with same function id returned");
+			FF_EXPECT_TRUE(functionId1 >= 0, L"register failed sin()");
+			FF_EXPECT_TRUE(functionId2 >= 0, L"register failed sin(double)");
+			FF_EXPECT_TRUE(functionId2 != functionId1, L"register failed: two different function with same function id returned");
 
 			functionId2 = scriptCompiler.registFunction("sin", "double", &dummyFactory);
-			EXPECT_TRUE(functionId2 < 0, L"register same function but success return ");
+			FF_EXPECT_TRUE(functionId2 < 0, L"register same function but success return ");
 		}
 	};
 }

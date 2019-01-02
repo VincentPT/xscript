@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include <gtest/gtest.h>
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "ExpresionParser.h"
 #include <functional>
 #include "TemplateForTest.hpp"
@@ -26,7 +25,6 @@
 #include <Program.h>
 #include <ScriptTask.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
@@ -40,15 +38,9 @@ using namespace ffscript;
 
 namespace ffscriptUT
 {	
-	TEST_CLASS(CompileProgramUT)
+	namespace CompileProgramUT
 	{
-	public:
-
-		CompileProgramUT() {
-
-		}
-
-		TEST_METHOD(CompileProgram1)
+		TEST(CompileProgramUT, CompileProgram1)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -72,10 +64,10 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile a simple code failed!");
+			EXPECT_TRUE(res != nullptr) << L"compile a simple code failed!";
 		}
 
-		TEST_METHOD(CompileProgram1_failed)
+		TEST(CompileProgramUT, CompileProgram1_failed)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -99,10 +91,10 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res == nullptr, L"compile a simple code must failed due to declare a variable twice");
+			EXPECT_TRUE(res == nullptr) << L"compile a simple code must failed due to declare a variable twice";
 		}
 
-		TEST_METHOD(CompileProgram2)
+		TEST(CompileProgramUT, CompileProgram2)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -130,7 +122,7 @@ namespace ffscriptUT
 			EXPECT_TRUE(res != nullptr);
 		}
 
-		TEST_METHOD(CompileProgram3)
+		TEST(CompileProgramUT, CompileProgram3)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -158,7 +150,7 @@ namespace ffscriptUT
 			EXPECT_TRUE(res != nullptr);
 		}
 
-		TEST_METHOD(CompileProgram4)
+		TEST(CompileProgramUT, CompileProgram4)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -183,10 +175,10 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr) << L"compile program failed";
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes) << L"extract code failed";
 
 			staticContex.run();
 
@@ -201,10 +193,10 @@ namespace ffscriptUT
 			message.append(std::to_string((size_t)&globalData[0]));
 			PRINT_TEST_MESSAGE(message.c_str());
 
-			EXPECT_TRUE(*x == 2, L"the code is run but return incorrect result");
+			EXPECT_TRUE(*x == 2) << L"the code is run but return incorrect result";
 		}
 
-		TEST_METHOD(CompileProgram5)
+		TEST(CompileProgramUT, CompileProgram5)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -229,10 +221,10 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr) << L"compile program failed";
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes) << L"extract code failed";
 
 			staticContex.run();
 
@@ -247,10 +239,10 @@ namespace ffscriptUT
 			message.append(std::to_string((size_t)&globalData[0]));
 			PRINT_TEST_MESSAGE(message.c_str());
 
-			EXPECT_TRUE(*x == 4, L"the code is run but return incorrect result");
+			EXPECT_TRUE(*x == 4) << L"the code is run but return incorrect result";
 		}
 
-		TEST_METHOD(CompileProgram6)
+		TEST(CompileProgramUT, CompileProgram6)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -280,10 +272,10 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr) << L"compile program failed";
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes) << L"extract code failed";
 		}
 
 		int fibonaci(int n) {
@@ -294,7 +286,7 @@ namespace ffscriptUT
 			return res;
 		}
 
-		TEST_METHOD(CompileProgram7)
+		TEST(CompileProgramUT, CompileProgram7)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -324,13 +316,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr) << L"compile program failed";
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes) << L"extract code failed";
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("fibonaci");
-			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'fibonaci'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0) << L"cannot find function 'fibonaci'";
 
 			ScriptTask scriptTask(&theProgram);
 			int n = 10;
@@ -340,10 +332,10 @@ namespace ffscriptUT
 
 			int cPlusPlusRes = fibonaci(n);
 
-			EXPECT_TRUE(*funcRes == cPlusPlusRes, L"program can run but return wrong value");
+			EXPECT_TRUE(*funcRes == cPlusPlusRes) << L"program can run but return wrong value";
 		}
 
-		TEST_METHOD(CompileProgram8)
+		TEST(CompileProgramUT, CompileProgram8)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -369,13 +361,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr) << L"compile program failed";
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes) << L"extract code failed";
 
 			const list<OverLoadingItem>* overLoadingFuncItems = scriptCompiler.findOverloadingFuncRoot("foo");
-			EXPECT_TRUE(overLoadingFuncItems->size() > 0, L"cannot find function 'foo'");
+			EXPECT_TRUE(overLoadingFuncItems->size() > 0) << L"cannot find function 'foo'";
 
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(overLoadingFuncItems->front().functionId, nullptr);
@@ -384,7 +376,7 @@ namespace ffscriptUT
 		///
 		/// Call a function script in global code
 		///
-		TEST_METHOD(CompileProgram9)
+		TEST(CompileProgramUT, CompileProgram9)
 		{
 			//prepare compiler object with some basic types and functions
 			ScriptCompiler scriptCompiler;
@@ -411,13 +403,13 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = rootScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			EXPECT_TRUE(res != nullptr) << L"compile program failed";
 
 			bool blRes = rootScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			EXPECT_TRUE(blRes) << L"extract code failed";
 
 			auto pVariable = rootScope.findVariable("a");
-			EXPECT_NE(nullptr, pVariable, L"cannot find variable 'a'");
+			EXPECT_NE(nullptr, pVariable) << L"cannot find variable 'a'";
 
 			//EXPECT_TRUE(false, L"Current the engine cannot call a script function in global code");
 			//staticContex.run();
@@ -426,7 +418,7 @@ namespace ffscriptUT
 			rootScope.cleanupGlobalMemory();
 
 			int* iRes = (int*)staticContex.getAbsoluteAddress(pVariable->getOffset());
-			EXPECT_EQ(1, *iRes, L"program does not run properly");
+			EXPECT_EQ(1, *iRes) << L"program does not run properly";
 		}
-	};
+	}
 }

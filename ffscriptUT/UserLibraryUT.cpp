@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include <CompilerSuite.h>
 #include <ScriptTask.h>
 #include <Utils.h>
@@ -22,17 +21,15 @@
 
 #include "Utils.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
 
 namespace ffscriptUT
 {	
-	TEST_CLASS(UserLibraryUT)
+	namespace UserLibraryUT
 	{
-	public:
-		TEST_METHOD(ComplexStringExpression)
+		FF_TEST_FUNCTION(UserLibrary, ComplexStringExpression)
 		{
 			CompilerSuite compiler;
 
@@ -60,10 +57,10 @@ namespace ffscriptUT
 			scriptCompiler->beginUserLib();
 			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
 
-			EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			FF_EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
 
 			int functionId = scriptCompiler->findFunction("test", "");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'test'");
 
 			ScriptTask scriptTask(program);
 			scriptTask.runFunction(functionId, nullptr);

@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "TemplateForTest.hpp"
 #include <functional>
 #include "FunctionRegisterHelper.h"
@@ -25,7 +24,6 @@
 #include "Variable.h"
 #include "ScriptTask.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
@@ -47,16 +45,15 @@ using namespace ffscript;
 
 namespace ffscriptUT
 {
-	TEST_CLASS(PostFixPrefixOperatorsUT)
+	FF_TEST_CLASS(PostFixPrefixOperators)
 	{
+	protected:
 		ScriptCompiler scriptCompiler;
 		FunctionRegisterHelper funcLibHelper;
 		const BasicTypes& basicType = scriptCompiler.getTypeManager()->getBasicTypes();
 		StaticContext* _staticContext;
 		unsigned char _buffer[1024];
-	public:
-
-		PostFixPrefixOperatorsUT() : funcLibHelper(&scriptCompiler) {
+		PostFixPrefixOperators() : funcLibHelper(&scriptCompiler) {
 			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 			importBasicfunction(funcLibHelper);
@@ -64,11 +61,13 @@ namespace ffscriptUT
 			_staticContext = new StaticContext(_buffer, sizeof(_buffer));
 		}
 
-		~PostFixPrefixOperatorsUT() {
+		~PostFixPrefixOperators() {
 			delete _staticContext;
-		}		
+		}
+	};
 
-		TEST_METHOD(PostFixInc1)
+	namespace PostFixPrefixOperatorsUT {
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixInc1)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -84,21 +83,21 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			EXPECT_TRUE(*result == (a++), (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == (a++), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PostFixInc2)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixInc2)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -114,21 +113,21 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			EXPECT_TRUE(*result == (a++ * 2), (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == (a++ * 2), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PostFixInc3)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixInc3)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -144,20 +143,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PostFixInc5)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixInc5)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -173,20 +172,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PostFixInc4)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixInc4)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -202,21 +201,21 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			EXPECT_TRUE(*result == (3 + a++), (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == (3 + a++), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PreFixInc1)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixInc1)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -232,21 +231,21 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			EXPECT_TRUE(*result == (++a), (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == (++a), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PreFixInc2)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixInc2)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -262,21 +261,21 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			EXPECT_TRUE(*result == (++a * 2), (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == (++a * 2), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PreFixInc3)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixInc3)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -292,21 +291,21 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			EXPECT_TRUE(*result == (++a + a), (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == (++a + a), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PreFixInc4)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixInc4)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -322,21 +321,21 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
 			a = 0;
-			EXPECT_TRUE(*result == (3 - ++a), (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == (3 - ++a), (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PostFixInc6)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixInc6)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -352,20 +351,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PostFixIncFloat)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixIncFloat)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -381,20 +380,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			float* result = (float*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PostFixDecFloat)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixDecFloat)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -410,20 +409,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			float* result = (float*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PreFixIncFloat)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixIncFloat)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -439,20 +438,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			float* result = (float*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PreFixDecFloat)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixDecFloat)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -468,20 +467,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			float* result = (float*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PostFixIncDouble)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixIncDouble)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -497,20 +496,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			double* result = (double*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PostFixDecDouble)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixDecDouble)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -526,20 +525,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			double* result = (double*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PreFixIncDouble)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixIncDouble)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -555,20 +554,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			double* result = (double*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PreFixDecDouble)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixDecDouble)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -584,20 +583,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			double* result = (double*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PostFixIncLong)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixIncLong)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -613,20 +612,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			double* result = (double*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PostFixDecLong)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PostFixDecLong)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -642,20 +641,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			__int64* result = (__int64*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 0, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PreFixIncLong)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixIncLong)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -671,20 +670,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			__int64* result = (__int64*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PreFixDecLong)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixDecLong)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -700,21 +699,21 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			__int64* result = (__int64*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == -1, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
 
-		TEST_METHOD(FunctionAndPostFix1)
+		FF_TEST_METHOD(PostFixPrefixOperators,  FunctionAndPostFix1)
 		{	
 			int a = 0;
 			GlobalScope globalScope(_staticContext,&scriptCompiler);
@@ -730,23 +729,23 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = globalScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = globalScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("foo", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(a);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(FunctionAndPreFix1)
+		FF_TEST_METHOD(PostFixPrefixOperators,  FunctionAndPreFix1)
 		{
 			int a = 0;
 			GlobalScope globalScope(_staticContext,&scriptCompiler);
@@ -762,23 +761,23 @@ namespace ffscriptUT
 				;
 
 			const wchar_t* res = globalScope.parse(scriptCode, scriptCode + wcslen(scriptCode));
-			EXPECT_TRUE(res != nullptr, L"compile program failed");
+			FF_EXPECT_TRUE(res != nullptr, L"compile program failed");
 
 			bool blRes = globalScope.extractCode(&theProgram);
-			EXPECT_TRUE(blRes, L"extract code failed");
+			FF_EXPECT_TRUE(blRes, L"extract code failed");
 
 			int functionId = scriptCompiler.findFunction("foo", "int");
-			EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
 			ScriptParamBuffer paramBuffer(a);
 			ScriptTask scriptTask(&theProgram);
 			scriptTask.runFunction(functionId, &paramBuffer);
 			int* funcRes = (int*)scriptTask.getTaskResult();
 			PRINT_TEST_MESSAGE(("foo =" + std::to_string(*funcRes)).c_str());
-			EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");			
+			FF_EXPECT_TRUE(*funcRes == 1, L"program can run but return wrong value");			
 		}
 
-		TEST_METHOD(PreFixInc5)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixInc5)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -794,20 +793,20 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 
-		TEST_METHOD(PreFixInc8)
+		FF_TEST_METHOD(PostFixPrefixOperators,  PreFixInc8)
 		{
 			GlobalScope globalScope(_staticContext,&scriptCompiler);;
 			Variable* pA = globalScope.registVariable("a");
@@ -823,17 +822,17 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			excutor->runCode();
 			int* result = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(result != nullptr, (L"run expression '" + exp + L"' failed!").c_str());
 			PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
 
-			EXPECT_TRUE(*result == -2, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(*result == -2, (L"result of expression '" + exp + L"' is not correct").c_str());
 		}
 	};
 }

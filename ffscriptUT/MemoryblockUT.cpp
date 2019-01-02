@@ -8,59 +8,55 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
-#include "template\TemplateBlock.hpp"
+#include "template/TemplateBlock.hpp"
 #include <functional>
-
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ffscriptUT
 {		
-	TEST_CLASS(MemoryblockUT)
+	namespace MemoryblockUT
 	{
-	public:
-		TEST_METHOD(CheckSize1)
+		FF_TEST_FUNCTION(MemoryblockTest, CheckSize1)
 		{	
 			int size = sizeof(MemoryBlock<1>);
-			EXPECT_EQ(1, size);
+			FF_EXPECT_EQ(1, size);
 		}
 
-		TEST_METHOD(CheckSize2)
+		FF_TEST_FUNCTION(MemoryblockTest, CheckSize2)
 		{
 			int size = sizeof(MemoryBlock<2>);
-			EXPECT_EQ(2, size);
+			FF_EXPECT_EQ(2, size);
 		}
 
-		TEST_METHOD(CheckSize4)
+		FF_TEST_FUNCTION(MemoryblockTest, CheckSize4)
 		{
 			int size = sizeof(MemoryBlock<4>);
-			EXPECT_EQ(4, size);
+			FF_EXPECT_EQ(4, size);
 		}
 
-		TEST_METHOD(CheckSize6)
+		FF_TEST_FUNCTION(MemoryblockTest, CheckSize6)
 		{
 			int size = sizeof(MemoryBlock<6>);
-			EXPECT_EQ(6, size);
+			FF_EXPECT_EQ(6, size);
 		}
 
-		TEST_METHOD(CheckSize7)
+		FF_TEST_FUNCTION(MemoryblockTest, CheckSize7)
 		{
 			int size = sizeof(MemoryBlock<7>);
-			EXPECT_EQ(7, size);
+			FF_EXPECT_EQ(7, size);
 		}
 
-		TEST_METHOD(CheckSize8)
+		FF_TEST_FUNCTION(MemoryblockTest, CheckSize8)
 		{
 			int size = sizeof(MemoryBlock<8>);
-			EXPECT_EQ(8, size);
+			FF_EXPECT_EQ(8, size);
 		}
 
-		TEST_METHOD(CheckSize9)
+		FF_TEST_FUNCTION(MemoryblockTest, CheckSize9)
 		{
 			int size = sizeof(MemoryBlock<9>);
-			EXPECT_EQ(9, size);
+			FF_EXPECT_EQ(9, size);
 		}
 	};
 }

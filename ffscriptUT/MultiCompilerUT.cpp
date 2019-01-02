@@ -9,9 +9,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include "TemplateForTest.hpp"
 #include <functional>
 #include "FunctionRegisterHelper.h"
@@ -28,7 +27,6 @@
 #include "function\CdeclFunction2.hpp"
 #include "function\MemberFunction2.hpp"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
@@ -50,10 +48,9 @@ namespace ffscriptUT
 	template <class T>
 	T add(T a, T b) { return a + b; }
 
-	TEST_CLASS(MultiCompilerUT)
+	namespace MultiCompilerUT
 	{
-	public:
-		TEST_METHOD(TwoCompilerInstanceSuccessCase1)
+		FF_TEST_FUNCTION(MultiCompiler, TwoCompilerInstanceSuccessCase1)
 		{
 			//create first compiler and register basic function to it
 			ScriptCompiler scriptCompiler;
@@ -80,7 +77,7 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
@@ -88,7 +85,7 @@ namespace ffscriptUT
 
 			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			EXPECT_TRUE(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
 
 			//create second compiler
 			ScriptCompiler scriptCompiler2;
@@ -108,15 +105,15 @@ namespace ffscriptUT
 			scriptCompiler2.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor2 = compileExpression(&scriptCompiler2, L"1 + 2");
 			scriptCompiler2.popScope();
-			EXPECT_TRUE(pExcutor2 != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor2 != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor2(pExcutor2);
 			excutor2->runCode();
 			int* res = (int*)excutor2->getReturnData();
-			EXPECT_TRUE(*res == 3, L"result of expression '1 + 2' is not correct when compile with second compiler");
+			FF_EXPECT_TRUE(*res == 3, L"result of expression '1 + 2' is not correct when compile with second compiler");
 		}
 
-		TEST_METHOD(TwoCompilerInstanceSuccessCase2)
+		FF_TEST_FUNCTION(MultiCompiler, TwoCompilerInstanceSuccessCase2)
 		{
 			//create first compiler and register basic function to it
 			ScriptCompiler scriptCompiler;
@@ -143,7 +140,7 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
 			//create second compiler
@@ -164,21 +161,21 @@ namespace ffscriptUT
 			scriptCompiler2.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor2 = compileExpression(&scriptCompiler2, L"1 + 2");
 			scriptCompiler2.popScope();
-			EXPECT_TRUE(pExcutor2 != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor2 != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			//run fist code of compiler 1
 			excutor->runCode();
 			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
-			EXPECT_TRUE(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
 
 			//run second code of compiler 2
 			unique_ptr<ExpUnitExecutor> excutor2(pExcutor2);
 			excutor2->runCode();
 			int* res = (int*)excutor2->getReturnData();
-			EXPECT_TRUE(*res == 3, L"result of expression '1 + 2' is not correct when compile with second compiler");
+			FF_EXPECT_TRUE(*res == 3, L"result of expression '1 + 2' is not correct when compile with second compiler");
 		}
 
-		TEST_METHOD(TwoCompilerInstanceFailedCase)
+		FF_TEST_FUNCTION(MultiCompiler, TwoCompilerInstanceFailedCase)
 		{
 			//create first compiler and register basic function to it
 			ScriptCompiler scriptCompiler;
@@ -205,7 +202,7 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
-			EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
+			FF_EXPECT_TRUE(pExcutor != nullptr, (L"compile '" + exp + L"' failed!").c_str());
 
 			unique_ptr<ExpUnitExecutor> excutor(pExcutor);
 
@@ -213,7 +210,7 @@ namespace ffscriptUT
 
 			PRINT_TEST_MESSAGE((L"run expression '" + exp + L"' then a =" + std::to_wstring(a)).c_str());
 
-			EXPECT_TRUE(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
+			FF_EXPECT_TRUE(a == 2, (L"result of expression '" + exp + L"' is not correct").c_str());
 
 			//create second compiler
 			ScriptCompiler scriptCompiler2;
@@ -231,7 +228,7 @@ namespace ffscriptUT
 			scriptCompiler2.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor2 = compileExpression(&scriptCompiler2, L"1 * 2");
 			scriptCompiler2.popScope();
-			EXPECT_TRUE(pExcutor2 == nullptr, (L"compile '" + exp + L"' must failed when compile with second compiler!").c_str());
+			FF_EXPECT_TRUE(pExcutor2 == nullptr, (L"compile '" + exp + L"' must failed when compile with second compiler!").c_str());
 		}
 	};
 }

@@ -8,9 +8,8 @@
 **
 *
 **********************************************************************/
+#include "fftest.hpp"
 
-#include "stdafx.h"
-#include "CppUnitTest.h"
 #include <CompilerSuite.h>
 #include <ScriptTask.h>
 #include <Utils.h>
@@ -22,17 +21,15 @@
 #include <codecvt>
 #include <string>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using namespace ffscript;
 
 
 namespace ffscriptUT
 {	
-	TEST_CLASS(ConditionalOperatorUT)
+	namespace ConditionalOperatorUT
 	{
-	public:
-		TEST_METHOD(ConditionalOperatorSimplest1)
+		FF_TEST_FUNCTION(ConditionalOperator, ConditionalOperatorSimplest1)
 		{
 			ScriptCompiler scriptCompiler;
 			ExpressionParser parser(&scriptCompiler);
@@ -44,22 +41,22 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 ? 2 : 3", units);
 
-			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			EXPECT_TRUE(res, L"compile '1 ? 2 : 3' failed!");
-			EXPECT_TRUE(expList.size() == 1, L"compile '1 ? 2 : 3' and retured more than one expression");
+			FF_EXPECT_TRUE(res, L"compile '1 ? 2 : 3' failed!");
+			FF_EXPECT_TRUE(expList.size() == 1, L"compile '1 ? 2 : 3' and retured more than one expression");
 
 			auto expUnit = expList.front()->getRoot();
 
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, expUnit->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, expUnit->getType(), L"Compile success but wrong expected");
 
 			auto conditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(expUnit);
 
 			auto& params = conditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
 			auto it = params.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -67,34 +64,34 @@ namespace ffscriptUT
 			int* val2 = (int*)(it++->get()->Execute());
 			int* val3 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(1, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(2, *val2, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(3, *val3, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(1, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(2, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(3, *val3, L"Compile success but wrong the order of param wrong");
 
 			//before linking type cast function should be registered
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 
 			//check linking
 			eResult = parser.link(expList.front().get());
-			EXPECT_TRUE(E_SUCCESS == eResult, L"link failed");
+			FF_EXPECT_TRUE(E_SUCCESS == eResult, L"link failed");
 
 			expUnit = expList.front()->getRoot();
-			EXPECT_EQ(basicType.TYPE_INT, expUnit->getReturnType().iType(), L"link success but wrong return type for conditional operator");
+			FF_EXPECT_EQ(basicType.TYPE_INT, expUnit->getReturnType().iType(), L"link success but wrong return type for conditional operator");
 
 			//check extracting code
 			GlobalScope rootScope(1024, &scriptCompiler);
 			ExpUnitExecutor excutor(&rootScope);
 			res = excutor.extractCode(&scriptCompiler, expUnit);
-			EXPECT_TRUE(res, L"extract code failed");
+			FF_EXPECT_TRUE(res, L"extract code failed");
 
 			excutor.runCode();
 			int* iRes = (int*) excutor.getReturnData();
-			EXPECT_EQ(2, *iRes, L"wrong result");
+			FF_EXPECT_EQ(2, *iRes, L"wrong result");
 
 			PRINT_TEST_MESSAGE(("expression 1 ? 2 : 3 returned: " + std::to_string(*iRes)).c_str());
 		}
 
-		TEST_METHOD(ConditionalOperatorSimplest2)
+		FF_TEST_FUNCTION(ConditionalOperator, ConditionalOperatorSimplest2)
 		{
 			ScriptCompiler scriptCompiler;
 			ExpressionParser parser(&scriptCompiler);
@@ -106,22 +103,22 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"0 ? 2 : 3", units);
 
-			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			EXPECT_TRUE(res, L"compile '0 ? 2 : 3' failed!");
-			EXPECT_TRUE(expList.size() == 1, L"compile '0 ? 2 : 3' and retured more than one expression");
+			FF_EXPECT_TRUE(res, L"compile '0 ? 2 : 3' failed!");
+			FF_EXPECT_TRUE(expList.size() == 1, L"compile '0 ? 2 : 3' and retured more than one expression");
 
 			auto expUnit = expList.front()->getRoot();
 
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, expUnit->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, expUnit->getType(), L"Compile success but wrong expected");
 
 			auto conditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(expUnit);
 
 			auto& params = conditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
 			auto it = params.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -129,34 +126,34 @@ namespace ffscriptUT
 			int* val2 = (int*)(it++->get()->Execute());
 			int* val3 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(0, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(2, *val2, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(3, *val3, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(0, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(2, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(3, *val3, L"Compile success but wrong the order of param wrong");
 
 			//before linking type cast function should be registered
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 
 			//check linking
 			eResult = parser.link(expList.front().get());
-			EXPECT_TRUE(E_SUCCESS == eResult, L"link failed");
+			FF_EXPECT_TRUE(E_SUCCESS == eResult, L"link failed");
 
 			expUnit = expList.front()->getRoot();
-			EXPECT_EQ(basicType.TYPE_INT, expUnit->getReturnType().iType(), L"link success but wrong return type for conditional operator");
+			FF_EXPECT_EQ(basicType.TYPE_INT, expUnit->getReturnType().iType(), L"link success but wrong return type for conditional operator");
 
 			//check extracting code
 			GlobalScope rootScope(1024, &scriptCompiler);
 			ExpUnitExecutor excutor(&rootScope);
 			res = excutor.extractCode(&scriptCompiler, expUnit);
-			EXPECT_TRUE(res, L"extract code failed");
+			FF_EXPECT_TRUE(res, L"extract code failed");
 
 			excutor.runCode();
 			int* iRes = (int*)excutor.getReturnData();
-			EXPECT_EQ(3, *iRes, L"wrong result");
+			FF_EXPECT_EQ(3, *iRes, L"wrong result");
 
 			PRINT_TEST_MESSAGE(("expression 0 ? 2 : 3 returned: " + std::to_string(*iRes)).c_str());
 		}
 
-		TEST_METHOD(ConditionalOperatorMostComplex1) 
+		FF_TEST_FUNCTION(ConditionalOperator, ConditionalOperatorMostComplex1) 
 		{
 			ScriptCompiler scriptCompiler;
 			GlobalScope rootScope(1024, &scriptCompiler);
@@ -170,30 +167,30 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&rootScope);
 			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 ? 3 : 4 : 5", units);
 
-			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			EXPECT_TRUE(res, L"compile 'y = 1 ? 2 ? 3 : 4 : 5' failed!");
-			EXPECT_TRUE(expList.size() == 1, L"compile 'y = 1 ? 2 ? 3 : 4 : 5' and retured more than one expression");
+			FF_EXPECT_TRUE(res, L"compile 'y = 1 ? 2 ? 3 : 4 : 5' failed!");
+			FF_EXPECT_TRUE(expList.size() == 1, L"compile 'y = 1 ? 2 ? 3 : 4 : 5' and retured more than one expression");
 
 			auto expUnit = expList.front()->getRoot();
 
-			EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, expUnit->getType(), L"Compile success but wrong expected");;
+			FF_EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, expUnit->getType(), L"Compile success but wrong expected");;
 
 			auto assigmentUnit = dynamic_pointer_cast<DynamicParamFunction>(expUnit);
 			auto& assigmentParams = assigmentUnit->getParams();
-			EXPECT_EQ(2, (int)assigmentParams.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(2, (int)assigmentParams.size(), L"Compile success but wrong expected");
 
 			auto it = assigmentParams.begin();
-			EXPECT_EQ(EXP_UNIT_ID_XOPERAND, it++->get()->getType(), L"Compile success but wrong expected");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, it->get()->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_XOPERAND, it++->get()->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, it->get()->getType(), L"Compile success but wrong expected");
 
 			auto conditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(*it);
 
 			auto& params = conditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
 			it = params.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -201,14 +198,14 @@ namespace ffscriptUT
 			auto subConditionalUnit = *(it++);
 			int* val3 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(1, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit->getType(), L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(5, *val3, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(1, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit->getType(), L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(5, *val3, L"Compile success but wrong the order of param wrong");
 
 			auto subConditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(subConditionalUnit);
 
 			auto& subConditionalParams = subConditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)subConditionalParams.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)subConditionalParams.size(), L"Compile success but wrong expected");
 			it = subConditionalParams.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -216,20 +213,20 @@ namespace ffscriptUT
 			int* val2 = (int*)(it++->get()->Execute());
 			val3 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(2, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(3, *val2, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(4, *val3, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(2, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(3, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(4, *val3, L"Compile success but wrong the order of param wrong");
 
 			//before linking type cast function should be registered
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 
 			//check linking
 			eResult = parser.link(expList.front().get());
-			EXPECT_TRUE(E_SUCCESS == eResult, L"link failed");
+			FF_EXPECT_TRUE(E_SUCCESS == eResult, L"link failed");
 
 			expUnit = expList.front()->getRoot();
 			ScriptType expectedType(basicType.TYPE_INT, "int");
-			EXPECT_TRUE(expectedType.makeSemiRef() == expUnit->getReturnType(), L"link success but wrong return type for conditional operator");
+			FF_EXPECT_TRUE(expectedType.makeSemiRef() == expUnit->getReturnType(), L"link success but wrong return type for conditional operator");
 
 			//because there is variable 'y'
 			//so, we need call update variable for root scope before extract code
@@ -238,21 +235,21 @@ namespace ffscriptUT
 			//check extracting code
 			ExpUnitExecutor excutor(&rootScope);
 			res = excutor.extractCode(&scriptCompiler, expUnit);
-			EXPECT_TRUE(res, L"extract code failed");
+			FF_EXPECT_TRUE(res, L"extract code failed");
 
 			excutor.runCode();
 			int* iRes = *(int**)excutor.getReturnData();
-			EXPECT_EQ(3, *iRes, L"wrong result");
+			FF_EXPECT_EQ(3, *iRes, L"wrong result");
 
 			auto pVariable = rootScope.findVariable("y");
 			int* pY = getVaribleRef<int>(*pVariable);
-			EXPECT_EQ(3, *pY, L"wrong result");
+			FF_EXPECT_EQ(3, *pY, L"wrong result");
 
 			PRINT_TEST_MESSAGE(("expression 'y = 1 ? 2 ? 3 : 4 : 5' returned: " + std::to_string(*iRes)).c_str());
 			PRINT_TEST_MESSAGE(("and y = " + std::to_string(*pY)).c_str());
 		}
 
-		TEST_METHOD(ConditionalOperatorMostComplex2)
+		FF_TEST_FUNCTION(ConditionalOperator, ConditionalOperatorMostComplex2)
 		{
 			ScriptCompiler scriptCompiler;
 			GlobalScope rootScope(8, &scriptCompiler);
@@ -266,30 +263,30 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&rootScope);
 			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7", units);
 			int y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7;
-			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			EXPECT_TRUE(res, L"compile 'y = 1 ? 2 ? 3 : 4 : 5' failed!");
-			EXPECT_TRUE(expList.size() == 1, L"compile 'y = 1 ? 2 ? 3 : 4 : 5' and retured more than one expression");
+			FF_EXPECT_TRUE(res, L"compile 'y = 1 ? 2 ? 3 : 4 : 5' failed!");
+			FF_EXPECT_TRUE(expList.size() == 1, L"compile 'y = 1 ? 2 ? 3 : 4 : 5' and retured more than one expression");
 
 			auto expUnit = expList.front()->getRoot();
 
-			EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, expUnit->getType(), L"Compile success but wrong expected");;
+			FF_EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, expUnit->getType(), L"Compile success but wrong expected");;
 
 			auto assigmentUnit = dynamic_pointer_cast<DynamicParamFunction>(expUnit);
 			auto& assigmentParams = assigmentUnit->getParams();
-			EXPECT_EQ(2, (int)assigmentParams.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(2, (int)assigmentParams.size(), L"Compile success but wrong expected");
 
 			auto it = assigmentParams.begin();
-			EXPECT_EQ(EXP_UNIT_ID_XOPERAND, it++->get()->getType(), L"Compile success but wrong expected");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, it->get()->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_XOPERAND, it++->get()->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, it->get()->getType(), L"Compile success but wrong expected");
 
 			auto conditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(*it);
 
 			auto& params = conditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
 			it = params.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -297,14 +294,14 @@ namespace ffscriptUT
 			auto subConditionalUnit1 = *(it++);
 			auto subConditionalUnit2 = *(it++);
 
-			EXPECT_EQ(1, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit1->getType(), L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit2->getType(), L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(1, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit1->getType(), L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit2->getType(), L"Compile success but wrong the order of param wrong");
 
 			auto subConditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(subConditionalUnit1);
 
 			auto& subConditionalParams = subConditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)subConditionalParams.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)subConditionalParams.size(), L"Compile success but wrong expected");
 			it = subConditionalParams.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -312,14 +309,14 @@ namespace ffscriptUT
 			int* val2 = (int*)(it++->get()->Execute());
 			int* val3 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(2, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(3, *val2, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(4, *val3, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(2, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(3, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(4, *val3, L"Compile success but wrong the order of param wrong");
 
 			subConditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(subConditionalUnit2);
 
 			auto& subConditionalParams2 = subConditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)subConditionalParams2.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)subConditionalParams2.size(), L"Compile success but wrong expected");
 			it = subConditionalParams2.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -327,12 +324,12 @@ namespace ffscriptUT
 			val2 = (int*)(it++->get()->Execute());
 			val3 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(5, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(6, *val2, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(7, *val3, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(5, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(6, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(7, *val3, L"Compile success but wrong the order of param wrong");
 		}
 
-		TEST_METHOD(ConditionalOperatorMostComplex3)
+		FF_TEST_FUNCTION(ConditionalOperator, ConditionalOperatorMostComplex3)
 		{
 			ScriptCompiler scriptCompiler;
 			GlobalScope rootScope(8, &scriptCompiler);
@@ -346,30 +343,30 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&rootScope);
 			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 ? 3 : 4 : 5 + 6", units);
 			int y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7;
-			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			EXPECT_TRUE(res, L"compile 'y = 1 ? 2 ? 3 : 4 : 5 + 6' failed!");
-			EXPECT_TRUE(expList.size() == 1, L"compile 'y = 1 ? 2 ? 3 : 4 : 5 + 6' and retured more than one expression");
+			FF_EXPECT_TRUE(res, L"compile 'y = 1 ? 2 ? 3 : 4 : 5 + 6' failed!");
+			FF_EXPECT_TRUE(expList.size() == 1, L"compile 'y = 1 ? 2 ? 3 : 4 : 5 + 6' and retured more than one expression");
 
 			auto expUnit = expList.front()->getRoot();
 
-			EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, expUnit->getType(), L"Compile success but wrong expected");;
+			FF_EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, expUnit->getType(), L"Compile success but wrong expected");;
 
 			auto assigmentUnit = dynamic_pointer_cast<DynamicParamFunction>(expUnit);
 			auto& assigmentParams = assigmentUnit->getParams();
-			EXPECT_EQ(2, (int)assigmentParams.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(2, (int)assigmentParams.size(), L"Compile success but wrong expected");
 
 			auto it = assigmentParams.begin();
-			EXPECT_EQ(EXP_UNIT_ID_XOPERAND, it++->get()->getType(), L"Compile success but wrong expected");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, it->get()->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_XOPERAND, it++->get()->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, it->get()->getType(), L"Compile success but wrong expected");
 
 			auto conditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(*it);
 
 			auto& params = conditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
 			it = params.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -377,14 +374,14 @@ namespace ffscriptUT
 			auto subConditionalUnit1 = *(it++);
 			auto subConditionalUnit2 = *(it++);
 
-			EXPECT_EQ(1, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit1->getType(), L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ADD, subConditionalUnit2->getType(), L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(1, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit1->getType(), L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ADD, subConditionalUnit2->getType(), L"Compile success but wrong the order of param wrong");
 
 			auto subConditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(subConditionalUnit1);
 
 			auto& subConditionalParams = subConditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)subConditionalParams.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)subConditionalParams.size(), L"Compile success but wrong expected");
 			it = subConditionalParams.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -392,25 +389,25 @@ namespace ffscriptUT
 			int* val2 = (int*)(it++->get()->Execute());
 			int* val3 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(2, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(3, *val2, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(4, *val3, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(2, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(3, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(4, *val3, L"Compile success but wrong the order of param wrong");
 
 			subConditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(subConditionalUnit2);
 
 			auto& subConditionalParams2 = subConditionalExpUnit->getParams();
-			EXPECT_EQ(2, (int)subConditionalParams2.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(2, (int)subConditionalParams2.size(), L"Compile success but wrong expected");
 			it = subConditionalParams2.begin();
 
 			//just call excute function if ensure the unit is const operand.
 			val1 = (int*)(it++->get()->Execute());
 			val2 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(5, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(6, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(5, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(6, *val2, L"Compile success but wrong the order of param wrong");
 		}
 
-		TEST_METHOD(ConditionalOperatorMostComplex4)
+		FF_TEST_FUNCTION(ConditionalOperator, ConditionalOperatorMostComplex4)
 		{
 			ScriptCompiler scriptCompiler;
 			GlobalScope rootScope(8, &scriptCompiler);
@@ -423,30 +420,30 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			scriptCompiler.pushScope(&rootScope);
 			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 + 3 : 5 ? 6 : 7", units);
-			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			EXPECT_TRUE(res, L"compile 'y = 1 ? 2 + 4 : 5' failed!");
-			EXPECT_TRUE(expList.size() == 1, L"compile 'y = 1 ? 2 ? 3 : 4 : 5' and retured more than one expression");
+			FF_EXPECT_TRUE(res, L"compile 'y = 1 ? 2 + 4 : 5' failed!");
+			FF_EXPECT_TRUE(expList.size() == 1, L"compile 'y = 1 ? 2 ? 3 : 4 : 5' and retured more than one expression");
 
 			auto expUnit = expList.front()->getRoot();
 
-			EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, expUnit->getType(), L"Compile success but wrong expected");;
+			FF_EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, expUnit->getType(), L"Compile success but wrong expected");;
 
 			auto assigmentUnit = dynamic_pointer_cast<DynamicParamFunction>(expUnit);
 			auto& assigmentParams = assigmentUnit->getParams();
-			EXPECT_EQ(2, (int)assigmentParams.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(2, (int)assigmentParams.size(), L"Compile success but wrong expected");
 
 			auto it = assigmentParams.begin();
-			EXPECT_EQ(EXP_UNIT_ID_XOPERAND, it++->get()->getType(), L"Compile success but wrong expected");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, it->get()->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_XOPERAND, it++->get()->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, it->get()->getType(), L"Compile success but wrong expected");
 
 			auto conditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(*it);
 
 			auto& params = conditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
 			it = params.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -454,27 +451,27 @@ namespace ffscriptUT
 			auto subConditionalUnit1 = *(it++);
 			auto subConditionalUnit2 = *(it++);
 
-			EXPECT_EQ(1, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ADD, subConditionalUnit1->getType(), L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit2->getType(), L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(1, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ADD, subConditionalUnit1->getType(), L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit2->getType(), L"Compile success but wrong the order of param wrong");
 
 			auto subConditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(subConditionalUnit1);
 
 			auto& subConditionalParams = subConditionalExpUnit->getParams();
-			EXPECT_EQ(2, (int)subConditionalParams.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(2, (int)subConditionalParams.size(), L"Compile success but wrong expected");
 			it = subConditionalParams.begin();
 
 			//just call excute function if ensure the unit is const operand.
 			val1 = (int*)(it++->get()->Execute());
 			int* val2 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(2, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(3, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(2, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(3, *val2, L"Compile success but wrong the order of param wrong");
 
 			subConditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(subConditionalUnit2);
 
 			auto& subConditionalParams2 = subConditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)subConditionalParams2.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)subConditionalParams2.size(), L"Compile success but wrong expected");
 			it = subConditionalParams2.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -482,12 +479,12 @@ namespace ffscriptUT
 			val2 = (int*)(it++->get()->Execute());
 			int* val3 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(5, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(6, *val2, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(7, *val3, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(5, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(6, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(7, *val3, L"Compile success but wrong the order of param wrong");
 		}
 
-		TEST_METHOD(ConditionalOperatorMostComplex5)
+		FF_TEST_FUNCTION(ConditionalOperator, ConditionalOperatorMostComplex5)
 		{
 			ScriptCompiler scriptCompiler;
 			GlobalScope rootScope(8, &scriptCompiler);
@@ -501,30 +498,30 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&rootScope);
 			EExpressionResult eResult = parser.tokenize(L"y = 0 + 1 ? 2 ? 3 : 4 : 5 ? 6 : 7", units);
 			int y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7;
-			EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 
-			EXPECT_TRUE(res, L"compile 'y = 0 + 1 ? 2 ? 3 : 4 : 5 ? 6 : 7' failed!");
-			EXPECT_TRUE(expList.size() == 1, L"compile 'y = 0 + 1 ? 2 ? 3 : 4 : 5 ? 6 : 7' and retured more than one expression");
+			FF_EXPECT_TRUE(res, L"compile 'y = 0 + 1 ? 2 ? 3 : 4 : 5 ? 6 : 7' failed!");
+			FF_EXPECT_TRUE(expList.size() == 1, L"compile 'y = 0 + 1 ? 2 ? 3 : 4 : 5 ? 6 : 7' and retured more than one expression");
 
 			auto expUnit = expList.front()->getRoot();
 
-			EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, expUnit->getType(), L"Compile success but wrong expected");;
+			FF_EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ASSIGNMENT, expUnit->getType(), L"Compile success but wrong expected");;
 
 			auto assigmentUnit = dynamic_pointer_cast<DynamicParamFunction>(expUnit);
 			auto& assigmentParams = assigmentUnit->getParams();
-			EXPECT_EQ(2, (int)assigmentParams.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(2, (int)assigmentParams.size(), L"Compile success but wrong expected");
 
 			auto it = assigmentParams.begin();
-			EXPECT_EQ(EXP_UNIT_ID_XOPERAND, it++->get()->getType(), L"Compile success but wrong expected");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, it->get()->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_XOPERAND, it++->get()->getType(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, it->get()->getType(), L"Compile success but wrong expected");
 
 			auto conditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(*it);
 
 			auto& params = conditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)params.size(), L"Compile success but wrong expected");
 			it = params.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -532,23 +529,23 @@ namespace ffscriptUT
 			auto subConditionalUnit1 = *(it++);
 			auto subConditionalUnit2 = *(it++);
 
-			EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ADD, additionalUnit->getType(), L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit1->getType(), L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit2->getType(), L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(EXP_UNIT_ID_OPERATOR_ADD, additionalUnit->getType(), L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit1->getType(), L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(EXP_UNIT_ID_FUNC_CONDITIONAL, subConditionalUnit2->getType(), L"Compile success but wrong the order of param wrong");
 
 			auto& addParams = dynamic_pointer_cast<DynamicParamFunction>(additionalUnit)->getParams();
-			EXPECT_EQ(2, (int)addParams.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(2, (int)addParams.size(), L"Compile success but wrong expected");
 
 			it = addParams.begin();
 			int* val1 = (int*)(it++->get()->Execute());
 			int* val2 = (int*)(it++->get()->Execute());
-			EXPECT_EQ(0, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(1, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(0, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(1, *val2, L"Compile success but wrong the order of param wrong");
 
 			auto subConditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(subConditionalUnit1);
 
 			auto& subConditionalParams = subConditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)subConditionalParams.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)subConditionalParams.size(), L"Compile success but wrong expected");
 			it = subConditionalParams.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -556,14 +553,14 @@ namespace ffscriptUT
 			val2 = (int*)(it++->get()->Execute());
 			int* val3 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(2, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(3, *val2, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(4, *val3, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(2, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(3, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(4, *val3, L"Compile success but wrong the order of param wrong");
 
 			subConditionalExpUnit = dynamic_pointer_cast<DynamicParamFunction>(subConditionalUnit2);
 
 			auto& subConditionalParams2 = subConditionalExpUnit->getParams();
-			EXPECT_EQ(3, (int)subConditionalParams2.size(), L"Compile success but wrong expected");
+			FF_EXPECT_EQ(3, (int)subConditionalParams2.size(), L"Compile success but wrong expected");
 			it = subConditionalParams2.begin();
 
 			//just call excute function if ensure the unit is const operand.
@@ -571,12 +568,12 @@ namespace ffscriptUT
 			val2 = (int*)(it++->get()->Execute());
 			val3 = (int*)(it++->get()->Execute());
 
-			EXPECT_EQ(5, *val1, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(6, *val2, L"Compile success but wrong the order of param wrong");
-			EXPECT_EQ(7, *val3, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(5, *val1, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(6, *val2, L"Compile success but wrong the order of param wrong");
+			FF_EXPECT_EQ(7, *val3, L"Compile success but wrong the order of param wrong");
 		}
 
-		TEST_METHOD(CheckExcution1)
+		FF_TEST_FUNCTION(ConditionalOperator, CheckExcution1)
 		{
 			CompilerSuite compiler;
 
@@ -597,7 +594,7 @@ namespace ffscriptUT
 
 			const wchar_t*  scriptCode = L"x + 1 ? 3 + (y ? -3 : 3) ? 100 : 101 : z ? 102 : 103";
 			auto excutor = compiler.compileExpression(scriptCode);
-			EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
 
 			setVariableValue<int>(*pVariableX, 0);
 			setVariableValue<int>(*pVariableY, 0);
@@ -606,10 +603,10 @@ namespace ffscriptUT
 			excutor->runCode();
 			int* res = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(*res == 100, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*res == 100, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CheckExcution2)
+		FF_TEST_FUNCTION(ConditionalOperator, CheckExcution2)
 		{
 			CompilerSuite compiler;
 
@@ -630,7 +627,7 @@ namespace ffscriptUT
 
 			const wchar_t*  scriptCode = L"x + 1 ? 3 + (y ? (-3) : (3 + 1)) ? 100 : 101 : z ? 102 : 103";
 			auto excutor = compiler.compileExpression(scriptCode);
-			EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
 
 			setVariableValue<int>(*pVariableX, 0);
 			setVariableValue<int>(*pVariableY, 0);
@@ -639,10 +636,10 @@ namespace ffscriptUT
 			excutor->runCode();
 			int* res = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(*res == 100, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*res == 100, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CheckExcution3)
+		FF_TEST_FUNCTION(ConditionalOperator, CheckExcution3)
 		{
 			CompilerSuite compiler;
 
@@ -663,7 +660,7 @@ namespace ffscriptUT
 
 			const wchar_t*  scriptCode = L"x + 1 ? 3 + (y ? (-3) : (3 + 1)) ? 100 : 101 : z ? 102 : 103";
 			auto excutor = compiler.compileExpression(scriptCode);
-			EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
 
 			setVariableValue<int>(*pVariableX, 0);
 			setVariableValue<int>(*pVariableY, 1);
@@ -672,10 +669,10 @@ namespace ffscriptUT
 			excutor->runCode();
 			int* res = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(*res == 101, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*res == 101, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CheckExcution4)
+		FF_TEST_FUNCTION(ConditionalOperator, CheckExcution4)
 		{
 			CompilerSuite compiler;
 
@@ -696,7 +693,7 @@ namespace ffscriptUT
 
 			const wchar_t*  scriptCode = L"x + 1 ? 3 + (y ? length(\"test string\") ? -3 : 0 : (3 + 1)) ? 100 : 101 : z ? 102 : 103";
 			auto excutor = compiler.compileExpression(scriptCode);
-			EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
 
 			setVariableValue<int>(*pVariableX, 0);
 			setVariableValue<int>(*pVariableY, 1);
@@ -705,10 +702,10 @@ namespace ffscriptUT
 			excutor->runCode();
 			int* res = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(*res == 101, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*res == 101, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CheckExcution5)
+		FF_TEST_FUNCTION(ConditionalOperator, CheckExcution5)
 		{
 			CompilerSuite compiler;
 
@@ -729,7 +726,7 @@ namespace ffscriptUT
 
 			const wchar_t*  scriptCode = L"x + 1 ? 3 + (y ? length(\"\") ? -3 : 0 : (3 + 1)) ? 100 : 101 : z ? 102 : 103";
 			auto excutor = compiler.compileExpression(scriptCode);
-			EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
 
 			setVariableValue<int>(*pVariableX, 0);
 			setVariableValue<int>(*pVariableY, 1);
@@ -738,10 +735,10 @@ namespace ffscriptUT
 			excutor->runCode();
 			int* res = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(*res == 100, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*res == 100, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CheckExcution6)
+		FF_TEST_FUNCTION(ConditionalOperator, CheckExcution6)
 		{
 			CompilerSuite compiler;
 
@@ -762,7 +759,7 @@ namespace ffscriptUT
 
 			const wchar_t*  scriptCode = L"x + 1 ? 3 + (y ? length(\"\") ? -3 : 0 : (3 + 1)) ? 100 : 101 : z ? 102 : 103";
 			auto excutor = compiler.compileExpression(scriptCode);
-			EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
 
 			setVariableValue<int>(*pVariableX, -1);
 			setVariableValue<int>(*pVariableY, 1);
@@ -771,10 +768,10 @@ namespace ffscriptUT
 			excutor->runCode();
 			int* res = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(*res == 102, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*res == 102, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CheckExcution7)
+		FF_TEST_FUNCTION(ConditionalOperator, CheckExcution7)
 		{
 			CompilerSuite compiler;
 
@@ -795,7 +792,7 @@ namespace ffscriptUT
 
 			const wchar_t*  scriptCode = L"x + 1 ? 3 + (y ? length(\"\") ? -3 : 0 : (3 + 1)) ? 100 : 101 : z ? 102 : 103";
 			auto excutor = compiler.compileExpression(scriptCode);
-			EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
 
 			setVariableValue<int>(*pVariableX, -1);
 			setVariableValue<int>(*pVariableY, 1);
@@ -804,10 +801,10 @@ namespace ffscriptUT
 			excutor->runCode();
 			int* res = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(*res == 103, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*res == 103, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CheckExcution8)
+		FF_TEST_FUNCTION(ConditionalOperator, CheckExcution8)
 		{
 			CompilerSuite compiler;
 
@@ -820,15 +817,15 @@ namespace ffscriptUT
 
 			const wchar_t*  scriptCode = L"1 ? 2 * length(\"1\") ? 4 : 5 : 6";
 			auto excutor = compiler.compileExpression(scriptCode);
-			EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
 
 			excutor->runCode();
 			int* res = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(*res == 4, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*res == 4, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CheckExcution9)
+		FF_TEST_FUNCTION(ConditionalOperator, CheckExcution9)
 		{
 			CompilerSuite compiler;
 
@@ -850,7 +847,7 @@ namespace ffscriptUT
 			//const wchar_t*  scriptCode = L"x + 1 ? 3 + (y ? 2*length(\"test string\") ? -3 : 0 : (3 + 1)) ? 100 : 101 : z ? 102 : 103";
 			const wchar_t*  scriptCode = L"x + 1 ? 3 + (y ? 2*length(\"1\") ? -3 : 0 : 2) ? 100 : 101 :102";
 			auto excutor = compiler.compileExpression(scriptCode);
-			EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
 
 			setVariableValue<int>(*pVariableX, 0);
 			setVariableValue<int>(*pVariableY, 1);
@@ -859,10 +856,10 @@ namespace ffscriptUT
 			excutor->runCode();
 			int* res = (int*)excutor->getReturnData();
 
-			EXPECT_TRUE(*res == 101, L"program can run but return wrong value");
+			FF_EXPECT_TRUE(*res == 101, L"program can run but return wrong value");
 		}
 
-		TEST_METHOD(CheckCompileExcution1)
+		FF_TEST_FUNCTION(ConditionalOperator, CheckCompileExcution1)
 		{
 			CompilerSuite compiler;
 
@@ -883,10 +880,10 @@ namespace ffscriptUT
 
 			const wchar_t*  scriptCode = L"x + 1 ? 3 + y ? -3 : 3) ? 100 : 101 : z ? 102 : 103";
 			auto excutor = compiler.compileExpression(scriptCode);
-			EXPECT_EQ(nullptr, excutor, L"Compile conditional expression must failed");
+			FF_EXPECT_EQ(nullptr, excutor, L"Compile conditional expression must failed");
 		}
 
-		TEST_METHOD(CheckExcutionInsufficientMemory)
+		FF_TEST_FUNCTION(ConditionalOperator, CheckExcutionInsufficientMemory)
 		{
 			CompilerSuite compiler;
 
@@ -907,7 +904,7 @@ namespace ffscriptUT
 
 			const wchar_t*  scriptCode = L"x + 1 ? 3 + (y ? length(\"\") ? -3 : 0 : (3 + 1)) ? 100 : 101 : z ? 102 : 103";
 			auto excutor = compiler.compileExpression(scriptCode);
-			EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
+			FF_EXPECT_NE(nullptr, excutor, L"Compile conditional expression failed");
 
 			setVariableValue<int>(*pVariableX, -1);
 			setVariableValue<int>(*pVariableY, 1);
@@ -918,7 +915,7 @@ namespace ffscriptUT
 				excutor->runCode();
 
 				int* res = (int*)excutor->getReturnData();
-				EXPECT_TRUE(*res == 103, L"program can run but return wrong value");
+				FF_EXPECT_TRUE(*res == 103, L"program can run but return wrong value");
 			}
 			catch (const std::exception& e)
 			{
@@ -928,7 +925,7 @@ namespace ffscriptUT
 				////::string narrow = converter.to_bytes(wide_utf16_source_string);
 				//std::wstring wErrorMsg = converter.from_bytes(errorMsg);
 
-				//EXPECT_TRUE(false, wErrorMsg.c_str());
+				//FF_EXPECT_TRUE(false, wErrorMsg.c_str());
 
 				PRINT_TEST_MESSAGE(e.what());
 			}
