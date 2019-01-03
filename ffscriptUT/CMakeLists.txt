@@ -1,7 +1,16 @@
 cmake_minimum_required(VERSION 3.2)
 project(ffscriptUT C CXX)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/conan/conanbuildinfo_multi.cmake)
+if (WIN32)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/conan/conanbuildinfo_multi.cmake)
+endif (WIN32)
+
+if (UNIX)
+    if(NOT APPLE)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/conan/conanbuildinfo.cmake)
+    endif()
+endif (UNIX)
+
 conan_basic_setup()
 
 SET (PROJECT_SOURCE_FILES
