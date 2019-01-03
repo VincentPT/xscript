@@ -11,8 +11,6 @@
 **
 *
 **********************************************************************/
-
-#include "stdafx.h"
 #include "../TutorialCommon.h"
 #include <function/CdeclFunction.hpp>
 

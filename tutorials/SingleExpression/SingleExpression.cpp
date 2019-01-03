@@ -9,8 +9,6 @@
 **
 *
 **********************************************************************/
-
-#include "stdafx.h"
 // script compiler suite header
 #include <CompilerSuite.h>
 // buit-in math lib

@@ -13,8 +13,13 @@ conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-co
 2. Create 'conan' directory.  
 
 3. Run command.  
-This project uses multi-configurations, so use following commands.
+This project uses multi-configurations on Windows, so use following commands.
 ```
 conan install .. -g cmake_multi -s build_type=Release
 conan install .. -g cmake_multi -s build_type=Debug
+```
+
+For Linux, just use
+```
+conan install ..
 ```

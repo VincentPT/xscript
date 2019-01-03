@@ -11,8 +11,6 @@
 **
 *
 **********************************************************************/
-
-#include "stdafx.h"
 #include "../TutorialCommon.h"
 
 // native function that is real implementation of 'println' in the script

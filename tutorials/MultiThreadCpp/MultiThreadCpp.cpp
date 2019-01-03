@@ -13,8 +13,6 @@
 **
 *
 **********************************************************************/
-
-#include "stdafx.h"
 #include "../TutorialCommon.h"
 #include <chrono>
 #include <thread>

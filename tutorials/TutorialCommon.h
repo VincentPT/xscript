@@ -11,6 +11,7 @@
 **
 *
 **********************************************************************/
+#include <stdio.h>
 
 // script headers
 #include <CompilerSuite.h>
