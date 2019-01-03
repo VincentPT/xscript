@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "RawStringLib.h"
 
 #include "BasicFunctionFactory.hpp"

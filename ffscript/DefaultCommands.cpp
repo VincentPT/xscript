@@ -9,7 +9,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "DefaultCommands.h"
 #include "Context.h"
 #include "ffscript.h"

@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "ScriptType.h"
 #include "ffscript.h"
 #include "unitType.h"

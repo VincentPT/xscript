@@ -12,7 +12,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "ScopedCompilingScope.h"
 #include "ScriptCompiler.h"
 

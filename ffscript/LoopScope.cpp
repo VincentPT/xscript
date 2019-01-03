@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "LoopScope.h"
 #include "Internal.h"
 #include "Utils.h"

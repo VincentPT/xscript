@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "TypeManager.h"
 #include "Internal.h"
 #include "ffscript.h"

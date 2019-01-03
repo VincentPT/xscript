@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "FunctionScope.h"
 #include "Internal.h"
 #include "Utils.h"

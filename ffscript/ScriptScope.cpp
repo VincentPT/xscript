@@ -9,7 +9,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "ScriptScope.h"
 #include "ObjectBlock.hpp"
 #include "ExpUnitExecutor.h"

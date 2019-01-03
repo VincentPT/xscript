@@ -12,7 +12,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "DestructorContextScope.h"
 
 namespace ffscript {

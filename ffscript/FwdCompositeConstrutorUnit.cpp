@@ -13,7 +13,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "FwdCompositeConstrutorUnit.h"
 
 namespace ffscript {

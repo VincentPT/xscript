@@ -13,7 +13,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "ScopeRuntimeData.h"
 
 namespace ffscript {

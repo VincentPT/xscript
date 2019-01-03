@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "ScriptCompiler.h"
 #include "FactoryTree.h"
 #include "FunctionFactory.h"

@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "Program.h"
 #include "Executor.h"
 #include <Context.h>

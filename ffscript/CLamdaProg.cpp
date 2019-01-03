@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "CLamdaProg.h"
 #include "StaticContext.h"
 

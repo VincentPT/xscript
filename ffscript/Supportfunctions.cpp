@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "Supportfunctions.h"
 #include "ControllerExecutor.h"
 #include "FunctionScope.h"

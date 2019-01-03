@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "InternalCompilerSuite.h"
 #include "BasicFunction.h"
 #include "ConditionalOperator.h"

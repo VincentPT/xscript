@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "function/CdeclFunction.hpp"
 #include "function/DynamicFunction2.h"
 #include "function/DynamicFunction.h"

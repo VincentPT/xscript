@@ -9,7 +9,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "Utility.h"
 #include "ExpresionParser.h"
 #include "ExpUnitExecutor.h"

@@ -12,7 +12,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "ScriptRunner.h"
 #include "Context.h"
 #include "Program.h"

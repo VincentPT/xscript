@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "BasicFunction.h"
 #include "expressionunit.h"
 #include "BasicFunctionFactory.hpp"

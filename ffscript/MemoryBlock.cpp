@@ -11,8 +11,6 @@
 *
 **********************************************************************/
 
-
-#include "stdafx.h"
 #include "MemoryBlock.h"
 
 #include <stdlib.h>

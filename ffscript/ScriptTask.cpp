@@ -15,7 +15,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "ScriptTask.h"
 #include "Context.h"
 #include "Program.h"

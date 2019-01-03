@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "ExpresionParser.h"
 #include <functional>
 #include <array>
@@ -429,7 +428,6 @@ namespace ffscript {
 		ExecutableUnit* pExpUnit;
 		ExpUnit *pFixedExpUnit, *pLastUnit, *pStringConst, *pTBDExpUnit;
 		ExpUnit *pArrayExpUnit = nullptr;
-		int size;
 
 		ScriptCompiler* scriptCompiler = getCompiler();
 
@@ -683,7 +681,7 @@ namespace ffscript {
 				}
 			}
 			if (sToken) {
-				int tokenLength = wcslen(sToken);
+				int tokenLength = (int)wcslen(sToken);
 				if ((blHasDot && !blHasChar) || IsDisgit(sToken)) {
 					int sign = 1;
 					if (expUnitList.size() > 0) {
@@ -2300,7 +2298,7 @@ namespace ffscript {
 	}
 
 	CandidateCollectionRef ExpressionParser::completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult) {
-		LOG_I("begin update expression tree for " + POINTER2STRING(function.get()));
+		//LOG_I("begin update expression tree for " + POINTER2STRING(function.get()));
 		eResult = E_SUCCESS;
 
 		Variable* variable;
@@ -3192,7 +3190,7 @@ namespace ffscript {
 #pragma endregion
 
 		if (eResult != E_SUCCESS) {
-			LOG_I("end update expression tree for " + POINTER2STRING(function.get()));
+			//LOG_I("end update expression tree for " + POINTER2STRING(function.get()));
 			return nullptr;
 		}
 

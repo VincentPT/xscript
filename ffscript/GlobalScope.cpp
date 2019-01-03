@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "GlobalScope.h"
 #include "ScriptCompiler.h"
 #include "Program.h"

@@ -13,7 +13,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "CommandTree.h"
 #include "Context.h"
 #include "function/DynamicFunction2.h"

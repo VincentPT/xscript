@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "FunctionRegisterHelper.h"
 #include "ScriptCompiler.h"
 #include "FunctionFactory.h"

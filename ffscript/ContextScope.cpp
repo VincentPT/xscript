@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "LoopScope.h"
 #include "ContextScope.h"
 #include "Internal.h"

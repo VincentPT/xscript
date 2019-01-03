@@ -6,12 +6,9 @@ SET (PROJECT_SOURCE_FILES
 	./GeometryLib.h
 	./MathLib.h
 	./RawStringLib.h
-	./stdafx.h
-	./targetver.h
 	./GeometryLib.cpp
 	./MathLib.cpp
 	./RawStringLib.cpp
-	./stdafx.cpp
 )
 
 # define project's build target with project's source files

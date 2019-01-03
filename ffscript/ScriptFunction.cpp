@@ -12,7 +12,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "ScriptFunction.h"
 #include "ScriptCompiler.h"
 #include <array>

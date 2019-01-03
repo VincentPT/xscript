@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "ConditionalOperator.h"
 #include "ScriptCompiler.h"
 

@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "StaticContext.h"
 #include "function/DynamicFunction.h"
 #include "InstructionCommand.h"

@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "StructClass.h"
 #include "ScriptCompiler.h"
 

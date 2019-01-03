@@ -12,7 +12,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "TemplateTypeManager.h"
 #include "ffscript.h"
 

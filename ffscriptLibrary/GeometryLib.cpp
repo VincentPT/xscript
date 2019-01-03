@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "GeometryLib.h"
 
 #include "function/CdeclFunction.hpp"

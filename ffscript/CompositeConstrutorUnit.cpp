@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "CompositeConstrutorUnit.h"
 
 namespace ffscript {

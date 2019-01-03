@@ -13,7 +13,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "Variable.h"
 #include "ScriptCompiler.h"
 #include "ScriptScope.h"

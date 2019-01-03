@@ -13,7 +13,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "expressionunit.h"
 #include "FunctionFactory.h"
 #include "ScriptCompiler.h"

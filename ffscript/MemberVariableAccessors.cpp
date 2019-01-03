@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "MemberVariableAccessors.h"
 #include "Context.h"
 

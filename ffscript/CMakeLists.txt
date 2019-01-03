@@ -87,8 +87,6 @@ SET (HEADERS
 	./expresion_defs.h
 	./expressionunit.h
 	./ffscript.h
-	./stdafx.h
-	./targetver.h
 	./unitType.h
 	./template/TemplateBlock.hpp
 	./template/TemplateTypeManager.h
@@ -151,7 +149,6 @@ SET (SOURCES
 	./Utils.cpp
 	./Variable.cpp
 	./expressionunit.cpp
-	./stdafx.cpp
 	./function/DynamicFunction.cpp
 	./function/DynamicFunction2.cpp
 	./template/TemplateTypeManager.cpp

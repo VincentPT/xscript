@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "../Logger/remotelogger.h"
 #include "ScriptScope.h"
 #include "expressionunit.h"
@@ -20,10 +19,10 @@
 
 namespace ffscript {
 	ExpUnit::ExpUnit() : _indexInExpression(-1), _sourceCharIndex(INVALID_CHAR_INDEX) {
-		LOG_D("Create expression unit " + POINTER2STRING(this));
+		//LOG_D("Create expression unit " + POINTER2STRING(this));
 	}
 	ExpUnit::~ExpUnit() {
-		LOG_D("Delete expression unit " + POINTER2STRING(this));
+		//LOG_D("Delete expression unit " + POINTER2STRING(this));
 	}
 
 	void ExpUnit::setIndex(int idx) {

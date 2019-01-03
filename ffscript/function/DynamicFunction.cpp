@@ -13,7 +13,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "DynamicFunction.h"
 #include <cstdarg>
 

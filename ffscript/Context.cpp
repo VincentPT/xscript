@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "Context.h"
 #include <stdlib.h>
 #include "InstructionCommand.h"

@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "DynamicFunctionFactory.h"
 #include "ScriptCompiler.h"
 //#include "Function.h"

@@ -11,7 +11,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "BasicType.h"
 #include "FunctionRegisterHelper.h"
 #include "StructClass.h"

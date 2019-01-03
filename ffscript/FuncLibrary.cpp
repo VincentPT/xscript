@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "FuncLibrary.h"
 #include <algorithm>
 #include "ScriptCompiler.h"

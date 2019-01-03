@@ -9,7 +9,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "Internal.h"
 #include "ffscript.h"
 

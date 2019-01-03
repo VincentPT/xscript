@@ -9,8 +9,6 @@
 *
 **********************************************************************/
 
-
-#include "stdafx.h"
 #include "DefaultPreprocessor.h"
 #include <list>
 #include <algorithm>
