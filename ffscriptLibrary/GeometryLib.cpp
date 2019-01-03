@@ -14,9 +14,9 @@
 #include "stdafx.h"
 #include "GeometryLib.h"
 
-#include "function\CdeclFunction.hpp"
-#include "function\CdeclFunction2.hpp"
-#include "function\MemberFunction2.hpp"
+#include "function/CdeclFunction.hpp"
+#include "function/CdeclFunction2.hpp"
+#include "function/MemberFunction2.hpp"
 #include "BasicFunctionFactory.hpp"
 #include "DynamicFunctionFactory.h"
 #include "BasicType.h"

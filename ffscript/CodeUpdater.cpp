@@ -15,7 +15,7 @@
 #include "stdafx.h"
 #include "CodeUpdater.h"
 #include "InstructionCommand.h"
-#include "function\DynamicFunction.h"
+#include "function/DynamicFunction.h"
 #include "Program.h"
 #include "ScriptScope.h"
 #include "GlobalScope.h"

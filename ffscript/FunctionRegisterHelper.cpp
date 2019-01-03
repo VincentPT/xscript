@@ -15,7 +15,7 @@
 #include "FunctionRegisterHelper.h"
 #include "ScriptCompiler.h"
 #include "FunctionFactory.h"
-#include "function\DynamicFunction2.h"
+#include "function/DynamicFunction2.h"
 #include "BasicFunctionFactory.hpp"
 
 namespace ffscript {

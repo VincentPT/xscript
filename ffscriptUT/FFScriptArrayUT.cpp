@@ -11,9 +11,9 @@
 #include "fftest.hpp"
 
 #include "FFScriptArray.hpp"
-#include "function\CdeclFunction2.hpp"
-#include "function\MemberFunction2Ref.hpp"
-#include "function\MemberFunction2.hpp"
+#include "function/CdeclFunction2.hpp"
+#include "function/MemberFunction2Ref.hpp"
+#include "function/MemberFunction2.hpp"
 
 using namespace ffscript;
 using namespace std;

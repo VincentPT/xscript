@@ -13,7 +13,7 @@
 #include "InstructionCommand.h"
 #include "expressionunit.h"
 #include "BasicFunctionFactory.hpp"
-#include "function\DynamicFunction.h"
+#include "function/DynamicFunction.h"
 
 namespace ffscript {
 	class DefaultAssigmentCommand : public TargetedCommand {

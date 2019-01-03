@@ -11,7 +11,7 @@
 **********************************************************************/
 #include "fftest.hpp"
 
-#include "..\ffscript\ScriptCompiler.h"
+#include "../ffscript/ScriptCompiler.h"
 #include "BasicFunction.h"
 #include "FunctionFactory.h"
 #include "BasicType.h"

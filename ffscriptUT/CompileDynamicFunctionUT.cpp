@@ -29,7 +29,7 @@ using namespace ffscript;
 #include "expressionunit.h"
 #include "Expression.h"
 #include "DynamicFunctionFactory.h"
-#include "function\CdeclFunction2.hpp"
+#include "function/CdeclFunction2.hpp"
 
 namespace ffscriptUT
 {

@@ -19,7 +19,7 @@
 #include "BasicFunction.h"
 #include "BasicType.h"
 #include "FunctionFactory.h"
-#include "function\MemberFunction.hpp"
+#include "function/MemberFunction.hpp"
 #include "Context.h"
 #include <thread>
 #include <future>
@@ -37,7 +37,7 @@ using namespace ffscript;
 #include "Executor.h"
 #include "Utils.h"
 #include "BasicFunctionFactory.hpp"
-#include "function\MemberFunction2.hpp"
+#include "function/MemberFunction2.hpp"
 #include "expressionunit.h"
 #include "DynamicFunctionFactory.h"
 #include "MemoryBlock.h"

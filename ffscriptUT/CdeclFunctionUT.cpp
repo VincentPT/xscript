@@ -12,9 +12,9 @@
 #include <gtest/gtest.h>
 
 #include <functional>
-#include "function\CdeclFunction.hpp"
-#include "function\CdeclFunction2.hpp"
-#include "function\CdeclFunction3.hpp"
+#include "function/CdeclFunction.hpp"
+#include "function/CdeclFunction2.hpp"
+#include "function/CdeclFunction3.hpp"
 #include "TemplateForTest.hpp"
 
 using namespace std;

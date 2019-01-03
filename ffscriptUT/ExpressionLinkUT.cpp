@@ -20,7 +20,7 @@
 #include "BasicFunction.h"
 #include "BasicType.h"
 #include "FunctionFactory.h"
-#include "function\MemberFunction2.hpp"
+#include "function/MemberFunction2.hpp"
 
 using namespace std;
 using namespace ffscript;

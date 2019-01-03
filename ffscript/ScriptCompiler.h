@@ -20,7 +20,7 @@
 #include "TypeManager.h"
 #include "BasicFunctionFactory.hpp"
 #include "Template.h"
-#include "function\DynamicFunction.h"
+#include "function/DynamicFunction.h"
 
 #include <stack>
 #include <map>

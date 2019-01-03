@@ -19,7 +19,7 @@
 #include "ScriptCompiler.h"
 #include "BasicOperators.hpp"
 #include "ScriptType.h"
-#include "function\CdeclFunction.hpp"
+#include "function/CdeclFunction.hpp"
 #include "Utils.h"
 
 namespace ffscript {

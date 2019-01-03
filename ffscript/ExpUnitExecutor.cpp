@@ -12,9 +12,9 @@
 **********************************************************************/
 
 #include "stdafx.h"
-#include "function\CdeclFunction.hpp"
-#include "function\DynamicFunction2.h"
-#include "function\DynamicFunction.h"
+#include "function/CdeclFunction.hpp"
+#include "function/DynamicFunction2.h"
+#include "function/DynamicFunction.h"
 #include "ExpUnitExecutor.h"
 #include "ScriptScope.h"
 #include "Variable.h"
