@@ -10,7 +10,7 @@
 *
 **********************************************************************/
 
-#include <gtest/gtest.h>
+#include "fftest.hpp"
 #include "TemplateForTest.hpp"
 #include <functional>
 #include "FunctionRegisterHelper.h"

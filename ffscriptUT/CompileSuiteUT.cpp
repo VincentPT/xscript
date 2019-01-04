@@ -9,7 +9,7 @@
 **
 *
 **********************************************************************/
-#include <gtest/gtest.h>
+#include "fftest.hpp"
 
 #include <CompilerSuite.h>
 #include <ScriptTask.h>

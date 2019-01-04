@@ -1,7 +1,7 @@
 /******************************************************************
 * File:        CdeclFunction.hpp
 * Description: template class and its member functions that used to
-*              invoke _cdecl functions. This function object stores
+*              invoke functions. This function object stores
 *              all necessary arguments of its target function when
 *              it is created. The caller just to call 'call' only
 *              to invoke the target function.
@@ -26,7 +26,7 @@ public:
 	void* _fx;
 	CdeclInvoker(void* fx, void** data) : _fx(fx) { *data = &_retStorage;}
 	inline void call() {
-		typedef Ret(_cdecl *FunctionType)();
+		typedef Ret(*FunctionType)();
 		_retStorage = ((FunctionType)_fx)();
 	}
 	inline bool pushParam(void*) { return false; }
@@ -36,7 +36,7 @@ public:
 template <class Ret, class T1>
 BEGIN_INVOKER1(CdeclInvoker, Ret, T1)
 	inline void call() {
-		typedef Ret(_cdecl *FunctionType)(void*);
+		typedef Ret(*FunctionType)(void*);
 		_retStorage = ((FunctionType)_fx)(_params[0]);
 	}
 END_INVOKER1;
@@ -45,7 +45,7 @@ END_INVOKER1;
 template <class Ret, class T1, class T2>
 BEGIN_INVOKER1(CdeclInvoker, Ret, T1, T2)
 	inline void call() {
-		typedef Ret(_cdecl *FunctionType)(void*, void*);
+		typedef Ret(*FunctionType)(void*, void*);
 		_retStorage = ((FunctionType)_fx)(_params[0], _params[1]);
 	}
 END_INVOKER1;
@@ -53,7 +53,7 @@ END_INVOKER1;
 template <class Ret, class T1, class T2, class T3>
 BEGIN_INVOKER1(CdeclInvoker, Ret, T1, T2, T3)
 	inline void call() {
-		typedef Ret(_cdecl *FunctionType)(void*, void*, void*);
+		typedef Ret(*FunctionType)(void*, void*, void*);
 		_retStorage = ((FunctionType)_fx)(_params[0], _params[1], _params[2]);
 	}
 END_INVOKER1;
@@ -61,7 +61,7 @@ END_INVOKER1;
 template <class Ret, class T1, class T2, class T3, class T4>
 BEGIN_INVOKER1(CdeclInvoker, Ret, T1, T2, T3, T4)
 	inline void call() {
-		typedef Ret(_cdecl *FunctionType)(void*, void*, void*, void*);
+		typedef Ret(*FunctionType)(void*, void*, void*, void*);
 		_retStorage = ((FunctionType)_fx)(_params[0], _params[1], _params[2], _params[3]);
 	}
 END_INVOKER1;
@@ -69,7 +69,7 @@ END_INVOKER1;
 template <class Ret, class T1, class T2, class T3, class T4, class T5>
 BEGIN_INVOKER1(CdeclInvoker, Ret, T1, T2, T3, T4, T5)
 	inline void call() {
-		typedef Ret(_cdecl *FunctionType)(void*, void*, void*, void*, void*);
+		typedef Ret(*FunctionType)(void*, void*, void*, void*, void*);
 		_retStorage = ((FunctionType)_fx)(_params[0], _params[1], _params[2], _params[3], _params[4]);
 	}
 END_INVOKER1;
@@ -77,7 +77,7 @@ END_INVOKER1;
 template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6>
 BEGIN_INVOKER1(CdeclInvoker, Ret, T1, T2, T3, T4, T5, T6)
 inline void call() {
-	typedef Ret(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*);
+	typedef Ret(*FunctionType)(void*, void*, void*, void*, void*, void*);
 	_retStorage = ((FunctionType)_fx)(_params[0], _params[1], _params[2], _params[3], _params[4], _params[5]);
 }
 END_INVOKER1;
@@ -85,7 +85,7 @@ END_INVOKER1;
 template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
 BEGIN_INVOKER1(CdeclInvoker, Ret, T1, T2, T3, T4, T5, T6, T7)
 inline void call() {
-	typedef Ret(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*, void*);
+	typedef Ret(*FunctionType)(void*, void*, void*, void*, void*, void*, void*);
 	_retStorage = ((FunctionType)_fx)(_params[0], _params[1], _params[2], _params[3], _params[4], _params[5], _params[6]);
 }
 END_INVOKER1;
@@ -93,7 +93,7 @@ END_INVOKER1;
 template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
 BEGIN_INVOKER1(CdeclInvoker, Ret, T1, T2, T3, T4, T5, T6, T7, T8)
 inline void call() {
-	typedef Ret(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*, void*, void*);
+	typedef Ret(*FunctionType)(void*, void*, void*, void*, void*, void*, void*, void*);
 	_retStorage = ((FunctionType)_fx)(_params[0], _params[1], _params[2], _params[3], _params[4], _params[5], _params[6], _params[7]);
 }
 END_INVOKER1;
@@ -104,7 +104,7 @@ public:
 	void* _fx;
 	CdeclInvoker(void* fx, void** data) : _fx(fx) { *data = nullptr; }
 	inline void call() {
-		typedef void(_cdecl *FunctionType)();
+		typedef void(*FunctionType)();
 		((FunctionType)_fx)();
 	}
 	inline bool pushParam(void*) { return false; }
@@ -114,7 +114,7 @@ public:
 template <class T1>
 BEGIN_INVOKER2(CdeclInvoker, T1)
 	inline void call() {
-		typedef void(_cdecl *FunctionType)(void*);
+		typedef void(*FunctionType)(void*);
 		((FunctionType)_fx)(_params[0]);
 	}
 };
@@ -123,7 +123,7 @@ BEGIN_INVOKER2(CdeclInvoker, T1)
 template <class T1, class T2>
 BEGIN_INVOKER2(CdeclInvoker, T1, T2)
 	inline void call() {
-		typedef void(_cdecl *FunctionType)(void*, void*);
+		typedef void(*FunctionType)(void*, void*);
 		((FunctionType)_fx)(_params[0], _params[1]);
 	}
 };
@@ -131,7 +131,7 @@ BEGIN_INVOKER2(CdeclInvoker, T1, T2)
 template <class T1, class T2, class T3>
 BEGIN_INVOKER2(CdeclInvoker, T1, T2, T3)
 	inline void call() {
-		typedef void(_cdecl *FunctionType)(void*, void*, void*);
+		typedef void(*FunctionType)(void*, void*, void*);
 		((FunctionType)_fx)(_params[0], _params[1], _params[2]);
 	}
 };
@@ -139,7 +139,7 @@ BEGIN_INVOKER2(CdeclInvoker, T1, T2, T3)
 template <class T1, class T2, class T3, class T4>
 BEGIN_INVOKER2(CdeclInvoker, T1, T2, T3, T4)
 	inline void call() {
-		typedef void(_cdecl *FunctionType)(void*, void*, void*, void*);
+		typedef void(*FunctionType)(void*, void*, void*, void*);
 		 ((FunctionType)_fx)(_params[0], _params[1], _params[2], _params[3]);
 	}
 };
@@ -147,7 +147,7 @@ BEGIN_INVOKER2(CdeclInvoker, T1, T2, T3, T4)
 template <class T1, class T2, class T3, class T4, class T5>
 BEGIN_INVOKER2(CdeclInvoker, T1, T2, T3, T4, T5)
 	inline void call() {
-		typedef void(_cdecl *FunctionType)(void*, void*, void*, void*, void*);
+		typedef void(*FunctionType)(void*, void*, void*, void*, void*);
 		 ((FunctionType)_fx)(_params[0], _params[1], _params[2], _params[3], _params[4]);
 	}
 };
@@ -155,7 +155,7 @@ BEGIN_INVOKER2(CdeclInvoker, T1, T2, T3, T4, T5)
 template <class T1, class T2, class T3, class T4, class T5, class T6>
 BEGIN_INVOKER2(CdeclInvoker, T1, T2, T3, T4, T5, T6)
 inline void call() {
-	typedef void(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*);
+	typedef void(*FunctionType)(void*, void*, void*, void*, void*, void*);
 	((FunctionType)_fx)(_params[0], _params[1], _params[2], _params[3], _params[4], _params[5]);
 }
 };
@@ -163,7 +163,7 @@ inline void call() {
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7>
 BEGIN_INVOKER2(CdeclInvoker, T1, T2, T3, T4, T5, T6, T7)
 inline void call() {
-	typedef void(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*, void*);
+	typedef void(*FunctionType)(void*, void*, void*, void*, void*, void*, void*);
 	((FunctionType)_fx)(_params[0], _params[1], _params[2], _params[3], _params[4], _params[5], _params[6]);
 }
 };
@@ -171,7 +171,7 @@ inline void call() {
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
 BEGIN_INVOKER2(CdeclInvoker, T1, T2, T3, T4, T5, T6, T7, T8)
 inline void call() {
-	typedef void(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*, void*, void*);
+	typedef void(*FunctionType)(void*, void*, void*, void*, void*, void*, void*, void*);
 	((FunctionType)_fx)(_params[0], _params[1], _params[2], _params[3], _params[4], _params[5], _params[6], _params[7]);
 }
 };
@@ -181,7 +181,7 @@ class CdeclFunction :
 	public DFunction
 {
 public:
-	typedef Ret(_cdecl *FuncType)(Args...);
+	typedef Ret(*FuncType)(Args...);
 protected:
 	CdeclInvoker<Ret, Args...> invoker;
 public:
@@ -213,6 +213,6 @@ public:
 };
 
 template <class Ret, class ...Args>
-inline Ret __cdecl cdeclForward(Ret __cdecl function(Args...),const Args&... args) {
+inline Ret cdeclForward(Ret function(Args...),const Args&... args) {
 	return function(args...);
 }

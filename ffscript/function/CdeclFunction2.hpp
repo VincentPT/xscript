@@ -1,7 +1,7 @@
 /******************************************************************
 * File:        CdeclFunction2.hpp
 * Description: template class and its member functions that used to
-*              invoke _cdecl functions. This function object does
+*              invoke functions. This function object does
 *              not store any arguments of its target function when
 *              it is created. The caller need to pass arguments
 *              through and array of void* to invoke the target
@@ -100,7 +100,7 @@ class CdeclFunction2 :
 	public DFunction2
 {
 public:
-	typedef Ret(_cdecl *FuncType)(Args...);
+	typedef Ret(*FuncType)(Args...);
 	typedef CdeclFunction2<Ret, Args...> ClassType;
 protected:
 	static const int maxParam = sizeof...(Args);
@@ -161,55 +161,55 @@ public:
 /*current cdecl function support call function with maximum 8 parameters*/
 template <class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6, class Arg7, class Arg8>
 inline void CdeclInvoker2<void, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8>::call(void* pReturnVal, void* params[]) {
-	typedef void(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*, void*, void*);	
+	typedef void(*FunctionType)(void*, void*, void*, void*, void*, void*, void*, void*);	
 	((FunctionType)(mOwner->mFx))(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7]);
 }
 
 template <class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6, class Arg7>
 inline void CdeclInvoker2<void, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7>::call(void* pReturnVal, void* params[]) {
-	typedef void(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*, void*);
+	typedef void(*FunctionType)(void*, void*, void*, void*, void*, void*, void*);
 	((FunctionType)(mOwner->mFx))(params[0], params[1], params[2], params[3], params[4], params[5], params[6]);
 }
 
 template <class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6>
 inline void CdeclInvoker2<void, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6>::call(void* pReturnVal, void* params[]) {
-	typedef void(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*);
+	typedef void(*FunctionType)(void*, void*, void*, void*, void*, void*);
 	((FunctionType)(mOwner->mFx))(params[0], params[1], params[2], params[3], params[4], params[5]);
 }
 
 template <class Arg1, class Arg2, class Arg3, class Arg4, class Arg5>
 inline void CdeclInvoker2<void, Arg1, Arg2, Arg3, Arg4, Arg5>::call(void* pReturnVal, void* params[]) {
-	typedef void(_cdecl *FunctionType)(void*, void*, void*, void*, void*);
+	typedef void(*FunctionType)(void*, void*, void*, void*, void*);
 	((FunctionType)(mOwner->mFx))(params[0], params[1], params[2], params[3], params[4]);
 }
 
 template <class Arg1, class Arg2, class Arg3, class Arg4>
 inline void CdeclInvoker2<void, Arg1, Arg2, Arg3, Arg4>::call(void* pReturnVal, void* params[]) {
-	typedef void(_cdecl *FunctionType)(void*, void*, void*, void*);
+	typedef void(*FunctionType)(void*, void*, void*, void*);
 	((FunctionType)(mOwner->mFx))(params[0], params[1], params[2], params[3]);
 }
 
 template <class Arg1, class Arg2, class Arg3>
 inline void CdeclInvoker2<void, Arg1, Arg2, Arg3>::call(void* pReturnVal, void* params[]) {
-	typedef void(_cdecl *FunctionType)(void*, void*, void*);
+	typedef void(*FunctionType)(void*, void*, void*);
 	((FunctionType)(mOwner->mFx))(params[0], params[1], params[2]);
 }
 
 template <class Arg1, class Arg2>
 inline void CdeclInvoker2<void, Arg1, Arg2>::call(void* pReturnVal, void* params[]) {
-	typedef void(_cdecl *FunctionType)(void*, void*);
+	typedef void(*FunctionType)(void*, void*);
 	((FunctionType)(mOwner->mFx))(params[0], params[1]);
 }
 
 template <class Arg>
 inline void CdeclInvoker2<void, Arg>::call(void* pReturnVal, void* params[]) {
-	typedef void(_cdecl *FunctionType)(void*);
+	typedef void(*FunctionType)(void*);
 	((FunctionType)(mOwner->mFx))(params[0]);
 }
 
 
 inline void CdeclInvoker2<void>::call(void* pReturnVal, void* params[]) {
-	typedef void(_cdecl *FunctionType)();
+	typedef void(*FunctionType)();
 	((FunctionType)(mOwner->mFx))();
 }
 
@@ -217,54 +217,54 @@ inline void CdeclInvoker2<void>::call(void* pReturnVal, void* params[]) {
 /* cdecl functions with return type general*/
 template <class Ret, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6, class Arg7, class Arg8>
 inline void CdeclInvoker2<Ret, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8>::call(void* pReturnVal, void* params[]) {
-	typedef Ret(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*, void*, void*);
+	typedef Ret(*FunctionType)(void*, void*, void*, void*, void*, void*, void*, void*);
 	*((Ret*)pReturnVal) = ((FunctionType)(mOwner->mFx))(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7]);
 }
 
 template <class Ret, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6, class Arg7>
 inline void CdeclInvoker2<Ret, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7>::call(void* pReturnVal, void* params[]) {
-	typedef Ret(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*, void*);
+	typedef Ret(*FunctionType)(void*, void*, void*, void*, void*, void*, void*);
 	*((Ret*)pReturnVal) = ((FunctionType)(mOwner->mFx))(params[0], params[1], params[2], params[3], params[4], params[5], params[6]);
 }
 
 template <class Ret, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6>
 inline void CdeclInvoker2<Ret, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6>::call(void* pReturnVal, void* params[]) {
-	typedef Ret(_cdecl *FunctionType)(void*, void*, void*, void*, void*, void*);
+	typedef Ret(*FunctionType)(void*, void*, void*, void*, void*, void*);
 	*((Ret*)pReturnVal) = ((FunctionType)(mOwner->mFx))(params[0], params[1], params[2], params[3], params[4], params[5]);
 }
 
 template <class Ret, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5>
 inline void CdeclInvoker2<Ret, Arg1, Arg2, Arg3, Arg4, Arg5>::call(void* pReturnVal, void* params[]) {
-	typedef Ret(_cdecl *FunctionType)(void*, void*, void*, void*, void*);
+	typedef Ret(*FunctionType)(void*, void*, void*, void*, void*);
 	*((Ret*)pReturnVal) = ((FunctionType)(mOwner->mFx))(params[0], params[1], params[2], params[3], params[4]);
 }
 
 template <class Ret, class Arg1, class Arg2, class Arg3, class Arg4>
 inline void CdeclInvoker2<Ret, Arg1, Arg2, Arg3, Arg4>::call(void* pReturnVal, void* params[]) {
-	typedef Ret(_cdecl *FunctionType)(void*, void*, void*, void*);
+	typedef Ret(*FunctionType)(void*, void*, void*, void*);
 	*((Ret*)pReturnVal) = ((FunctionType)(mOwner->mFx))(params[0], params[1], params[2], params[3]);
 }
 
 template <class Ret, class Arg1, class Arg2, class Arg3>
 inline void CdeclInvoker2<Ret, Arg1, Arg2, Arg3>::call(void* pReturnVal, void* params[]) {
-	typedef Ret(_cdecl *FunctionType)(void*, void*, void*);
+	typedef Ret(*FunctionType)(void*, void*, void*);
 	*((Ret*)pReturnVal) = ((FunctionType)(mOwner->mFx))(params[0], params[1], params[2]);
 }
 
 template <class Ret, class Arg1, class Arg2>
 inline void CdeclInvoker2<Ret, Arg1, Arg2>::call(void* pReturnVal, void* params[]) {
-	typedef Ret(_cdecl *FunctionType)(void*, void*);
+	typedef Ret(*FunctionType)(void*, void*);
 	*((Ret*)pReturnVal) = ((FunctionType)(mOwner->mFx))(params[0], params[1]);
 }
 
 template <class Ret, class Arg>
 inline void CdeclInvoker2<Ret, Arg>::call(void* pReturnVal, void* params[]) {
-	typedef Ret(_cdecl *FunctionType)(void*);
+	typedef Ret(*FunctionType)(void*);
 	*((Ret*)pReturnVal) = ((FunctionType)(mOwner->mFx))(params[0]);
 }
 
 template <class Ret>
 inline void CdeclInvoker2<Ret>::call(void* pReturnVal, void* params[]) {
-	typedef Ret(_cdecl *FunctionType)();
+	typedef Ret(*FunctionType)();
 	*((Ret*)pReturnVal) = ((FunctionType)(mOwner->mFx))();
 }

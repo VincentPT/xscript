@@ -1,5 +1,6 @@
 #pragma once
 #include <gtest/gtest.h>
+
 #define FF_TEST_CLASS(className) class className : public ::testing::Test
 #define FF_TEST_METHOD(className, testName) TEST_F(className, testName)
 #define FF_TEST_FUNCTION(testClassName, testName) TEST(testClassName, testName)
@@ -30,6 +31,7 @@
 #else
 #define ENVIRONMENT32
 #endif
+#define SPRINTF_S(buff,format,...) sprintf_s(buff,format,__VA_ARGS__)
 #endif
 
 // Check GCC
@@ -39,6 +41,7 @@
 #else
 #define ENVIRONMENT32
 #endif
+#define SPRINTF_S(buff,format,...) sprintf(buff,format,__VA_ARGS__)
 #endif
 
 inline void FF_EXPECT_TRUE(bool condition, const wchar_t* msg) {

@@ -48,7 +48,6 @@ SET (PROJECT_SOURCE_FILES
 	PostFixPrefixOperatorsUT.cpp
 	ReusingCompilerUT.cpp
 	RunDynamicFunctionUT.cpp
-	STDFunctionUT.cpp
 	ScriptCompilerUT.cpp
 	ScriptTypeUT.cpp
 	SemiRefUT.cpp

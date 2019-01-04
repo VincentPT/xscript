@@ -238,21 +238,21 @@ public:
  1. <return type> __stdcall::function(..., double, ...)
  2. <return type> __stdcall::function(..., float, ...)
 */
-template <class Ret, class ...Args>
-class SFunction : public MFunction< Ret, SFunction<Ret, Args...> , const Args& ...> {
-public:
-	typedef Ret(__stdcall *FuncType)(Args...);
-private:
-	FuncType _fx;
-	inline Ret forward(const Args&... args) {
-		return (_fx)(args...);
-	}
-public:
-	SFunction(FuncType fx) :
-		_fx(fx),
-		MFunction(this, &SFunction::forward) {
-	}
-};
+//template <class Ret, class ...Args>
+//class SFunction : public MFunction< Ret, SFunction<Ret, Args...> , const Args& ...> {
+//public:
+//	typedef Ret(__stdcall *FuncType)(Args...);
+//private:
+//	FuncType _fx;
+//	inline Ret forward(const Args&... args) {
+//		return (_fx)(args...);
+//	}
+//public:
+//	SFunction(FuncType fx) :
+//		_fx(fx),
+//		MFunction(this, &SFunction::forward) {
+//	}
+//};
 
 /* CdeclFunction cannot dynamic invoke bellow functions type. So, use Function instead.
 1. <return type> __cdecl function(..., double, ...)

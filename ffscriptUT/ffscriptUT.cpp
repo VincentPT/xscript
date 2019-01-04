@@ -64,12 +64,12 @@ namespace ffscriptUT
 		DemoAutoPtr() {
 			char s[256];
 			id = g_autoId++;
-			sprintf_s(s, "created object 0x%p (%d)", this, id);
+			SPRINTF_S(s, "created object 0x%p (%d)", this, id);
 			PRINT_TEST_MESSAGE(s);
 		}
 		~DemoAutoPtr() {
 			char s[256];			
-			sprintf_s(s, "deleted object 0x%p (%d)", this, id);			
+			SPRINTF_S(s, "deleted object 0x%p (%d)", this, id);			
 			PRINT_TEST_MESSAGE(s);
 		}
 	};

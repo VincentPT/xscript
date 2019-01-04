@@ -29,85 +29,85 @@ namespace ffscriptUT
 
 		void memberFoo() {
 			char sbuff[128];
-			sprintf_s(sbuff, __FUNCTION__);
+			SPRINTF_S(sbuff, __FUNCTION__);
 			PRINT_TEST_MESSAGE(sbuff);
 		}
 
 		void memberFoo(const float& a) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, "a=%f", a);
+			SPRINTF_S(sbuff, "a=%f", a);
 			PRINT_TEST_MESSAGE(sbuff);
 		}
 
 		void memberFoo(const float& a, const float& b) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, "a=%f, b=%f", a, b);
+			SPRINTF_S(sbuff, "a=%f, b=%f", a, b);
 			PRINT_TEST_MESSAGE(sbuff);
 		}
 
 		void memberFoo(const float& a, const float& b, int c) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d)", a, b, c);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d)", a, b, c);
 			PRINT_TEST_MESSAGE(sbuff);
 		}
 
 		void memberFoo(const float& a, const float& b, int c, char d) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c)", a, b, c, d);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c)", a, b, c, d);
 			PRINT_TEST_MESSAGE(sbuff);
 		}
 
 		void memberFoo(const float& a, const float& b, int c, char d, const double& e) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf)", a, b, c, d, e);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf)", a, b, c, d, e);
 			PRINT_TEST_MESSAGE(sbuff);
 		}
 
 		void memberFoo(const float& a, const float& b, int c, char d, const double& e, void* f) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p)", a, b, c, d, e, f);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p)", a, b, c, d, e, f);
 			PRINT_TEST_MESSAGE(sbuff);
 		}
 
 		void memberFoo(const float& a, const float& b, int c, char d, const double& e, void* f, short g) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d)", a, b, c, d, e, f, g);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d)", a, b, c, d, e, f, g);
 			PRINT_TEST_MESSAGE(sbuff);
 		}
 
 		void memberFoo(const float& a, const float& b, int c, char d, const double& e, void* f, short g, int h) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d, %d)", a, b, c, d, e, f, g, h);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d, %d)", a, b, c, d, e, f, g, h);
 			PRINT_TEST_MESSAGE(sbuff);
 		}
 
 		float memberFoof() {
 			char sbuff[128];
-			sprintf_s(sbuff, __FUNCTION__);
+			SPRINTF_S(sbuff, __FUNCTION__);
 			PRINT_TEST_MESSAGE(sbuff);
 
 			return memberVariable;
@@ -116,9 +116,9 @@ namespace ffscriptUT
 		float memberFoof(const float& a) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, "a=%f", a);
+			SPRINTF_S(sbuff, "a=%f", a);
 			PRINT_TEST_MESSAGE(sbuff);
 
 			return memberVariable;
@@ -127,9 +127,9 @@ namespace ffscriptUT
 		float memberFoof(const float& a, const float& b) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, "a=%f, b=%f", a, b);
+			SPRINTF_S(sbuff, "a=%f, b=%f", a, b);
 			PRINT_TEST_MESSAGE(sbuff);
 
 			return memberVariable;
@@ -138,9 +138,9 @@ namespace ffscriptUT
 		float memberFoof(const float& a, const float& b, int c) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d)", a, b, c);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d)", a, b, c);
 			PRINT_TEST_MESSAGE(sbuff);
 
 			return memberVariable;
@@ -149,9 +149,9 @@ namespace ffscriptUT
 		float memberFoof(const float& a, const float& b, int c, char d) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c)", a, b, c, d);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c)", a, b, c, d);
 			PRINT_TEST_MESSAGE(sbuff);
 
 			return memberVariable;
@@ -160,9 +160,9 @@ namespace ffscriptUT
 		float memberFoof(const float& a, const float& b, int c, char d, const double& e) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf)", a, b, c, d, e);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf)", a, b, c, d, e);
 			PRINT_TEST_MESSAGE(sbuff);
 
 			return memberVariable;
@@ -171,9 +171,9 @@ namespace ffscriptUT
 		float memberFoof(const float& a, const float& b, int c, char d, const double& e, void* f) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p)", a, b, c, d, e, f);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p)", a, b, c, d, e, f);
 			PRINT_TEST_MESSAGE(sbuff);
 
 			return memberVariable;
@@ -182,9 +182,9 @@ namespace ffscriptUT
 		float memberFoof(const float& a, const float& b, int c, char d, const double& e, void* f, short g) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d)", a, b, c, d, e, f, g);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d)", a, b, c, d, e, f, g);
 			PRINT_TEST_MESSAGE(sbuff);
 
 			return memberVariable;
@@ -193,9 +193,9 @@ namespace ffscriptUT
 		float memberFoof(const float& a, const float& b, int c, char d, const double& e, void* f, short g, int h) {
 
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d, %d)", a, b, c, d, e, f, g, h);
+			SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d, %d)", a, b, c, d, e, f, g, h);
 			PRINT_TEST_MESSAGE(sbuff);
 
 			return memberVariable;
@@ -203,7 +203,7 @@ namespace ffscriptUT
 
 		char MemberFooGeneral() {
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
 			PRINT_TEST_MESSAGE(__FUNCTION__);
 			return 1;
@@ -211,76 +211,76 @@ namespace ffscriptUT
 
 		short MemberFooGeneral(int a) {
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%d)", a);
+			SPRINTF_S(sbuff, __FUNCTION__"(%d)", a);
 			PRINT_TEST_MESSAGE(sbuff);
 			return 1;
 		}
 
 		float MemberFooGeneral(int a, char b) {
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%d, %c)", a, b);
+			SPRINTF_S(sbuff, __FUNCTION__"(%d, %c)", a, b);
 			PRINT_TEST_MESSAGE(sbuff);
 			return 1.0f;
 		}
 
 		int MemberFooGeneral(int a, char b, const double& c) {
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%d, %c, %lf)", a, b, c);
+			SPRINTF_S(sbuff, __FUNCTION__"(%d, %c, %lf)", a, b, c);
 			PRINT_TEST_MESSAGE(sbuff);
 			return 1;
 		}
 
 		long MemberFooGeneral(int a, char b, const double& c, const float& d) {
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%d, %c, %lf, %f)", a, b, c, d);
+			SPRINTF_S(sbuff, __FUNCTION__"(%d, %c, %lf, %f)", a, b, c, d);
 			PRINT_TEST_MESSAGE(sbuff);
 			return 1;
 		}
 
 		long long MemberFooGeneral(int a, char b, const double& c, const float& d, unsigned int e) {
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u)", a, b, c, d, e);
+			SPRINTF_S(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u)", a, b, c, d, e);
 			PRINT_TEST_MESSAGE(sbuff);
 			return 1000000000000000;
 		}
 
 		double MemberFooGeneral(int a, char b, const double& c, const float& d, unsigned int e, short f) {
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u, %d)", a, b, c, d, e, f);
+			SPRINTF_S(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u, %d)", a, b, c, d, e, f);
 			PRINT_TEST_MESSAGE(sbuff);
 			return 1000000000000000.0;
 		}
 
 		unsigned short MemberFooGeneral(int a, char b, const double& c, const float& d, unsigned int e, short f, long g) {
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f", memberVariable);
+			SPRINTF_S(sbuff, "memberVariable=%f", memberVariable);
 			PRINT_TEST_MESSAGE(sbuff);
-			sprintf_s(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u, %d, %d)", a, b, c, d, e, f, g);
+			SPRINTF_S(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u, %d, %d)", a, b, c, d, e, f, g);
 			PRINT_TEST_MESSAGE(sbuff);
 			return 1;
 		}
 
 		void memberFoo(float a) {
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f, a=%f", memberVariable, a);
+			SPRINTF_S(sbuff, "memberVariable=%f, a=%f", memberVariable, a);
 			PRINT_TEST_MESSAGE(sbuff);
 		}
 
 		double memberFoo(float a, double b) {
 			char sbuff[128];
-			sprintf_s(sbuff, "memberVariable=%f, a=%f", memberVariable, a);
+			SPRINTF_S(sbuff, "memberVariable=%f, a=%f", memberVariable, a);
 			PRINT_TEST_MESSAGE(sbuff);
 
 			return b + a + memberVariable;
@@ -798,33 +798,33 @@ namespace ffscriptUT
 			FF_EXPECT_EQ(expect, val1);
 		}
 
-		FF_TEST_METHOD(MemberFunction, testMemberFunctionStd1)
-		{
-			SFunction<double, double> function(stdfoo);
-			double p = 1.0f;
-			double expect = stdfoo(p);
+		//FF_TEST_METHOD(MemberFunction, testMemberFunctionStd1)
+		//{
+		//	SFunction<double, double> function(stdfoo);
+		//	double p = 1.0f;
+		//	double expect = stdfoo(p);
 
-			function.pushParam(&p);
-			function.call();
+		//	function.pushParam(&p);
+		//	function.call();
 
-			double val1 = function.getReturnValAsDouble();
-			FF_EXPECT_EQ(expect, val1);
-		}
+		//	double val1 = function.getReturnValAsDouble();
+		//	FF_EXPECT_EQ(expect, val1);
+		//}
 
-		FF_TEST_METHOD(MemberFunction, testMemberFunctionStd2)
-		{
-			SFunction<double, double, const double&> function(stdfoo);
-			double p = 1.0f;
-			double q = 1.0f;
-			double expect = stdfoo(p, q);
+		//FF_TEST_METHOD(MemberFunction, testMemberFunctionStd2)
+		//{
+		//	SFunction<double, double, const double&> function(stdfoo);
+		//	double p = 1.0f;
+		//	double q = 1.0f;
+		//	double expect = stdfoo(p, q);
 
-			function.pushParam(&p);
-			function.pushParam(&q);
-			function.call();
+		//	function.pushParam(&p);
+		//	function.pushParam(&q);
+		//	function.call();
 
-			double val1 = function.getReturnValAsDouble();
-			FF_EXPECT_EQ(expect, val1);
-		}
+		//	double val1 = function.getReturnValAsDouble();
+		//	FF_EXPECT_EQ(expect, val1);
+		//}
 
 		FF_TEST_METHOD(MemberFunction, testMemberFunctionMember1)
 		{

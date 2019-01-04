@@ -9,7 +9,7 @@
 **
 *
 **********************************************************************/
-#include <gtest/gtest.h>
+#include "fftest.hpp"
 
 #include <functional>
 #include "function/CdeclFunction.hpp"
@@ -24,69 +24,69 @@ namespace ffscriptUT
 {
 	void cdeclFoo() {
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__);
+		SPRINTF_S(sbuff, __FUNCTION__);
 		PRINT_TEST_MESSAGE(sbuff);
 	}
 
 	void cdeclFoo(const float& a) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, "a=%f", a);
+		SPRINTF_S(sbuff, "a=%f", a);
 		PRINT_TEST_MESSAGE(sbuff);
 	}
 
 	void cdeclFoo(const float& a, const float& b) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, "a=%f, b=%f", a, b);
+		SPRINTF_S(sbuff, "a=%f, b=%f", a, b);
 		PRINT_TEST_MESSAGE(sbuff);
 	}
 
 	void cdeclFoo(const float& a, const float& b, int c) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d)", a, b, c);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d)", a, b, c);
 		PRINT_TEST_MESSAGE(sbuff);
 	}
 
 	void cdeclFoo(const float& a, const float& b, int c, char d) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c)", a, b, c, d);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c)", a, b, c, d);
 		PRINT_TEST_MESSAGE(sbuff);
 	}
 
 	void cdeclFoo(const float& a, const float& b, int c, char d, const double& e) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf)", a, b, c, d, e);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf)", a, b, c, d, e);
 		PRINT_TEST_MESSAGE(sbuff);
 	}
 
 	void cdeclFoo(const float& a, const float& b, int c, char d, const double& e, void* f) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p)", a, b, c, d, e, f);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p)", a, b, c, d, e, f);
 		PRINT_TEST_MESSAGE(sbuff);
 	}
 
 	void cdeclFoo(const float& a, const float& b, int c, char d, const double& e, void* f, short g) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d)", a, b, c, d, e, f, g);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d)", a, b, c, d, e, f, g);
 		PRINT_TEST_MESSAGE(sbuff);
 	}
 
 	void cdeclFoo(const float& a, const float& b, int c, char d, const double& e, void* f, short g, int h) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d, %d)", a, b, c, d, e, f, g, h);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d, %d)", a, b, c, d, e, f, g, h);
 		PRINT_TEST_MESSAGE(sbuff);
 	}
 
 	float cdeclFoof() {
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__);
+		SPRINTF_S(sbuff, __FUNCTION__);
 		PRINT_TEST_MESSAGE(sbuff);
 
 		return 1.0f;
@@ -95,7 +95,7 @@ namespace ffscriptUT
 	float cdeclFoof(const float& a) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, "a=%f", a);
+		SPRINTF_S(sbuff, "a=%f", a);
 		PRINT_TEST_MESSAGE(sbuff);
 
 		return 1.0f;
@@ -104,7 +104,7 @@ namespace ffscriptUT
 	float cdeclFoof(const float& a, const float& b) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, "a=%f, b=%f", a, b);
+		SPRINTF_S(sbuff, "a=%f, b=%f", a, b);
 		PRINT_TEST_MESSAGE(sbuff);
 
 		return 1.0f;
@@ -113,7 +113,7 @@ namespace ffscriptUT
 	float cdeclFoof(const float& a, const float& b, int c) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d)", a, b, c);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d)", a, b, c);
 		PRINT_TEST_MESSAGE(sbuff);
 
 		return 1.0f;
@@ -122,7 +122,7 @@ namespace ffscriptUT
 	float cdeclFoof(const float& a, const float& b, int c, char d) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c)", a, b, c, d);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c)", a, b, c, d);
 		PRINT_TEST_MESSAGE(sbuff);
 
 		return 1.0f;
@@ -131,7 +131,7 @@ namespace ffscriptUT
 	float cdeclFoof(const float& a, const float& b, int c, char d, const double& e) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf)", a, b, c, d, e);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf)", a, b, c, d, e);
 		PRINT_TEST_MESSAGE(sbuff);
 
 		return 1.0f;
@@ -140,7 +140,7 @@ namespace ffscriptUT
 	float cdeclFoof(const float& a, const float& b, int c, char d, const double& e, void* f) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p)", a, b, c, d, e, f);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p)", a, b, c, d, e, f);
 		PRINT_TEST_MESSAGE(sbuff);
 
 		return 1.0f;
@@ -149,7 +149,7 @@ namespace ffscriptUT
 	float cdeclFoof(const float& a, const float& b, int c, char d, const double& e, void* f, short g) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d)", a, b, c, d, e, f, g);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d)", a, b, c, d, e, f, g);
 		PRINT_TEST_MESSAGE(sbuff);
 
 		return 1.0f;
@@ -158,7 +158,7 @@ namespace ffscriptUT
 	float cdeclFoof(const float& a, const float& b, int c, char d, const double& e, void* f, short g, int h) {
 
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d, %d)", a, b, c, d, e, f, g, h);
+		SPRINTF_S(sbuff, __FUNCTION__"(%f, %f, %d, %c, %lf, %p, %d, %d)", a, b, c, d, e, f, g, h);
 		PRINT_TEST_MESSAGE(sbuff);
 
 		return 1.0f;
@@ -171,49 +171,49 @@ namespace ffscriptUT
 
 	short cdeclFooGeneral(int a) {
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%d)", a);
+		SPRINTF_S(sbuff, __FUNCTION__"(%d)", a);
 		PRINT_TEST_MESSAGE(sbuff);
 		return 1;
 	}
 
 	float cdeclFooGeneral(int a, char b) {
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%d, %c)", a, b);
+		SPRINTF_S(sbuff, __FUNCTION__"(%d, %c)", a, b);
 		PRINT_TEST_MESSAGE(sbuff);
 		return 1.0f;
 	}
 
 	int cdeclFooGeneral(int a, char b, const double& c) {
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%d, %c, %lf)", a, b, c);
+		SPRINTF_S(sbuff, __FUNCTION__"(%d, %c, %lf)", a, b, c);
 		PRINT_TEST_MESSAGE(sbuff);
 		return 1;
 	}
 
 	long cdeclFooGeneral(int a, char b, const double& c, const float& d) {
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%d, %c, %lf, %f)", a, b, c, d);
+		SPRINTF_S(sbuff, __FUNCTION__"(%d, %c, %lf, %f)", a, b, c, d);
 		PRINT_TEST_MESSAGE(sbuff);
 		return 1;
 	}
 
 	long long cdeclFooGeneral(int a, char b, const double& c, const float& d, unsigned int e) {
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u)", a, b, c, d, e);
+		SPRINTF_S(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u)", a, b, c, d, e);
 		PRINT_TEST_MESSAGE(sbuff);
 		return 1000000000000000;
 	}
 
 	double cdeclFooGeneral(int a, char b, const double& c, const float& d, unsigned int e, short f) {
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u, %d)", a, b, c, d, e, f);
+		SPRINTF_S(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u, %d)", a, b, c, d, e, f);
 		PRINT_TEST_MESSAGE(sbuff);
 		return 1000000000000000.0;
 	}
 
 	unsigned short cdeclFooGeneral(int a, char b, const double& c, const float& d, unsigned int e, short f, long g) {
 		char sbuff[128];
-		sprintf_s(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u, %d, %d)", a, b, c, d, e, f, g);
+		SPRINTF_S(sbuff, __FUNCTION__"(%d, %c, %lf, %f, %u, %d, %d)", a, b, c, d, e, f, g);
 		PRINT_TEST_MESSAGE(sbuff);
 		return 1;
 	}
