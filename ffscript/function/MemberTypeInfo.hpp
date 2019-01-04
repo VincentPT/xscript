@@ -48,7 +48,7 @@ namespace FT {
 	template <int _offset, size_t alignment, class _First, class... _Rest>
 	struct MemberTypeInfo<_offset, alignment, _First, _Rest...> /*: private MemberTypeInfo<offset + getAlignSize<_First, alignment>(), alignment, _Rest...>*/ {
 	protected:
-		typedef typename real_type<_First>::T first_t;
+		typedef typename real_type<_First>::_T first_t;
 			static constexpr int _mySize = getAlignSize<first_t, alignment>();
 		static constexpr int _count = 1 + sizeof...(_Rest);
 

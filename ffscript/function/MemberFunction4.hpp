@@ -34,11 +34,11 @@ namespace MemberFunction4 {
 	struct CtxInvoke<Class, Ret, __VA_ARGS__> {\
 	private:\
 	typedef MemberTypeInfo<0, sizeof(void*), __VA_ARGS__> Helper;\
-	typedef typename real_type<Ret>::T RRT;\
+	typedef typename real_type<Ret>::_T RRT;\
 	template <std::size_t N>\
 	using ATs  = typename std::tuple_element<N, std::tuple<__VA_ARGS__>>::type;\
 	template <std::size_t N>\
-	using RATs  = typename real_type<ATs<N>>::T;\
+	using RATs  = typename real_type<ATs<N>>::_T;\
 	public:\
 		typedef Ret(Class::*Fp)(__VA_ARGS__);\
 		Fp _fx;\
@@ -54,7 +54,7 @@ namespace MemberFunction4 {
 	template <std::size_t N>\
 	using ATs  = typename std::tuple_element<N, std::tuple<__VA_ARGS__>>::type;\
 	template <std::size_t N>\
-	using RATs  = typename real_type<ATs<N>>::T;\
+	using RATs  = typename real_type<ATs<N>>::_T;\
 	public:\
 		typedef void(Class::*Fp)(__VA_ARGS__);\
 		Fp _fx;\

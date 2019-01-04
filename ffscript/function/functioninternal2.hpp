@@ -45,6 +45,6 @@ namespace FT {
 	template<typename T>
 	struct real_type {
 		typedef typename make_pointer<T>::ptr_type ptr_type;
-		typedef typename std::conditional<std::is_reference<T>::value, ptr_type, T>::type T;
+		typedef typename std::conditional<std::is_reference<T>::value, ptr_type, T>::type _T;
 	};
 }
