@@ -71,14 +71,14 @@ namespace FT {
 		static constexpr int offset() {
 			static_assert(_count > index && index >= 0, "index out of bound");
 			typedef typename std::conditional<index == 0, DummyMemberTypeInfo, SubMemberTypeInfo>::type ComputeTypeT;
-			return index == 0 ? _offset : ComputeTypeT::offset<index - 1>();
+			return index == 0 ? _offset : ComputeTypeT::template offset<index - 1>();
 		}
 		
 		template<int index>
 		static constexpr int getSize() {
 			static_assert(_count > index && index >= 0, "index out of bound");
 			typedef typename std::conditional<index == 0, DummyMemberTypeInfo, SubMemberTypeInfo>::type ComputeTypeT;
-			return index <= 0 ? _mySize : ComputeTypeT::getSize<index - 1>();
+			return index <= 0 ? _mySize : ComputeTypeT::template getSize<index - 1>();
 		}
 
 		static constexpr int totalSize() {
