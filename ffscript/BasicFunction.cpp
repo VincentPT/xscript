@@ -25,6 +25,15 @@
 using namespace ffscript::basic::operators;
 using namespace ffscript::basic;
 
+#if __GNUC__
+#include <assert.h>
+inline void memcpy_s(void* dest, size_t destsz,
+                  const void* src, size_t srcsz) {
+	assert (destsz >= srcsz);
+	memcpy(dest, src, destsz);
+}  
+#endif
+
 namespace ffscript {
 
 	Function* FunctionFactoryCdecl::createFunction(const std::string& name, int id)

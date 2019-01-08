@@ -15,6 +15,14 @@
 
 #pragma once
 
+#if __GNUC__
+#include <inttypes.h>
+typedef int64_t __int64;
+typedef int32_t __int32;
+typedef int16_t __int16;
+typedef int8_t __int8;
+#endif
+
 class DFunction
 {
 protected:

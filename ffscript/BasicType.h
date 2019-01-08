@@ -73,11 +73,11 @@ namespace ffscript {
 	template <class TD, class TS>
 	class ConversionFactory : public ConversionFactoryBase<TD,TS> {
 	public:
-		ConversionFactory(ScriptCompiler* scriptCompiler, const ScriptType& returnType) : ConversionFactoryBase(scriptCompiler, returnType) {}
+		ConversionFactory(ScriptCompiler* scriptCompiler, const ScriptType& returnType) : ConversionFactoryBase<TD, TS>(scriptCompiler, returnType) {}
 
 		Function* createFunction(const std::string& name, int id) {
 			NativeFunction* pFunction = new CastingFunction(name);
-			pFunction->setNative(_nativeFunction);
+			pFunction->setNative(this->_nativeFunction);
 			return pFunction;
 		}
 	};
