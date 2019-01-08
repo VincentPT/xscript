@@ -13,10 +13,10 @@
 #pragma once
 
 #define DECLARE_CLASS_INVOKER_TEMPLATE(className, classOwner, ...) \
-class className<##__VA_ARGS__> { \
+class className<__VA_ARGS__> { \
 public: \
-	classOwner<##__VA_ARGS__>* mOwner; \
-	className(classOwner<##__VA_ARGS__>* pOwner) { \
+	classOwner<__VA_ARGS__>* mOwner; \
+	className(classOwner<__VA_ARGS__>* pOwner) { \
 		mOwner = pOwner; \
 	} \
 	inline void call(); \
@@ -89,15 +89,15 @@ public:
 
 
 #define BEGIN_INVOKER1(className, ...) \
-class className<##__VA_ARGS__> : public InvokerInternal1<##__VA_ARGS__> { \
+class className<__VA_ARGS__> : public InvokerInternal1<__VA_ARGS__> { \
 public: \
-	className(void* fx, void** data) : InvokerInternal1<##__VA_ARGS__>(fx, data) {}
+	className(void* fx, void** data) : InvokerInternal1<__VA_ARGS__>(fx, data) {}
 
 #define END_INVOKER1 }
 
 #define BEGIN_INVOKER2(className, ...) \
-class className<void, ##__VA_ARGS__> : public InvokerInternal2<##__VA_ARGS__> { \
+class className<void, ##__VA_ARGS__> : public InvokerInternal2<__VA_ARGS__> { \
 public: \
-	className(void* fx, void** data) : InvokerInternal2<##__VA_ARGS__>(fx, data) {}
+	className(void* fx, void** data) : InvokerInternal2<__VA_ARGS__>(fx, data) {}
 
 #define END_INVOKER2 }

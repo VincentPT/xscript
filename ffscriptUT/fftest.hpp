@@ -10,19 +10,19 @@
 //
 //#define FF_EXPECT_TRUE_1(condition) EXPECT_TRUE(condition)
 //#define FF_EXPECT_TRUE_2(condition, msg) EXPECT_TRUE(condition) << msg
-//#define FF_EXPECT_TRUE(...) GET_MACRO_2(##__VA_ARGS__, FF_EXPECT_TRUE_2, FF_EXPECT_TRUE_1)(##__VA_ARGS__)
+//#define FF_EXPECT_TRUE(...) GET_MACRO_2(__VA_ARGS__, FF_EXPECT_TRUE_2, FF_EXPECT_TRUE_1)(__VA_ARGS__)
 //
 //#define FF_EXPECT_FALSE_1(condition) EXPECT_TRUE(condition)
 //#define FF_EXPECT_FALSE_2(condition, msg) EXPECT_TRUE(condition) << msg
-//#define FF_EXPECT_FALSE(...) GET_MACRO_2(##__VA_ARGS__, FF_EXPECT_FALSE_2, FF_EXPECT_FALSE_1)(##__VA_ARGS__)
+//#define FF_EXPECT_FALSE(...) GET_MACRO_2(__VA_ARGS__, FF_EXPECT_FALSE_2, FF_EXPECT_FALSE_1)(__VA_ARGS__)
 //
 //#define FF_EXPECT_NE_2(ne, val) EXPECT_NE(ne, val)
 //#define FF_EXPECT_NE_3(ne, val, msg) EXPECT_NE(ne, val) << msg
-//#define FF_EXPECT_NE(...) GET_MACRO_3(##__VA_ARGS__, FF_EXPECT_NE_3, FF_EXPECT_NE_2)(##__VA_ARGS__)
+//#define FF_EXPECT_NE(...) GET_MACRO_3(__VA_ARGS__, FF_EXPECT_NE_3, FF_EXPECT_NE_2)(__VA_ARGS__)
 //
 //#define FF_EXPECT_EQ_2(e, val) EXPECT_EQ(e, val)
 //#define FF_EXPECT_EQ_3(e, val, msg) EXPECT_EQ(e, val) << msg
-//#define FF_EXPECT_EQ(...) GET_MACRO_3(##__VA_ARGS__, FF_EXPECT_EQ_3, FF_EXPECT_EQ_2)(##__VA_ARGS__)
+//#define FF_EXPECT_EQ(...) GET_MACRO_3(__VA_ARGS__, FF_EXPECT_EQ_3, FF_EXPECT_EQ_2)(__VA_ARGS__)
 
 // Check windows
 #if _WIN32 || _WIN64
