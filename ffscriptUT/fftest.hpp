@@ -41,7 +41,7 @@
 #else
 #define ENVIRONMENT32
 #endif
-#define SPRINTF_S(buff,format,...) sprintf(buff,format,__VA_ARGS__)
+#define SPRINTF_S(buff,format,...) sprintf(buff,format,##__VA_ARGS__)
 #endif
 
 inline void FF_EXPECT_TRUE(bool condition, const wchar_t* msg) {

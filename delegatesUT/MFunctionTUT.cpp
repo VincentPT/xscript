@@ -29,9 +29,9 @@ namespace delegatesUT
 		void memberFoo() {
 			char sbuff[128];
 			SPRINTF_S(sbuff, __FUNCTION__);
-			PRINT_TEST_MESSAGE(sbuff);
+			//PRINT_TEST_MESSAGE(sbuff);
 		}
-
+/*
 		void memberFoo(const float& a) {
 
 			char sbuff[128];
@@ -284,6 +284,7 @@ namespace delegatesUT
 
 			return b + a + memberVariable;
 		}
+*/
 	};
 
 	namespace MemberFunctionUT {
