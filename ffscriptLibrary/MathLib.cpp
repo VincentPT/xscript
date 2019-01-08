@@ -25,10 +25,10 @@ namespace ffscript {
 #define REGIST_MATH_FUNCTION1(helper, nativeFunc, scriptFunc, returnType, ...) \
 	helper.registFunction(\
 		scriptFunc, #__VA_ARGS__,\
-		createUserFunctionFactory<returnType,__VA_ARGS__>(helper.getSriptCompiler(), #returnType, nativeFunc)\
+		createUserFunctionFactory<returnType,##__VA_ARGS__>(helper.getSriptCompiler(), #returnType, nativeFunc)\
 	)
 
-#define REGIST_MATH_FUNCTION2(helper, func, returnType, ...) REGIST_MATH_FUNCTION1(helper, func, #func, returnType, __VA_ARGS__)
+#define REGIST_MATH_FUNCTION2(helper, func, returnType, ...) REGIST_MATH_FUNCTION1(helper, func, #func, returnType, ##__VA_ARGS__)
 
 	void includeMathToCompiler(ScriptCompiler* scriptCompiler) {
 		FunctionRegisterHelper helper(scriptCompiler);

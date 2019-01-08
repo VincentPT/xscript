@@ -29,16 +29,16 @@ namespace Cdel3 {
 	struct Invoke;
 
 #define DECLARE_CLASS_INVOKER_T(Ret, ...)\
-	struct Invoke<Ret, __VA_ARGS__> {\
+	struct Invoke<Ret, ##__VA_ARGS__> {\
 	private:\
-	typedef MemberTypeInfo<0, sizeof(void*), __VA_ARGS__> Helper;\
+	typedef MemberTypeInfo<0, sizeof(void*), ##__VA_ARGS__> Helper;\
 	typedef typename real_type<Ret>::_T RRT;\
 	template <std::size_t N>\
-	using ATs  = typename std::tuple_element<N, std::tuple<__VA_ARGS__>>::type;\
+	using ATs  = typename std::tuple_element<N, std::tuple<##__VA_ARGS__>>::type;\
 	template <std::size_t N>\
 	using RATs  = typename real_type<ATs<N>>::_T;\
 	public:\
-		typedef Ret(*Fp)(__VA_ARGS__);\
+		typedef Ret(*Fp)(##__VA_ARGS__);\
 		Fp _fx;\
 	public:\
 		Invoke(Fp fx) : _fx(fx) {}\
@@ -46,15 +46,15 @@ namespace Cdel3 {
 	}
 
 #define DECLARE_CLASS_INVOKER_VOID(...) \
-	struct InvokeVoid<__VA_ARGS__> {\
+	struct InvokeVoid<##__VA_ARGS__> {\
 	private:\
-	typedef MemberTypeInfo<0, sizeof(void*), __VA_ARGS__> Helper;\
+	typedef MemberTypeInfo<0, sizeof(void*), ##__VA_ARGS__> Helper;\
 	template <std::size_t N>\
-	using ATs  = typename std::tuple_element<N, std::tuple<__VA_ARGS__>>::type;\
+	using ATs  = typename std::tuple_element<N, std::tuple<##__VA_ARGS__>>::type;\
 	template <std::size_t N>\
 	using RATs  = typename real_type<ATs<N>>::_T;\
 	public:\
-		typedef void(*Fp)(__VA_ARGS__);\
+		typedef void(*Fp)(##__VA_ARGS__);\
 		Fp _fx;\
 	public:\
 		InvokeVoid(Fp fx) : _fx(fx) {}\

@@ -31,16 +31,16 @@ namespace MemberFunction4 {
 	struct CtxInvoke;
 
 #define DECLARE_CLASS_CTXINVOKER_T(Class, Ret, ...)\
-	struct CtxInvoke<Class, Ret, __VA_ARGS__> {\
+	struct CtxInvoke<Class, Ret, ##__VA_ARGS__> {\
 	private:\
-	typedef MemberTypeInfo<0, sizeof(void*), __VA_ARGS__> Helper;\
+	typedef MemberTypeInfo<0, sizeof(void*), ##__VA_ARGS__> Helper;\
 	typedef typename real_type<Ret>::_T RRT;\
 	template <std::size_t N>\
-	using ATs  = typename std::tuple_element<N, std::tuple<__VA_ARGS__>>::type;\
+	using ATs  = typename std::tuple_element<N, std::tuple<##__VA_ARGS__>>::type;\
 	template <std::size_t N>\
 	using RATs  = typename real_type<ATs<N>>::_T;\
 	public:\
-		typedef Ret(Class::*Fp)(__VA_ARGS__);\
+		typedef Ret(Class::*Fp)(##__VA_ARGS__);\
 		Fp _fx;\
 	public:\
 		CtxInvoke(Fp fx) : _fx(fx) {}\
@@ -48,15 +48,15 @@ namespace MemberFunction4 {
 	}
 
 #define DECLARE_CLASS_CTXINVOKER_VOID(Class,...) \
-	struct CtxInvokeVoid<Class, __VA_ARGS__> {\
+	struct CtxInvokeVoid<Class, ##__VA_ARGS__> {\
 	private:\
-	typedef MemberTypeInfo<0, sizeof(void*), __VA_ARGS__> Helper;\
+	typedef MemberTypeInfo<0, sizeof(void*), ##__VA_ARGS__> Helper;\
 	template <std::size_t N>\
-	using ATs  = typename std::tuple_element<N, std::tuple<__VA_ARGS__>>::type;\
+	using ATs  = typename std::tuple_element<N, std::tuple<##__VA_ARGS__>>::type;\
 	template <std::size_t N>\
 	using RATs  = typename real_type<ATs<N>>::_T;\
 	public:\
-		typedef void(Class::*Fp)(__VA_ARGS__);\
+		typedef void(Class::*Fp)(##__VA_ARGS__);\
 		Fp _fx;\
 	public:\
 		CtxInvokeVoid(Fp fx) : _fx(fx) {}\
