@@ -62,14 +62,14 @@ namespace ffscript {
 		fb.registPredefinedOperators("/", "int,int", "int", createFunctionCdecl<int, int, int>(div));
 		fb.registPredefinedOperators("%", "int,int", "int", createFunctionCdecl<int, int, int>(mod));
 		//bitwises
-		fb.registPredefinedOperators("&", "int,int", "int", createFunctionCdecl<int, int, int>(and));
-		fb.registPredefinedOperators("|", "int,int", "int", createFunctionCdecl<int, int, int>(or ));
-		fb.registPredefinedOperators("^", "int,int", "int", createFunctionCdecl<int, int, int>(xor));
-		fb.registPredefinedOperators("<<", "int,int", "int", createFunctionCdecl<int, int, int>(shiftLeft));
-		fb.registPredefinedOperators(">>", "int,int", "int", createFunctionCdecl<int, int, int>(shiftRight));
+		fb.registPredefinedOperators("&", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_and));
+		fb.registPredefinedOperators("|", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_or ));
+		fb.registPredefinedOperators("^", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_xor));
+		fb.registPredefinedOperators("<<", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_shiftLeft));
+		fb.registPredefinedOperators(">>", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_shiftRight));
 		//pre-post fix operators
 		fb.registPredefinedOperators("neg", "int", "int", createFunctionCdecl<int, int>(neg));
-		fb.registPredefinedOperators("~", "int", "int", createFunctionCdecl<int, int>(not));
+		fb.registPredefinedOperators("~", "int", "int", createFunctionCdecl<int, int>(bitwise_not));
 		//comparision operators
 		fb.registPredefinedOperators("<", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::less));
 		fb.registPredefinedOperators("<=", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::less_or_equal));

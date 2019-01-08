@@ -53,22 +53,22 @@ namespace ffscript {
 
 #pragma region bitwise operators
 			template <class RT, class T1, class T2>
-			RT and (T1 a, T2 b) { return a & b; }
+			RT bitwise_and(T1 a, T2 b) { return a & b; }
 
 			template <class RT, class T1, class T2>
-			RT or (T1 a, T2 b) { return a | b; }
+			RT bitwise_or (T1 a, T2 b) { return a | b; }
 
 			template <class RT, class T1, class T2>
-			RT xor (T1 a, T2 b) { return a ^ b; }
+			RT bitwise_xor (T1 a, T2 b) { return a ^ b; }
 
 			template <class RT, class T>
-			RT not(T a) { return ~a; }
+			RT bitwise_not(T a) { return ~a; }
 
 			template <class RT, class T1, class T2>
-			RT shiftLeft(T1 a, T2 b) { return a << b; }
+			RT bitwise_shiftLeft(T1 a, T2 b) { return a << b; }
 
 			template <class RT, class T1, class T2>
-			RT shiftRight(T1 a, T2 b) { return a >> b; }
+			RT bitwise_shiftRight(T1 a, T2 b) { return a >> b; }
 #pragma endregion
 
 			template <class T>

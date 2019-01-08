@@ -133,14 +133,14 @@ namespace ffscript {
 		//assigment operator
 		fb.registPredefinedOperators("=", "int&,int", "int", createFunctionCdecl(assign<int, int, int>));
 		//bitwises
-		fb.registPredefinedOperators("&", "int,int", "int", createFunctionCdecl<int, int, int>(and));
-		fb.registPredefinedOperators("|", "int,int", "int", createFunctionCdecl<int, int, int>(or));
-		fb.registPredefinedOperators("^", "int,int", "int", createFunctionCdecl<int, int, int>(xor));
-		fb.registPredefinedOperators("<<", "int,int", "int", createFunctionCdecl<int, int, int>(shiftLeft));
-		fb.registPredefinedOperators(">>", "int,int", "int", createFunctionCdecl<int, int, int>(shiftRight));
+		fb.registPredefinedOperators("&", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_and));
+		fb.registPredefinedOperators("|", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_or));
+		fb.registPredefinedOperators("^", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_xor));
+		fb.registPredefinedOperators("<<", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_shiftLeft));
+		fb.registPredefinedOperators(">>", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_shiftRight));
 		//pre-post fix operators
 		fb.registPredefinedOperators("neg", "int", "int", createFunctionCdecl<int, int>(neg));
-		fb.registPredefinedOperators("~", "int", "int", createFunctionCdecl<int, int>(not));
+		fb.registPredefinedOperators("~", "int", "int", createFunctionCdecl<int, int>(bitwise_not));
 		fb.registPredefinedOperators("post_fix_increase", "int&", "int", createFunctionCdecl<int, int&>(post_inc));
 		fb.registPredefinedOperators("++", "int&", "int", createFunctionCdecl<int, int&>(pre_inc));
 		fb.registPredefinedOperators("post_fix_decrease", "int&", "int", createFunctionCdecl<int, int&>(post_dec));
@@ -180,14 +180,14 @@ namespace ffscript {
 		//assigment operator
 		fb.registPredefinedOperators("=", "long&,long", "long", createFunctionCdecl(assign<long long, long long, long long>));
 		//bitwises
-		fb.registPredefinedOperators("&", "long,long", "long", createFunctionCdecl<long long, long long, long long>(and));
-		fb.registPredefinedOperators("|", "long,long", "long", createFunctionCdecl<long long, long long, long long>(or));
-		fb.registPredefinedOperators("^", "long,long", "long", createFunctionCdecl<long long, long long, long long>(xor));
-		fb.registPredefinedOperators("<<", "long,long", "long", createFunctionCdecl<long long, long long, long long>(shiftLeft));
-		fb.registPredefinedOperators(">>", "long,long", "long", createFunctionCdecl<long long, long long, long long>(shiftRight));
+		fb.registPredefinedOperators("&", "long,long", "long", createFunctionCdecl<long long, long long, long long>(bitwise_and));
+		fb.registPredefinedOperators("|", "long,long", "long", createFunctionCdecl<long long, long long, long long>(bitwise_or));
+		fb.registPredefinedOperators("^", "long,long", "long", createFunctionCdecl<long long, long long, long long>(bitwise_xor));
+		fb.registPredefinedOperators("<<", "long,long", "long", createFunctionCdecl<long long, long long, long long>(bitwise_shiftLeft));
+		fb.registPredefinedOperators(">>", "long,long", "long", createFunctionCdecl<long long, long long, long long>(bitwise_shiftRight));
 		//pre-post fix operators
 		fb.registPredefinedOperators("neg",					"long", "long", createFunctionCdecl<long long, long long>(neg));
-		fb.registPredefinedOperators("~",					"long", "long", createFunctionCdecl<long long, long long>(not));
+		fb.registPredefinedOperators("~",					"long", "long", createFunctionCdecl<long long, long long>(bitwise_not));
 		fb.registPredefinedOperators("post_fix_increase", "long&", "long", createFunctionCdecl<long long, long long&>(post_inc));
 		fb.registPredefinedOperators("++", "long&", "long", createFunctionCdecl<long long, long long&>(pre_inc));
 		fb.registPredefinedOperators("post_fix_decrease", "long&", "long", createFunctionCdecl<long long, long long&>(post_dec));
@@ -303,11 +303,11 @@ namespace ffscript {
 		//assigment operator
 		fb.registPredefinedOperators("=", "int&,long", "int", createFunctionCdecl(assign<int, int, long long>));
 		//bitwises
-		fb.registPredefinedOperators("&", "int,long", "long", createFunctionCdecl<long long, int, long long>(and));
-		fb.registPredefinedOperators("|", "int,long", "long", createFunctionCdecl<long long, int, long long>(or));
-		fb.registPredefinedOperators("^", "int,long", "long", createFunctionCdecl<long long, int, long long>(xor));
-		fb.registPredefinedOperators("<<", "int,long", "int", createFunctionCdecl<int, int, long long>(shiftLeft));
-		fb.registPredefinedOperators(">>", "int,long", "int", createFunctionCdecl<int, int, long long>(shiftRight));
+		fb.registPredefinedOperators("&", "int,long", "long", createFunctionCdecl<long long, int, long long>(bitwise_and));
+		fb.registPredefinedOperators("|", "int,long", "long", createFunctionCdecl<long long, int, long long>(bitwise_or));
+		fb.registPredefinedOperators("^", "int,long", "long", createFunctionCdecl<long long, int, long long>(bitwise_xor));
+		fb.registPredefinedOperators("<<", "int,long", "int", createFunctionCdecl<int, int, long long>(bitwise_shiftLeft));
+		fb.registPredefinedOperators(">>", "int,long", "int", createFunctionCdecl<int, int, long long>(bitwise_shiftRight));
 		//compound operators
 		fb.registPredefinedOperators("+=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(add_comp));
 		fb.registPredefinedOperators("-=", "int&,long", "void", createFunctionCdecl<void, int&, long long>(sub_comp));
@@ -394,11 +394,11 @@ namespace ffscript {
 		//assigment operator
 		fb.registPredefinedOperators("=", "long&,int", "long", createFunctionCdecl(assign<long long, long long, int>));
 		//bitwises
-		fb.registPredefinedOperators("&", "long,int", "long", createFunctionCdecl<long long, long long, int>(and));
-		fb.registPredefinedOperators("|", "long,int", "long", createFunctionCdecl<long long, long long, int>(or ));
-		fb.registPredefinedOperators("^", "long,int", "long", createFunctionCdecl<long long, long long, int>(xor));
-		fb.registPredefinedOperators("<<", "long,int", "long", createFunctionCdecl<long long, long long, int>(shiftLeft));
-		fb.registPredefinedOperators(">>", "long,int", "long", createFunctionCdecl<long long, long long, int>(shiftRight));
+		fb.registPredefinedOperators("&", "long,int", "long", createFunctionCdecl<long long, long long, int>(bitwise_and));
+		fb.registPredefinedOperators("|", "long,int", "long", createFunctionCdecl<long long, long long, int>(bitwise_or ));
+		fb.registPredefinedOperators("^", "long,int", "long", createFunctionCdecl<long long, long long, int>(bitwise_xor));
+		fb.registPredefinedOperators("<<", "long,int", "long", createFunctionCdecl<long long, long long, int>(bitwise_shiftLeft));
+		fb.registPredefinedOperators(">>", "long,int", "long", createFunctionCdecl<long long, long long, int>(bitwise_shiftRight));
 		//compound operators
 		fb.registPredefinedOperators("+=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(add_comp));
 		fb.registPredefinedOperators("-=", "long&,int", "void", createFunctionCdecl<void, long long&, int>(sub_comp));
