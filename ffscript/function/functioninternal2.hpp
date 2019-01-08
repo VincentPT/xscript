@@ -48,3 +48,5 @@ namespace FT {
 		typedef typename std::conditional<std::is_reference<T>::value, ptr_type, T>::type _T;
 	};
 }
+
+#define ARG_OFFSET(idx) Helper::template offset<idx>()
