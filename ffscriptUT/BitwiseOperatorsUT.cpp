@@ -134,7 +134,7 @@ TEST_F(BitwiseOperatorsUT, BitwiseXorIntegers1)
 
 TEST_F(BitwiseOperatorsUT, BitwiseXorIntegers2)
 {
-	wstring exp = L"0 ^ ";
+	wstring exp = L"0 ^ 7";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
