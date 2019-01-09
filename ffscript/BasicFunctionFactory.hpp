@@ -46,4 +46,36 @@ namespace ffscript {
 			return function;
 		}
 	};
+
+	class FunctionFactoryCdecl : public FunctionFactory
+	{
+		typedef Function* (*FCreator) (const std::string&, int);
+
+		FCreator _fCreator;
+
+	public:
+		FunctionFactoryCdecl(FCreator creator, const ScriptType& returnType);
+		virtual ~FunctionFactoryCdecl();
+		Function* createFunction(const std::string& name, int id);
+	};
+
+	class UserFunctionFactory : public FunctionFactory
+	{
+		int _paramSize;
+	public:
+		UserFunctionFactory(ScriptCompiler* scriptCompiler, const std::string& returnType, int paramSize);
+		virtual ~UserFunctionFactory();
+		Function* createFunction(const std::string& name, int id);
+		virtual DFunction2Ref createNative() = 0;
+	};
+
+
+	class DefaultUserFunctionFactory : public UserFunctionFactory
+	{
+		DFunction2Ref _nativeFunction;
+	public:
+		DefaultUserFunctionFactory(DFunction2Ref nativeFunction, ScriptCompiler* scriptCompiler, const std::string& returnType, int paramSize);
+		virtual ~DefaultUserFunctionFactory();
+		DFunction2Ref createNative();
+	};
 }

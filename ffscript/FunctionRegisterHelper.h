@@ -21,6 +21,7 @@
 #include "function/MemberFunction3.hpp"
 #include "function/MemberFunction4.hpp"
 #include "function/DynamicFunction.h"
+#include "BasicFunctionFactory.hpp"
 
 class DFunction2;
 namespace ffscript {

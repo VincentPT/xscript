@@ -16,7 +16,7 @@
 #include "ffscript.h"
 #include "expressionunit.h"
 #include "FunctionFactory.h"
-//#include "FunctionRegisterHelper.h"
+#include "FunctionRegisterHelper.h"
 
 namespace ffscript {
 	class ScriptCompiler;
