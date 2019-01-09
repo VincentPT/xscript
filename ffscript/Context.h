@@ -55,7 +55,7 @@ namespace ffscript {
 		Context(unsigned int stackSize);
 		virtual ~Context();		
 		//int getCurrentOffset() const;
-		inline int Context::getCurrentOffset() const { return _currentOffset; }
+		inline int getCurrentOffset() const { return _currentOffset; }
 		int getCurrentScopeSize() const;
 		unsigned int getTotalAllocatedSize() const;
 		int getMemCapacity() const;
@@ -72,7 +72,7 @@ namespace ffscript {
 		void read(unsigned int offset, void* data, unsigned int size);
 		void lea(unsigned int offset, void* value);
 		bool prepareWrite(unsigned int offset, unsigned int size);
-		inline void* Context::getAbsoluteAddress(unsigned int offset) { return (void*)(_threadData + offset); }
+		inline void* getAbsoluteAddress(unsigned int offset) { return (void*)(_threadData + offset); }
 		CommandPointer getCurrentCommand() const;
 		CommandPointer getEndCommand() const;
 		void jump(CommandPointer commandPointer);

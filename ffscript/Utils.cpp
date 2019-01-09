@@ -128,7 +128,8 @@ namespace ffscript {
 
 	std::wstring readCodeFromUtf8File(const char* filename) {
 		std::wifstream wif(filename);
-		wif.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+		std::locale l1;
+		wif.imbue(std::locale(l1, new std::codecvt_utf8<wchar_t>));
 
 		return readCodeFromStream(wif);
 	}

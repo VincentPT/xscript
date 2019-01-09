@@ -93,6 +93,26 @@ class DFunction2;
 #include "function/MemberFunction3.hpp"
 #include "function/MemberFunction4.hpp"
 
+#if __GNUC__
+#include <string.h>
+#include <wchar.h>
+#include <assert.h>
+inline void memcpy_s(void* dest, size_t destsz,
+                  const void* src, size_t srcsz) {
+	assert (destsz >= srcsz);
+	memcpy(dest, src, destsz);
+}
+
+inline double _wtof(const wchar_t* str) {
+	return wcstod(str, NULL);
+}
+
+inline long long _wtoll(const wchar_t* str) {
+	return wcstoll(str, NULL, 10);
+}
+
+#endif
+
 namespace ffscript {
 	class InstructionCommand;
 	class MemoryBlock;

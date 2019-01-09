@@ -17,21 +17,25 @@
 
 #include <iomanip>
 #include <sstream>
-//#include "CppUnitTest.h"
-//using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 #ifdef THROW_EXCEPTION_ON_ERROR
 #include <exception>
 
-#define RAISE_STACK_OVERFLOW_ERROR() throw std::exception("stack is overflow")
-#define RAISE_ESP_MISMATCH_ERROR() throw std::exception("function calling is mismatch")
+#define RAISE_STACK_OVERFLOW_ERROR() throw std::runtime_error("stack is overflow")
+#define RAISE_ESP_MISMATCH_ERROR() throw std::runtime_error("function calling is mismatch")
 #else
 #define RAISE_STACK_OVERFLOW_ERROR() _isError = false
 #define RAISE_ESP_MISMATCH_ERROR() _isError = false
 #endif
 
 namespace ffscript {
+	
+#if _WIN32 || _WIN64
 	__declspec(thread) Context* _threadContext = nullptr;
+// Check GCC
+#elif __GNUC__
+	__thread Context* _threadContext = nullptr;
+#endif
 
 	void RaiseStackOverflow() {
 		RAISE_STACK_OVERFLOW_ERROR();

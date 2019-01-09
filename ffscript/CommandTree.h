@@ -15,7 +15,7 @@
 
 #pragma once
 #include "InstructionCommand.h"
-#include <function\DynamicFunction.h>
+#include "function/DynamicFunction.h"
 
 namespace ffscript {
 	class FunctionCommand : public TargetedCommand {

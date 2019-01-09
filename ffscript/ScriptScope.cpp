@@ -88,7 +88,7 @@ namespace ffscript {
 	}
 
 	Variable* ScriptScope::applyTemporaryVariableFor(CommandUnitBuilder* parentUnit, Variable* pVariable) {
-		auto it = _variableUnitMap.insert(std::make_pair(parentUnit, pVariable));
+		auto it = _variableUnitMap.insert(std::make_pair(parentUnit, (std::shared_ptr<Variable>)pVariable));
 		if (it.second) {
 			pVariable->setName("ret of " + parentUnit->toString());
 			pVariable->setScope(this);			
@@ -286,11 +286,11 @@ namespace ffscript {
 	bool ScriptScope::applyDestructor(const ExecutableUnitRef& variableUnit) {
 		auto xOperand = dynamic_cast<CXOperand*>(variableUnit.get());
 		if (!xOperand) {
-			throw exception("expression unit is not a variable");
+			throw runtime_error("expression unit is not a variable");
 		}
 		auto pVariable = xOperand->getVariable();
 		if (!pVariable) {
-			throw exception("null variable");
+			throw runtime_error("null variable");
 		}
 
 		return checkVariableToRunDestructor(xOperand);

@@ -113,7 +113,7 @@ namespace ffscript {
 		ExitContextScope* exitScopeCommand = new ExitContextScope();
 
 		CodeUpdater* updateLaterMan = CodeUpdater::getInstance(scope);
-		auto updateExitScopeCommand = new CdeclFunction<void, ContextScope*, DFunction*>(ExitScopeBuilder::fillParams);
+		auto updateExitScopeCommand = new CdeclFunction<void, ContextScope*, ExitContextScope*>(ExitScopeBuilder::fillParams);
 		updateExitScopeCommand->pushParam(scope);
 		updateExitScopeCommand->pushParam(exitScopeCommand);
 		updateLaterMan->addUpdateLaterTask(updateExitScopeCommand);

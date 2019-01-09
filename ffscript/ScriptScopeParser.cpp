@@ -10,7 +10,6 @@
 *
 **********************************************************************/
 
-#include "stdafx.h"
 #include "ScriptScope.h"
 #include "ScriptCompiler.h"
 #include "Internal.h"
@@ -64,7 +63,7 @@ namespace ffscript {
 			//else 
 			if (constructorUnit->getReturnType() != expectedType) {
 				// throw exception here
-				throw exception("return type of the constructor must be void");
+				throw runtime_error("return type of the constructor must be void");
 			}
 		}
 	}

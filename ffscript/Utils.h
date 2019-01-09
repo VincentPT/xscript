@@ -16,6 +16,8 @@
 #include "TypeManager.h"
 #include <string>
 #include <istream>
+#include <sstream>
+#include <iomanip>
 
 namespace ffscript {
 

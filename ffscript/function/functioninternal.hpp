@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <cstddef>
+
 #define DECLARE_CLASS_INVOKER_TEMPLATE(className, classOwner, ...) \
 class className<__VA_ARGS__> { \
 public: \

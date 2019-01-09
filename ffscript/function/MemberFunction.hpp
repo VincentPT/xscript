@@ -24,8 +24,8 @@ template <class Ret, class T>
 BEGIN_INVOKER1(ThisInvoker, Ret, T)
 inline void call() {
 	typedef Ret(T::*MemberFunc)();
-	T* obj = (T*)_params[0];
-	_retStorage = (obj->*(*(MemberFunc*)(&_fx)))();
+	T* obj = (T*)this->_params[0];
+	this->_retStorage = (obj->*(*(MemberFunc*)(&this->_fx)))();
 }
 END_INVOKER1;
 
@@ -33,8 +33,8 @@ template <class Ret, class T, class T1>
 BEGIN_INVOKER1(ThisInvoker, Ret, T, T1)
 inline void call() {
 	typedef Ret(T::*MemberFunc)(void*);
-	T* obj = (T*)_params[0];
-	_retStorage = (obj->*(*(MemberFunc*)(&_fx)))(_params[1]);
+	T* obj = (T*)this->_params[0];
+	this->_retStorage = (obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1]);
 }
 END_INVOKER1;
 
@@ -43,8 +43,8 @@ template <class Ret, class T, class T1, class T2>
 BEGIN_INVOKER1(ThisInvoker, Ret, T, T1, T2)
 inline void call() {
 	typedef Ret(T::*MemberFunc)(void*, void*);
-	T* obj = (T*)_params[0];
-	_retStorage = (obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2]);
+	T* obj = (T*)this->_params[0];
+	this->_retStorage = (obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2]);
 }
 END_INVOKER1;
 
@@ -52,8 +52,8 @@ template <class Ret, class T, class T1, class T2, class T3>
 BEGIN_INVOKER1(ThisInvoker, Ret, T, T1, T2, T3)
 inline void call() {
 	typedef Ret(T::*MemberFunc)(void*, void*, void*);
-	T* obj = (T*)_params[0];
-	_retStorage = (obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3]);
+	T* obj = (T*)this->_params[0];
+	this->_retStorage = (obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3]);
 }
 END_INVOKER1;
 
@@ -61,8 +61,8 @@ template <class Ret, class T, class T1, class T2, class T3, class T4>
 BEGIN_INVOKER1(ThisInvoker, Ret, T, T1, T2, T3, T4)
 inline void call() {
 	typedef Ret(T::*MemberFunc)(void*, void*, void*, void*);
-	T* obj = (T*)_params[0];
-	_retStorage = (obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3], _params[4]);
+	T* obj = (T*)this->_params[0];
+	this->_retStorage = (obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3], this->_params[4]);
 }
 END_INVOKER1;
 
@@ -70,8 +70,8 @@ template <class Ret, class T, class T1, class T2, class T3, class T4, class T5>
 BEGIN_INVOKER1(ThisInvoker, Ret, T, T1, T2, T3, T4, T5)
 inline void call() {
 	typedef Ret(T::*MemberFunc)(void*, void*, void*, void*, void*);
-	T* obj = (T*)_params[0];
-	_retStorage = (obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3], _params[4], _params[5]);
+	T* obj = (T*)this->_params[0];
+	this->_retStorage = (obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5]);
 }
 END_INVOKER1;
 
@@ -79,8 +79,8 @@ template <class Ret, class T, class T1, class T2, class T3, class T4, class T5, 
 BEGIN_INVOKER1(ThisInvoker, Ret, T, T1, T2, T3, T4, T5, T6)
 inline void call() {
 	typedef Ret(T::*MemberFunc)(void*, void*, void*, void*, void*, void*);
-	T* obj = (T*)_params[0];
-	_retStorage = (obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3], _params[4], _params[5], _params[6]);
+	T* obj = (T*)this->_params[0];
+	this->_retStorage = (obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5], this->_params[6]);
 }
 END_INVOKER1;
 
@@ -88,8 +88,8 @@ template <class Ret, class T, class T1, class T2, class T3, class T4, class T5, 
 BEGIN_INVOKER1(ThisInvoker, Ret, T, T1, T2, T3, T4, T5, T6, T7)
 inline void call() {
 	typedef Ret(T::*MemberFunc)(void*, void*, void*, void*, void*, void*, void*);
-	T* obj = (T*)_params[0];
-	_retStorage = (obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3], _params[4], _params[5], _params[6], _params[7]);
+	T* obj = (T*)this->_params[0];
+	this->_retStorage = (obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5], this->_params[6], this->_params[7]);
 }
 END_INVOKER1;
 
@@ -97,8 +97,8 @@ template <class Ret, class T, class T1, class T2, class T3, class T4, class T5, 
 BEGIN_INVOKER1(ThisInvoker, Ret, T, T1, T2, T3, T4, T5, T6, T7, T8)
 inline void call() {
 	typedef Ret(T::*MemberFunc)(void*, void*, void*, void*, void*, void*, void*, void*);
-	T* obj = (T*)_params[0];
-	_retStorage = (obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3], _params[4], _params[5], _params[6], _params[7], _params[8]);
+	T* obj = (T*)this->_params[0];
+	this->_retStorage = (obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5], this->_params[6], this->_params[7], this->_params[8]);
 }
 END_INVOKER1;
 
@@ -109,8 +109,8 @@ template <class T>
 BEGIN_INVOKER2(ThisInvoker, T)
 inline void call() {
 	typedef void(T::*MemberFunc)();
-	T* obj = (T*)_params[0];
-	(obj->*(*(MemberFunc*)(&_fx)))();
+	T* obj = (T*)this->_params[0];
+	(obj->*(*(MemberFunc*)(&this->_fx)))();
 }
 END_INVOKER2;
 
@@ -119,8 +119,8 @@ template <class T, class T1>
 BEGIN_INVOKER2(ThisInvoker, T, T1)
 inline void call() {
 	typedef void(T::*MemberFunc)(void*);
-	T* obj = (T*)_params[0];
-	(obj->*(*(MemberFunc*)(&_fx)))(_params[1]);
+	T* obj = (T*)this->_params[0];
+	(obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1]);
 }
 END_INVOKER2;
 
@@ -129,8 +129,8 @@ template <class T, class T1, class T2>
 BEGIN_INVOKER2(ThisInvoker, T, T1, T2)
 inline void call() {
 	typedef void(T::*MemberFunc)(void*, void*);
-	T* obj = (T*)_params[0];
-	(obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2]);
+	T* obj = (T*)this->_params[0];
+	(obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2]);
 }
 END_INVOKER2;
 
@@ -138,8 +138,8 @@ template <class T, class T1, class T2, class T3>
 BEGIN_INVOKER2(ThisInvoker, T, T1, T2, T3)
 inline void call() {
 	typedef void(T::*MemberFunc)(void*, void*, void*);
-	T* obj = (T*)_params[0];
-	(obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3]);
+	T* obj = (T*)this->_params[0];
+	(obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3]);
 }
 END_INVOKER2;
 
@@ -147,8 +147,8 @@ template <class T, class T1, class T2, class T3, class T4>
 BEGIN_INVOKER2(ThisInvoker, T, T1, T2, T3, T4)
 inline void call() {
 	typedef void(T::*MemberFunc)(void*, void*, void*, void*);
-	T* obj = (T*)_params[0];
-	(obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3], _params[4]);
+	T* obj = (T*)this->_params[0];
+	(obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3], this->_params[4]);
 }
 END_INVOKER2;
 
@@ -156,8 +156,8 @@ template <class T, class T1, class T2, class T3, class T4, class T5>
 BEGIN_INVOKER2(ThisInvoker, T, T1, T2, T3, T4, T5)
 inline void call() {
 	typedef void(T::*MemberFunc)(void*, void*, void*, void*, void*);
-	T* obj = (T*)_params[0];
-	(obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3], _params[4], _params[5]);
+	T* obj = (T*)this->_params[0];
+	(obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5]);
 }
 END_INVOKER2;
 
@@ -165,8 +165,8 @@ template <class T, class T1, class T2, class T3, class T4, class T5, class T6>
 BEGIN_INVOKER2(ThisInvoker, T, T1, T2, T3, T4, T5, T6)
 inline void call() {
 	typedef void(T::*MemberFunc)(void*, void*, void*, void*, void*, void*);
-	T* obj = (T*)_params[0];
-	(obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3], _params[4], _params[5], _params[6]);
+	T* obj = (T*)this->_params[0];
+	(obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5], this->_params[6]);
 }
 END_INVOKER2;
 
@@ -174,8 +174,8 @@ template <class T, class T1, class T2, class T3, class T4, class T5, class T6, c
 BEGIN_INVOKER2(ThisInvoker, T, T1, T2, T3, T4, T5, T6, T7)
 inline void call() {
 	typedef void(T::*MemberFunc)(void*, void*, void*, void*, void*, void*, void*);
-	T* obj = (T*)_params[0];
-	(obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3], _params[4], _params[5], _params[6], _params[7]);
+	T* obj = (T*)this->_params[0];
+	(obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5], this->_params[6], this->_params[7]);
 }
 END_INVOKER2;
 
@@ -183,8 +183,8 @@ template <class T, class T1, class T2, class T3, class T4, class T5, class T6, c
 BEGIN_INVOKER2(ThisInvoker, T, T1, T2, T3, T4, T5, T6, T7, T8)
 inline void call() {
 	typedef void(T::*MemberFunc)(void*, void*, void*, void*, void*, void*, void*, void*);
-	T* obj = (T*)_params[0];
-	(obj->*(*(MemberFunc*)(&_fx)))(_params[1], _params[2], _params[3], _params[4], _params[5], _params[6], _params[7], _params[8]);
+	T* obj = (T*)this->_params[0];
+	(obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5], this->_params[6], this->_params[7], this->_params[8]);
 }
 END_INVOKER2;
 
@@ -211,7 +211,7 @@ public:
 	}
 
 	Ret operator()(Args...args) {
-		return ((T*)mParams[0])->*(*((FuncType*)&mFx)) (args...);
+		return ((T*)this->mParams[0])->*(*((FuncType*)&this->mFx)) (args...);
 	}
 
 	inline void call() override {
@@ -259,9 +259,9 @@ public:
 2. <return type> __cdecl function(..., float, ...)
 */
 template <class Ret, class ...Args>
-class Function : public MFunction< Ret, Function<Ret, Args...>, const Args& ...> {
+class Function : public MFunction<Ret, Function<Ret, Args...>, const Args& ...> {
 public:
-	typedef Ret(_cdecl *FuncType)(Args...);
+	typedef Ret(*FuncType)(Args...);
 private:
 	FuncType _fx;
 	inline Ret forward(const Args&... args) {
@@ -270,7 +270,7 @@ private:
 public:
 	Function(FuncType fx) :
 		_fx(fx),
-		MFunction(this, &Function::forward) {
+		MFunction<Ret, Function<Ret, Args...>, const Args& ...>(this, &Function::forward) {
 	}
 };
 
@@ -293,12 +293,12 @@ public:
 	MFunctionW(T* obj, FuncType fx) :
 		_fx(fx),
 		_obj(obj),
-		MFunction(this, &MFunctionW::forward) {
+		MFunction< Ret, MFunctionW<Ret, T, Args...>, const Args& ...>(this, &MFunctionW::forward) {
 	}
 
 	virtual DFunction* clone() override {
 		MFunctionW* newInstance = new MFunctionW(_obj, _fx);
-		newInstance->invoker = invoker;
+		newInstance->invoker = this->invoker;
 		return newInstance;
 	}
 };

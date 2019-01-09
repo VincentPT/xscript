@@ -13,6 +13,7 @@
 #include "ExpresionParser.h"
 #include <functional>
 #include <array>
+#include <algorithm>
 #include "expresion_defs.h"
 #include "expressionunit.h"
 #include <stack>
@@ -21,7 +22,7 @@
 #include "Expression.h"
 #include "FactoryTree.h"
 #include "FunctionFactory.h"
-#include "..\Logger\remotelogger.h"
+#include "../Logger/remotelogger.h"
 #include "Utils.h"
 #include "BasicType.h"
 #include "StructClass.h"
@@ -197,7 +198,7 @@ namespace ffscript {
 			(*it)->setIndex(idx);
 		}
 	}
-
+/*
 	template <typename T>
 	T* detach(shared_ptr<T>& ptr) {
 		auto sizePtr = sizeof(ptr);
@@ -208,7 +209,7 @@ namespace ffscript {
 		internalRef->_Incref();
 		return ptr.get();
 	}
-
+*/
 	const WCHAR* ExpressionParser::readLambdaExression(const WCHAR* begin, const WCHAR* end, EExpressionResult& eResult, FunctionRef& lambdaExpression) {	
 
 		auto compiler = getCompiler();
@@ -1641,10 +1642,11 @@ namespace ffscript {
 		inputList.push_back(ExpressionEntry(pOutputStack, pOperatorStack));
 
 		DBG_INFO(List_Enumerate(&expUnitList, printNode));
-
-		for (auto iter = expUnitList.begin(); iter != expUnitList.end() && eResult == E_SUCCESS; iter++)
+		
+		const list<ExpUnitRef>& expUnitListConst = expUnitList;
+		for (auto iter = expUnitListConst.begin(); iter != expUnitListConst.end() && eResult == E_SUCCESS; iter++)
 		{
-			eResult = putAnExpUnit(iter, expUnitList.end(), inputList);
+			eResult = putAnExpUnit(iter, expUnitListConst.end(), inputList);
 		}
 
 		if (eResult != E_SUCCESS) {
@@ -2215,7 +2217,9 @@ namespace ffscript {
 		CandidateCollectionRef unitCandidate;
 		if (ISFUNCTION(unit)) {
 			//linking for functions
-			unitCandidate = completeFunctionTree(scriptCompiler, dynamic_pointer_cast<Function>(unit), eResult);
+			auto functionUnitRef = dynamic_pointer_cast<Function>(unit);
+			unitCandidate = completeFunctionTree(scriptCompiler, functionUnitRef , eResult);
+			unit = functionUnitRef;
 		}
 		else if (EXP_UNIT_ID_INCOMPFUNC == unit->getType()) {
 			auto overLoadingFunction = scriptCompiler->findOverloadingFuncRoot(unit->toString());
@@ -3467,7 +3471,9 @@ namespace ffscript {
 		ExecutableUnitRef& root = pExp->getRoot();
 		EExpressionResult eResult = E_SUCCESS;
 		if (ISFUNCTION(root)) {
-			auto candidateFounds = completeFunctionTree(getCompiler(), dynamic_pointer_cast<Function>(root), eResult);
+			auto unitFunctionRef = dynamic_pointer_cast<Function>(root);
+			auto candidateFounds = completeFunctionTree(getCompiler(), unitFunctionRef, eResult);
+			root = unitFunctionRef;
 			if (eResult == E_SUCCESS && candidateFounds && candidateFounds->size()) {
 				if (candidateFounds->size() > 1) {
 					_scriptCompiler->setErrorText("ambitious call for function '" + root->toString() + "'");

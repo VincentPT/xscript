@@ -1356,7 +1356,7 @@ namespace ffscript {
 			{
 				existingCastingComponent = dynamic_cast<Function*>(existingCastingComponent->getChild(0).get());
 				if (existingCastingComponent == nullptr) {
-					throw std::exception("casting unit is invalid");
+					throw std::runtime_error("casting unit is invalid");
 				}
 				if (existingCastingComponent->getChildCount() == 0) {
 					existingCastingComponent->pushParam(unit);
@@ -1642,7 +1642,7 @@ namespace ffscript {
 					// keep origin source char in new expression unit
 					defaultConstructor->setSourceCharIndex(variableUnit->getSourceCharIndex());
 
-					assigments.emplace_back(make_pair(memberVariable, defaultConstructor));
+					assigments.emplace_back(make_pair(memberVariable, (ExecutableUnitRef)defaultConstructor));
 				}
 				else {
 					// element has constructor but don't have default constructor
@@ -1710,7 +1710,7 @@ namespace ffscript {
 					// keep origin source char in new expression unit
 					defaultConstructor->setSourceCharIndex(variableUnit->getSourceCharIndex());
 
-					assigments.emplace_back(make_pair(memberVariable, defaultConstructor));
+					assigments.emplace_back(make_pair(memberVariable, (ExecutableUnitRef)defaultConstructor));
 					elmOffset += arrayInfo->elmSize;
 				}
 			}
@@ -1758,7 +1758,7 @@ namespace ffscript {
 			auto variableRefUnit = variableUnit;
 			if (!param1Type.isSemiRefType()) {
 				if (!convertToRef(variableRefUnit)) {
-					throw exception("making ref failed");
+					throw runtime_error("making ref failed");
 				}
 				variableRefUnit->setReturnType(param1Ref);
 			}
@@ -1896,7 +1896,7 @@ namespace ffscript {
 					// keep origin source char in new expression unit
 					defaultConstructor->setSourceCharIndex(variableUnit->getSourceCharIndex());
 
-					assigments.emplace_back(make_pair(memberVariable, defaultConstructor));
+					assigments.emplace_back(make_pair(memberVariable, (ExecutableUnitRef)defaultConstructor));
 				}
 				else {
 					// element has constructor but don't have default constructor
@@ -1964,7 +1964,7 @@ namespace ffscript {
 					// keep origin source char in new expression unit
 					defaultConstructor->setSourceCharIndex(variableUnit->getSourceCharIndex());
 
-					assigments.emplace_back(make_pair(memberVariable, defaultConstructor));
+					assigments.emplace_back(make_pair(memberVariable, (ExecutableUnitRef)defaultConstructor));
 					elmOffset += arrayInfo->elmSize;
 				}
 			}
@@ -2732,7 +2732,7 @@ namespace ffscript {
 	const wchar_t* ScriptCompiler::formatMessage(const wchar_t* format, ...) {
 		va_list args;
 		va_start(args, format);
-		_vsnwprintf(_messageBuffer.data(), _messageBuffer.size(), format, args);
+		vswprintf(_messageBuffer.data(), _messageBuffer.size(), format, args);
 		va_end(args);
 
 		return _messageBuffer.data();
@@ -2743,7 +2743,7 @@ namespace ffscript {
 
 		va_list args;
 		va_start(args, format);
-		_vsnprintf(buffer.data(), buffer.size(), format, args);
+		vsnprintf(buffer.data(), buffer.size(), format, args);
 		va_end(args);
 
 		_messageBuffer.assign(buffer.begin(), buffer.end());

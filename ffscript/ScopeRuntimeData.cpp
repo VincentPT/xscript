@@ -14,6 +14,7 @@
 **********************************************************************/
 
 #include "ScopeRuntimeData.h"
+#include <stdlib.h>
 
 namespace ffscript {
 

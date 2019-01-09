@@ -338,7 +338,7 @@ public:
 	MFunction2W(T* obj, FuncType fx) :
 		_fx(fx),
 		_obj(obj),
-		MFunction2(this, &MFunction2W::forward) {
+		MFunction2< Ret, MFunction2W<Ret, T, Args...>, const Args& ...>(this, &MFunction2W::forward) {
 	}
 
 	virtual DFunction2* clone() override {
