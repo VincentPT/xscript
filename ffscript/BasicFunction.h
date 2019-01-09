@@ -12,7 +12,6 @@
 
 #pragma once
 #include "ScriptCompiler.h"
-#include "FunctionRegisterHelper.h"
 #include "FunctionFactory.h"
 
 namespace ffscript {
@@ -55,3 +54,5 @@ namespace ffscript {
 	void importBasicfunction(FunctionRegisterHelper& functionLib);
 	void importCoreFunctions(FunctionRegisterHelper& functionLib);
 }
+
+#include "FunctionRegisterHelper.h"

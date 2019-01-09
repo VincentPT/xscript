@@ -333,9 +333,9 @@ namespace ffscript {
 		}
 	};
 
-	template<class T>
-	void setConstantMap(ScriptCompiler* compiler, const std::string& constantName, const std::string& constantType, const T& val) {
-		auto constantFactoryRef = std::make_shared<ContantFactory<T>>(val, constantType);
-		compiler->setConstantMap(constantName, constantFactoryRef);
-	}
+	//template<class T>
+	//void setConstantMap(ScriptCompiler* compiler, const std::string& constantName, const std::string& constantType, const T& val) {
+	//	auto constantFactoryRef = std::make_shared<ContantFactory<T>>(val, constantType);
+	//	compiler->setConstantMap(constantName, constantFactoryRef);
+	//}
 }
