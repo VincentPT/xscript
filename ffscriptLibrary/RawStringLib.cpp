@@ -173,7 +173,7 @@ namespace ffscript {
 
 	RawString ToString(int val) {
 		RawChar buffer[12];
-		swprintf(buffer, L"%d", val);
+		swprintf(buffer, sizeof(buffer)/sizeof(buffer[0]), L"%d", val);
 
 		RawString rawString = allocRawString((int)wcslen(buffer));
 		memcpy(rawString.elms, buffer, (rawString.size + 1) * sizeof(RawChar));
@@ -183,7 +183,7 @@ namespace ffscript {
 
 	RawString ToString(long long val) {
 		RawChar buffer[64];
-		swprintf(buffer, L"%lld", val);
+		swprintf(buffer, sizeof(buffer)/sizeof(buffer[0]), L"%lld", val);
 
 		RawString rawString = allocRawString((int)wcslen(buffer));
 		memcpy(rawString.elms, buffer, (rawString.size + 1) * sizeof(RawChar));
@@ -193,7 +193,7 @@ namespace ffscript {
 
 	RawString ToString(float val) {
 		RawChar buffer[64];
-		swprintf(buffer, L"%f", val);
+		swprintf(buffer, sizeof(buffer)/sizeof(buffer[0]), L"%f", val);
 
 		RawString rawString = allocRawString((int)wcslen(buffer));
 		memcpy(rawString.elms, buffer, (rawString.size + 1) * sizeof(RawChar));
@@ -203,7 +203,7 @@ namespace ffscript {
 
 	RawString ToString(double val) {
 		RawChar buffer[64];
-		swprintf(buffer, L"%f", val);
+		swprintf(buffer, sizeof(buffer)/sizeof(buffer[0]), L"%f", val);
 
 		RawString rawString = allocRawString((int)wcslen(buffer));
 		memcpy(rawString.elms, buffer, (rawString.size + 1) * sizeof(RawChar));

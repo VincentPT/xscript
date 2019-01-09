@@ -25,11 +25,6 @@ using namespace ffscript;
 
 namespace ffscriptUT
 {
-	typedef void (__stdcall *STDFunc)(char*, float);
-
-	void __stdcall stdfunc(char* a, float b) {
-	}
-
 	class Internal {
 	public:
 		void foo() {
@@ -173,12 +168,6 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(true);
 		}
 
-		FF_TEST_FUNCTION(ffscriptUTTest, testSTDFunction)
-		{
-			STDFunc func = stdfunc;
-			func(nullptr, 1.0f);
-			FF_EXPECT_TRUE(true);
-		}
 
 		FF_TEST_FUNCTION(ffscriptUTTest, testTemplateSpecialization1)
 		{

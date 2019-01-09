@@ -19,7 +19,7 @@
 #include "BasicType.h"
 #include "BasicFunction.h"
 
-#include <math.h>
+#include <cmath>
 
 namespace ffscript {
 #define REGIST_MATH_FUNCTION1(helper, nativeFunc, scriptFunc, returnType, ...) \

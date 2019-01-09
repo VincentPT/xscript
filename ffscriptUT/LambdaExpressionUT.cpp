@@ -78,7 +78,7 @@ namespace ffscriptUT
 			// at this point, nobody owns raw, can return it
 			return raw;
 		}
-
+/*
 		template <typename T>
 		T* detach(shared_ptr<T>& ptr) {
 			auto sizePtr = sizeof(ptr);
@@ -101,7 +101,7 @@ namespace ffscriptUT
 
 			delete pVal;
 		}
-
+*/
 		FF_TEST_FUNCTION(LambdaExpression, CompileLambdaUT1)
 		{
 			CompilerSuite compiler;

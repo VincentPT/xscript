@@ -12,9 +12,9 @@
 **********************************************************************/
 
 #pragma once
-template <int size>
 #pragma pack(push)
 #pragma pack(1)
+template <int size>
 struct MemoryBlock
 {
 	char data[size];

@@ -25,22 +25,6 @@
 using namespace std;
 using namespace ffscript;
 
-
-#define MAKE_WSTRING(a) L#a
-#define MAKE_WSTRING_X(a) MAKE_WSTRING(a)
-
-#define BITWISEANDINTEGERS1 1 & 2
-#define BITWISEANDINTEGERS2 1 & 0
-#define BITWISEORINTEGERS1 1 | 2
-#define BITWISEORINTEGERS2 1 | 0
-#define BITWISEXORINTEGERS1 7 ^ 10
-#define BITWISEXORINTEGERS2 0 ^ 7
-#define BITWISENOTINTEGERS1 ~10
-#define BITWISENOTINTEGERS2 ~0
-#define BITWISESHIFTLEFTINTEGERS 4 << 3
-#define BITWISESHIFTRIGHTINTEGERS 12234 >> 5
-#define BITWISECOMBINEINTEGERS 10 & 11 | 15 ^ ~19
-
 class BitwiseOperatorsUT : public ::testing::Test {
 protected:
 	ScriptCompiler scriptCompiler;
@@ -67,7 +51,7 @@ protected:
 
 TEST_F(BitwiseOperatorsUT, BitwiseAndIntegers1)
 {
-	wstring exp = MAKE_WSTRING_X(BITWISEANDINTEGERS1);
+	wstring exp = L"1 & 2";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
@@ -79,12 +63,12 @@ TEST_F(BitwiseOperatorsUT, BitwiseAndIntegers1)
 	EXPECT_TRUE(result != nullptr) << (L"run expression '" + exp + L"' failed!").c_str();
 
 	PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
-	EXPECT_TRUE(*result == (BITWISEANDINTEGERS1)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+	EXPECT_TRUE(*result == (1 & 2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }
 
 TEST_F(BitwiseOperatorsUT, BitwiseAndIntegers2)
 {
-	wstring exp = MAKE_WSTRING_X(BITWISEANDINTEGERS2);
+	wstring exp = L"1 & 0";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
@@ -95,12 +79,12 @@ TEST_F(BitwiseOperatorsUT, BitwiseAndIntegers2)
 
 	EXPECT_TRUE(result != nullptr) << (L"run expression '" + exp + L"' failed!").c_str();
 	PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
-	EXPECT_TRUE(*result == (BITWISEANDINTEGERS2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+	EXPECT_TRUE(*result == (1 & 0)) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }
 
 TEST_F(BitwiseOperatorsUT, BitwiseOrIntegers1)
 {
-	wstring exp = MAKE_WSTRING_X(BITWISEORINTEGERS1);
+	wstring exp = L"1 | 2";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
@@ -112,12 +96,12 @@ TEST_F(BitwiseOperatorsUT, BitwiseOrIntegers1)
 	EXPECT_TRUE(result != nullptr) << (L"run expression '" + exp + L"' failed!").c_str();
 
 	PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
-	EXPECT_TRUE(*result == (BITWISEORINTEGERS1)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+	EXPECT_TRUE(*result == (1 | 2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }
 
 TEST_F(BitwiseOperatorsUT, BitwiseOrIntegers2)
 {
-	wstring exp = MAKE_WSTRING_X(BITWISEORINTEGERS2);
+	wstring exp = L"1 | 0";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
@@ -128,12 +112,12 @@ TEST_F(BitwiseOperatorsUT, BitwiseOrIntegers2)
 
 	EXPECT_TRUE(result != nullptr) << (L"run expression '" + exp + L"' failed!").c_str();
 	PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
-	EXPECT_TRUE(*result == (BITWISEORINTEGERS2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+	EXPECT_TRUE(*result == (1 | 0)) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }
 
 TEST_F(BitwiseOperatorsUT, BitwiseXorIntegers1)
 {
-	wstring exp = MAKE_WSTRING_X(BITWISEXORINTEGERS1);
+	wstring exp = L"7 ^ 10";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
@@ -145,12 +129,12 @@ TEST_F(BitwiseOperatorsUT, BitwiseXorIntegers1)
 	EXPECT_TRUE(result != nullptr) << (L"run expression '" + exp + L"' failed!").c_str();
 
 	PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
-	EXPECT_TRUE(*result == (BITWISEXORINTEGERS1)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+	EXPECT_TRUE(*result == (7 ^ 10)) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }
 
 TEST_F(BitwiseOperatorsUT, BitwiseXorIntegers2)
 {
-	wstring exp = MAKE_WSTRING_X(BITWISEXORINTEGERS2);
+	wstring exp = L"0 ^ ";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
@@ -161,12 +145,12 @@ TEST_F(BitwiseOperatorsUT, BitwiseXorIntegers2)
 
 	EXPECT_TRUE(result != nullptr) << (L"run expression '" + exp + L"' failed!").c_str();
 	PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
-	EXPECT_TRUE(*result == (BITWISEXORINTEGERS2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+	EXPECT_TRUE(*result == (0 ^ 7)) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }
 
 TEST_F(BitwiseOperatorsUT, BitwiseShiftLeftIntegers)
 {
-	wstring exp = MAKE_WSTRING_X(BITWISESHIFTLEFTINTEGERS);
+	wstring exp = L"4 << 3";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
@@ -177,12 +161,12 @@ TEST_F(BitwiseOperatorsUT, BitwiseShiftLeftIntegers)
 
 	EXPECT_TRUE(result != nullptr) << (L"run expression '" + exp + L"' failed!").c_str();
 	PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
-	EXPECT_TRUE(*result == (BITWISESHIFTLEFTINTEGERS)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+	EXPECT_TRUE(*result == (4 << 3)) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }
 
 TEST_F(BitwiseOperatorsUT, BitwiseShiftRightIntegers)
 {
-	wstring exp = MAKE_WSTRING_X(BITWISESHIFTRIGHTINTEGERS);
+	wstring exp = L"12234 >> 5";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
@@ -193,12 +177,12 @@ TEST_F(BitwiseOperatorsUT, BitwiseShiftRightIntegers)
 
 	EXPECT_TRUE(result != nullptr) << (L"run expression '" + exp + L"' failed!").c_str();
 	PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
-	EXPECT_TRUE(*result == (BITWISESHIFTRIGHTINTEGERS)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+	EXPECT_TRUE(*result == (12234 >> 5)) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }
 
 TEST_F(BitwiseOperatorsUT, BitwiseNotIntegers1)
 {
-	wstring exp = MAKE_WSTRING_X(BITWISENOTINTEGERS1);
+	wstring exp = L"~10";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
@@ -209,12 +193,12 @@ TEST_F(BitwiseOperatorsUT, BitwiseNotIntegers1)
 
 	EXPECT_TRUE(result != nullptr) << (L"run expression '" + exp + L"' failed!").c_str();
 	PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
-	EXPECT_TRUE(*result == (BITWISENOTINTEGERS1)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+	EXPECT_TRUE(*result == (~10)) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }
 
 TEST_F(BitwiseOperatorsUT, BitwiseNotIntegers2)
 {
-	wstring exp = MAKE_WSTRING_X(BITWISENOTINTEGERS2);
+	wstring exp = L"~0";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
@@ -225,12 +209,12 @@ TEST_F(BitwiseOperatorsUT, BitwiseNotIntegers2)
 
 	EXPECT_TRUE(result != nullptr) << (L"run expression '" + exp + L"' failed!").c_str();
 	PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
-	EXPECT_TRUE(*result == (BITWISENOTINTEGERS2)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+	EXPECT_TRUE(*result == (~0)) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }
 
 TEST_F(BitwiseOperatorsUT, BitwiseCombineIntegers)
 {
-	wstring exp = MAKE_WSTRING_X(BITWISECOMBINEINTEGERS);
+	wstring exp = L"10 & 11 | 15 ^ ~19";
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	EXPECT_TRUE(pExcutor != nullptr) << (L"compile '" + exp + L"' failed!").c_str();
 
@@ -241,7 +225,7 @@ TEST_F(BitwiseOperatorsUT, BitwiseCombineIntegers)
 
 	EXPECT_TRUE(result != nullptr) << (L"run expression '" + exp + L"' failed!").c_str();
 	PRINT_TEST_MESSAGE((exp + L" = " + std::to_wstring(*result)).c_str());
-	EXPECT_TRUE(*result == (BITWISECOMBINEINTEGERS)) << (L"result of expression '" + exp + L"' is not correct").c_str();
+	EXPECT_TRUE(*result == (10 & 11 | 15 ^ ~19)) << (L"result of expression '" + exp + L"' is not correct").c_str();
 }
 
 TEST_F(BitwiseOperatorsUT, BitwiseAndLongs)
@@ -261,7 +245,7 @@ TEST_F(BitwiseOperatorsUT, BitwiseAndLongs)
 	a = 100;
 	b = 123;
 
-	wstring exp = MAKE_WSTRING(a & b);
+	wstring exp = L"a & b";
 	scriptCompiler.pushScope(&globalScope);
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	scriptCompiler.popScope();
@@ -294,7 +278,7 @@ TEST_F(BitwiseOperatorsUT, BitwiseOrLongs)
 	a = 100;
 	b = 123;
 
-	wstring exp = MAKE_WSTRING(a | b);
+	wstring exp = L"a | b";
 	scriptCompiler.pushScope(&globalScope);
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	scriptCompiler.popScope();
@@ -327,7 +311,7 @@ TEST_F(BitwiseOperatorsUT, BitwiseXorLongs)
 	a = 100;
 	b = 123;
 
-	wstring exp = MAKE_WSTRING(a ^ b);
+	wstring exp = L"a ^ b";
 	scriptCompiler.pushScope(&globalScope);
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	scriptCompiler.popScope();
@@ -355,7 +339,7 @@ TEST_F(BitwiseOperatorsUT, BitwiseShitLeftLongs)
 	__int64& a = *getVaribleRef<__int64>(*pA);
 	a = 100;
 
-	wstring exp = MAKE_WSTRING(a << 2);
+	wstring exp = L"a << 2";
 	scriptCompiler.pushScope(&globalScope);
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	scriptCompiler.popScope();
@@ -388,7 +372,7 @@ TEST_F(BitwiseOperatorsUT, BitwiseShitRightLongs)
 	a = 100;
 	b = 2;
 
-	wstring exp = MAKE_WSTRING(a >> b);
+	wstring exp = L"a >> b";
 	scriptCompiler.pushScope(&globalScope);
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	scriptCompiler.popScope();
@@ -417,7 +401,7 @@ TEST_F(BitwiseOperatorsUT, BitwiseNotLongs)
 
 	a = 100;
 
-	wstring exp = MAKE_WSTRING( ~a);
+	wstring exp = L"~a";
 	scriptCompiler.pushScope(&globalScope);
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	scriptCompiler.popScope();
@@ -462,7 +446,7 @@ TEST_F(BitwiseOperatorsUT, BitwiseCombineLongs)
 	d = 245123123123;
 	e = 123;
 
-	wstring exp = MAKE_WSTRING(a ^ b | c ^ ~d & e << 2);
+	wstring exp = L"a ^ b | c ^ ~d & e << 2";
 	scriptCompiler.pushScope(&globalScope);
 	ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 	scriptCompiler.popScope();

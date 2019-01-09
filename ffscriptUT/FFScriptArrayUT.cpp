@@ -164,23 +164,23 @@ namespace ffscriptUT
 
 		FF_TEST_FUNCTION(FFScriptArrayTest, TestPosibilityRunInScript3)
 		{
-			FFScriptArray<__int64> a(5);
+			FFScriptArray<long long> a(5);
 			a[0] = 0;
 			a[1] = 2;
 			a[2] = 1;
 			a[3] = 3;
 			a[4] = 4;
 
-			void* pMethod = MFunction2<void, FFScriptArray<__int64>>::getMethodAddress(&FFScriptArray<__int64>::sort);
+			void* pMethod = MFunction2<void, FFScriptArray<long long>>::getMethodAddress(&FFScriptArray<long long>::sort);
 			MFunction2<void, FFScriptArray<int>> mf((FFScriptArray<int>*)&a, pMethod);
 
 			mf.call(nullptr, nullptr);
 
-			FF_EXPECT_TRUE((__int64)0 == a[0], L"MFunction2Ref invoke operator[] incorrectly");
-			FF_EXPECT_TRUE((__int64)1 == a[1], L"MFunction2Ref invoke operator[] incorrectly");
-			FF_EXPECT_TRUE((__int64)2 == a[2], L"MFunction2Ref invoke operator[] incorrectly");
-			FF_EXPECT_TRUE((__int64)3 == a[3], L"MFunction2Ref invoke operator[] incorrectly");
-			FF_EXPECT_TRUE((__int64)4 == a[4], L"MFunction2Ref invoke operator[] incorrectly");
+			FF_EXPECT_TRUE((long long)0 == a[0], L"MFunction2Ref invoke operator[] incorrectly");
+			FF_EXPECT_TRUE((long long)1 == a[1], L"MFunction2Ref invoke operator[] incorrectly");
+			FF_EXPECT_TRUE((long long)2 == a[2], L"MFunction2Ref invoke operator[] incorrectly");
+			FF_EXPECT_TRUE((long long)3 == a[3], L"MFunction2Ref invoke operator[] incorrectly");
+			FF_EXPECT_TRUE((long long)4 == a[4], L"MFunction2Ref invoke operator[] incorrectly");
 		}
 	};
 }

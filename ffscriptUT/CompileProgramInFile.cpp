@@ -39,7 +39,6 @@ using namespace ffscript;
 #include "Executor.h"
 #include "Utils.h"
 #include "BasicFunctionFactory.hpp"
-#include <windows.h>
 
 namespace ffscriptUT
 {
@@ -56,10 +55,10 @@ namespace ffscriptUT
 			typeManager->registerBasicTypes(&scriptCompiler);
 			typeManager->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 			importBasicfunction(funcLibHelper);
-			fileContent = readFile(L"testfunctions.hpp");
+			fileContent = readFile("testfunctions.hpp");
 		}
 
-		static wstring readFile(const wstring& fileName) {
+		static wstring readFile(const string& fileName) {
 			std::wstringstream wsStream;
 			std::wifstream iFileStream;
 			wchar_t buffer[512];;

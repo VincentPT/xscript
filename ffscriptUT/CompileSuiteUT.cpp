@@ -717,7 +717,7 @@ TEST(CompileSuite, CreateSimpleString1)
 {
 	GlobalScopeRef rootScope;
 	int functionId;
-	char* functionName = "createSampleString";
+	const char* functionName = "createSampleString";
 	auto program = loadProgram(rootScope, "CreateSimpleString1.c955", functionName, "", functionId);
 	auto scriptCompiler = rootScope->getCompiler();
 
@@ -736,7 +736,7 @@ TEST(CompileSuite, AddString1)
 {
 	GlobalScopeRef rootScope;
 	int functionId;
-	char* functionName = "addString1";
+	const char* functionName = "addString1";
 	auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
 	auto scriptCompiler = rootScope->getCompiler();
 
@@ -755,7 +755,7 @@ TEST(CompileSuite, ConvertToString1)
 {
 	GlobalScopeRef rootScope;
 	int functionId;
-	char* functionName = "convertToString1";
+	const char* functionName = "convertToString1";
 	auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
 	auto scriptCompiler = rootScope->getCompiler();
 
@@ -774,7 +774,7 @@ TEST(CompileSuite, ConvertToString2)
 {
 	GlobalScopeRef rootScope;
 	int functionId;
-	char* functionName = "convertToString2";
+	const char* functionName = "convertToString2";
 	auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
 	auto scriptCompiler = rootScope->getCompiler();
 
@@ -793,7 +793,7 @@ TEST(CompileSuite, ConvertToString3)
 {
 	GlobalScopeRef rootScope;
 	int functionId;
-	char* functionName = "convertToString3";
+	const char* functionName = "convertToString3";
 	auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
 	auto scriptCompiler = rootScope->getCompiler();
 
@@ -812,7 +812,7 @@ TEST(CompileSuite, ConvertToString4)
 {
 	GlobalScopeRef rootScope;
 	int functionId;
-	char* functionName = "convertToString4";
+	const char* functionName = "convertToString4";
 	auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
 	auto scriptCompiler = rootScope->getCompiler();
 
@@ -831,7 +831,7 @@ TEST(CompileSuite, ConvertToString5)
 {
 	GlobalScopeRef rootScope;
 	int functionId;
-	char* functionName = "convertToString5";
+	const char* functionName = "convertToString5";
 	auto program = loadProgram(rootScope, "StringFunctions.c955", functionName, "", functionId);
 	auto scriptCompiler = rootScope->getCompiler();
 

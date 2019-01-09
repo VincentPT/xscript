@@ -333,13 +333,13 @@ public:
 	MFunction2WRef(T* obj, FuncType fx) :
 		_fx(fx),
 		_obj(obj),
-		MFunction2Ref(this, &MFunction2WRef::forward) {
+		MFunction2Ref< Ret, MFunction2WRef<Ret, T, Args...>, const Args& ...>(this, &MFunction2WRef::forward) {
 	}
 
 	virtual DFunction2* clone() override {
 		MFunction2WRef* newInstance = new MFunction2WRef(_obj, _fx);
-		newInstance->mFixedParamCount = mFixedParamCount;
-		std::memcpy(newInstance->mParams, mParams, sizeof(mParams));
+		newInstance->mFixedParamCount = this->mFixedParamCount;
+		std::memcpy(newInstance->mParams, this->mParams, sizeof(this->mParams));
 		return newInstance;
 	}
 };

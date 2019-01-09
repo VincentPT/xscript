@@ -27,22 +27,6 @@
 using namespace std;
 using namespace ffscript;
 
-
-#define MAKE_WSTRING(a) L#a
-#define MAKE_WSTRING_X(a) MAKE_WSTRING(a)
-
-#define BITWISEANDINTEGERS1 1 & 2
-#define BITWISEANDINTEGERS2 1 & 0
-#define BITWISEORINTEGERS1 1 | 2
-#define BITWISEORINTEGERS2 1 | 0
-#define BITWISEXORINTEGERS1 7 ^ 10
-#define BITWISEXORINTEGERS2 0 ^ 7
-#define BITWISENOTINTEGERS1 ~10
-#define BITWISENOTINTEGERS2 ~0
-#define BITWISESHIFTLEFTINTEGERS 4 << 3
-#define BITWISESHIFTRIGHTINTEGERS 12234 >> 5
-#define BITWISECOMBINEINTEGERS 10 & 11 | 15 ^ ~19
-
 namespace ffscriptUT
 {
 	FF_TEST_CLASS(PostFixPrefixOperators)
@@ -79,7 +63,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(a++);
+			wstring exp = L"a++";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -109,7 +93,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(a++ * 2);
+			wstring exp = L"a++ * 2";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -139,7 +123,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(a++ + a);
+			wstring exp = L"a++ + a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -168,7 +152,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(a + (++ a));
+			wstring exp = L"a + (++ a)";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -197,7 +181,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(3 + a++);
+			wstring exp = L"3 + a++";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -227,7 +211,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(++a);
+			wstring exp = L"++a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -257,7 +241,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(++a * 2);
+			wstring exp = L"++a * 2";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -287,7 +271,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(++a + a);
+			wstring exp = L"++a + a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -317,7 +301,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(3 - ++a);
+			wstring exp = L"3 - ++a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -347,7 +331,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(a-- + a);
+			wstring exp = L"a-- + a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -376,7 +360,7 @@ namespace ffscriptUT
 			float& a = *getVaribleRef<float>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(a++);
+			wstring exp = L"a++";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -405,7 +389,7 @@ namespace ffscriptUT
 			float& a = *getVaribleRef<float>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(a--);
+			wstring exp = L"a--";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -434,7 +418,7 @@ namespace ffscriptUT
 			float& a = *getVaribleRef<float>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(++a);
+			wstring exp = L"++a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -463,7 +447,7 @@ namespace ffscriptUT
 			float& a = *getVaribleRef<float>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(--a);
+			wstring exp = L"--a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -492,7 +476,7 @@ namespace ffscriptUT
 			double& a = *getVaribleRef<double>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(a++);
+			wstring exp = L"a++";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -521,7 +505,7 @@ namespace ffscriptUT
 			double& a = *getVaribleRef<double>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(a--);
+			wstring exp = L"a--";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -550,7 +534,7 @@ namespace ffscriptUT
 			double& a = *getVaribleRef<double>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(++a);
+			wstring exp = L"++a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -579,7 +563,7 @@ namespace ffscriptUT
 			double& a = *getVaribleRef<double>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(--a);
+			wstring exp = L"--a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -608,7 +592,7 @@ namespace ffscriptUT
 			__int64& a = *getVaribleRef<__int64>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(a++);
+			wstring exp = L"a++";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -637,7 +621,7 @@ namespace ffscriptUT
 			__int64& a = *getVaribleRef<__int64>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(a--);
+			wstring exp = L"a--";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -666,7 +650,7 @@ namespace ffscriptUT
 			__int64& a = *getVaribleRef<__int64>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(++a);
+			wstring exp = L"++a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -695,7 +679,7 @@ namespace ffscriptUT
 			__int64& a = *getVaribleRef<__int64>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(--a);
+			wstring exp = L"--a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -789,7 +773,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(++a + a);
+			wstring exp = L"++a + a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();
@@ -818,7 +802,7 @@ namespace ffscriptUT
 			int& a = *getVaribleRef<int>(*pA);
 			a = 0;
 
-			wstring exp = MAKE_WSTRING(--a + a);
+			wstring exp = L"--a + a";
 			scriptCompiler.pushScope(&globalScope);
 			ExpUnitExecutor* pExcutor = compileExpression(&scriptCompiler, exp);
 			scriptCompiler.popScope();

@@ -135,8 +135,8 @@ namespace ffscriptUT
 		template <typename T>
 		void registerConstructor(T f, int type) {
 			ScriptType stype(type, scriptCompiler->getType(type));
-
-			DFunction2* initFunction = new CdeclFunction2<void, void*>(f);
+			typedef void (*F)(void*);
+			DFunction2* initFunction = new CdeclFunction2<void, void*>((F)f);
 			int functionId = scriptCompiler->registFunction("constructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -148,7 +148,8 @@ namespace ffscriptUT
 		void registerDestructor(T f, int type) {
 			ScriptType stype(type, scriptCompiler->getType(type));
 
-			DFunction2* initFunction = new CdeclFunction2<void, void*>(f);
+			typedef void (*F)(void*);
+			DFunction2* initFunction = new CdeclFunction2<void, void*>((F)f);
 			int functionId = scriptCompiler->registFunction("destructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -307,8 +308,8 @@ namespace ffscriptUT
 			structInfo->addMember(typeDouble, "b");
 			int structType = scriptCompiler->registStruct(structInfo);
 
-			registerConstructor(&DummyStructConstructor, structType);
-			registerDestructor(&DummyStructDestructor, structType);
+			registerConstructor(DummyStructConstructor, structType);
+			registerDestructor(DummyStructDestructor, structType);
 
 			const wchar_t scriptCode[] =
 				L"DummyStruct createDummy() {" /*when this function run, default constructor will be run*/
