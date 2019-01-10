@@ -213,6 +213,6 @@ public:
 };
 
 template <class Ret, class ...Args>
-inline Ret cdeclForward(Ret function(Args...),const Args&... args) {
+inline Ret funcForward(Ret function(Args...),const Args&... args) {
 	return function(args...);
 }

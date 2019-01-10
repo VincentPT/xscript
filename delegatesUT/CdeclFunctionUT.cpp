@@ -1,6 +1,6 @@
 /******************************************************************
 * File:        CdeclFunctionUT.cpp
-* Description: Test cases invoking cdecl functions using FunctionDelegate,
+* Description: Test cases invoking functions using FunctionDelegate,
 *              CdeclFunction2, CdeclFunction3 function objects.
 * Author:      Vincent Pham
 *
@@ -14,8 +14,8 @@
 #include <functional>
 #include "../ffscript/function/FunctionDelegate.hpp"
 #include "../ffscript/function/CdeclFunction2.hpp"
-#include "../ffscript/function/CdeclFunction3.hpp"
 #include "../ffscriptUT/TemplateForTest.hpp"
+#include "FunctionsForTest.h"
 #include <math.h>
 
 using namespace std;
@@ -23,263 +23,66 @@ using namespace FT;
 
 namespace ffscriptUT
 {
-	void cdeclFoo() {
-		char sbuff[128];
-		SPRINTF_S(sbuff, __FUNCTION__);
-		PRINT_TEST_MESSAGE(sbuff);
-	}
-
-	void cdeclFoo(const float& a) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "a=%f", a);
-		PRINT_TEST_MESSAGE(sbuff);
-	}
-
-	void cdeclFoo(const float& a, const float& b) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "a=%f, b=%f", a, b);
-		PRINT_TEST_MESSAGE(sbuff);
-	}
-
-	void cdeclFoo(const float& a, const float& b, int c) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d)",__FUNCTION__, a, b, c);
-		PRINT_TEST_MESSAGE(sbuff);
-	}
-
-	void cdeclFoo(const float& a, const float& b, int c, char d) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d, %c)", __FUNCTION__, a, b, c, d);
-		PRINT_TEST_MESSAGE(sbuff);
-	}
-
-	void cdeclFoo(const float& a, const float& b, int c, char d, const double& e) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d, %c, %lf)",__FUNCTION__, a, b, c, d, e);
-		PRINT_TEST_MESSAGE(sbuff);
-	}
-
-	void cdeclFoo(const float& a, const float& b, int c, char d, const double& e, void* f) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d, %c, %lf, %p)",__FUNCTION__, a, b, c, d, e, f);
-		PRINT_TEST_MESSAGE(sbuff);
-	}
-
-	void cdeclFoo(const float& a, const float& b, int c, char d, const double& e, void* f, short g) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d, %c, %lf, %p, %d)",__FUNCTION__, a, b, c, d, e, f, g);
-		PRINT_TEST_MESSAGE(sbuff);
-	}
-
-	void cdeclFoo(const float& a, const float& b, int c, char d, const double& e, void* f, short g, int h) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d, %c, %lf, %p, %d, %d)",__FUNCTION__, a, b, c, d, e, f, g, h);
-		PRINT_TEST_MESSAGE(sbuff);
-	}
-
-	float cdeclFoof() {
-		char sbuff[128];
-		SPRINTF_S(sbuff, __FUNCTION__);
-		PRINT_TEST_MESSAGE(sbuff);
-
-		return 1.0f;
-	}
-
-	float cdeclFoof(const float& a) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "a=%f", a);
-		PRINT_TEST_MESSAGE(sbuff);
-
-		return 1.0f;
-	}
-
-	float cdeclFoof(const float& a, const float& b) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "a=%f, b=%f", a, b);
-		PRINT_TEST_MESSAGE(sbuff);
-
-		return 1.0f;
-	}
-
-	float cdeclFoof(const float& a, const float& b, int c) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d)",__FUNCTION__, a, b, c);
-		PRINT_TEST_MESSAGE(sbuff);
-
-		return 1.0f;
-	}
-
-	float cdeclFoof(const float& a, const float& b, int c, char d) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d, %c)",__FUNCTION__, a, b, c, d);
-		PRINT_TEST_MESSAGE(sbuff);
-
-		return 1.0f;
-	}
-
-	float cdeclFoof(const float& a, const float& b, int c, char d, const double& e) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d, %c, %lf)",__FUNCTION__, a, b, c, d, e);
-		PRINT_TEST_MESSAGE(sbuff);
-
-		return 1.0f;
-	}
-
-	float cdeclFoof(const float& a, const float& b, int c, char d, const double& e, void* f) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d, %c, %lf, %p)",__FUNCTION__, a, b, c, d, e, f);
-		PRINT_TEST_MESSAGE(sbuff);
-
-		return 1.0f;
-	}
-
-	float cdeclFoof(const float& a, const float& b, int c, char d, const double& e, void* f, short g) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d, %c, %lf, %p, %d)",__FUNCTION__, a, b, c, d, e, f, g);
-		PRINT_TEST_MESSAGE(sbuff);
-
-		return 1.0f;
-	}
-
-	float cdeclFoof(const float& a, const float& b, int c, char d, const double& e, void* f, short g, int h) {
-
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%f, %f, %d, %c, %lf, %p, %d, %d)",__FUNCTION__, a, b, c, d, e, f, g, h);
-		PRINT_TEST_MESSAGE(sbuff);
-
-		return 1.0f;
-	}
-
-	char cdeclFooGeneral() {
-		PRINT_TEST_MESSAGE(__FUNCTION__);
-		return 1;
-	}
-
-	short cdeclFooGeneral(int a) {
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%d)",__FUNCTION__, a);
-		PRINT_TEST_MESSAGE(sbuff);
-		return 1;
-	}
-
-	float cdeclFooGeneral(int a, char b) {
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%d, %c)",__FUNCTION__, a, b);
-		PRINT_TEST_MESSAGE(sbuff);
-		return 1.0f;
-	}
-
-	int cdeclFooGeneral(int a, char b, const double& c) {
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%d, %c, %lf)",__FUNCTION__, a, b, c);
-		PRINT_TEST_MESSAGE(sbuff);
-		return 1;
-	}
-
-	long cdeclFooGeneral(int a, char b, const double& c, const float& d) {
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%d, %c, %lf, %f)",__FUNCTION__, a, b, c, d);
-		PRINT_TEST_MESSAGE(sbuff);
-		return 1;
-	}
-
-	long long cdeclFooGeneral(int a, char b, const double& c, const float& d, unsigned int e) {
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%d, %c, %lf, %f, %u)",__FUNCTION__, a, b, c, d, e);
-		PRINT_TEST_MESSAGE(sbuff);
-		return 1000000000000000;
-	}
-
-	double cdeclFooGeneral(int a, char b, const double& c, const float& d, unsigned int e, short f) {
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%d, %c, %lf, %f, %u, %d)",__FUNCTION__, a, b, c, d, e, f);
-		PRINT_TEST_MESSAGE(sbuff);
-		return 1000000000000000.0;
-	}
-
-	unsigned short cdeclFooGeneral(int a, char b, const double& c, const float& d, unsigned int e, short f, long g) {
-		char sbuff[128];
-		SPRINTF_S(sbuff, "%s(%d, %c, %lf, %f, %u, %d, %ld)",__FUNCTION__, a, b, c, d, e, f, g);
-		PRINT_TEST_MESSAGE(sbuff);
-		return 1;
-	}
-
-		
-	TEST(FunctionDelegate, testCdeclunctionVoid1)
+	TEST(FunctionDelegate, testFunctionVoid1)
 	{
-		FunctionDelegate<void> cdeclFunction(&cdeclFoo);
-		cdeclFunction.call();
+		FunctionDelegate<void> funcDelegate(&funcFoo);
+		funcDelegate.call();
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionVoid2)
+	TEST(FunctionDelegate, testFunctionVoid2)
 	{
-		FunctionDelegate<void, const float&> cdeclFunction(&cdeclFoo);
+		FunctionDelegate<void, const float&> funcDelegate(&funcFoo);
 
 		float forRefValue1 = 1.0f;		
 
-		pushParams(&cdeclFunction, &forRefValue1);
+		pushParams(&funcDelegate, &forRefValue1);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionVoid3)
+	TEST(FunctionDelegate, testFunctionVoid3)
 	{
-		FunctionDelegate<void, const float&, const float&> cdeclFunction(&cdeclFoo);
+		FunctionDelegate<void, const float&, const float&> funcDelegate(&funcFoo);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionVoid4)
+	TEST(FunctionDelegate, testFunctionVoid4)
 	{
-		FunctionDelegate<void, const float&, const float&, int> cdeclFunction(&cdeclFoo);
+		FunctionDelegate<void, const float&, const float&, int> funcDelegate(&funcFoo);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
 		int p3 = 3;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionVoid5)
+	TEST(FunctionDelegate, testFunctionVoid5)
 	{
-		FunctionDelegate<void, const float&, const float&, int, char> cdeclFunction(&cdeclFoo);
+		FunctionDelegate<void, const float&, const float&, int, char> funcDelegate(&funcFoo);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
 		int p3 = 3;
 		char p4 = '4';
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3, p4);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionVoid6)
+	TEST(FunctionDelegate, testFunctionVoid6)
 	{
 		FunctionDelegate<void, const float&,
-			const float&, int, char, const double&> cdeclFunction(&cdeclFoo);
+			const float&, int, char, const double&> funcDelegate(&funcFoo);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
@@ -287,15 +90,15 @@ namespace ffscriptUT
 		char p4 = '4';
 		double forRefValue3 = 5.0f;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionVoid7)
+	TEST(FunctionDelegate, testFunctionVoid7)
 	{
 		FunctionDelegate<void, const float&,
-			const float&, int, char, const double&, void*> cdeclFunction(&cdeclFoo);
+			const float&, int, char, const double&, void*> funcDelegate(&funcFoo);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
@@ -304,15 +107,15 @@ namespace ffscriptUT
 		double forRefValue3 = 5.0f;
 		void* p6 = (void*)6;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionVoid8)
+	TEST(FunctionDelegate, testFunctionVoid8)
 	{
 		FunctionDelegate<void, const float&,
-			const float&, int, char, const double&, void*, short> cdeclFunction(&cdeclFoo);
+			const float&, int, char, const double&, void*, short> funcDelegate(&funcFoo);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
@@ -322,15 +125,15 @@ namespace ffscriptUT
 		void* p6 = (void*)6;
 		short p7 = 7;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionVoid9)
+	TEST(FunctionDelegate, testFunctionVoid9)
 	{
 		FunctionDelegate<void, const float&,
-			const float&, int, char, const double&, void*, short, int> cdeclFunction(&cdeclFoo);
+			const float&, int, char, const double&, void*, short, int> funcDelegate(&funcFoo);
 			
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
@@ -341,92 +144,92 @@ namespace ffscriptUT
 		short p7 = 7;
 		int p8 = 8;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionFloat1)
+	TEST(FunctionDelegate, testFunctionFloat1)
 	{
-		FunctionDelegate<float> cdeclFunction(&cdeclFoof);
-		cdeclFunction.call();
+		FunctionDelegate<float> funcDelegate(&funcFoof);
+		funcDelegate.call();
 
-		float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = funcDelegate.getReturnValAsFloat();
 
 		EXPECT_EQ(1.0f, actualVal);
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionFloat2)
+	TEST(FunctionDelegate, testFunctionFloat2)
 	{
-		FunctionDelegate<float, const float&> cdeclFunction(&cdeclFoof);
+		FunctionDelegate<float, const float&> funcDelegate(&funcFoof);
 
 		float forRefValue1 = 1.0f;
 
-		pushParams(&cdeclFunction, &forRefValue1);
+		pushParams(&funcDelegate, &forRefValue1);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 
-		float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = funcDelegate.getReturnValAsFloat();
 
 		EXPECT_EQ(1.0f, actualVal);
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionFloat3)
+	TEST(FunctionDelegate, testFunctionFloat3)
 	{
-		FunctionDelegate<float, const float&, const float&> cdeclFunction(&cdeclFoof);
+		FunctionDelegate<float, const float&, const float&> funcDelegate(&funcFoof);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2);
 
 		float expectedVal = 3.0f;
 
-		cdeclFunction.call();
+		funcDelegate.call();
 
-		float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = funcDelegate.getReturnValAsFloat();
 
 		EXPECT_EQ(1.0f, actualVal);
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionFloat4)
+	TEST(FunctionDelegate, testFunctionFloat4)
 	{
-		FunctionDelegate<float, const float&, const float&, int> cdeclFunction(&cdeclFoof);
+		FunctionDelegate<float, const float&, const float&, int> funcDelegate(&funcFoof);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
 		int p3 = 3;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3);
-		cdeclFunction.call();
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3);
+		funcDelegate.call();
 
-		float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = funcDelegate.getReturnValAsFloat();
 
 		EXPECT_EQ(1.0f, actualVal);
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionFloat5)
+	TEST(FunctionDelegate, testFunctionFloat5)
 	{
-		FunctionDelegate<float, const float&, const float&, int, char> cdeclFunction(&cdeclFoof);
+		FunctionDelegate<float, const float&, const float&, int, char> funcDelegate(&funcFoof);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
 		int p3 = 3;
 		char p4 = '4';
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3, p4);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 
-		float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = funcDelegate.getReturnValAsFloat();
 
 		EXPECT_EQ(1.0f, actualVal);
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionFloat6)
+	TEST(FunctionDelegate, testFunctionFloat6)
 	{
 		FunctionDelegate<float, const float&,
-			const float&, int, char, const double&> cdeclFunction(&cdeclFoof);
+			const float&, int, char, const double&> funcDelegate(&funcFoof);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
@@ -434,19 +237,19 @@ namespace ffscriptUT
 		char p4 = '4';
 		double forRefValue3 = 5.0f;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 
-		float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = funcDelegate.getReturnValAsFloat();
 
 		EXPECT_EQ(1.0f, actualVal);
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionFloat7)
+	TEST(FunctionDelegate, testFunctionFloat7)
 	{
 		FunctionDelegate<float, const float&,
-			const float&, int, char, const double&, void*> cdeclFunction(&cdeclFoof);
+			const float&, int, char, const double&, void*> funcDelegate(&funcFoof);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
@@ -455,19 +258,19 @@ namespace ffscriptUT
 		double forRefValue3 = 5.0f;
 		void* p6 = (void*)6;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 
-		float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = funcDelegate.getReturnValAsFloat();
 
 		EXPECT_EQ(1.0f, actualVal);
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionFloat8)
+	TEST(FunctionDelegate, testFunctionFloat8)
 	{
 		FunctionDelegate<float, const float&,
-			const float&, int, char, const double&, void*, short> cdeclFunction(&cdeclFoof);
+			const float&, int, char, const double&, void*, short> funcDelegate(&funcFoof);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
@@ -477,19 +280,19 @@ namespace ffscriptUT
 		void* p6 = (void*)6;
 		short p7 = 7;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 
-		float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = funcDelegate.getReturnValAsFloat();
 
 		EXPECT_EQ(1.0f, actualVal);
 	}
 
-	TEST(FunctionDelegate, testCdeclunctionFloat9)
+	TEST(FunctionDelegate, testFunctionFloat9)
 	{
 		FunctionDelegate<float, const float&,
-			const float&, int, char, const double&, void*, short, int> cdeclFunction(&cdeclFoof);
+			const float&, int, char, const double&, void*, short, int> funcDelegate(&funcFoof);
 
 		float forRefValue1 = 1.0f;
 		float forRefValue2 = 2.0f;
@@ -500,32 +303,32 @@ namespace ffscriptUT
 		short p7 = 7;
 		int p8 = 8;
 
-		pushParams(&cdeclFunction, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
+		pushParams(&funcDelegate, &forRefValue1, &forRefValue2, p3, p4, &forRefValue3, p6, p7, p8);
 			
-		cdeclFunction.call();
+		funcDelegate.call();
 
-		float actualVal = cdeclFunction.getReturnValAsFloat();
+		float actualVal = funcDelegate.getReturnValAsFloat();
 
 		EXPECT_EQ(1.0f, actualVal);
 	}
 
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-	TEST(FunctionDelegate, testCdeclunctionGeneral1)
+	TEST(FunctionDelegate, testFunctionGeneral1)
 	{
-		FunctionDelegate<char> cdeclFunction(&cdeclFooGeneral);
+		FunctionDelegate<char> funcDelegate(&funcFooGeneral);
 
-		DFunction* dynamicCaller = &cdeclFunction;
+		DFunction* dynamicCaller = &funcDelegate;
 		dynamicCaller->call();
 
 		EXPECT_EQ((char)1, (char)dynamicCaller->getReturnValAsInt8());
 	}
 
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-	TEST(FunctionDelegate, testCdeclunctionGeneral2)
+	TEST(FunctionDelegate, testFunctionGeneral2)
 	{
-		FunctionDelegate<short, int> cdeclFunction(&cdeclFooGeneral);
+		FunctionDelegate<short, int> funcDelegate(&funcFooGeneral);
 
-		DFunction* dynamicCaller = &cdeclFunction;
+		DFunction* dynamicCaller = &funcDelegate;
 		dynamicCaller->pushParam((void*)1);
 		dynamicCaller->call();
 
@@ -533,11 +336,11 @@ namespace ffscriptUT
 	}
 
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-	TEST(FunctionDelegate, testCdeclunctionGeneral3)
+	TEST(FunctionDelegate, testFunctionGeneral3)
 	{
-		FunctionDelegate<float, int, char> cdeclFunction(&cdeclFooGeneral);
+		FunctionDelegate<float, int, char> funcDelegate(&funcFooGeneral);
 
-		DFunction* dynamicCaller = &cdeclFunction;
+		DFunction* dynamicCaller = &funcDelegate;
 		dynamicCaller->pushParam((void*)1);
 		dynamicCaller->pushParam((void*)'2');
 		dynamicCaller->call();
@@ -546,13 +349,13 @@ namespace ffscriptUT
 	}
 
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-	TEST(FunctionDelegate, testCdeclunctionGeneral4)
+	TEST(FunctionDelegate, testFunctionGeneral4)
 	{
-		FunctionDelegate<int, int, char, const double&> cdeclFunction(&cdeclFooGeneral);
+		FunctionDelegate<int, int, char, const double&> funcDelegate(&funcFooGeneral);
 
 		double p3 = 3.0f;
 
-		DFunction* dynamicCaller = &cdeclFunction;
+		DFunction* dynamicCaller = &funcDelegate;
 		dynamicCaller->pushParam((void*)1);
 		dynamicCaller->pushParam((void*)'2');
 		dynamicCaller->pushParam((void*)&p3);
@@ -562,14 +365,14 @@ namespace ffscriptUT
 	}
 
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-	TEST(FunctionDelegate, testCdeclunctionGeneral5)
+	TEST(FunctionDelegate, testFunctionGeneral5)
 	{
-		FunctionDelegate<long, int, char, const double&, const float&> cdeclFunction(&cdeclFooGeneral);
+		FunctionDelegate<long, int, char, const double&, const float&> funcDelegate(&funcFooGeneral);
 
 		double p3 = 3.0f;
 		float p4 = 4.0f;
 
-		DFunction* dynamicCaller = &cdeclFunction;
+		DFunction* dynamicCaller = &funcDelegate;
 		dynamicCaller->pushParam((void*)1);
 		dynamicCaller->pushParam((void*)'2');
 		dynamicCaller->pushParam((void*)&p3);
@@ -580,14 +383,14 @@ namespace ffscriptUT
 	}
 
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-	TEST(FunctionDelegate, testCdeclunctionGeneral6)
+	TEST(FunctionDelegate, testFunctionGeneral6)
 	{
-		FunctionDelegate<long long, int, char, const double&, const float&, unsigned int> cdeclFunction(&cdeclFooGeneral);
+		FunctionDelegate<long long, int, char, const double&, const float&, unsigned int> funcDelegate(&funcFooGeneral);
 
 		double p3 = 3.0f;
 		float p4 = 4.0f;
 
-		DFunction* dynamicCaller = &cdeclFunction;
+		DFunction* dynamicCaller = &funcDelegate;
 		dynamicCaller->pushParam((void*)1);
 		dynamicCaller->pushParam((void*)'2');
 		dynamicCaller->pushParam((void*)&p3);
@@ -599,14 +402,14 @@ namespace ffscriptUT
 	}
 
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-	TEST(FunctionDelegate, testCdeclunctionGeneral7)
+	TEST(FunctionDelegate, testFunctionGeneral7)
 	{
-		FunctionDelegate<double, int, char, const double&, const float&, unsigned int, short> cdeclFunction(&cdeclFooGeneral);
+		FunctionDelegate<double, int, char, const double&, const float&, unsigned int, short> funcDelegate(&funcFooGeneral);
 
 		double p3 = 3.0f;
 		float p4 = 4.0f;
 
-		DFunction* dynamicCaller = &cdeclFunction;
+		DFunction* dynamicCaller = &funcDelegate;
 		dynamicCaller->pushParam((void*)1);
 		dynamicCaller->pushParam((void*)'2');
 		dynamicCaller->pushParam((void*)&p3);
@@ -619,14 +422,14 @@ namespace ffscriptUT
 	}
 
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-	TEST(FunctionDelegate, testCdeclunctionGeneral8)
+	TEST(FunctionDelegate, testFunctionGeneral8)
 	{
-		FunctionDelegate<unsigned short, int, char, const double&, const float&, unsigned int, short, long> cdeclFunction(&cdeclFooGeneral);
+		FunctionDelegate<unsigned short, int, char, const double&, const float&, unsigned int, short, long> funcDelegate(&funcFooGeneral);
 
 		double p3 = 3.0f;
 		float p4 = 4.0f;
 
-		DFunction* dynamicCaller = &cdeclFunction;
+		DFunction* dynamicCaller = &funcDelegate;
 		dynamicCaller->pushParam((void*)1);
 		dynamicCaller->pushParam((void*)'2');
 		dynamicCaller->pushParam((void*)&p3);
@@ -640,14 +443,14 @@ namespace ffscriptUT
 	}
 
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-	TEST(FunctionDelegate, testCdeclunctionGeneral9)
+	TEST(FunctionDelegate, testFunctionGeneral9)
 	{
-		FunctionDelegate<unsigned short, int, char, const double&, const float&, unsigned int, short, long> cdeclFunction(&cdeclFooGeneral);
+		FunctionDelegate<unsigned short, int, char, const double&, const float&, unsigned int, short, long> funcDelegate(&funcFooGeneral);
 
 		double p3 = 3.0f;
 		float p4 = 4.0f;
 
-		DFunction* dynamicCaller = &cdeclFunction;
+		DFunction* dynamicCaller = &funcDelegate;
 		dynamicCaller->pushParam((void*)1);
 		dynamicCaller->pushParam((void*)'2');
 		dynamicCaller->pushParam((void*)&p3);
@@ -670,51 +473,51 @@ namespace ffscriptUT
 	}*/
 
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
-	TEST(FunctionDelegate, testCdeclunctionExternal1)
+	TEST(FunctionDelegate, testFunctionExternal1)
 	{
-		/*FunctionDelegate<double, double> cdeclFunction(cdeclForward<double, double>();
+		/*FunctionDelegate<double, double> funcDelegate(funcForward<double, double>();
 
 		double p = 3.0f;
 
 		double expect = ::sin(p);
 
-		cdeclFunction.pushParam(&p);
+		funcDelegate.pushParam(&p);
 
-		cdeclFunction.call();
+		funcDelegate.call();
 
-		double val1 = cdeclFunction.getReturnValAsDouble();
-		const void* val2 = cdeclFunction.getReturnValAsReference();
+		double val1 = funcDelegate.getReturnValAsDouble();
+		const void* val2 = funcDelegate.getReturnValAsReference();
 
 		EXPECT_EQ(expect, val1);
 		EXPECT_EQ(expect, *((double*)val2));*/
 
 		double p = 3.0f;
-		double val1 = cdeclForward<double, double>(&sin, p);
+		double val1 = funcForward<double, double>(&sin, p);
 		double expect = ::sin(p);
 		EXPECT_EQ(expect, val1);
 	}
 		
 
-	TEST(FunctionDelegate, testCdeclunction2_1)
+	TEST(FunctionDelegate, testFunction2_1)
 	{
 		float p1 = 1.0f;
 		float p2 = 2.0f;
 		int p3 = 3;
-		CdeclFunction2<float, const float&, const float&, int> cdelFunction(cdeclFoof);
+		CdeclFunction2<float, const float&, const float&, int> cdelFunction(funcFoof);
 		DFunction2* nativeFunction2 = &cdelFunction;
 
 		float returnVal;
 		void* params[] = {&p1, &p2, (void*)(size_t)p3};
 		nativeFunction2->call(&returnVal, params);
-		EXPECT_EQ(cdeclFoof(p1, p2, p3), returnVal);
+		EXPECT_EQ(funcFoof(p1, p2, p3), returnVal);
 	}
 #ifndef USE_EXTERNAL_PARAMS_ONLY
-	TEST(FunctionDelegate, testCdeclunction2_2)
+	TEST(FunctionDelegate, testFunction2_2)
 	{
 		float fixedParam = 1.0f;
 		float p2 = 2.0f;
 		int p3 = 3;
-		CdeclFunction2<float, const float&, const float&, int> cdelFunction(cdeclFoof);
+		CdeclFunction2<float, const float&, const float&, int> cdelFunction(funcFoof);
 		cdelFunction.bind<float*>(&fixedParam);
 
 		DFunction2* nativeFunction2 = &cdelFunction;
@@ -722,160 +525,7 @@ namespace ffscriptUT
 		float returnVal;
 		void* params[] = { &p2, (void*)(size_t)p3 };
 		nativeFunction2->call(&returnVal, params);
-		EXPECT_EQ(cdeclFoof(fixedParam, p2, p3), returnVal);
+		EXPECT_EQ(funcFoof(fixedParam, p2, p3), returnVal);
 	}
 #endif
-	static double sum(int a, float b) {
-		return (double)(a + b);
-	}
-
-#pragma pack(push)
-#pragma pack(1)
-	struct SampleStruct {
-		int a;
-		double b;
-	};
-#pragma pack(pop)
-
-	static void sum2(SampleStruct a, int b) {
-		a.b += b;
-	}
-
-	static void sum21(SampleStruct a, int b, SampleStruct& c) {
-		c.b = a.b + b;
-	}
-
-	TEST(FunctionDelegate, testCdeclunction3_0)
-	{
-		typedef MemberTypeInfo<0, sizeof(void*), int, SampleStruct, float> AMemberTypeInfo;
-		int offset = 0;
-		EXPECT_EQ(offset, AMemberTypeInfo::offset<0>());
-
-		offset += sizeof(void*);
-		EXPECT_EQ(offset, AMemberTypeInfo::offset<1>());
-
-		constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
-		offset += alignedSizeOfStruct;
-
-		EXPECT_EQ(offset, AMemberTypeInfo::offset<2>());
-		offset += sizeof(void*);
-
-		EXPECT_EQ((int)sizeof(void*), AMemberTypeInfo::getSize<0>());
-		EXPECT_EQ(alignedSizeOfStruct, AMemberTypeInfo::getSize<1>());
-		EXPECT_EQ((int)sizeof(void*), AMemberTypeInfo::getSize<2>());
-		EXPECT_EQ(offset, AMemberTypeInfo::totalSize());
-	}
-
-	TEST(FunctionDelegate, testCdeclunction3_1)
-	{
-		int p1 = 123;
-		float p2 = 456.0f;
-		CdelFunction3<double, int, float> cdelFunction(sum);
-		DFunction2* nativeFunction2 = &cdelFunction;
-
-		char paramData[sizeof(void*) * 2];
-		// argument 1
-		*((int*)&paramData[0]) = p1;
-		// argument 2
-		*((float*)&paramData[sizeof(void*)]) = p2;
-
-		double returnVal;
-
-		nativeFunction2->call(&returnVal, (void**)&paramData[0]);
-		EXPECT_EQ(sum(p1 , p2), returnVal);
-	}
-
-	TEST(FunctionDelegate, testCdeclunction3_2)
-	{
-		SampleStruct p1 = { 456, 789.0f };
-		int p2 = 123;
-		CdelFunction3<void, SampleStruct, int> cdelFunction(sum2);
-		DFunction2* nativeFunction2 = &cdelFunction;
-
-		constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
-
-		char paramData[sizeof(void*) + alignedSizeOfStruct];
-		// argument 1
-		*((SampleStruct*)&paramData[0]) = p1;
-		// argument 2
-		*((int*)&paramData[alignedSizeOfStruct]) = p2;
-		nativeFunction2->call(nullptr, (void**)&paramData[0]);
-	}
-
-	TEST(FunctionDelegate, testCdeclunction3_3)
-	{
-		SampleStruct p1 = { 456, 789.0f };
-		int p2 = 123;
-		SampleStruct p3;
-		constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
-
-		typedef CdelFunction3<void, SampleStruct, int, SampleStruct*> AFunc;
-
-		AFunc cdelFunction((AFunc::Fx)sum21);
-
-		DFunction2* nativeFunction2 = &cdelFunction;
-
-		char paramData[sizeof(void*) * 2 + alignedSizeOfStruct];
-		// argument 1
-		*((SampleStruct*)&paramData[0]) = p1;
-		// argument 2
-		*((int*)&paramData[alignedSizeOfStruct]) = p2;
-		// argument 3
-		*((SampleStruct**)&paramData[alignedSizeOfStruct + sizeof(void*)]) = &p3;
-
-		nativeFunction2->call(nullptr, (void**)&paramData[0]);
-
-		SampleStruct p31;
-		sum21(p1, p2, p31);
-
-		EXPECT_EQ(p31.b, p3.b);
-	}
-
-
-	static double foo(int& p1, double p2) {
-		return p1 + p2;
-	}
-
-	static void doNothing1() {
-
-	}
-
-	static int doNothing2() {
-		return 123;
-	}
-
-	TEST(FunctionDelegate, testCdeclunction3_new_1)
-	{
-		double p2 = 789;
-		int p1 = 123;
-		CdelFunction3<double, int&, double> cdelFunction(foo);
-		DFunction2* nativeFunction2 = &cdelFunction;
-
-		char paramData[sizeof(void*) + sizeof(double)];
-		// argument 1
-		*((int**)&paramData[0]) = &p1;
-		// argument 2
-		*((double*)&paramData[sizeof(void*)]) = p2;
-
-		double ret;
-		nativeFunction2->call(&ret, (void**)&paramData[0]);
-
-		EXPECT_EQ(foo(p1, p2), ret);
-	}
-
-	TEST(FunctionDelegate, testCdeclunction3_new_2)
-	{	CdelFunction3<void> cdelFunction(doNothing1);
-		DFunction2* nativeFunction2 = &cdelFunction;
-		nativeFunction2->call(nullptr, nullptr);
-	}
-
-	TEST(FunctionDelegate, testCdeclunction3_new_3)
-	{
-		CdelFunction3<int> cdelFunction(doNothing2);
-		DFunction2* nativeFunction2 = &cdelFunction;
-
-		int ret;
-		nativeFunction2->call(&ret, nullptr);
-		EXPECT_EQ(doNothing2(), ret);
-	}
 }

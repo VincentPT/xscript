@@ -18,6 +18,11 @@ SET (PROJECT_SOURCE_FILES
 	MFunctionTUT.cpp
 	CdeclFunctionUT.cpp
 	MemberFunctionUT.cpp
+	FunctionsForTest.h
+	MethodsForTest.h
+	MethodsForTest.cpp
+	FunctionsForTest.cpp
+	FunctionDelegate3UT.cpp
 	../ffscript/function/DynamicFunction.cpp
 	../ffscript/function/DynamicFunction2.cpp
 )
