@@ -190,5 +190,103 @@ namespace ffscriptUT
 			auto res = *(int*)scriptTask.getTaskResult();
 			FF_EXPECT_EQ(3, res);
 		}
+
+		class ContextMethodContainer {
+			int _val;
+		public:
+			ContextMethodContainer(int val) : _val(val) {}
+
+			int multiply(int val) {
+				return _val * val;
+			}
+		};
+
+		int multiply(ContextMethodContainer* p, int val) {
+			return 1 + p->multiply(val);
+		}
+
+		FF_TEST_FUNCTION(MethodTest, TestMethod05)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			int type = scriptCompiler->registType("Caculator");
+			FF_EXPECT_TRUE(!IS_UNKNOWN_TYPE(type));
+			scriptCompiler->setTypeSize(type, sizeof(ContextMethodContainer));
+
+			const wchar_t* scriptCode =
+				L"int testMultiply(ref Caculator calculator) {"
+				L"	return calculator.multiply(3);"
+				L"}"
+				;
+
+			int functionId = scriptCompiler->registFunction("multiply", "ref Caculator, int", 
+				createUserFunctionFactoryContext<ContextMethodContainer, int, int>(scriptCompiler, "int", &ContextMethodContainer::multiply)
+			);
+
+			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
+
+			scriptCompiler->beginUserLib();
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			FF_EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			functionId = scriptCompiler->findFunction("testMultiply", "ref Caculator");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'testMultiply'");
+
+			ScriptTask scriptTask(program);
+
+			ContextMethodContainer aInstance(2);
+			ScriptParamBuffer argBuffer(&aInstance);
+			scriptTask.runFunction(functionId, &argBuffer);
+
+			auto res = *(int*)scriptTask.getTaskResult();
+			FF_EXPECT_EQ(6, res);
+		}
+
+		FF_TEST_FUNCTION(MethodTest, TestMethod06)
+		{
+			CompilerSuite compiler;
+
+			//the code does not contain any global scope'code and only a variable
+			//so does not need global memory
+			compiler.initialize(8);
+			GlobalScopeRef rootScope = compiler.getGlobalScope();
+			auto scriptCompiler = rootScope->getCompiler();
+
+			int type = scriptCompiler->registType("Caculator");
+			FF_EXPECT_TRUE(!IS_UNKNOWN_TYPE(type));
+			scriptCompiler->setTypeSize(type, sizeof(ContextMethodContainer));
+
+			const wchar_t* scriptCode =
+				L"int testMultiply(ref Caculator calculator) {"
+				L"	return calculator.multiply(3);"
+				L"}"
+				;
+
+			int functionId = scriptCompiler->registFunction("multiply", "ref Caculator, int",
+				createUserFunctionFactory<int, ContextMethodContainer*, int>(scriptCompiler, "int", multiply)
+			);
+
+			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
+
+			scriptCompiler->beginUserLib();
+			Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+			FF_EXPECT_NE(nullptr, program, convertToWstring(scriptCompiler->getLastError()).c_str());
+			functionId = scriptCompiler->findFunction("testMultiply", "ref Caculator");
+			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'testMultiply'");
+
+			ScriptTask scriptTask(program);
+
+			ContextMethodContainer aInstance(2);
+			ScriptParamBuffer argBuffer(&aInstance);
+			scriptTask.runFunction(functionId, &argBuffer);
+
+			auto res = *(int*)scriptTask.getTaskResult();
+			FF_EXPECT_EQ(7, res);
+		}
 	};
 }
