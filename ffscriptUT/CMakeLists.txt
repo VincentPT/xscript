@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.2)
 project(ffscriptUT C CXX)
 
 if (WIN32)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/conan/conanbuildinfo_multi.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../gtest/conan/conanbuildinfo_multi.cmake)
 endif (WIN32)
 
 if (UNIX)
     if(NOT APPLE)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/conan/conanbuildinfo.cmake)
+        include(${CMAKE_CURRENT_SOURCE_DIR}/../gtest/conan/conanbuildinfo.cmake)
     endif()
 endif (UNIX)
 
