@@ -16,6 +16,7 @@
 #include "function/CdeclFunction2.hpp"
 #include "function/CdeclFunction3.hpp"
 #include "TemplateForTest.hpp"
+#include <math.h>
 
 using namespace std;
 using namespace FT;

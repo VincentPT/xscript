@@ -11,7 +11,7 @@
 *
 **********************************************************************/
 #include "fftest.hpp"
-
+#include <algorithm>
 #include <Utils.h>
 
 using namespace ffscript;

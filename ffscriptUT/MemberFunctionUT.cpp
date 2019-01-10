@@ -13,6 +13,7 @@
 #include <functional>
 #include "function/MemberFunction.hpp"
 #include "TemplateForTest.hpp"
+#include <math.h>
 
 using namespace std;
 
