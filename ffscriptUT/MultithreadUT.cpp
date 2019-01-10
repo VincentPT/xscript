@@ -24,7 +24,7 @@
 #include "Utils.h"
 #include "Variable.h"
 #include "DynamicFunctionFactory.h"
-#include "function/CdeclFunction2.hpp"
+#include "function/FunctionDelegate2.hpp"
 #include "function/MemberFunction2.hpp"
 
 using namespace std;
@@ -111,7 +111,7 @@ namespace ffscriptUT
 			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 
-			funcLibHelper.registFunction("fibonaciNative", "int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new CdeclFunction2<int, int>(fibonaci), &scriptCompiler));
+			funcLibHelper.registFunction("fibonaciNative", "int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FunctionDelegate2<int, int>(fibonaci), &scriptCompiler));
 			funcLibHelper.registFunction("signal", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new MFunction2<void, Multithread, mutex&>(this, &Multithread::notifySignal), &scriptCompiler));
 			funcLibHelper.registFunction("waitSignaled", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new MFunction2<void, Multithread, mutex&>(this, &Multithread::waitSignaled), &scriptCompiler));
 

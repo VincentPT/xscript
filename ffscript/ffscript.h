@@ -89,7 +89,7 @@ typedef unsigned char byte;
 class DFunction;
 class DFunction2;
 
-#include "function/CdeclFunction3.hpp"
+#include "function/FunctionDelegate3.hpp"
 #include "function/MemberFunction3.hpp"
 #include "function/MemberFunction4.hpp"
 
@@ -127,7 +127,7 @@ namespace ffscript {
 	typedef std::pair< CommandPointer, CommandPointer > CodeSegmentEntry;
 
 	template <class Ret, class... Types>
-	using FunctionT = typename FT::CdelFunction3<Ret, Types...>;
+	using FunctionT = typename FT::FunctionDelegate3<Ret, Types...>;
 
 	template <class Class, class Ret, class... Types>
 	using MFunctionT = typename FT::MFunction3<Class, Ret, Types...>;

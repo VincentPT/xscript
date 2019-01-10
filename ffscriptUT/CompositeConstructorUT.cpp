@@ -81,7 +81,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int, int>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, int, int>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -116,7 +116,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int, int>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, int, int>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -154,7 +154,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int, int>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, int, int>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -191,7 +191,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, double&>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, double&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, double&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -226,7 +226,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, double&>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, double&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, double&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -264,7 +264,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, double&>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, double&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, double&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -298,7 +298,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int, int>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, int, int>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -358,7 +358,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -392,7 +392,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -427,7 +427,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -464,7 +464,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -503,7 +503,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -539,7 +539,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			int type = basicType->TYPE_INT;
 
-			DFunction2* initFunction = new CdeclFunction2<void, int&, int&>(&IntegerConstructor);
+			DFunction2* initFunction = new FunctionDelegate2<void, int&, int&>(&IntegerConstructor);
 			int functionId = scriptCompiler->registFunction("IntegerConstructor", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 

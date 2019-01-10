@@ -45,47 +45,47 @@
 #endif
 
 inline void FF_EXPECT_TRUE(bool condition, const wchar_t* msg) {
-	EXPECT_TRUE(condition) << msg;
+	ASSERT_TRUE(condition) << msg;
 }
 
 inline void FF_EXPECT_TRUE(bool condition) {
-	EXPECT_TRUE(condition);
+	ASSERT_TRUE(condition);
 }
 
 inline void FF_EXPECT_FALSE(bool condition, const wchar_t* msg) {
-	EXPECT_FALSE(condition) << msg;
+	ASSERT_FALSE(condition) << msg;
 }
 
 inline void FF_EXPECT_FALSE(bool condition) {
-	EXPECT_FALSE(condition);
+	ASSERT_FALSE(condition);
 }
 
 template <class T1, class T2>
 inline void FF_EXPECT_NE(const T1& not_expected, const T2& val) {
-	EXPECT_NE(not_expected, val);
+	ASSERT_NE(not_expected, val);
 }
 
 template <class T1, class T2>
 inline void FF_EXPECT_NE(const T1& not_expected, const T2& val, const wchar_t* msg) {
-	EXPECT_NE(not_expected, val) << msg;
+	ASSERT_NE(not_expected, val) << msg;
 }
 
 template <class T1, class T2>
 inline void FF_EXPECT_EQ(const T1& expected, const T2& val) {
-	EXPECT_EQ(expected, val);
+	ASSERT_EQ(expected, val);
 }
 
 template <class T1, class T2>
 inline void FF_EXPECT_EQ(const T1& expected, const T2& val, const wchar_t* msg) {
-	EXPECT_EQ(expected, val) << msg;
+	ASSERT_EQ(expected, val) << msg;
 }
 
 template <class T1, class T2>
 inline void FF_EXPECT_STREQ(const T1& expected, const T2& val) {
-	EXPECT_STREQ(expected, val);
+	ASSERT_STREQ(expected, val);
 }
 
 template <class T1, class T2>
 inline void FF_EXPECT_STREQ(const T1& expected, const T2& val, const wchar_t* msg) {
-	EXPECT_STREQ(expected, val) << msg;
+	ASSERT_STREQ(expected, val) << msg;
 }

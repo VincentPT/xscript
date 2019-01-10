@@ -1,5 +1,5 @@
 /******************************************************************
-* File:        CdeclFunction2.hpp
+* File:        FunctionDelegate2.hpp
 * Description: template class and its member functions that used to
 *              invoke functions. This function object does
 *              not store any arguments of its target function when
@@ -25,14 +25,14 @@
 #include <cstring>
 
 template <class Ret, class ...Args>
-class CdeclFunction2;
+class FunctionDelegate2;
 
 template <class Ret, class ...Args>
 class CdeclInvoker2 {
 public:
-	CdeclFunction2<Ret, Args...>* mOwner;
+	FunctionDelegate2<Ret, Args...>* mOwner;
 
-	CdeclInvoker2(CdeclFunction2<Ret, Args...>* pOwner) {
+	CdeclInvoker2(FunctionDelegate2<Ret, Args...>* pOwner) {
 		mOwner = pOwner;
 	}
 	inline void call(void* pReturnVal, void* params[]);
@@ -41,67 +41,67 @@ public:
 
 //tempalte functions for return type is void
 template <class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6, class Arg7, class Arg8>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, void, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, void, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8);
 
 template <class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6, class Arg7>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, void, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, void, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
 
 template <class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, void, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, void, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
 
 template <class Arg1, class Arg2, class Arg3, class Arg4, class Arg5>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, void, Arg1, Arg2, Arg3, Arg4, Arg5);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, void, Arg1, Arg2, Arg3, Arg4, Arg5);
 
 template <class Arg1, class Arg2, class Arg3, class Arg4>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, void, Arg1, Arg2, Arg3, Arg4);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, void, Arg1, Arg2, Arg3, Arg4);
 
 template <class Arg1, class Arg2, class Arg3>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, void, Arg1, Arg2, Arg3);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, void, Arg1, Arg2, Arg3);
 
 template <class Arg1, class Arg2>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, void, Arg1, Arg2);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, void, Arg1, Arg2);
 
 template <class Arg>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, void, Arg);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, void, Arg);
 
 template <>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, void);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, void);
 
 //tempalte functions for return type is general type
 template <class Ret, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6, class Arg7, class Arg8>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, Ret, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, Ret, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8);
 
 template <class Ret, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6, class Arg7>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, Ret, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, Ret, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
 
 template <class Ret, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5, class Arg6>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, Ret, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, Ret, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
 
 template <class Ret, class Arg1, class Arg2, class Arg3, class Arg4, class Arg5>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, Ret, Arg1, Arg2, Arg3, Arg4, Arg5);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, Ret, Arg1, Arg2, Arg3, Arg4, Arg5);
 
 template <class Ret, class Arg1, class Arg2, class Arg3, class Arg4>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, Ret, Arg1, Arg2, Arg3, Arg4);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, Ret, Arg1, Arg2, Arg3, Arg4);
 
 template <class Ret, class Arg1, class Arg2, class Arg3>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, Ret, Arg1, Arg2, Arg3);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, Ret, Arg1, Arg2, Arg3);
 
 template <class Ret, class Arg1, class Arg2>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, Ret, Arg1, Arg2);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, Ret, Arg1, Arg2);
 
 template <class Ret, class Arg>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, Ret, Arg);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, Ret, Arg);
 
 template <class Ret>
-DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, CdeclFunction2, Ret);
+DECLARE_CLASS_INVOKER_TEMPLATE2(CdeclInvoker2, FunctionDelegate2, Ret);
 
 template <class Ret, class ...Args>
-class CdeclFunction2 :
+class FunctionDelegate2 :
 	public DFunction2
 {
 public:
 	typedef Ret(*FuncType)(Args...);
-	typedef CdeclFunction2<Ret, Args...> ClassType;
+	typedef FunctionDelegate2<Ret, Args...> ClassType;
 protected:
 	static const int maxParam = sizeof...(Args);
 #ifndef USE_EXTERNAL_PARAMS_ONLY
@@ -109,15 +109,15 @@ protected:
 #endif
 	CdeclInvoker2<Ret, Args...> invoker;
 public:	
-	CdeclFunction2(FuncType function) : invoker(this) {
+	FunctionDelegate2(FuncType function) : invoker(this) {
 		mFx = *((void**)&function);		
 	}
 	
-	CdeclFunction2(void* function) : invoker(this) {
+	FunctionDelegate2(void* function) : invoker(this) {
 		mFx = function;
 	}
 
-	virtual ~CdeclFunction2() {
+	virtual ~FunctionDelegate2() {
 	}
 #ifndef USE_EXTERNAL_PARAMS_ONLY
 	template <class ...FixedParams>

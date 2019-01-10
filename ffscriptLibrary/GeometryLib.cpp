@@ -14,7 +14,7 @@
 #include "GeometryLib.h"
 
 #include "function/FunctionDelegate.hpp"
-#include "function/CdeclFunction2.hpp"
+#include "function/FunctionDelegate2.hpp"
 #include "function/MemberFunction2.hpp"
 #include "BasicFunctionFactory.hpp"
 #include "DynamicFunctionFactory.h"

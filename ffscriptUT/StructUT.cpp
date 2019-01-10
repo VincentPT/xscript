@@ -826,7 +826,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			//register dynamic functions
-			auto theNativeFunction1 = new CdeclFunction2<int, SimpleVariantArray*>(sum);
+			auto theNativeFunction1 = new FunctionDelegate2<int, SimpleVariantArray*>(sum);
 			auto dynamicFunctionFactory1 = new DynamicFunctionFactory("int", theNativeFunction1, &scriptCompiler);			
 			funcLibHelper.getSriptCompiler()->registDynamicFunction("sum", dynamicFunctionFactory1);
 			funcLibHelper.addFactory(dynamicFunctionFactory1);

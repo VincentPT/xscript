@@ -1,7 +1,7 @@
 /******************************************************************
 * File:        CdeclFunctionUT.cpp
 * Description: Test cases invoking functions using FunctionDelegate,
-*              CdeclFunction2, CdeclFunction3 function objects.
+*              FunctionDelegate2, CdeclFunction3 function objects.
 * Author:      Vincent Pham
 *
 * Copyright (c) 2018 VincentPT.
@@ -13,7 +13,7 @@
 
 #include <functional>
 #include "../ffscript/function/FunctionDelegate.hpp"
-#include "../ffscript/function/CdeclFunction2.hpp"
+#include "../ffscript/function/FunctionDelegate2.hpp"
 #include "../ffscriptUT/TemplateForTest.hpp"
 #include "FunctionsForTest.h"
 #include <math.h>
@@ -503,7 +503,7 @@ namespace ffscriptUT
 		float p1 = 1.0f;
 		float p2 = 2.0f;
 		int p3 = 3;
-		CdeclFunction2<float, const float&, const float&, int> cdelFunction(funcFoof);
+		FunctionDelegate2<float, const float&, const float&, int> cdelFunction(funcFoof);
 		DFunction2* nativeFunction2 = &cdelFunction;
 
 		float returnVal;
@@ -517,7 +517,7 @@ namespace ffscriptUT
 		float fixedParam = 1.0f;
 		float p2 = 2.0f;
 		int p3 = 3;
-		CdeclFunction2<float, const float&, const float&, int> cdelFunction(funcFoof);
+		FunctionDelegate2<float, const float&, const float&, int> cdelFunction(funcFoof);
 		cdelFunction.bind<float*>(&fixedParam);
 
 		DFunction2* nativeFunction2 = &cdelFunction;

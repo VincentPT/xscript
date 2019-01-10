@@ -13,7 +13,7 @@
 
 #pragma once
 #include "expressionunit.h"
-#include "function/CdeclFunction2.hpp"
+#include "function/FunctionDelegate2.hpp"
 #include "FunctionFactory.h"
 #include "ffscript.h"
 

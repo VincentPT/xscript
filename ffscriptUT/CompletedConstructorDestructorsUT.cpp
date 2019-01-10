@@ -1553,7 +1553,7 @@ namespace ffscriptUT
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
 			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint) << L"Register struct type failed";
 
-			DFunction2* constructFunction = new CdeclFunction2<void, void*, int, int>(constructPoint);
+			DFunction2* constructFunction = new FunctionDelegate2<void, void*, int, int>(constructPoint);
 			int functionId = scriptCompiler->registFunction("constructPoint", "ref Point2i, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constructFunction, scriptCompiler));
 			EXPECT_TRUE(functionId >= 0) << L"Register function for copy constructor failed";
 
@@ -1608,7 +1608,7 @@ namespace ffscriptUT
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
 			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint) << L"Register struct type failed";
 
-			DFunction2* constructFunction = new CdeclFunction2<void, void*, int, int>(constructPoint);
+			DFunction2* constructFunction = new FunctionDelegate2<void, void*, int, int>(constructPoint);
 			int functionId = scriptCompiler->registFunction("constructPoint", "ref Point2i, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constructFunction, scriptCompiler));
 			EXPECT_TRUE(functionId >= 0) << L"Register function for copy constructor failed";
 

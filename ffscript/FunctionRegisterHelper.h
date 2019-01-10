@@ -17,7 +17,7 @@
 #include "ffscript.h"
 #include <list>
 
-#include "function/CdeclFunction3.hpp"
+#include "function/FunctionDelegate3.hpp"
 #include "function/MemberFunction3.hpp"
 #include "function/MemberFunction4.hpp"
 #include "function/DynamicFunction.h"

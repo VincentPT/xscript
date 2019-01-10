@@ -52,7 +52,7 @@ namespace ffscriptUT
 			typeManager->registerBasicTypes(&scriptCompiler);
 			typeManager->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 
-			funcLibHelper.registFunction("printFibonaci", "int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new CdeclFunction2<void, int>(printFibonaci), &scriptCompiler));
+			funcLibHelper.registFunction("printFibonaci", "int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new FunctionDelegate2<void, int>(printFibonaci), &scriptCompiler));
 
 			importBasicfunction(funcLibHelper);
 		}

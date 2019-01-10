@@ -6,7 +6,7 @@
 *              it is created. The caller need to pass arguments
 *              through and array of bytes to invoke the target
 *              function.
-**             CdeclFunction3 class is created to replace CdeclFunction2.
+**             CdeclFunction3 class is created to replace FunctionDelegate2.
 * Author:      Vincent Pham
 *
 * Copyright (c) 2018 VincentPT.
@@ -252,7 +252,7 @@ namespace FT {
 	using namespace Cdel3;
 
 	template <class Ret, class...Types>
-	class CdelFunction3 : public DFunction2 {
+	class FunctionDelegate3 : public DFunction2 {
 	public:
 		typedef Ret(*Fx)(Types...);
 	private:
@@ -260,13 +260,13 @@ namespace FT {
 		typedef typename std::conditional<std::is_void<Ret>::value, MyInvokerVoid, Invoke<Ret, Types...>>::type MyInvoker;
 		MyInvoker _invoker;
 	public:
-		CdelFunction3(Fx fx) : _invoker(fx) {}
+		FunctionDelegate3(Fx fx) : _invoker(fx) {}
 
 		void call(void* pReturnVal, void* params[]) {
 			_invoker(pReturnVal, (char*)params);
 		}
 		DFunction2* clone() {
-			auto funcObj = new CdelFunction3<Ret, Types...>(_invoker._fx);
+			auto funcObj = new FunctionDelegate3<Ret, Types...>(_invoker._fx);
 			return funcObj;
 		}
 	};

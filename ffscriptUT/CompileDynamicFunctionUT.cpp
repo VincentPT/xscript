@@ -29,7 +29,7 @@ using namespace ffscript;
 #include "expressionunit.h"
 #include "Expression.h"
 #include "DynamicFunctionFactory.h"
-#include "function/CdeclFunction2.hpp"
+#include "function/FunctionDelegate2.hpp"
 
 namespace ffscriptUT
 {
@@ -48,7 +48,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			//register a dynamic function
-			auto theNativeFunction = new CdeclFunction2<int, SimpleVariantArray*>(sum);
+			auto theNativeFunction = new FunctionDelegate2<int, SimpleVariantArray*>(sum);
 			DynamicFunctionFactory dynamicFunctionFactory("int", theNativeFunction,&scriptCompiler);
 			int functionId = scriptCompiler.registDynamicFunction("sum", &dynamicFunctionFactory);
 
@@ -65,7 +65,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			//register a dynamic function for twice
-			auto theNativeFunction = new CdeclFunction2<int, SimpleVariantArray*>(sum);
+			auto theNativeFunction = new FunctionDelegate2<int, SimpleVariantArray*>(sum);
 			DynamicFunctionFactory dynamicFunctionFactory("int", theNativeFunction,&scriptCompiler);
 			int functionId = scriptCompiler.registDynamicFunction("sum", &dynamicFunctionFactory);
 
@@ -89,7 +89,7 @@ namespace ffscriptUT
 			int functionId1 = scriptCompiler.registFunction("sum", "int,int", &sumFactor);
 
 			//register a dynamic function with same name
-			auto theNativeFunction = new CdeclFunction2<int, SimpleVariantArray*>(sum);
+			auto theNativeFunction = new FunctionDelegate2<int, SimpleVariantArray*>(sum);
 			DynamicFunctionFactory dynamicFunctionFactory("int", theNativeFunction,&scriptCompiler);
 			int functionId2 = scriptCompiler.registDynamicFunction("sum", &dynamicFunctionFactory);
 
@@ -107,7 +107,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			//register a custom function
-			auto theNativeFunction = new CdeclFunction2<int, SimpleVariantArray*>(sum);
+			auto theNativeFunction = new FunctionDelegate2<int, SimpleVariantArray*>(sum);
 			DynamicFunctionFactory dynamicFunctionFactory("int", theNativeFunction,&scriptCompiler);
 			int functionId = scriptCompiler.registDynamicFunction("sum", &dynamicFunctionFactory);
 
@@ -140,7 +140,7 @@ namespace ffscriptUT
 			int functionId1 = scriptCompiler.registFunction("sum", "int,int", &sumFactor);
 
 			//register a dynamic function with same name
-			auto theNativeFunction = new CdeclFunction2<int, SimpleVariantArray*>(sum);
+			auto theNativeFunction = new FunctionDelegate2<int, SimpleVariantArray*>(sum);
 			DynamicFunctionFactory dynamicFunctionFactory("int", theNativeFunction,&scriptCompiler);
 			int functionId = scriptCompiler.registDynamicFunction("sum", &dynamicFunctionFactory);
 
@@ -173,7 +173,7 @@ namespace ffscriptUT
 			int functionId1 = scriptCompiler.registFunction("sum", "int,int", &sumFactor);
 
 			//register a dynamic function with same name
-			auto theNativeFunction = new CdeclFunction2<int, SimpleVariantArray*>(sum);
+			auto theNativeFunction = new FunctionDelegate2<int, SimpleVariantArray*>(sum);
 			DynamicFunctionFactory dynamicFunctionFactory("int", theNativeFunction,&scriptCompiler);
 			int functionId = scriptCompiler.registDynamicFunction("sum", &dynamicFunctionFactory);
 

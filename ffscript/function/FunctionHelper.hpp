@@ -11,8 +11,8 @@
 **********************************************************************/
 
 #pragma once
-#include "CdeclFunction2.hpp"
-#include "CdeclFunction3.hpp"
+#include "FunctionDelegate2.hpp"
+#include "FunctionDelegate3.hpp"
 #include <type_traits>
 
 

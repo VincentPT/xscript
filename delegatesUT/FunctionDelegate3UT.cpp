@@ -11,7 +11,7 @@
 #include "../ffscriptUT/fftest.hpp"
 
 #include <functional>
-#include "../ffscript/function/CdeclFunction3.hpp"
+#include "../ffscript/function/FunctionDelegate3.hpp"
 #include "../ffscriptUT/TemplateForTest.hpp"
 #include "FunctionsForTest.h"
 #include <math.h>
@@ -67,7 +67,7 @@ namespace ffscriptUT
 	{
 		int p1 = 123;
 		float p2 = 456.0f;
-		CdelFunction3<double, int, float> cdelFunction(sum);
+		FunctionDelegate3<double, int, float> cdelFunction(sum);
 		DFunction2* nativeFunction2 = &cdelFunction;
 
 		char paramData[sizeof(void*) * 2];
@@ -86,7 +86,7 @@ namespace ffscriptUT
 	{
 		SampleStruct p1 = { 456, 789.0f };
 		int p2 = 123;
-		CdelFunction3<void, SampleStruct, int> cdelFunction(sum2);
+		FunctionDelegate3<void, SampleStruct, int> cdelFunction(sum2);
 		DFunction2* nativeFunction2 = &cdelFunction;
 
 		constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
@@ -106,7 +106,7 @@ namespace ffscriptUT
 		SampleStruct p3;
 		constexpr auto alignedSizeOfStruct = sizeof(void*) == 8 ? 16 : 12;
 
-		typedef CdelFunction3<void, SampleStruct, int, SampleStruct*> AFunc;
+		typedef FunctionDelegate3<void, SampleStruct, int, SampleStruct*> AFunc;
 
 		AFunc cdelFunction((AFunc::Fx)sum21);
 
@@ -132,7 +132,7 @@ namespace ffscriptUT
 	{
 		double p2 = 789;
 		int p1 = 123;
-		CdelFunction3<double, int&, double> cdelFunction(sum);
+		FunctionDelegate3<double, int&, double> cdelFunction(sum);
 		DFunction2* nativeFunction2 = &cdelFunction;
 
 		char paramData[sizeof(void*) + sizeof(double)];
@@ -149,14 +149,14 @@ namespace ffscriptUT
 
 	TEST(FunctionDelegate3, testFunction3_new_2)
 	{	
-		CdelFunction3<void> cdelFunction(doNothing);
+		FunctionDelegate3<void> cdelFunction(doNothing);
 		DFunction2* nativeFunction2 = &cdelFunction;
 		nativeFunction2->call(nullptr, nullptr);
 	}
 
 	TEST(FunctionDelegate3, testFunction3_new_3)
 	{
-		CdelFunction3<int> cdelFunction(returnConstant);
+		FunctionDelegate3<int> cdelFunction(returnConstant);
 		DFunction2* nativeFunction2 = &cdelFunction;
 
 		int ret;

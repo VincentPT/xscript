@@ -24,7 +24,7 @@
 #include "Utils.h"
 #include "Variable.h"
 #include "DynamicFunctionFactory.h"
-#include "function/CdeclFunction2.hpp"
+#include "function/FunctionDelegate2.hpp"
 #include "function/MemberFunction2.hpp"
 
 using namespace std;
@@ -93,7 +93,7 @@ namespace ffscriptUT
 			int typeInt = scriptCompiler2.registType("int");
 			scriptCompiler2.setTypeSize(typeInt, 4);
 
-			DFunction2* addFunc = new CdeclFunction2<int, int, int>(add<int>);
+			DFunction2* addFunc = new FunctionDelegate2<int, int, int>(add<int>);
 
 
 			PredefinedOperator operators[] = {
@@ -149,7 +149,7 @@ namespace ffscriptUT
 			int typeInt = scriptCompiler2.registType("int");
 			scriptCompiler2.setTypeSize(typeInt, 4);
 
-			DFunction2* addFunc = new CdeclFunction2<int, int, int>(add<int>);
+			DFunction2* addFunc = new FunctionDelegate2<int, int, int>(add<int>);
 
 
 			PredefinedOperator operators[] = {
@@ -218,7 +218,7 @@ namespace ffscriptUT
 			int typeInt = scriptCompiler2.registType("int");
 			scriptCompiler2.setTypeSize(typeInt, 4);
 
-			DFunction2* addFunc = new CdeclFunction2<int, int, int>(add<int>);
+			DFunction2* addFunc = new FunctionDelegate2<int, int, int>(add<int>);
 			PredefinedOperator operators[] = {
 				{ "+", "int,int", "int", addFunc }
 			};
