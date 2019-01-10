@@ -14,18 +14,17 @@ endif (UNIX)
 conan_basic_setup()
 
 SET (PROJECT_SOURCE_FILES
-	./fftest.hpp
-	./CompileSuiteUT.cpp
-	./AssigmentCompoundUT.cpp
-	./Utility.cpp
-	./BitwiseOperatorsUT.cpp
-	./CdeclFunctionUT.cpp
-	./CompileDynamicFunctionUT.cpp
-	./CompileProgramInFile.cpp
-	./CompileProgramUT.cpp
-	./CompileProgramUT2.cpp
-	./CompletedConstructorDestructorsUT.cpp
-	./CompositeConstructorUT.cpp
+	fftest.hpp
+	CompileSuiteUT.cpp
+	AssigmentCompoundUT.cpp
+	Utility.cpp
+	BitwiseOperatorsUT.cpp
+	CompileDynamicFunctionUT.cpp
+	CompileProgramInFile.cpp
+	CompileProgramUT.cpp
+	CompileProgramUT2.cpp
+	CompletedConstructorDestructorsUT.cpp
+	CompositeConstructorUT.cpp
 	ConditionalOperatorUT.cpp
 	ConstructorDestructorForCodeUT.cpp
 	ConstructorDestructorUT.cpp
@@ -39,7 +38,6 @@ SET (PROJECT_SOURCE_FILES
 	InternalComplierSuiteUT.cpp
 	LambdaExpressionUT.cpp
 	MakePathsUT.cpp
-	MemberFunctionUT.cpp
 	MemoryblockUT.cpp
 	MultiCompilerUT.cpp
 	MultiProgramUT.cpp

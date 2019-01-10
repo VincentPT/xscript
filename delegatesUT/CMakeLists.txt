@@ -16,6 +16,8 @@ conan_basic_setup()
 
 SET (PROJECT_SOURCE_FILES
 	MFunctionTUT.cpp
+	CdeclFunctionUT.cpp
+	MemberFunctionUT.cpp
 	../ffscript/function/DynamicFunction2.cpp
 )
 
