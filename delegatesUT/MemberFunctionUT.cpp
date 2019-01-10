@@ -8,11 +8,11 @@
 **
 *
 **********************************************************************/
-#include "fftest.hpp"
+#include "../ffscriptUT/fftest.hpp"
 
 #include <functional>
-#include "function/MemberFunction.hpp"
-#include "TemplateForTest.hpp"
+#include "../ffscript/function/MemberFunction.hpp"
+#include "../ffscriptUT/TemplateForTest.hpp"
 #include <math.h>
 
 using namespace std;

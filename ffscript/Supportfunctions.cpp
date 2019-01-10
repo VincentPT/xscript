@@ -14,7 +14,7 @@
 #include "ControllerExecutor.h"
 #include "FunctionScope.h"
 #include "LoopScope.h"
-#include "function/CdeclFunction.hpp"
+#include "function/FunctionDelegate.hpp"
 #include "function/MemberFunction.hpp"
 #include "ScriptCompiler.h"
 #include "FunctionFactory.h"
@@ -113,7 +113,7 @@ namespace ffscript {
 		ExitContextScope* exitScopeCommand = new ExitContextScope();
 
 		CodeUpdater* updateLaterMan = CodeUpdater::getInstance(scope);
-		auto updateExitScopeCommand = new CdeclFunction<void, ContextScope*, ExitContextScope*>(ExitScopeBuilder::fillParams);
+		auto updateExitScopeCommand = new FunctionDelegate<void, ContextScope*, ExitContextScope*>(ExitScopeBuilder::fillParams);
 		updateExitScopeCommand->pushParam(scope);
 		updateExitScopeCommand->pushParam(exitScopeCommand);
 		updateLaterMan->addUpdateLaterTask(updateExitScopeCommand);
@@ -183,7 +183,7 @@ namespace ffscript {
 		auto exitAtReturn = new ExitScriptFuntionAtReturn();
 		pExcutor->addCommand(exitAtReturn);
 
-		auto updateReturnCommand2 = new CdeclFunction<void, ContextScope*, ContextScope*, ExitScriptFuntionAtReturn*>(ReturnCommandBuilder_FillParam);
+		auto updateReturnCommand2 = new FunctionDelegate<void, ContextScope*, ContextScope*, ExitScriptFuntionAtReturn*>(ReturnCommandBuilder_FillParam);
 		updateReturnCommand2->pushParam(_ownerScope);
 		updateReturnCommand2->pushParam(_functionScope);
 		updateReturnCommand2->pushParam(exitAtReturn);
@@ -247,7 +247,7 @@ namespace ffscript {
 		exitAtReturn->setCommandData(_indexPreventDestructorRun);
 		pExcutor->addCommand(exitAtReturn);
 
-		auto updateReturnCommand2 = new CdeclFunction<void, ContextScope*, ContextScope*, ExitScriptFuntionAtReturn*>(ReturnCommandBuilder_FillParam);
+		auto updateReturnCommand2 = new FunctionDelegate<void, ContextScope*, ContextScope*, ExitScriptFuntionAtReturn*>(ReturnCommandBuilder_FillParam);
 		updateReturnCommand2->pushParam(_ownerScope);
 		updateReturnCommand2->pushParam(_functionScope);
 		updateReturnCommand2->pushParam(exitAtReturn);

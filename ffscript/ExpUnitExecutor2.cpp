@@ -11,7 +11,7 @@
 *
 **********************************************************************/
 
-#include "function/CdeclFunction.hpp"
+#include "function/FunctionDelegate.hpp"
 #include "function/MemberFunction.hpp"
 #include "function/DynamicFunction2.h"
 #include "function/DynamicFunction.h"
@@ -246,7 +246,7 @@ namespace ffscript {
 				////when this function is called, the command pointer of the script function is not determine yet
 				////so we need to add to update later list of program to complete the arguments.
 
-				auto updateScriptFunctionFunc = new CdeclFunction<void, Program*, CallScriptFuntion2*, int>(CodeUpdater::updateScriptFunction);
+				auto updateScriptFunctionFunc = new FunctionDelegate<void, Program*, CallScriptFuntion2*, int>(CodeUpdater::updateScriptFunction);
 				updateScriptFunctionFunc->pushParam(program);
 				updateScriptFunctionFunc->pushParam((void*)callScriptFunctionFunc);
 				updateScriptFunctionFunc->pushParam((void*)(size_t)scriptFunction->getId());
@@ -358,7 +358,7 @@ namespace ffscript {
 		callCreateLambda->setCommandData(returnOffset, beginParamOffset, paramSize);
 
 		//set lambda target function address
-		auto updateCreateLambdaFunctionFunc = new CdeclFunction<void, Program*, CallCreateLambda*, int>(CodeUpdater::updateLamdaScriptFunctionObject);
+		auto updateCreateLambdaFunctionFunc = new FunctionDelegate<void, Program*, CallCreateLambda*, int>(CodeUpdater::updateLamdaScriptFunctionObject);
 		updateCreateLambdaFunctionFunc->pushParam(program);
 		updateCreateLambdaFunctionFunc->pushParam((void*)callCreateLambda);
 		updateCreateLambdaFunctionFunc->pushParam((void*)(size_t)functionId);
@@ -1141,7 +1141,7 @@ namespace ffscript {
 					auto userBlockRef = dynamic_pointer_cast<ObjectBlock<OperatorBuidInfo>>(node->getUserData());
 					OperatorBuidInfo* buildInfo = (OperatorBuidInfo*)userBlockRef->getDataRef();
 					if (buildInfo->operatorIndex >= 0) {
-						auto constructorTrigger = std::make_shared<CdeclFunction<void, int>>(afterCallConstructor);
+						auto constructorTrigger = std::make_shared<FunctionDelegate<void, int>>(afterCallConstructor);
 						//push constructor index to function afterCallConstructor
 						constructorTrigger->pushParam((void*)(size_t)buildInfo->operatorIndex);
 						triggerCommand->setAfterTrigger(constructorTrigger, "setctor(" + std::to_string(buildInfo->operatorIndex) + ")");
@@ -1216,7 +1216,7 @@ namespace ffscript {
 					OperatorBuidInfo* buildInfo = (OperatorBuidInfo*)userBlockRef->getDataRef();
 					if (operatorType & UMASK_DESTRUCTOR) {
 						triggerCommand = new ConditionTriggerCommand();
-						auto destructorTrigger = std::make_shared<CdeclFunction<unsigned char, int>>(beforeCallDestructor);
+						auto destructorTrigger = std::make_shared<FunctionDelegate<unsigned char, int>>(beforeCallDestructor);
 						//push constructor index to function beforeCallDestructor
 						destructorTrigger->pushParam((void*)(size_t)buildInfo->operatorIndex);
 						//set condition command

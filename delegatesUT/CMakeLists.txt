@@ -18,6 +18,7 @@ SET (PROJECT_SOURCE_FILES
 	MFunctionTUT.cpp
 	CdeclFunctionUT.cpp
 	MemberFunctionUT.cpp
+	../ffscript/function/DynamicFunction.cpp
 	../ffscript/function/DynamicFunction2.cpp
 )
 

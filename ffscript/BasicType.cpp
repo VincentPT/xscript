@@ -18,7 +18,7 @@
 #include "ScriptCompiler.h"
 #include "BasicOperators.hpp"
 #include "ScriptType.h"
-#include "function/CdeclFunction.hpp"
+#include "function/FunctionDelegate.hpp"
 #include "Utils.h"
 
 namespace ffscript {
@@ -194,8 +194,8 @@ namespace ffscript {
 
 	void BasicTypes::registerConstants(ScriptCompiler* scriptCompiler) const {
 
-		auto falseFunctionObj = std::make_shared<CdeclFunction<ConstOperandBase*, bool>>(createBoolConsant);
-		auto trueFunctionObj = std::make_shared<CdeclFunction<ConstOperandBase*, bool>>(createBoolConsant);
+		auto falseFunctionObj = std::make_shared<FunctionDelegate<ConstOperandBase*, bool>>(createBoolConsant);
+		auto trueFunctionObj = std::make_shared<FunctionDelegate<ConstOperandBase*, bool>>(createBoolConsant);
 
 		falseFunctionObj->pushParam((void*)false);
 		trueFunctionObj->pushParam((void*)true);
@@ -203,7 +203,7 @@ namespace ffscript {
 		scriptCompiler->setConstantMap("false", falseFunctionObj);
 		scriptCompiler->setConstantMap("true", trueFunctionObj);
 
-		auto nullFunctionObj = std::make_shared<CdeclFunction<ConstOperandBase*>>(createNullConsant);
+		auto nullFunctionObj = std::make_shared<FunctionDelegate<ConstOperandBase*>>(createNullConsant);
 		scriptCompiler->setConstantMap("nullptr", nullFunctionObj);
 	}
 

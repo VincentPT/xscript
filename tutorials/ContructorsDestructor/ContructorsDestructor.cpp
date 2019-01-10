@@ -12,7 +12,7 @@
 *
 **********************************************************************/
 #include "../TutorialCommon.h"
-#include <function/CdeclFunction.hpp>
+#include <function/FunctionDelegate.hpp>
 
 class ConsoleCompilationLogger : public CompilationLogger {
 	void log(MessageType type, const wchar_t* message) {

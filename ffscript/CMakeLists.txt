@@ -3,7 +3,7 @@ project(ffscript C CXX)
 
 SET (DELEGATES
 	./function/CachedFunction.hpp
-	./function/CdeclFunction.hpp
+	./function/FunctionDelegate.hpp
 	./function/CdeclFunction2.hpp
 	./function/CdeclFunction3.hpp
 	./function/DynamicFunction.h

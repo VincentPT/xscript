@@ -10,7 +10,7 @@
 *
 **********************************************************************/
 
-#include "function/CdeclFunction.hpp"
+#include "function/FunctionDelegate.hpp"
 #include "function/DynamicFunction2.h"
 #include "Executor.h"
 #include "ScriptScope.h"
