@@ -66,7 +66,7 @@ namespace ffscript {
 	protected:
 		ConversionFactoryBase(ScriptCompiler* scriptCompiler, const ScriptType& returnType) :FunctionFactory(nullptr, scriptCompiler) {
 			this->setReturnType(returnType);
-			_nativeFunction = createFunctionCdeclRef<TD, TS>(ConversionFactoryBase::convert);
+			_nativeFunction = createFunctionDelegateRef<TD, TS>(ConversionFactoryBase::convert);
 		}
 	};
 
@@ -93,7 +93,7 @@ namespace ffscript {
 	public:
 		ConversionFactoryToBool(ScriptCompiler* scriptCompiler, const ScriptType& returnType) : FunctionFactory(nullptr, scriptCompiler) {
 			this->setReturnType(returnType);
-			_nativeFunction = createFunctionCdeclRef<TD, TS>(ConversionFactoryToBool::convert);
+			_nativeFunction = createFunctionDelegateRef<TD, TS>(ConversionFactoryToBool::convert);
 		}
 		Function* createFunction(const std::string& name, int id) {
 			NativeFunction* pFunction = new CastingFunction(name);
@@ -113,7 +113,7 @@ namespace ffscript {
 	public:
 		ConversionFactoryBoolTo(ScriptCompiler* scriptCompiler, const ScriptType& returnType) :FunctionFactory(nullptr, scriptCompiler) {
 			this->setReturnType(returnType);
-			_nativeFunction = createFunctionCdeclRef<TD, TS>(ConversionFactoryBoolTo::convert);
+			_nativeFunction = createFunctionDelegateRef<TD, TS>(ConversionFactoryBoolTo::convert);
 		}
 		Function* createFunction(const std::string& name, int id) {
 			NativeFunction* pFunction = new CastingFunction(name);

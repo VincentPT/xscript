@@ -56,47 +56,47 @@ namespace ffscript {
 		fb.registFunction("bool", "int", new ConversionFactoryToBool<int>(scriptCompiler, typeBool), true);
 
 #pragma region integer operators only
-		fb.registPredefinedOperators("+", "int,int", "int", createFunctionCdecl<int, int, int>(add));
-		fb.registPredefinedOperators("-", "int,int", "int", createFunctionCdecl<int, int, int>(sub));
-		fb.registPredefinedOperators("*", "int,int", "int", createFunctionCdecl<int, int, int>(mul));
-		fb.registPredefinedOperators("/", "int,int", "int", createFunctionCdecl<int, int, int>(div));
-		fb.registPredefinedOperators("%", "int,int", "int", createFunctionCdecl<int, int, int>(mod));
+		fb.registPredefinedOperators("+", "int,int", "int", createFunctionDelegate<int, int, int>(add));
+		fb.registPredefinedOperators("-", "int,int", "int", createFunctionDelegate<int, int, int>(sub));
+		fb.registPredefinedOperators("*", "int,int", "int", createFunctionDelegate<int, int, int>(mul));
+		fb.registPredefinedOperators("/", "int,int", "int", createFunctionDelegate<int, int, int>(div));
+		fb.registPredefinedOperators("%", "int,int", "int", createFunctionDelegate<int, int, int>(mod));
 		//bitwises
-		fb.registPredefinedOperators("&", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_and));
-		fb.registPredefinedOperators("|", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_or ));
-		fb.registPredefinedOperators("^", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_xor));
-		fb.registPredefinedOperators("<<", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_shiftLeft));
-		fb.registPredefinedOperators(">>", "int,int", "int", createFunctionCdecl<int, int, int>(bitwise_shiftRight));
+		fb.registPredefinedOperators("&", "int,int", "int", createFunctionDelegate<int, int, int>(bitwise_and));
+		fb.registPredefinedOperators("|", "int,int", "int", createFunctionDelegate<int, int, int>(bitwise_or ));
+		fb.registPredefinedOperators("^", "int,int", "int", createFunctionDelegate<int, int, int>(bitwise_xor));
+		fb.registPredefinedOperators("<<", "int,int", "int", createFunctionDelegate<int, int, int>(bitwise_shiftLeft));
+		fb.registPredefinedOperators(">>", "int,int", "int", createFunctionDelegate<int, int, int>(bitwise_shiftRight));
 		//pre-post fix operators
-		fb.registPredefinedOperators("neg", "int", "int", createFunctionCdecl<int, int>(neg));
-		fb.registPredefinedOperators("~", "int", "int", createFunctionCdecl<int, int>(bitwise_not));
+		fb.registPredefinedOperators("neg", "int", "int", createFunctionDelegate<int, int>(neg));
+		fb.registPredefinedOperators("~", "int", "int", createFunctionDelegate<int, int>(bitwise_not));
 		//comparision operators
-		fb.registPredefinedOperators("<", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::less));
-		fb.registPredefinedOperators("<=", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::less_or_equal));
-		fb.registPredefinedOperators(">", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::great));
-		fb.registPredefinedOperators(">=", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::great_or_equal));
-		fb.registPredefinedOperators("==", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::equal));
-		fb.registPredefinedOperators("!=", "int,int", "bool", createFunctionCdecl<bool, int, int>(operators::not_equal));
+		fb.registPredefinedOperators("<", "int,int", "bool", createFunctionDelegate<bool, int, int>(operators::less));
+		fb.registPredefinedOperators("<=", "int,int", "bool", createFunctionDelegate<bool, int, int>(operators::less_or_equal));
+		fb.registPredefinedOperators(">", "int,int", "bool", createFunctionDelegate<bool, int, int>(operators::great));
+		fb.registPredefinedOperators(">=", "int,int", "bool", createFunctionDelegate<bool, int, int>(operators::great_or_equal));
+		fb.registPredefinedOperators("==", "int,int", "bool", createFunctionDelegate<bool, int, int>(operators::equal));
+		fb.registPredefinedOperators("!=", "int,int", "bool", createFunctionDelegate<bool, int, int>(operators::not_equal));
 		//logic operators
-		fb.registPredefinedOperators("&&", "int,int", "bool", createFunctionCdecl<bool, int, int>(logic_and));
-		fb.registPredefinedOperators("||", "int,int", "bool", createFunctionCdecl<bool, int, int>(logic_or));
-		fb.registPredefinedOperators("!", "int", "bool", createFunctionCdecl<bool, int>(logic_not));		
+		fb.registPredefinedOperators("&&", "int,int", "bool", createFunctionDelegate<bool, int, int>(logic_and));
+		fb.registPredefinedOperators("||", "int,int", "bool", createFunctionDelegate<bool, int, int>(logic_or));
+		fb.registPredefinedOperators("!", "int", "bool", createFunctionDelegate<bool, int>(logic_not));		
 #pragma endregion
 
 #pragma region bool operators only
 		//logic operators
-		fb.registPredefinedOperators("&&", "bool,bool", "bool", createFunctionCdecl<bool, bool, bool>(logic_and));
-		fb.registPredefinedOperators("||", "bool,bool", "bool", createFunctionCdecl<bool, bool, bool>(logic_or));
-		fb.registPredefinedOperators("!", "bool", "bool", createFunctionCdecl<bool, bool>(logic_not));
+		fb.registPredefinedOperators("&&", "bool,bool", "bool", createFunctionDelegate<bool, bool, bool>(logic_and));
+		fb.registPredefinedOperators("||", "bool,bool", "bool", createFunctionDelegate<bool, bool, bool>(logic_or));
+		fb.registPredefinedOperators("!", "bool", "bool", createFunctionDelegate<bool, bool>(logic_not));
 #pragma endregion
 
 #pragma region combine integer and bool
 		//logic operators - integer and bool
-		fb.registPredefinedOperators("&&", "int,bool", "bool", createFunctionCdecl<bool, int, bool>(logic_and));
-		fb.registPredefinedOperators("||", "int,bool", "bool", createFunctionCdecl<bool, int, bool>(logic_or));
+		fb.registPredefinedOperators("&&", "int,bool", "bool", createFunctionDelegate<bool, int, bool>(logic_and));
+		fb.registPredefinedOperators("||", "int,bool", "bool", createFunctionDelegate<bool, int, bool>(logic_or));
 		//logic operators - bool and integer
-		fb.registPredefinedOperators("&&", "bool,int", "bool", createFunctionCdecl<bool, bool, int>(logic_and));
-		fb.registPredefinedOperators("||", "bool,int", "bool", createFunctionCdecl<bool, bool, int>(logic_or));
+		fb.registPredefinedOperators("&&", "bool,int", "bool", createFunctionDelegate<bool, bool, int>(logic_and));
+		fb.registPredefinedOperators("||", "bool,int", "bool", createFunctionDelegate<bool, bool, int>(logic_or));
 #pragma endregion
 
 		//register choice operator of conditional operator( condition ? ifClause : elseClause)

@@ -16,7 +16,7 @@ conan_basic_setup()
 
 SET (PROJECT_SOURCE_FILES
 	MFunctionTUT.cpp
-	CdeclFunctionUT.cpp
+	FunctionDelegatesUT.cpp
 	MemberFunctionUT.cpp
 	FunctionsForTest.h
 	MethodsForTest.h

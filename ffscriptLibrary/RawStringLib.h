@@ -20,7 +20,7 @@ namespace ffscript {
 
 	template <class T>
 	DFunction2Ref createStringNativeFunc(RawString(*f)(T)) {
-		return createFunctionCdeclRef<RawString, T>(f);
+		return createFunctionDelegateRef<RawString, T>(f);
 	}
 
 	void includeRawStringToCompiler(ScriptCompiler* scriptCompiler);

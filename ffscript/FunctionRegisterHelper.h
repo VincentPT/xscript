@@ -67,48 +67,48 @@ namespace ffscript {
 	};
 
 	template <class Rt, class... Types>
-	DFunction2* createFunctionCdecl(Rt(*f)(Types...)) {
+	DFunction2* createFunctionDelegate(Rt(*f)(Types...)) {
 		return new FunctionT<Rt, Types...>(f);
 	}
 
 	template <class Rt, class... Types>
-	DFunction2Ref createFunctionCdeclRef(Rt(*f)(Types...)) {
+	DFunction2Ref createFunctionDelegateRef(Rt(*f)(Types...)) {
 		return std::make_shared<FunctionT<Rt, Types...>>(f);
 	}
 
 	template <class Class, class Rt, class... Types>
-	DFunction2* createFunctionMember(Class* obj, Rt(Class::*f)(Types...)) {
+	DFunction2* createMethodDelegate(Class* obj, Rt(Class::*f)(Types...)) {
 		return new MFunctionT<Class, Rt, Types...>(obj, f);
 	}
 
 	template <class Class, class Rt, class... Types>
-	DFunction2Ref createFunctionMemberRef(Class* obj, Rt(Class::*f)(Types...)) {
+	DFunction2Ref createMethodDelegateRef(Class* obj, Rt(Class::*f)(Types...)) {
 		return std::make_shared<MFunctionT<Class, Rt, Types...>>(obj, f);
 	}
 
 	template <class Class, class Rt, class... Types>
-	DFunction2* createFunctionMember(Class* obj, Rt(Class::*f)(Types...) const) {
+	DFunction2* createMethodDelegate(Class* obj, Rt(Class::*f)(Types...) const) {
 		return new MFunctionT<Class, Rt, Types...>(obj, f);
 	}
 
 	template <class Class, class Rt, class... Types>
-	DFunction2Ref createFunctionMemberRef(Class* obj, Rt(Class::*f)(Types...) const) {
+	DFunction2Ref createMethodDelegateRef(Class* obj, Rt(Class::*f)(Types...) const) {
 		return std::make_shared<MFunctionT<Class, Rt, Types...>>(obj, f);
 	}
 
 	template <class Rt, class... Types>
 	FunctionFactory* createUserFunctionFactory(ScriptCompiler* scriptCompiler, const std::string& rt, Rt(*f)(Types...)) {
-		return new DefaultUserFunctionFactory(createFunctionCdeclRef<Rt, Types...>(f), scriptCompiler, rt, sizeof...(Types));
+		return new DefaultUserFunctionFactory(createFunctionDelegateRef<Rt, Types...>(f), scriptCompiler, rt, sizeof...(Types));
 	}
 
 	template <class Class, class Rt, class... Types>
 	FunctionFactory* createUserFunctionFactoryMember(ScriptCompiler* scriptCompiler, Class* obj, const std::string& rt, Rt(Class::*f)(Types...)) {
-		return new DefaultUserFunctionFactory(createFunctionMemberRef<Class, Rt, Types...>(obj, f), scriptCompiler, rt, sizeof...(Types));
+		return new DefaultUserFunctionFactory(createMethodDelegateRef<Class, Rt, Types...>(obj, f), scriptCompiler, rt, sizeof...(Types));
 	}
 
 	template <class Class, class Rt, class... Types>
 	FunctionFactory* createUserFunctionFactoryMember(ScriptCompiler* scriptCompiler, Class* obj, const std::string& rt, Rt(Class::*f)(Types...) const) {
-		return new DefaultUserFunctionFactory(createFunctionMemberRef<Class, Rt, Types...>(obj, f), scriptCompiler, rt, sizeof...(Types));
+		return new DefaultUserFunctionFactory(createMethodDelegateRef<Class, Rt, Types...>(obj, f), scriptCompiler, rt, sizeof...(Types));
 	}
 
 	template <class Class, class Rt, class... Types>
@@ -179,7 +179,7 @@ namespace ffscript {
 			operatorName,
 			paramTypes, // parameter type of the function
 			returnType,
-			createFunctionCdecl(nativeFunction)
+			createFunctionDelegate(nativeFunction)
 		);
 	}
 
@@ -189,7 +189,7 @@ namespace ffscript {
 			scriptFunction,
 			paramTypes, // parameter type of the function
 			returnType,
-			createFunctionMember(obj, nativeFunction)
+			createMethodDelegate(obj, nativeFunction)
 		);
 	}
 
@@ -199,27 +199,27 @@ namespace ffscript {
 			scriptFunction,
 			paramTypes, // parameter type of the function
 			returnType,
-			createFunctionMember(obj, nativeFunction)
+			createMethodDelegate(obj, nativeFunction)
 		);
 	}
 
 	template<class Rt>
 	int registerDynamicFunction(FunctionRegisterHelper& fb, Rt(*nativeFunction)(SimpleVariantArray*), const std::string& scriptFunction, const std::string& returnType) {
-		auto functionObj = createFunctionCdecl(nativeFunction);
+		auto functionObj = createFunctionDelegate(nativeFunction);
 		auto functionUnitFactory = new DynamicFunctionFactory(returnType, functionObj, fb.getSriptCompiler());
 		return fb.registDynamicFunction(scriptFunction, functionUnitFactory);
 	}
 
 	template<class Class, class Rt>
 	int registerDynamicFunction(FunctionRegisterHelper& fb, Class* obj, Rt(Class::*nativeFunction)(SimpleVariantArray*), const std::string& scriptFunction, const std::string& returnType) {
-		auto functionObj = createFunctionMember(obj, nativeFunction);
+		auto functionObj = createMethodDelegate(obj, nativeFunction);
 		auto functionUnitFactory = new DynamicFunctionFactory(returnType, functionObj, fb.getSriptCompiler());
 		return fb.registDynamicFunction(scriptFunction, functionUnitFactory);
 	}
 
 	template<class Class, class Rt>
 	int registerDynamicFunction(FunctionRegisterHelper& fb, Class* obj, Rt(Class::*nativeFunction)(SimpleVariantArray*) const, const std::string& scriptFunction, const std::string& returnType) {
-		auto functionObj = createFunctionMember(obj, nativeFunction);
+		auto functionObj = createMethodDelegate(obj, nativeFunction);
 		auto functionUnitFactory = new DynamicFunctionFactory(returnType, functionObj, fb.getSriptCompiler());
 		return fb.registDynamicFunction(scriptFunction, functionUnitFactory);
 	}

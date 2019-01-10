@@ -2418,7 +2418,7 @@ namespace ffscript {
 			copyArgs.append("&");
 
 			FunctionRegisterHelper fb(this);
-			int f = fb.registFunction(SYSTEM_FUNCTION_COPY_CONSTRUCTOR, copyArgs, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", createFunctionCdecl<void, RuntimeFunctionInfo*, RuntimeFunctionInfo*>(runtimeFunctionInfoCopyConstructor), this), true);
+			int f = fb.registFunction(SYSTEM_FUNCTION_COPY_CONSTRUCTOR, copyArgs, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", createFunctionDelegate<void, RuntimeFunctionInfo*, RuntimeFunctionInfo*>(runtimeFunctionInfoCopyConstructor), this), true);
 			if (!registBinaryConstructor(iType, f)) {
 				//throw exception("Cannot register copy constructor for function object");
 				LOG_COMPILE_MESSAGE(_logger, MESSAGE_WARNING, formatMessage("Cannot register copy constructor for function object '%s'", functionType.c_str()));
@@ -2430,7 +2430,7 @@ namespace ffscript {
 			copyArgs.append(", " SYSTEM_NULL_TYPE);
 
 			f = fb.registFunction("_initize_by_null", copyArgs, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void",
-				createFunctionCdecl<void, RuntimeFunctionInfo*, void*>(runtimeFunctionInfoConstructByNull), this), true);
+				createFunctionDelegate<void, RuntimeFunctionInfo*, void*>(runtimeFunctionInfoConstructByNull), this), true);
 			if (!registConstructor(iType, f)) {
 				//throw exception("Cannot register initliaze constructor to null for function object");
 				LOG_COMPILE_MESSAGE(_logger, MESSAGE_WARNING, formatMessage("Cannot register initliaze constructor to null for function object '%s'", functionType.c_str()));

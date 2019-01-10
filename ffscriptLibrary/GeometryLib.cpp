@@ -132,15 +132,15 @@ namespace ffscript {
 		rayStruct->addMember(typePoint, "dir");
 		auto iTypeRay = scriptCompiler->registStruct(rayStruct);
 
-		helper.registPredefinedOperators("+", "Point,Point", "Point", createFunctionCdecl<Point, Point, Point>(operator+));
-		helper.registPredefinedOperators("-", "Point,Point", "Point", createFunctionCdecl<Point, Point, Point>(operator-));
-		helper.registPredefinedOperators("*", "Point,float", "Point",createFunctionCdecl<Point, Point, float>(operator*));
-		helper.registPredefinedOperators("/", "Point,float", "Point", createFunctionCdecl<Point, Point, float>(operator/));
+		helper.registPredefinedOperators("+", "Point,Point", "Point", createFunctionDelegate<Point, Point, Point>(operator+));
+		helper.registPredefinedOperators("-", "Point,Point", "Point", createFunctionDelegate<Point, Point, Point>(operator-));
+		helper.registPredefinedOperators("*", "Point,float", "Point",createFunctionDelegate<Point, Point, float>(operator*));
+		helper.registPredefinedOperators("/", "Point,float", "Point", createFunctionDelegate<Point, Point, float>(operator/));
 		
-		helper.registPredefinedOperators("+=", "Point&,Point", "Point&", createFunctionCdecl<const Point&, Point&, Point>(operator+=));
-		helper.registPredefinedOperators("-=", "Point&,Point", "Point&", createFunctionCdecl<const Point&, Point&, Point>(operator-=));
-		helper.registPredefinedOperators("*=", "Point&,float", "Point&", createFunctionCdecl<const Point&, Point&, float>(operator*=));
-		helper.registPredefinedOperators("/=", "Point&,float", "Point&", createFunctionCdecl<const Point&, Point&, float>(operator/=));
+		helper.registPredefinedOperators("+=", "Point&,Point", "Point&", createFunctionDelegate<const Point&, Point&, Point>(operator+=));
+		helper.registPredefinedOperators("-=", "Point&,Point", "Point&", createFunctionDelegate<const Point&, Point&, Point>(operator-=));
+		helper.registPredefinedOperators("*=", "Point&,float", "Point&", createFunctionDelegate<const Point&, Point&, float>(operator*=));
+		helper.registPredefinedOperators("/=", "Point&,float", "Point&", createFunctionDelegate<const Point&, Point&, float>(operator/=));
 		
 		//auto functionId = helper.registFunction("Point", "ref Point, float, float", createUserFunctionFactory<void, Point&, float, float>(scriptCompiler, "void", constructPoint));
 		//scriptCompiler->registConstructor(iTypePoint, functionId);
@@ -149,9 +149,9 @@ namespace ffscript {
 		//scriptCompiler->registConstructor(iTypeRay, functionId);
 
 		// dot product
-		helper.registPredefinedOperators("*", "Point,Point", "float", createFunctionCdecl<float, Point, Point>(operator*));
+		helper.registPredefinedOperators("*", "Point,Point", "float", createFunctionDelegate<float, Point, Point>(operator*));
 		// reverser direction
-		helper.registPredefinedOperators("-", "Point", "Point", createFunctionCdecl<Point, Point>(operator-));
+		helper.registPredefinedOperators("-", "Point", "Point", createFunctionDelegate<Point, Point>(operator-));
 
 		// general line
 		auto generalLineTypeInt = scriptCompiler->registType("GeneralLine");

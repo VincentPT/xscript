@@ -62,7 +62,7 @@ namespace ffscriptUT
 				;
 			
 			int functionId = scriptCompiler->registFunction("inc", "ref int", new DefaultUserFunctionFactory(
-				createFunctionCdeclRef<int, int*>(inc), scriptCompiler, "int", 1)
+				createFunctionDelegateRef<int, int*>(inc), scriptCompiler, "int", 1)
 			);
 
 			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
@@ -99,7 +99,7 @@ namespace ffscriptUT
 				;
 
 			int functionId = scriptCompiler->registFunction("inc", "int&", new DefaultUserFunctionFactory(
-				createFunctionCdeclRef<int, int&>(inc), scriptCompiler, "int", 1)
+				createFunctionDelegateRef<int, int&>(inc), scriptCompiler, "int", 1)
 			);
 
 			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
@@ -136,7 +136,7 @@ namespace ffscriptUT
 				;
 
 			int functionId = scriptCompiler->registFunction("inc", "int", new DefaultUserFunctionFactory(
-				createFunctionCdeclRef<int, int>(inc), scriptCompiler, "int", 1)
+				createFunctionDelegateRef<int, int>(inc), scriptCompiler, "int", 1)
 			);
 
 			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
@@ -173,7 +173,7 @@ namespace ffscriptUT
 				;
 
 			int functionId = scriptCompiler->registFunction("jump", "ref int, int", new DefaultUserFunctionFactory(
-				createFunctionCdeclRef<void, int*, int>(jump), scriptCompiler, "void", 2)
+				createFunctionDelegateRef<void, int*, int>(jump), scriptCompiler, "void", 2)
 			);
 
 			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
