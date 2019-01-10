@@ -116,7 +116,7 @@ void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 	}
 
 	// map cout constant as _Ptr_cout. So, we can use 'operator<<' of ostream for some types
-	setConstantMap(scriptCompiler, "cout", "ostream", (size_t)_Ptr_cout);
+	setConstantMap(scriptCompiler, "cout", "ostream", (size_t)&cout);
 	// map endl as break line. So, we can use 'operator<<' of ostream like 'cout << endl'
 	setConstantMap(scriptCompiler, "endl", "char", '\n');
 

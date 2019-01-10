@@ -159,3 +159,8 @@ set (PROJECT_SOURCE_FILES ${HEADERS} ${SOURCES} ${DELEGATES})
 add_library(${PROJECT_NAME} ${PROJECT_SOURCE_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+if (UNIX)
+    if(NOT APPLE)
+        target_link_libraries(${PROJECT_NAME} PUBLIC pthread)
+    endif()
+endif (UNIX)

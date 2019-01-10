@@ -3,15 +3,9 @@ project(ffscriptUT C CXX)
 
 if (WIN32)
     include(${CMAKE_CURRENT_SOURCE_DIR}/../gtest/conan/conanbuildinfo_multi.cmake)
+	conan_basic_setup()
 endif (WIN32)
 
-if (UNIX)
-    if(NOT APPLE)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/../gtest/conan/conanbuildinfo.cmake)
-    endif()
-endif (UNIX)
-
-conan_basic_setup()
 
 SET (PROJECT_SOURCE_FILES
 	fftest.hpp
@@ -60,7 +54,13 @@ SET (PROJECT_SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} main.cpp ${PROJECT_SOURCE_FILES})
-conan_target_link_libraries(${PROJECT_NAME})
+
+if (WIN32)
+    conan_target_link_libraries(${PROJECT_NAME})
+else (WIN32)
+	target_link_libraries(${PROJECT_NAME} gtest gtest_main)
+endif (WIN32)
+
 target_link_libraries(${PROJECT_NAME} ffscriptLibrary)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} ARGS -E copy "${CMAKE_CURRENT_SOURCE_DIR}/scripts/CreateSimpleString1.c955" "$<TARGET_FILE_DIR:${PROJECT_NAME}>")

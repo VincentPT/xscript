@@ -3,16 +3,9 @@ project(delegatesUT C CXX)
 
 if (WIN32)
     include(${CMAKE_CURRENT_SOURCE_DIR}/../gtest/conan/conanbuildinfo_multi.cmake)
+	conan_basic_setup()
 endif (WIN32)
 
-if (UNIX)
-    if(NOT APPLE)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/../gtest/conan/conanbuildinfo.cmake)
-    endif()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-endif (UNIX)
-
-conan_basic_setup()
 
 SET (PROJECT_SOURCE_FILES
 	MFunctionTUT.cpp
@@ -28,4 +21,13 @@ SET (PROJECT_SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} main.cpp ${PROJECT_SOURCE_FILES})
-conan_target_link_libraries(${PROJECT_NAME})
+if (WIN32)
+    conan_target_link_libraries(${PROJECT_NAME})
+else (WIN32)
+	target_link_libraries(${PROJECT_NAME} gtest gtest_main)
+endif (WIN32)
+if (UNIX)
+    if(NOT APPLE)
+        target_link_libraries(${PROJECT_NAME} pthread)
+    endif()
+endif (UNIX)
