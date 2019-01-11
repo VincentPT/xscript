@@ -294,13 +294,18 @@ namespace ffscript {
 	};
 
 	template<class T>
-	class ContantFactory2 : public ContantFactory<T> {
+	class ContantFactory2 : public DFunction {
+		std::string _type;
+		T _val;
+		ConstOperandBase* _retStorage;
 		std::string _valInString;
 	public:
-		ContantFactory2(const T& val, const std::string& type, const std::string& valInString) : ContantFactory<T>(val, type) {
+		ContantFactory2(const T& val, const std::string& type, const std::string& valInString) : _val(val), _type(type) {
+			_ret = &_retStorage;
 			_valInString = valInString;
 		}
-
+		bool pushParam(void* param) { return false; }
+		void* popParam() { return nullptr; }
 		void call() {
 			_retStorage = new CConstOperand<T>(_val, _type, _valInString);
 		}
