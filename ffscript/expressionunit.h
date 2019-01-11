@@ -202,6 +202,12 @@ namespace ffscript {
 		{
 			_valueInString = ffscript::toString(_value);
 		}
+		CConstOperand(const T& constValue, const std::string& valueType, const char* constValueInString) :
+			_value(constValue),
+			ConstOperandBase(valueType)
+		{
+			_valueInString = constValueInString;
+		}
 		virtual ~CConstOperand(){}
 		virtual void* Execute() {
 			return &_value;
