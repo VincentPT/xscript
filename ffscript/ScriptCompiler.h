@@ -295,17 +295,17 @@ namespace ffscript {
 
 	template<class T>
 	class ContantFactory2 : public ContantFactory<T> {
-		std::shared_ptr<std::string> _valInString;
+		std::string _valInString;
 	public:
-		ContantFactory2(const T& val, const std::string& type, const char* valInString) : ContantFactory<T>(val, type) {
-			_valInString = make_shared<std::string>(valInString);
+		ContantFactory2(const T& val, const std::string& type, const std::string& valInString) : ContantFactory<T>(val, type) {
+			_valInString = valInString;
 		}
 
 		void call() {
-			_retStorage = new CConstOperand<T>(_val, _type, _valInString.get().c_str());
+			_retStorage = new CConstOperand<T>(_val, _type, _valInString);
 		}
 		DFunction* clone() {
-			return new ContantFactory2(_val, _type, _valInString.get().c_str());
+			return new ContantFactory2(_val, _type, _valInString);
 		}
 	};
 
@@ -316,7 +316,7 @@ namespace ffscript {
 	}
 
 	template<class T>
-	void setConstantMap(ScriptCompiler* compiler, const std::string& constantName, const std::string& constantType, const T& val, const char* valInString) {
+	void setConstantMap(ScriptCompiler* compiler, const std::string& constantName, const std::string& constantType, const T& val, const std::string& valInString) {
 		auto constantFactoryRef = std::make_shared<ContantFactory2<T>>(val, constantType, valInString);
 		compiler->setConstantMap(constantName, constantFactoryRef);
 	}

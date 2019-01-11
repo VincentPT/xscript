@@ -202,7 +202,7 @@ namespace ffscript {
 		{
 			_valueInString = ffscript::toString(_value);
 		}
-		CConstOperand(const T& constValue, const std::string& valueType, const char* constValueInString) :
+		CConstOperand(const T& constValue, const std::string& valueType, const std::string& constValueInString) :
 			_value(constValue),
 			ConstOperandBase(valueType)
 		{
