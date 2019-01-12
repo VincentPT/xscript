@@ -117,7 +117,7 @@ protected:
 	static const int maxParam = sizeof...(Args);
 	CdeclInvoker2<Ret, Args...> invoker;
 public:	
-	FunctionDelegate2(FuncType function) : invoker(function) {
+	FunctionDelegate2(FuncType function) : invoker(*(void**)(&function)) {
 	}
 	
 	FunctionDelegate2(void* function) : invoker(function) {
