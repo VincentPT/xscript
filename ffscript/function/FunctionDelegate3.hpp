@@ -18,6 +18,7 @@
 #pragma once
 #include "DynamicFunction2.h"
 #include "MemberTypeInfo.hpp"
+#include <tuple>
 
 namespace FunctionInvoker3 {
 	using namespace FT;

@@ -34,7 +34,6 @@ namespace ffscriptUT
 	FF_TEST_METHOD(MethodContainer, methodArgumentBufferTestCachedDelegate2)
 	{
 		CachedMethodDelegate<MethodContainer, double, float, double> memberFunction(this, &MethodContainer::memberFoo);
-
 		float arg1 = 0;
 		double arg2 = 1;
 		memberFunction.setArgs(arg1, arg2);

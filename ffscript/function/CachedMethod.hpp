@@ -21,9 +21,6 @@
 namespace CachedMethodInvoker {
 	using namespace FT;
 
-	// <int _offset, size_t alignment, class...>
-	//struct ArgumentTuple;
-
 	struct SetArgRef {
 		template <class T>
 		static void set(char* base, T val) {
@@ -42,10 +39,12 @@ namespace CachedMethodInvoker {
 	template <size_t alignment>
 	struct ArgumentTuple {
 		template <class...Types>
-		static void setArg(char* base, Types...);
+		static void setArg(char* base, Types...) {}
 
-		template <>
-		static void setArg(char* base) {
+		template <class First>
+		static void setArg(char* base, First first) {
+			typedef typename std::conditional<std::is_reference<First>::value, SetArgRef, SetArgVal>::type SetArg;
+			SetArg::set<First>(base, first);
 		}
 
 		template <class First, class...Rest>
