@@ -118,9 +118,11 @@ END_INVOKER2;
 template <class T, class T1>
 BEGIN_INVOKER2(ThisInvoker, T, T1)
 inline void call() {
-	typedef void(T::*MemberFunc)(void*);
+	typedef void(T::*MemberFunc)(const float&);
 	T* obj = (T*)this->_params[0];
-	(obj->*(*(MemberFunc*)(&this->_fx)))(this->_params[1]);
+	MemberFunc fx = *((MemberFunc*)&this->_fx);
+	float* pVal = (float*)(this->_params[1]);
+	(obj->*fx)(*pVal);
 }
 END_INVOKER2;
 
