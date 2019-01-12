@@ -116,9 +116,7 @@ class MFunction2 :
 public:
 	typedef Ret(T::*FuncType)(Args...);
 	typedef MFunction2<Ret, T, Args...> ClassType;
-
 protected:
-	static const int maxParam = sizeof...(Args);
 	MemberFuncInvoker2<Ret, T, Args...> invoker;
 public:
 

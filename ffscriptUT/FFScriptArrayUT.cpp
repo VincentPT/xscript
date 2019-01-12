@@ -152,7 +152,7 @@ namespace ffscriptUT
 			a[3] = 3;
 			a[4] = 4;
 
-			void* pMethod = MFunction3<FFScriptArray<double>,double&,  int>::convertToFunction(&FFScriptArray<double>::operator[]);
+			void* pMethod = (void*)MFunction3<FFScriptArray<double>,double&,  int>::convertToFunction(&FFScriptArray<double>::operator[]);
 			MFunction2<void*, FFScriptArray<int>, int> mf((FFScriptArray<int>*)&a, pMethod);
 
 			double* ret;
