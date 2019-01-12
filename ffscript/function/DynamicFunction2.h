@@ -21,7 +21,6 @@
 class DFunction2
 {
 protected:
-	void* mFx;
 #ifndef USE_EXTERNAL_PARAMS_ONLY
 	int mFixedParamCount = 0;
 #endif
