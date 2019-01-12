@@ -3,6 +3,9 @@ project(ffscript C CXX)
 
 SET (DELEGATES
 	./function/CachedFunction.hpp
+	./function/CachedDelegate.h
+	./function/CachedDelegate.cpp
+	./function/CachedMethod.hpp
 	./function/FunctionDelegate.hpp
 	./function/FunctionDelegate3.hpp
 	./function/DynamicFunction.h

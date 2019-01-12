@@ -30,7 +30,7 @@ namespace MemberFunction3 {
 
 #define DECLARE_CLASS_MINVOKER_T(Class, Ret, ...)\
 	struct MInvoke<Class, Ret, ##__VA_ARGS__> {\
-	private:\
+	public:\
 	typedef MemberTypeInfo<0, sizeof(void*), ##__VA_ARGS__> Helper;\
 	typedef typename real_type<Ret>::_T RRT;\
 	template <std::size_t N>\
@@ -48,7 +48,7 @@ namespace MemberFunction3 {
 
 #define DECLARE_CLASS_MINVOKER_VOID(Class,...) \
 	struct MInvokeVoid<Class, ##__VA_ARGS__> {\
-	private:\
+	public:\
 	typedef MemberTypeInfo<0, sizeof(void*), ##__VA_ARGS__> Helper;\
 	template <std::size_t N>\
 	using ATs  = typename std::tuple_element<N, std::tuple<__VA_ARGS__>>::type;\
@@ -249,10 +249,11 @@ namespace FT {
 		typedef Ret(Class::*MFx)(Types...);
 		typedef Ret(Class::*MFxConst)(Types...) const;
 		typedef Ret(*Fx)(Class*, Types...);
-	private:
 		typedef typename std::conditional<std::is_void<Ret>::value, MInvokeVoid<Class, Types...>, MInvoke<Class, Ret, Types...>>::type MyInvoker;
+	private:
 		MyInvoker _invoker;
 	public:
+
 		MFunction3(Class* obj, MFx mfx) : _invoker(obj, mfx) {}
 		MFunction3(Class* obj, MFxConst mfx) : _invoker(obj, (MFx)mfx) {}
 
@@ -270,6 +271,10 @@ namespace FT {
 
 		static Fx convertToFunction(MFxConst mfx) {
 			return (Fx)*((void**)&mfx);
+		}
+
+		static constexpr int getArgumentStorageSize() {
+			return MyInvoker::Helper::totalSize();
 		}
 	};
 }
