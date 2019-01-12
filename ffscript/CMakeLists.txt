@@ -4,13 +4,11 @@ project(ffscript C CXX)
 SET (DELEGATES
 	./function/CachedFunction.hpp
 	./function/FunctionDelegate.hpp
-	./function/FunctionDelegate2.hpp
 	./function/FunctionDelegate3.hpp
 	./function/DynamicFunction.h
 	./function/DynamicFunction2.h
 	./function/FunctionHelper.hpp
 	./function/MemberFunction.hpp
-	./function/MemberFunction2.hpp
 	./function/MemberFunction3.hpp
 	./function/MemberTypeInfo.hpp
 	./function/functioninternal.hpp
