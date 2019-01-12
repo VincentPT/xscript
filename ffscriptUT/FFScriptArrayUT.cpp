@@ -12,11 +12,12 @@
 
 #include "FFScriptArray.hpp"
 #include "function/FunctionDelegate2.hpp"
-#include "function/MemberFunction2Ref.hpp"
 #include "function/MemberFunction2.hpp"
+#include "function/MemberFunction3.hpp"
 
 using namespace ffscript;
 using namespace std;
+using namespace FT;
 
 namespace ffscriptUT
 {		
@@ -133,7 +134,7 @@ namespace ffscriptUT
 			a[3] = 3;
 			a[4] = 4;
 
-			MFunction2Ref<int&, FFScriptArray<int>, int> mf(&a, &FFScriptArray<int>::operator[]);
+			MFunction3<FFScriptArray<int>, int&,  int> mf(&a, &FFScriptArray<int>::operator[]);
 			int* ret;
 			int i = 1;
 			void* params[] = { (void*)(size_t) i};
@@ -151,7 +152,7 @@ namespace ffscriptUT
 			a[3] = 3;
 			a[4] = 4;
 
-			void* pMethod = MFunction2Ref<double&, FFScriptArray<double>, int>::getMethodAddress(&FFScriptArray<double>::operator[]);
+			void* pMethod = MFunction3<FFScriptArray<double>,double&,  int>::convertToFunction(&FFScriptArray<double>::operator[]);
 			MFunction2<void*, FFScriptArray<int>, int> mf((FFScriptArray<int>*)&a, pMethod);
 
 			double* ret;

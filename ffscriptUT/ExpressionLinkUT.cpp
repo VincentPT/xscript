@@ -236,10 +236,10 @@ namespace ffscriptUT
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 			importCoreFunctions(funcLibHelper);
 
-			MFunction2W<double, ExpressionLink, double> sum1(this, &ExpressionLink::sum);
-			MFunction2W<double, ExpressionLink, double, float> sum2(this, &ExpressionLink::sum);
-			MFunction2W<double, ExpressionLink, double, float, int> sum3(this, &ExpressionLink::sum);
-			MFunction2W<double, ExpressionLink, double, int, int> sum4(this, &ExpressionLink::sum);
+			MFunction2<double, ExpressionLink, double> sum1(this, &ExpressionLink::sum);
+			MFunction2<double, ExpressionLink, double, float> sum2(this, &ExpressionLink::sum);
+			MFunction2<double, ExpressionLink, double, float, int> sum3(this, &ExpressionLink::sum);
+			MFunction2<double, ExpressionLink, double, int, int> sum4(this, &ExpressionLink::sum);
 			
 			wstring functionString = L"sum(1, 2.0, 3)";
 
@@ -275,10 +275,10 @@ namespace ffscriptUT
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 			importCoreFunctions(funcLibHelper);
 
-			MFunction2W<double, ExpressionLink, double> sum1(this, &ExpressionLink::sum);
-			MFunction2W<double, ExpressionLink, double, float> sum2(this, &ExpressionLink::sum);
-			MFunction2W<double, ExpressionLink, double, float, int> sum3(this, &ExpressionLink::sum);
-			MFunction2W<double, ExpressionLink, double, int, int> sum4(this, &ExpressionLink::sum);
+			MFunction2<double, ExpressionLink, double> sum1(this, &ExpressionLink::sum);
+			MFunction2<double, ExpressionLink, double, float> sum2(this, &ExpressionLink::sum);
+			MFunction2<double, ExpressionLink, double, float, int> sum3(this, &ExpressionLink::sum);
+			MFunction2<double, ExpressionLink, double, int, int> sum4(this, &ExpressionLink::sum);
 
 			wstring functionString = L"sum(1.0, 2.0, 3.0)";
 

@@ -319,34 +319,3 @@ inline void MemberFuncInvoker2<Ret, ObjectT>::call(void* pReturnVal, void* param
 	MemberFunc func = *((MemberFunc*)&(mOwner->mFx));
 	*((Ret*)pReturnVal) = (obect->*func)();
 }
-
-/* MemberFunction2 cannot dynamic invoke bellow functions type. So, use MemberFuncWrapper instead.
-1. <return type> __cdecl T::function(..., double, ...)
-2. <return type> __cdecl T::function(..., float, ...)
-*/
-template <class Ret, class T, class ...Args>
-class MFunction2W : public MFunction2< Ret, MFunction2W<Ret, T, Args...>, const Args& ...> {
-public:
-	typedef Ret(T::*FuncType)(Args...);
-private:
-	FuncType _fx;
-	T* _obj;
-	inline Ret forward(const Args&... args) {
-		return (_obj->*_fx) (args...);
-	}
-public:
-	MFunction2W(T* obj, FuncType fx) :
-		_fx(fx),
-		_obj(obj),
-		MFunction2< Ret, MFunction2W<Ret, T, Args...>, const Args& ...>(this, &MFunction2W::forward) {
-	}
-
-	virtual DFunction2* clone() override {
-		MFunction2W* newInstance = new MFunction2W(_obj, _fx);
-#ifndef  USE_EXTERNAL_PARAMS_ONLY
-		newInstance->mFixedParamCount = mFixedParamCount;
-		std::memcpy(newInstance->mParams, mParams, sizeof(mParams));
-#endif // ! USE_EXTERNAL_PARAMS_ONLY
-		return newInstance;
-	}
-};
