@@ -44,13 +44,13 @@ namespace CachedMethodInvoker {
 		template <class First>
 		static void setArg(char* base, First first) {
 			typedef typename std::conditional<std::is_reference<First>::value, SetArgRef, SetArgVal>::type SetArg;
-			SetArg::set<First>(base, first);
+			SetArg::template set<First>(base, first);
 		}
 
 		template <class First, class...Rest>
 		static void setArg(char* base, First first, Rest...rest) {
 			typedef typename std::conditional<std::is_reference<First>::value, SetArgRef, SetArgVal>::type SetArg;
-			SetArg::set<First>(base, first);
+			SetArg::template set<First>(base, first);
 
 			constexpr int size = FT::getAlignSize<First, alignment>();
 			ArgumentTuple<alignment>::setArg<Rest...>(base + size, rest...);
@@ -87,33 +87,41 @@ namespace CachedMethodInvoker {
 
 	template <class Class, class Ret, class...Types>
 	class CachedMethodInvokerRet : public CachedMethodInvoker<Class, Ret, Types...> {
-		typedef typename RealDelegateType::MyInvoker::RRT RRT;
+		typedef CachedMethodInvoker<Class, Ret, Types...> Base;
+		typedef typename Base::RealDelegateType::MyInvoker::RRT RRT;
 		RRT _ret;
 	public:
-		CachedMethodInvokerRet(void** ref, Class* obj, MFx fx) : CachedMethodInvoker<Class, Ret, Types...>(obj, fx) {
+		typedef Ret(Class::*MFx)(Types...);
+		typedef Ret(Class::*MFxConst)(Types...) const;
+	public:
+		CachedMethodInvokerRet(void** ref, Class* obj, MFx fx) : Base(obj, fx) {
 			*ref = &_ret;
 		}
-		CachedMethodInvokerRet(void** ref, Class* obj, MFxConst fx) : CachedMethodInvoker<Class, Ret, Types...>(obj, fx) {
+		CachedMethodInvokerRet(void** ref, Class* obj, MFxConst fx) : Base(obj, fx) {
 			*ref = &_ret;
 		}
 
 		void invoke() {
-			_realDelegate.call(&_ret, (void**)argumentData);
+			this->_realDelegate.call(&_ret, (void**)this->argumentData);
 		}
 	};
 
 	template <class Class, class Ret, class...Types>
 	class CachedMethodInvokerVoid : public CachedMethodInvoker<Class, Ret, Types...> {
+		typedef CachedMethodInvoker<Class, Ret, Types...> Base;
 	public:
-		CachedMethodInvokerVoid(void** ref, Class* obj, MFx fx) : CachedMethodInvoker<Class, Ret, Types...>(obj, fx) {
+		typedef Ret(Class::*MFx)(Types...);
+		typedef Ret(Class::*MFxConst)(Types...) const;
+	public:
+		CachedMethodInvokerVoid(void** ref, Class* obj, MFx fx) : Base(obj, fx) {
 			*ref = nullptr;
 		}
-		CachedMethodInvokerVoid(void** ref, Class* obj, MFxConst fx) : CachedMethodInvoker<Class, Ret, Types...>(obj, fx) {
+		CachedMethodInvokerVoid(void** ref, Class* obj, MFxConst fx) : Base(obj, fx) {
 			*ref = nullptr;
 		}
 
 		void invoke() {
-			_realDelegate.call(nullptr, (void**)argumentData);
+			this->_realDelegate.call(nullptr, (void**)this->argumentData);
 		}
 	};
 }
