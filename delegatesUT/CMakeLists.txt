@@ -18,6 +18,7 @@ SET (PROJECT_SOURCE_FILES
 	FunctionDelegate3UT.cpp
 	../ffscript/function/DynamicFunction.cpp
 	../ffscript/function/DynamicFunction2.cpp
+	../ffscript/function/CachedDelegate.cpp
 )
 
 add_executable(${PROJECT_NAME} main.cpp ${PROJECT_SOURCE_FILES})
