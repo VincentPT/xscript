@@ -37,7 +37,7 @@ using namespace ffscript;
 #include "Executor.h"
 #include "Utils.h"
 #include "BasicFunctionFactory.hpp"
-#include "function/MemberFunction2.hpp"
+#include "function/MemberFunction3.hpp"
 #include "expressionunit.h"
 #include "DynamicFunctionFactory.h"
 #include "MemoryBlock.h"
@@ -115,7 +115,7 @@ namespace ffscriptUT
 				L"	return ret();"
 				L"}"
 				;
-			DFunction2* intFunctionOperator = new FunctionDelegate2<int, int>(int_inc);
+			DFunction2* intFunctionOperator = new FT::FunctionDelegate3<int, int>(int_inc);
 			int functionId = fb.registFunction("int_function_operator", "int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", intFunctionOperator, scriptCompiler));
 			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
@@ -276,7 +276,7 @@ namespace ffscriptUT
 				L"	return ret()[0];"
 				L"}"
 				;
-			DFunction2* intFunctionOperator = new FunctionDelegate2<int*, int&>(int_ref);
+			DFunction2* intFunctionOperator = new FT::FunctionDelegate3<int*, int&>(int_ref);
 			int functionId = fb.registFunction("forward_ref", "int&", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "ref int", intFunctionOperator, scriptCompiler));
 			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
@@ -324,7 +324,7 @@ namespace ffscriptUT
 				L"	return ret(2, 3);"
 				L"}"
 				;
-			DFunction2* intFunctionOperator = new FunctionDelegate2<int, int, int, int>(sum);
+			DFunction2* intFunctionOperator = new FT::FunctionDelegate3<int, int, int, int>(sum);
 			int functionId = fb.registFunction("forward_ref", "int,int,int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", intFunctionOperator, scriptCompiler));
 			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
@@ -356,7 +356,7 @@ namespace ffscriptUT
 				L"	return ret(2, 3, 4, 5, 6);"
 				L"}"
 				;
-			DFunction2* intFunctionOperator = new FunctionDelegate2<int, int, int, int, int, int, int>(sum);
+			DFunction2* intFunctionOperator = new FT::FunctionDelegate3<int, int, int, int, int, int, int>(sum);
 			int functionId = fb.registFunction("forward_ref", "int,int,int,int,int,int", new BasicFunctionFactory<6>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", intFunctionOperator, scriptCompiler));
 			FF_EXPECT_TRUE(functionId > 0, L"register function failed");
 
@@ -388,7 +388,7 @@ namespace ffscriptUT
 				L"	return ret(2, 3, 4, 5, 6);"
 				L"}"
 				;
-			auto theNativeFunction = new FunctionDelegate2<int, SimpleVariantArray*>(sum);
+			auto theNativeFunction = new FT::FunctionDelegate3<int, SimpleVariantArray*>(sum);
 			DynamicFunctionFactory dynamicFunctionFactor("int", theNativeFunction, scriptCompiler);
 			int functionId = fb.registDynamicFunction("sum", &dynamicFunctionFactor, false);
 			FF_EXPECT_TRUE(functionId > 0, L"register function failed");

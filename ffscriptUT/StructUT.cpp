@@ -37,7 +37,7 @@ using namespace ffscript;
 #include "Executor.h"
 #include "Utils.h"
 #include "BasicFunctionFactory.hpp"
-#include "function/MemberFunction2.hpp"
+#include "function/MemberFunction3.hpp"
 #include "expressionunit.h"
 #include "DynamicFunctionFactory.h"
 #include "RawStringLib.h"
@@ -93,7 +93,7 @@ namespace ffscriptUT
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::MFunction3<Struct, int, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 
 			//initialize an instance of script program
 			Program theProgram;
@@ -138,7 +138,7 @@ namespace ffscriptUT
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::MFunction3<Struct, int, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -184,7 +184,7 @@ namespace ffscriptUT
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::MFunction3<Struct, int, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -231,7 +231,7 @@ namespace ffscriptUT
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::MFunction3<Struct, int, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -278,7 +278,7 @@ namespace ffscriptUT
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::MFunction3<Struct, int, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -324,7 +324,7 @@ namespace ffscriptUT
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::MFunction3<Struct, int, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -370,7 +370,7 @@ namespace ffscriptUT
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::MFunction3<Struct, int, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -416,7 +416,7 @@ namespace ffscriptUT
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::MFunction3<Struct, int, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -464,7 +464,7 @@ namespace ffscriptUT
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::MFunction3<Struct, int, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -514,7 +514,7 @@ namespace ffscriptUT
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext,&scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::MFunction3<Struct, int, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program
@@ -826,7 +826,7 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			//register dynamic functions
-			auto theNativeFunction1 = new FunctionDelegate2<int, SimpleVariantArray*>(sum);
+			auto theNativeFunction1 = new FT::FunctionDelegate3<int, SimpleVariantArray*>(sum);
 			auto dynamicFunctionFactory1 = new DynamicFunctionFactory("int", theNativeFunction1, &scriptCompiler);			
 			funcLibHelper.getSriptCompiler()->registDynamicFunction("sum", dynamicFunctionFactory1);
 			funcLibHelper.addFactory(dynamicFunctionFactory1);
@@ -1423,7 +1423,7 @@ namespace ffscriptUT
 			StaticContext staticContext(globalData, sizeof(globalData));
 			GlobalScope rootScope(&staticContext, &scriptCompiler);
 
-			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new MFunction2<int, Struct, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
+			funcLibHelper.registFunction("testStruct", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::MFunction3<Struct, int, TestStruct&>(this, &Struct::testStruct1), &scriptCompiler));
 			importBasicfunction(funcLibHelper);
 
 			//initialize an instance of script program

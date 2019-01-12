@@ -210,7 +210,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			auto scriptCompiler = rootScope->getCompiler();
 			FunctionRegisterHelper funcLibHelper(scriptCompiler);
-			funcLibHelper.registFunction("test", "", new BasicFunctionFactory<4>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FunctionDelegate2<int>(test), scriptCompiler), true);
+			funcLibHelper.registFunction("test", "", new BasicFunctionFactory<4>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::FunctionDelegate3<int>(test), scriptCompiler), true);
 
 			const wchar_t* scriptCode =
 				L"int foo() {"
@@ -243,7 +243,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			auto scriptCompiler = rootScope->getCompiler();
 			FunctionRegisterHelper funcLibHelper(scriptCompiler);
-			funcLibHelper.registFunction("test", "", new BasicFunctionFactory<4>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FunctionDelegate2<int>(test), scriptCompiler), true);
+			funcLibHelper.registFunction("test", "", new BasicFunctionFactory<4>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::FunctionDelegate3<int>(test), scriptCompiler), true);
 
 			const wchar_t* scriptCode =
 				L"function<int()> getFn() {"
@@ -280,7 +280,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			auto scriptCompiler = rootScope->getCompiler();
 			FunctionRegisterHelper funcLibHelper(scriptCompiler);
-			funcLibHelper.registFunction("test", "int", new BasicFunctionFactory<4>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FunctionDelegate2<int, int>(test), scriptCompiler), true);
+			funcLibHelper.registFunction("test", "int", new BasicFunctionFactory<4>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::FunctionDelegate3<int, int>(test), scriptCompiler), true);
 
 			const wchar_t* scriptCode =
 				L"function<int(int)> getFn() {"				
@@ -316,7 +316,7 @@ namespace ffscriptUT
 			GlobalScopeRef rootScope = compiler.getGlobalScope();
 			auto scriptCompiler = rootScope->getCompiler();
 			FunctionRegisterHelper funcLibHelper(scriptCompiler);
-			funcLibHelper.registFunction("test", "int", new BasicFunctionFactory<4>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FunctionDelegate2<int, int>(test), scriptCompiler), true);
+			funcLibHelper.registFunction("test", "int", new BasicFunctionFactory<4>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::FunctionDelegate3<int, int>(test), scriptCompiler), true);
 
 			const wchar_t* scriptCode =
 				L"void getFn(function<int(int)>& f) {"

@@ -19,7 +19,7 @@
 #include "DynamicFunction2.h"
 #include "MemberTypeInfo.hpp"
 
-namespace Cdel3 {
+namespace FunctionInvoker3 {
 	using namespace FT;
 
 	template <class...Types>
@@ -249,7 +249,7 @@ namespace Cdel3 {
 }
 
 namespace FT {
-	using namespace Cdel3;
+	using namespace FunctionInvoker3;
 
 	template <class Ret, class...Types>
 	class FunctionDelegate3 : public DFunction2 {

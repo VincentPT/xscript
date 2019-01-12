@@ -37,7 +37,7 @@ using namespace ffscript;
 #include "Executor.h"
 #include "Utils.h"
 #include "BasicFunctionFactory.hpp"
-#include "function/MemberFunction2.hpp"
+#include "function/MemberFunction3.hpp"
 #include "expressionunit.h"
 #include "DynamicFunctionFactory.h"
 #include "MemoryBlock.h"
@@ -112,7 +112,7 @@ namespace ffscriptUT
 		void registerConstructor(OperatorExecuteCounter* obj, int type) {
 			ScriptType stype(type, scriptCompiler->getType(type));
 
-			DFunction2* initFunction = new MFunction2<void, OperatorExecuteCounter, void*>(obj, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* initFunction = new FT::MFunction3<OperatorExecuteCounter, void, void*>(obj, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler->registFunction("constructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -123,7 +123,7 @@ namespace ffscriptUT
 		void registerDestructor(OperatorExecuteCounter* obj, int type) {
 			ScriptType stype(type, scriptCompiler->getType(type));
 
-			DFunction2* initFunction = new MFunction2<void, OperatorExecuteCounter, void*>(obj, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* initFunction = new FT::MFunction3<OperatorExecuteCounter, void, void*>(obj, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler->registFunction("destructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -136,7 +136,7 @@ namespace ffscriptUT
 		void registerConstructor(T f, int type) {
 			ScriptType stype(type, scriptCompiler->getType(type));
 			typedef void (*F)(void*);
-			DFunction2* initFunction = new FunctionDelegate2<void, void*>((F)f);
+			DFunction2* initFunction = new FT::FunctionDelegate3<void, void*>((F)f);
 			int functionId = scriptCompiler->registFunction("constructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -149,7 +149,7 @@ namespace ffscriptUT
 			ScriptType stype(type, scriptCompiler->getType(type));
 
 			typedef void (*F)(void*);
-			DFunction2* initFunction = new FunctionDelegate2<void, void*>((F)f);
+			DFunction2* initFunction = new FT::FunctionDelegate3<void, void*>((F)f);
 			int functionId = scriptCompiler->registFunction("destructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 

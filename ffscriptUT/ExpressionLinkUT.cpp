@@ -20,7 +20,7 @@
 #include "BasicFunction.h"
 #include "BasicType.h"
 #include "FunctionFactory.h"
-#include "function/MemberFunction2.hpp"
+#include "function/MemberFunction3.hpp"
 
 using namespace std;
 using namespace ffscript;
@@ -236,10 +236,10 @@ namespace ffscriptUT
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 			importCoreFunctions(funcLibHelper);
 
-			MFunction2<double, ExpressionLink, double> sum1(this, &ExpressionLink::sum);
-			MFunction2<double, ExpressionLink, double, float> sum2(this, &ExpressionLink::sum);
-			MFunction2<double, ExpressionLink, double, float, int> sum3(this, &ExpressionLink::sum);
-			MFunction2<double, ExpressionLink, double, int, int> sum4(this, &ExpressionLink::sum);
+			FT::MFunction3<ExpressionLink, double, double> sum1(this, &ExpressionLink::sum);
+			FT::MFunction3<ExpressionLink, double, double, float> sum2(this, &ExpressionLink::sum);
+			FT::MFunction3<ExpressionLink, double, double, float, int> sum3(this, &ExpressionLink::sum);
+			FT::MFunction3<ExpressionLink, double, double, int, int> sum4(this, &ExpressionLink::sum);
 			
 			wstring functionString = L"sum(1, 2.0, 3)";
 
@@ -275,10 +275,10 @@ namespace ffscriptUT
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 			importCoreFunctions(funcLibHelper);
 
-			MFunction2<double, ExpressionLink, double> sum1(this, &ExpressionLink::sum);
-			MFunction2<double, ExpressionLink, double, float> sum2(this, &ExpressionLink::sum);
-			MFunction2<double, ExpressionLink, double, float, int> sum3(this, &ExpressionLink::sum);
-			MFunction2<double, ExpressionLink, double, int, int> sum4(this, &ExpressionLink::sum);
+			FT::MFunction3<ExpressionLink, double, double> sum1(this, &ExpressionLink::sum);
+			FT::MFunction3<ExpressionLink, double, double, float> sum2(this, &ExpressionLink::sum);
+			FT::MFunction3<ExpressionLink, double, double, float, int> sum3(this, &ExpressionLink::sum);
+			FT::MFunction3<ExpressionLink, double, double, int, int> sum4(this, &ExpressionLink::sum);
 
 			wstring functionString = L"sum(1.0, 2.0, 3.0)";
 

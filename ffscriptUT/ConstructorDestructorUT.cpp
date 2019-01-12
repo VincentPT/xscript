@@ -37,7 +37,7 @@ using namespace ffscript;
 #include "Executor.h"
 #include "Utils.h"
 #include "BasicFunctionFactory.hpp"
-#include "function/MemberFunction2.hpp"
+#include "function/MemberFunction3.hpp"
 #include "expressionunit.h"
 #include "DynamicFunctionFactory.h"
 #include "MemoryBlock.h"
@@ -162,7 +162,7 @@ namespace ffscriptUT
 			const int checkVal = 1;
 			CustomIntegerInitor initor(checkVal);
 
-			DFunction2* initFunction = new MFunction2<void, CustomIntegerInitor, int*>(&initor, &CustomIntegerInitor::initFunction);
+			DFunction2* initFunction = new FT::MFunction3<CustomIntegerInitor, void, int*>(&initor, &CustomIntegerInitor::initFunction);
 			int functionId = scriptCompiler.registFunction("DefaultInteger", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			
@@ -202,7 +202,7 @@ namespace ffscriptUT
 
 			CustomIntegerInitor initor(0);
 
-			DFunction2* initFunction = new MFunction2<void, CustomIntegerInitor, int*>(&initor, &CustomIntegerInitor::initFunction);
+			DFunction2* initFunction = new FT::MFunction3<CustomIntegerInitor, void, int*>(&initor, &CustomIntegerInitor::initFunction);
 			int functionId = scriptCompiler.registFunction("DefaultInteger", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -213,7 +213,7 @@ namespace ffscriptUT
 			CustomIntegerUninitor uninitor;
 			uninitor.setData(checkVal);
 
-			DFunction2* uninitFunction = new MFunction2<void, CustomIntegerUninitor, int*>(&uninitor, &CustomIntegerUninitor::uninitFunction);
+			DFunction2* uninitFunction = new FT::MFunction3<CustomIntegerUninitor, void, int*>(&uninitor, &CustomIntegerUninitor::uninitFunction);
 			functionId = scriptCompiler.registFunction("UninitInteger", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", uninitFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -263,13 +263,13 @@ namespace ffscriptUT
 			OperatorExecuteCounter constuctorCounter;
 			OperatorExecuteCounter destuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -321,13 +321,13 @@ namespace ffscriptUT
 			OperatorExecuteCounter constuctorCounter;
 			OperatorExecuteCounter destuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -385,13 +385,13 @@ namespace ffscriptUT
 			OperatorExecuteCounter constuctorCounter;
 			OperatorExecuteCounter destuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&destuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&destuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -448,13 +448,13 @@ namespace ffscriptUT
 
 			OperatorExecuteCounter constuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction3);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction3);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -507,13 +507,13 @@ namespace ffscriptUT
 
 			OperatorExecuteCounter constuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction3);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction3);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -566,20 +566,20 @@ namespace ffscriptUT
 			OperatorExecuteCounter copyConstructorCounter;
 			OperatorExecuteCounter destuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
-			DFunction2* copyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
+			DFunction2* copyConstructorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -645,34 +645,34 @@ namespace ffscriptUT
 			OperatorExecuteCounter copyStructConstructorCounter;
 			OperatorExecuteCounter destuctorCounter;
 			//register constructor/destructor
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
-			DFunction2* copyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
+			DFunction2* copyConstructorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
-			DFunction2* structCopyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, DummyStruct2*, DummyStruct2*>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator1);
+			DFunction2* structCopyConstructorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, DummyStruct2*, DummyStruct2*>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator1);
 			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, DummyStruct2&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(structType2, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
-			DFunction2* structDestuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* structDestuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("StructUninitor", "ref DummyStruct2", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structDestuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -740,34 +740,34 @@ namespace ffscriptUT
 			OperatorExecuteCounter copyStructConstructorCounter;
 			OperatorExecuteCounter destuctorCounter;
 			//register constructor/destructor
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
-			DFunction2* copyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
+			DFunction2* copyConstructorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
-			DFunction2* structCopyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, DummyStruct2*, DummyStruct2*>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator2);
+			DFunction2* structCopyConstructorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, DummyStruct2*, DummyStruct2*>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator2);
 			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, DummyStruct2&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(structType2, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
-			DFunction2* structDestuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* structDestuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("StructUninitor", "ref DummyStruct2", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structDestuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -837,34 +837,34 @@ namespace ffscriptUT
 			OperatorExecuteCounter copyStructConstructorCounter;
 			OperatorExecuteCounter destuctorCounter;
 			//register constructor/destructor
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registDestructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register destructor failed");
 
-			DFunction2* copyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
+			DFunction2* copyConstructorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*, int&>(&copyConstructorCounter, &OperatorExecuteCounter::intCopyOperator1);
 			functionId = scriptCompiler.registFunction("IntegerCopier", "ref int, int&", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyConstructorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
-			DFunction2* structCopyConstructorCounterFunc = new MFunction2<void, OperatorExecuteCounter, DummyStruct2*, int>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator3);
+			DFunction2* structCopyConstructorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, DummyStruct2*, int>(&copyConstructorCounter, &OperatorExecuteCounter::structCopyOperator3);
 			functionId = scriptCompiler.registFunction("StructCopier", "ref DummyStruct2, int", new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structCopyConstructorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
 			blRes = scriptCompiler.registConstructor(structType2, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register copy constructor failed");
 
-			DFunction2* structDestuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* structDestuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("StructUninitor", "ref DummyStruct2", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structDestuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -916,13 +916,13 @@ namespace ffscriptUT
 			OperatorExecuteCounter constuctorCounter;
 			OperatorExecuteCounter destuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -993,13 +993,13 @@ namespace ffscriptUT
 			OperatorExecuteCounter constuctorCounter;
 			OperatorExecuteCounter destuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -1073,13 +1073,13 @@ namespace ffscriptUT
 			OperatorExecuteCounter constuctorCounter;
 			OperatorExecuteCounter destuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -1124,13 +1124,13 @@ namespace ffscriptUT
 			OperatorExecuteCounter constuctorCounter;
 			OperatorExecuteCounter destuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -1183,13 +1183,13 @@ namespace ffscriptUT
 			OperatorExecuteCounter constuctorCounter;
 			OperatorExecuteCounter destuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction1);
 			int functionId = scriptCompiler.registFunction("IntegerInitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("IntegerUninitor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 
@@ -1251,14 +1251,14 @@ namespace ffscriptUT
 			OperatorExecuteCounter structConstuctorCounter;
 			OperatorExecuteCounter doubleConstuctorCounter;
 
-			DFunction2* structInitFunction = new MFunction2<void, OperatorExecuteCounter, void*>(&structConstuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* structInitFunction = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&structConstuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("constructorCounter", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structInitFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler.registConstructor(structType, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor for struct failed");
 
-			DFunction2* doubleInitFunction = new MFunction2<void, OperatorExecuteCounter, double&>(&doubleConstuctorCounter, &OperatorExecuteCounter::doubleOperatorFunction);
+			DFunction2* doubleInitFunction = new FT::MFunction3<OperatorExecuteCounter, void, double&>(&doubleConstuctorCounter, &OperatorExecuteCounter::doubleOperatorFunction);
 			functionId = scriptCompiler.registFunction("DdoubleConstructorCounter", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", doubleInitFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			
@@ -1310,7 +1310,7 @@ namespace ffscriptUT
 
 			OperatorExecuteCounter doubleConstuctorCounter;
 
-			DFunction2* doubleInitFunction = new MFunction2<void, OperatorExecuteCounter, double&>(&doubleConstuctorCounter, &OperatorExecuteCounter::doubleOperatorFunction);
+			DFunction2* doubleInitFunction = new FT::MFunction3<OperatorExecuteCounter, void, double&>(&doubleConstuctorCounter, &OperatorExecuteCounter::doubleOperatorFunction);
 			int functionId = scriptCompiler.registFunction("DdoubleConstructorCounter", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", doubleInitFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -1367,7 +1367,7 @@ namespace ffscriptUT
 			
 			OperatorExecuteCounter constuctorCounter;
 
-			DFunction2* inInitFunction = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
+			DFunction2* inInitFunction = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
 			int functionId = scriptCompiler.registFunction("what_ever_you_want", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", inInitFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -1423,14 +1423,14 @@ namespace ffscriptUT
 
 			OperatorExecuteCounter constuctorCounter;
 
-			DFunction2* structInitFunction = new MFunction2<void, OperatorExecuteCounter, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* structInitFunction = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("structInitor", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structInitFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler.registConstructor(structType2, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor for integer failed");
 
-			DFunction2* inInitFunction = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
+			DFunction2* inInitFunction = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
 			functionId = scriptCompiler.registFunction("what_ever_you_want", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", inInitFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -1486,7 +1486,7 @@ namespace ffscriptUT
 
 			OperatorExecuteCounter constuctorCounter;
 
-			DFunction2* structInitFunction = new MFunction2<void, OperatorExecuteCounter, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* structInitFunction = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("structInitor", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structInitFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -1496,7 +1496,7 @@ namespace ffscriptUT
 			blRes = scriptCompiler.registConstructor(structType1, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor for integer failed");
 
-			DFunction2* inInitFunction = new MFunction2<void, OperatorExecuteCounter, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
+			DFunction2* inInitFunction = new FT::MFunction3<OperatorExecuteCounter, void, int*>(&constuctorCounter, &OperatorExecuteCounter::intOperatorFunction2);
 			functionId = scriptCompiler.registFunction("what_ever_you_want", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", inInitFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -1547,14 +1547,14 @@ namespace ffscriptUT
 			OperatorExecuteCounter structConstuctorCounter;
 			OperatorExecuteCounter doubleConstuctorCounter;
 
-			DFunction2* structInitFunction = new MFunction2<void, OperatorExecuteCounter, void*>(&structConstuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* structInitFunction = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&structConstuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("constructorCounter", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", structInitFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
 			bool blRes = scriptCompiler.registDestructor(structType, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register destructor for struct failed");
 
-			DFunction2* doubleInitFunction = new MFunction2<void, OperatorExecuteCounter, double&>(&doubleConstuctorCounter, &OperatorExecuteCounter::doubleOperatorFunction);
+			DFunction2* doubleInitFunction = new FT::MFunction3<OperatorExecuteCounter, void, double&>(&doubleConstuctorCounter, &OperatorExecuteCounter::doubleOperatorFunction);
 			functionId = scriptCompiler.registFunction("DoubleDestructorCounter", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", doubleInitFunction, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 
@@ -1596,13 +1596,13 @@ namespace ffscriptUT
 			OperatorExecuteCounter constuctorCounter;
 			OperatorExecuteCounter destuctorCounter;
 
-			DFunction2* constuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* constuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&constuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			int functionId = scriptCompiler.registFunction("ctor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for constructor failed");
 			bool blRes = scriptCompiler.registConstructor(basicType.TYPE_INT, functionId);
 			FF_EXPECT_TRUE(blRes, L"Register constructor failed");
 
-			DFunction2* destuctorCounterFunc = new MFunction2<void, OperatorExecuteCounter, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
+			DFunction2* destuctorCounterFunc = new FT::MFunction3<OperatorExecuteCounter, void, void*>(&destuctorCounter, &OperatorExecuteCounter::operatorFunction);
 			functionId = scriptCompiler.registFunction("dtor", "ref int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", destuctorCounterFunc, &scriptCompiler));
 			FF_EXPECT_TRUE(functionId >= 0, L"Register function for destructor failed");
 

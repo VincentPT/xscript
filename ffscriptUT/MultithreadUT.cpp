@@ -24,8 +24,8 @@
 #include "Utils.h"
 #include "Variable.h"
 #include "DynamicFunctionFactory.h"
-#include "function/FunctionDelegate2.hpp"
-#include "function/MemberFunction2.hpp"
+#include "function/FunctionDelegate3.hpp"
+#include "function/MemberFunction3.hpp"
 
 using namespace std;
 using namespace ffscript;
@@ -111,14 +111,14 @@ namespace ffscriptUT
 			scriptCompiler.getTypeManager()->registerBasicTypes(&scriptCompiler);
 			scriptCompiler.getTypeManager()->registerBasicTypeCastFunctions(&scriptCompiler, funcLibHelper);
 
-			funcLibHelper.registFunction("fibonaciNative", "int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FunctionDelegate2<int, int>(fibonaci), &scriptCompiler));
-			funcLibHelper.registFunction("signal", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new MFunction2<void, Multithread, mutex&>(this, &Multithread::notifySignal), &scriptCompiler));
-			funcLibHelper.registFunction("waitSignaled", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new MFunction2<void, Multithread, mutex&>(this, &Multithread::waitSignaled), &scriptCompiler));
+			funcLibHelper.registFunction("fibonaciNative", "int", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int", new FT::FunctionDelegate3<int, int>(fibonaci), &scriptCompiler));
+			funcLibHelper.registFunction("signal", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new FT::MFunction3<Multithread, void, mutex&>(this, &Multithread::notifySignal), &scriptCompiler));
+			funcLibHelper.registFunction("waitSignaled", "ref void", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", new FT::MFunction3<Multithread, void, mutex&>(this, &Multithread::waitSignaled), &scriptCompiler));
 
 			importBasicfunction(funcLibHelper);
 
 			//register dynamic functions
-			auto theNativeFunction1 = new MFunction2 <void, Multithread, SimpleVariantArray*>(this, &Multithread::printResult);
+			auto theNativeFunction1 = new FT::MFunction3 <Multithread, void, SimpleVariantArray*>(this, &Multithread::printResult);
 			auto dynamicFunctionFactory1 = new DynamicFunctionFactory("int", theNativeFunction1, funcLibHelper.getSriptCompiler());
 			funcLibHelper.getSriptCompiler()->registDynamicFunction("printResult", dynamicFunctionFactory1);
 			funcLibHelper.addFactory(dynamicFunctionFactory1);

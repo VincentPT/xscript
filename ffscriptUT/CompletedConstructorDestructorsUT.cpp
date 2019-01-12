@@ -37,7 +37,7 @@ using namespace ffscript;
 #include "Executor.h"
 #include "Utils.h"
 #include "BasicFunctionFactory.hpp"
-#include "function/MemberFunction2.hpp"
+#include "function/MemberFunction3.hpp"
 #include "expressionunit.h"
 #include "DynamicFunctionFactory.h"
 #include "MemoryBlock.h"
@@ -114,7 +114,7 @@ namespace ffscriptUT
 		void registerConstructor(T* obj, int type) {
 			ScriptType stype(type, scriptCompiler->getType(type));
 
-			DFunction2* initFunction = new MFunction2<void, T, void*>(obj, &T::operatorFunction);
+			DFunction2* initFunction = new FT::MFunction3<T, void, void*>(obj, &T::operatorFunction);
 			int functionId = scriptCompiler->registFunction("constructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			EXPECT_TRUE(functionId >= 0) << L"Register function for constructor failed";
 
@@ -131,7 +131,7 @@ namespace ffscriptUT
 			args.append(stype.makeSemiRef().sType());
 			//args.append(stype.sType());
 
-			DFunction2* copyFunction = new MFunction2<void, T, void*, const void*>(obj, &T::operatorFunction);
+			DFunction2* copyFunction = new FT::MFunction3<T, void, void*, const void*>(obj, &T::operatorFunction);
 			int functionId = scriptCompiler->registFunction("copyConstructor", args, new BasicFunctionFactory<2>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", copyFunction, scriptCompiler));
 			EXPECT_TRUE(functionId >= 0) << L"Register function for copy constructor failed";
 
@@ -143,7 +143,7 @@ namespace ffscriptUT
 		void registerDestructor(T* obj, int type) {
 			ScriptType stype(type, scriptCompiler->getType(type));
 
-			DFunction2* initFunction = new MFunction2<void, T, void*>(obj, &T::operatorFunction);
+			DFunction2* initFunction = new FT::MFunction3<T, void, void*>(obj, &T::operatorFunction);
 			int functionId = scriptCompiler->registFunction("destructorCount", stype.makeRef().sType(), new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", initFunction, scriptCompiler));
 			EXPECT_TRUE(functionId >= 0) << L"Register function for constructor failed";
 
@@ -1553,7 +1553,7 @@ namespace ffscriptUT
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
 			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint) << L"Register struct type failed";
 
-			DFunction2* constructFunction = new FunctionDelegate2<void, void*, int, int>(constructPoint);
+			DFunction2* constructFunction = new FT::FunctionDelegate3<void, void*, int, int>(constructPoint);
 			int functionId = scriptCompiler->registFunction("constructPoint", "ref Point2i, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constructFunction, scriptCompiler));
 			EXPECT_TRUE(functionId >= 0) << L"Register function for copy constructor failed";
 
@@ -1608,7 +1608,7 @@ namespace ffscriptUT
 			int iPoint = scriptCompiler->registStruct(pStructPoint);
 			EXPECT_NE(DATA_TYPE_UNKNOWN, iPoint) << L"Register struct type failed";
 
-			DFunction2* constructFunction = new FunctionDelegate2<void, void*, int, int>(constructPoint);
+			DFunction2* constructFunction = new FT::FunctionDelegate3<void, void*, int, int>(constructPoint);
 			int functionId = scriptCompiler->registFunction("constructPoint", "ref Point2i, int, int", new BasicFunctionFactory<3>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", constructFunction, scriptCompiler));
 			EXPECT_TRUE(functionId >= 0) << L"Register function for copy constructor failed";
 

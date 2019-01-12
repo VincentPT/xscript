@@ -23,7 +23,7 @@
 #include "Utils.h"
 #include "Variable.h"
 #include "DynamicFunctionFactory.h"
-#include "function/FunctionDelegate2.hpp"
+#include "function/FunctionDelegate3.hpp"
 
 using namespace std;
 using namespace ffscript;	
@@ -69,17 +69,17 @@ namespace ffscriptUT
 			importBasicfunction(funcLibHelper);
 
 			//register dynamic functions
-			auto theNativeFunction1 = new FunctionDelegate2<int, SimpleVariantArray*>(sum);
+			auto theNativeFunction1 = new FT::FunctionDelegate3<int, SimpleVariantArray*>(sum);
 			auto dynamicFunctionFactory1 = new DynamicFunctionFactory("int", theNativeFunction1, &scriptCompiler);
 			funcLibHelper.getSriptCompiler()->registDynamicFunction("sum", dynamicFunctionFactory1);
 			funcLibHelper.addFactory(dynamicFunctionFactory1);
 
-			auto theNativeFunction2 = new FunctionDelegate2<int, SimpleVariantArray*>(sumTypes);
+			auto theNativeFunction2 = new FT::FunctionDelegate3<int, SimpleVariantArray*>(sumTypes);
 			auto dynamicFunctionFactory2 = new DynamicFunctionFactory("int", theNativeFunction2, &scriptCompiler);
 			funcLibHelper.getSriptCompiler()->registDynamicFunction("sumTypes", dynamicFunctionFactory2);
 			funcLibHelper.addFactory(dynamicFunctionFactory2);
 
-			auto theNativeFunction3 = new FunctionDelegate2<int, SimpleVariantArray*>(productTypes);
+			auto theNativeFunction3 = new FT::FunctionDelegate3<int, SimpleVariantArray*>(productTypes);
 			auto dynamicFunctionFactory3 = new DynamicFunctionFactory("int", theNativeFunction3, &scriptCompiler);
 			funcLibHelper.getSriptCompiler()->registDynamicFunction("productTypes", dynamicFunctionFactory3);
 			funcLibHelper.addFactory(dynamicFunctionFactory3);
@@ -196,7 +196,7 @@ namespace ffscriptUT
 
 		static Function* createSumFunction(const string& name, int id) {
 			auto pFunc = new FixParamFunction<2>(name, EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "int");
-			static FunctionDelegate2<int, int, int> productNative(product);
+			static FT::FunctionDelegate3<int, int, int> productNative(product);
 			pFunc->setNative( (DFunction2Ref)(productNative.clone()));
 			return pFunc;
 		}
