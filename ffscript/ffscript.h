@@ -98,9 +98,9 @@ class DFunction2;
 #include <wchar.h>
 #include <assert.h>
 inline void memcpy_s(void* dest, size_t destsz,
-                  const void* src, size_t srcsz) {
-	assert (destsz >= srcsz);
-	memcpy(dest, src, destsz);
+                  const void* src, size_t count) {
+	assert (destsz >= count);
+	memcpy(dest, src, count);
 }
 
 inline double _wtof(const wchar_t* str) {
