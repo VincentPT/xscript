@@ -43,6 +43,10 @@ namespace FT {
 		static constexpr int totalSize() {
 			return 0;
 		}
+
+		static constexpr size_t getAlignment() {
+			return alignment;
+		}
 	};
 
 	struct DummyMemberTypeInfo {
@@ -83,6 +87,10 @@ namespace FT {
 
 		static constexpr int totalSize() {
 			return _mySize + SubMemberTypeInfo::totalSize();
+		}
+
+		static constexpr size_t getAlignment() {
+			return alignment;
 		}
 	};
 }

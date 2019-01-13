@@ -58,70 +58,58 @@ namespace CachedMethodInvoker {
 		}
 	};
 
-	
-
-
 	template <class Class, class Ret, class...Types>
 	class CachedMethodInvoker {
-	public:
 		typedef MFunction3<Class, Ret, Types...> RealDelegateType;
-		typedef Ret(Class::*MFx)(Types...);
-		typedef Ret(Class::*MFxConst)(Types...) const;
+		static constexpr size_t aligment = RealDelegateType::getAlignment();
 	protected:
-		RealDelegateType _realDelegate;
-		char argumentData[RealDelegateType::getArgumentStorageSize() + sizeof(void*)];
-
-		CachedMethodInvoker(Class* obj, MFx fx) : _realDelegate(obj, fx) {
-		}
-		CachedMethodInvoker(Class* obj, MFxConst fx) : _realDelegate(obj, fx) {
-		}
-
+		char _argumentData[RealDelegateType::getArgumentStorageSize() + sizeof(void*)];
 	public:
 		void setArgs(Types... types) {
-			ArgumentTuple<sizeof(void*)>::setArg<Types...>(argumentData, types...);
+			ArgumentTuple<aligment>::setArg<Types...>(_argumentData, types...);
 		}
 
-
-		virtual void invoke() = 0;
+		//virtual void invoke() = 0;
 	};
 
 	template <class Class, class Ret, class...Types>
 	class CachedMethodInvokerRet : public CachedMethodInvoker<Class, Ret, Types...> {
-		typedef CachedMethodInvoker<Class, Ret, Types...> Base;
-		typedef typename Base::RealDelegateType::MyInvoker::RRT RRT;
+		typedef MInvoke<Class, Ret, Types...> RealInvokerType;
+		typedef typename RealInvokerType::RRT RRT;
 		RRT _ret;
 	public:
 		typedef Ret(Class::*MFx)(Types...);
 		typedef Ret(Class::*MFxConst)(Types...) const;
+		RealInvokerType _realInvoker;
 	public:
-		CachedMethodInvokerRet(void** ref, Class* obj, MFx fx) : Base(obj, fx) {
+		CachedMethodInvokerRet(void** ref, Class* obj, MFx fx) : _realInvoker(obj, fx) {
 			*ref = &_ret;
 		}
-		CachedMethodInvokerRet(void** ref, Class* obj, MFxConst fx) : Base(obj, fx) {
+		CachedMethodInvokerRet(void** ref, Class* obj, MFxConst fx) : _realInvoker(obj, (MFx)fx) {
 			*ref = &_ret;
 		}
 
 		void invoke() {
-			this->_realDelegate.call(&_ret, (void**)this->argumentData);
+			_realInvoker(&_ret, this->_argumentData);
 		}
 	};
 
 	template <class Class, class Ret, class...Types>
 	class CachedMethodInvokerVoid : public CachedMethodInvoker<Class, Ret, Types...> {
-		typedef CachedMethodInvoker<Class, Ret, Types...> Base;
 	public:
 		typedef Ret(Class::*MFx)(Types...);
 		typedef Ret(Class::*MFxConst)(Types...) const;
+		MInvokeVoid<Class, Types...> _realInvoker;
 	public:
-		CachedMethodInvokerVoid(void** ref, Class* obj, MFx fx) : Base(obj, fx) {
+		CachedMethodInvokerVoid(void** ref, Class* obj, MFx fx) : _realInvoker(obj, fx) {
 			*ref = nullptr;
 		}
-		CachedMethodInvokerVoid(void** ref, Class* obj, MFxConst fx) : Base(obj, fx) {
+		CachedMethodInvokerVoid(void** ref, Class* obj, MFxConst fx) : _realInvoker(obj, (MFx)fx) {
 			*ref = nullptr;
 		}
 
 		void invoke() {
-			this->_realDelegate.call(nullptr, (void**)this->argumentData);
+			_realInvoker(nullptr, this->_argumentData);
 		}
 	};
 }

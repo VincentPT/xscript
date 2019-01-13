@@ -277,5 +277,9 @@ namespace FT {
 		static constexpr int getArgumentStorageSize() {
 			return MyInvoker::Helper::totalSize();
 		}
+
+		static constexpr size_t getAlignment() {
+			return MyInvoker::Helper::getAlignment();
+		}
 	};
 }
