@@ -46,12 +46,12 @@ namespace FTCached {
 			SetArg::template set<First>(base, first);
 
 			constexpr int size = FT::getAlignSize<First, alignment>();
-			ArgumentTuple<alignment>::setArg<Rest...>(base + size, rest...);
+			ArgumentTuple<alignment>::template setArg<Rest...>(base + size, rest...);
 		}
 
 		template <class...Types>
 		static constexpr int totalSize() {
-			return MemberTypeInfo<0, alignment, Types...>::totalSize();
+			return FT::MemberTypeInfo<0, alignment, Types...>::totalSize();
 		}
 	};
 
@@ -62,7 +62,7 @@ namespace FTCached {
 		char _argumentData[ARG_SIZE + 1];
 	public:
 		void setArgs(Types... types) {
-			ArgumentTuple<ARG_ALIGMENT_SIZE>::setArg<Types...>(_argumentData, types...);
+			ArgumentTuple<ARG_ALIGMENT_SIZE>::template setArg<Types...>(_argumentData, types...);
 		}
 	};
 }
