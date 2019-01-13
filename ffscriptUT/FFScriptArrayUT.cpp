@@ -152,9 +152,11 @@ namespace ffscriptUT
 			a[3] = 3;
 			a[4] = 4;
 
-			void* pMethod = (void*)FT::MFunction3<FFScriptArray<double>,double&,  int>::convertToFunction(&FFScriptArray<double>::operator[]);
-			auto fx = *((FT::MFunction3<FFScriptArray<double>, void*, int>::MFx*)&pMethod);
-			FT::MFunction3<FFScriptArray<double>, void*, int> mf((FFScriptArray<double>*)&a, fx);
+			//void* pMethod = (void*)FT::MFunction3<FFScriptArray<double>,double&,  int>::convertToFunction(&FFScriptArray<double>::operator[]);
+			//auto fx = *((FT::MFunction3<FFScriptArray<double>, void*, int>::MFx*)&pMethod);
+			//FT::MFunction3<FFScriptArray<double>, void*, int> mf((FFScriptArray<double>*)&a, fx);
+
+			FT::MFunction3<FFScriptArray<double>, const double&, int> mf(&a, &FFScriptArray<double>::operator[]);
 
 			double* ret;
 			int i = 1;
@@ -173,10 +175,10 @@ namespace ffscriptUT
 			a[3] = 3;
 			a[4] = 4;
 
-			void* pMethod = (void*)FT::MFunction3<FFScriptArray<long long>, void>::convertToFunction(&FFScriptArray<long long>::sort);
-			auto fx = *((FT::MFunction3<FFScriptArray<long long>, void>::MFx*)&pMethod);
-			FT::MFunction3<FFScriptArray<long long>, void> mf((FFScriptArray<long long>*)&a, fx);
-
+			//void* pMethod = (void*)FT::MFunction3<FFScriptArray<long long>, void>::convertToFunction(&FFScriptArray<long long>::sort);
+			//auto fx = *((FT::MFunction3<FFScriptArray<long long>, void>::MFx*)&pMethod);
+			//FT::MFunction3<FFScriptArray<long long>, void> mf((FFScriptArray<long long>*)&a, fx);
+			FT::MFunction3<FFScriptArray<long long>, void> mf(&a, &FFScriptArray<long long>::sort);
 			mf.call(nullptr, nullptr);
 
 			FF_EXPECT_TRUE((long long)0 == a[0], L"FT::MFunction3 invoke operator[] incorrectly");
