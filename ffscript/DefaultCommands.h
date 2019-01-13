@@ -13,7 +13,7 @@
 #include "InstructionCommand.h"
 #include "expressionunit.h"
 #include "BasicFunctionFactory.hpp"
-#include "function/DynamicFunction.h"
+#include "function/CachedDelegate.h"
 
 namespace ffscript {
 	class DefaultAssigmentCommand : public TargetedCommand {
@@ -151,7 +151,7 @@ namespace ffscript {
 	// trigger functions for constructor and destructor
 	//
 	/////////////////////////////////////////////////////////////////////////
-	class BeforeConstructorCall : public DFunction {
+	class BeforeConstructorCall : public CachedDelegate {
 		unsigned int _constructObjectOffsetRef;
 		InstructionCommand* _pushObjectToConstructorParamCommand;
 		std::list<InstructionCommand*> _constructorItems;
@@ -162,9 +162,6 @@ namespace ffscript {
 		BeforeConstructorCall(InstructionCommand* pushObjectToConstructorParamCommand, unsigned int objectOffsetRef);
 		virtual ~BeforeConstructorCall();
 		void call();
-		bool pushParam(void* param);
-		void* popParam();
-		DFunction* clone();
 
 		void buildOperator(ScriptCompiler* scriptCompiler, ScriptScope* currentScope, const std::list<OperatorBuidItemInfo> &operatorInfoList);
 

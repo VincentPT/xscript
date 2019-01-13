@@ -11,7 +11,7 @@
 *
 **********************************************************************/
 
-#include "function/FunctionDelegate.hpp"
+#include "function/CachedFunction.hpp"
 #include "function/DynamicFunction2.h"
 #include "function/DynamicFunction.h"
 #include "ExpUnitExecutor.h"
@@ -85,10 +85,8 @@ namespace ffscript {
 			auto updateLaterMan = CodeUpdater::getInstance(this->getScope());
 			Program* program = scriptCompiler->getProgram();
 
-			auto updateScriptFunctionFunc = new FunctionDelegate<void, Program*, RuntimeFunctionInfo*, int>(CodeUpdater::updateScriptFunctionObject);
-			updateScriptFunctionFunc->pushParam(program);
-			updateScriptFunctionFunc->pushParam((void*)usedRuntimeInfoObject);
-			updateScriptFunctionFunc->pushParam((void*)(size_t)functionId);
+			auto updateScriptFunctionFunc = std::make_shared<FT::CachedFunctionDelegate<void, Program*, RuntimeFunctionInfo*, int>>(CodeUpdater::updateScriptFunctionObject);
+			updateScriptFunctionFunc->setArgs(program, usedRuntimeInfoObject, functionId);
 
 			updateLaterMan->addUpdateLaterTask(updateScriptFunctionFunc);
 		}
@@ -330,15 +328,13 @@ namespace ffscript {
 							////when this function is called, the command pointer of the script function is not determine yet
 							////so we need to add to update later list of program to complete the arguments.
 #if USE_DIRECT_COPY_FOR_RETURN
-							auto updateScriptFunctionFunc = new FunctionDelegate<void, Program*, CallScriptFuntion2*, int>(CodeUpdater::updateScriptFunction);
+							auto updateScriptFunctionFunc = new FT::CachedFunctionDelegate<void, Program*, CallScriptFuntion2*, int>(CodeUpdater::updateScriptFunction);
 #else
-							auto updateScriptFunctionFunc = new FunctionDelegate<void, Program*, CallScriptFuntion*, int>(CodeUpdater::updateScriptFunction);
+							auto updateScriptFunctionFunc = new FT::CachedFunctionDelegate<void, Program*, CallScriptFuntion*, int>(CodeUpdater::updateScriptFunction);
 #endif
-							updateScriptFunctionFunc->pushParam(program);
-							updateScriptFunctionFunc->pushParam((void*)callScriptFunctionFunc);
-							updateScriptFunctionFunc->pushParam((void*)(size_t)scriptFunction->getId());
+							updateScriptFunctionFunc->setArgs(program,callScriptFunctionFunc,scriptFunction->getId());
 
-							updateLaterMan->addUpdateLaterTask(updateScriptFunctionFunc);
+							updateLaterMan->addUpdateLaterTask((DelegateRef)updateScriptFunctionFunc);
 						}
 						else {
 							callScriptFunctionFunc->setTargetCommand(nullptr);

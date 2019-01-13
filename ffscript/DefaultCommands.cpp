@@ -341,15 +341,10 @@ namespace ffscript {
 		_constructorItems.clear();
 		_itemOffsets.clear();
 	}
-	bool BeforeConstructorCall::pushParam(void* param) {
-		return false;
-	}
-	void* BeforeConstructorCall::popParam() {
-		return nullptr;
-	}
-	DFunction* BeforeConstructorCall::clone() {
-		return new BeforeConstructorCall(_pushObjectToConstructorParamCommand, _constructObjectOffsetRef);
-	}
+
+	//DFunction* BeforeConstructorCall::clone() {
+	//	return new BeforeConstructorCall(_pushObjectToConstructorParamCommand, _constructObjectOffsetRef);
+	//}
 
 	void BeforeConstructorCall::buildOperator(ScriptCompiler* scriptCompiler, ScriptScope* currentScope, const std::list<OperatorBuidItemInfo> &operatorInfoList) {
 		int maxReturnSize = 0;

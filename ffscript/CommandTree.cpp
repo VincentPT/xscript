@@ -16,6 +16,7 @@
 #include "CommandTree.h"
 #include "Context.h"
 #include "function/DynamicFunction2.h"
+#include "function/CachedDelegate.h"
 
 #include <iomanip>
 #include <sstream>
@@ -355,12 +356,12 @@ namespace ffscript {
 		_mainCommand = mainCommand;
 	}
 
-	void TriggerCommand::setBeforeTrigger(const std::shared_ptr<DFunction>& beforeExecute, const std::string& commandName) {
+	void TriggerCommand::setBeforeTrigger(const DelegateRef& beforeExecute, const std::string& commandName) {
 		_beforeExecuteFunc = beforeExecute;
 		_beforeExecuteCommandName = commandName;
 	}
 
-	void TriggerCommand::setAfterTrigger(const std::shared_ptr<DFunction>& afterExecute, const std::string& commandName) {
+	void TriggerCommand::setAfterTrigger(const DelegateRef& afterExecute, const std::string& commandName) {
 		_afterExecuteFunc = afterExecute;
 		_afterExecuteCommandName = commandName;
 	}

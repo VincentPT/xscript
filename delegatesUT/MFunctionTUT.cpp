@@ -12,7 +12,9 @@
 #include "../ffscript/ffscript.h"
 #include "../ffscriptUT/TemplateForTest.hpp"
 #include "../ffscript/function/CachedMethod.hpp"
+#include "../ffscript/function/CachedFunction.hpp"
 #include "MethodsForTest.h"
+#include "FunctionsForTest.h"
 
 using namespace std;
 using namespace ffscript;
@@ -42,5 +44,16 @@ namespace ffscriptUT
 		auto ret = memberFunction.getReturnValAsDouble();
 
 		FF_EXPECT_EQ(MethodContainer::memberFoo(arg1, arg2), ret);
+	}
+
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(FunctionDelegate, testCachedFunctionDelegate1)
+	{
+		CachedFunctionDelegate<double, int, char, const double&, const float&, unsigned int, short> funcDelegate(&funcFooGeneral);
+
+		funcDelegate.setArgs(1, '2', 3.0, 4.0f, 5, 6);
+		funcDelegate.call();
+
+		EXPECT_EQ(1000000000000000.0, funcDelegate.getReturnValAsDouble());
 	}
 }

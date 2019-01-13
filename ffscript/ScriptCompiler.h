@@ -20,7 +20,7 @@
 #include "TypeManager.h"
 #include "BasicFunctionFactory.hpp"
 #include "Template.h"
-#include "function/DynamicFunction.h"
+#include "function/CachedDelegate.h"
 
 #include <stack>
 #include <map>
@@ -102,7 +102,7 @@ namespace ffscript {
 		map<int, BinaryFunctionParamMapRef> _copyConstructorMap;
 		map<int, ConstructorIDListRef> _constructorsMap; // map a data type to its constructor list
 		map<string, TemplateRef> _templates;
-		map<string, DFunctionRef> _constantMap;
+		map<string, DelegateRef> _constantMap;
 		map<int, int> _functionCallMap;
 
 		Program* _program;
@@ -236,8 +236,8 @@ namespace ffscript {
 		void clearUserLib();
 		void takeOwnership(FunctionFactory* factory);
 
-		void setConstantMap(const string& constantName, const DFunctionRef& createConstantObjFunc);
-		DFunctionRef findConstantMap(const string& constantName) const;
+		void setConstantMap(const string& constantName, const DelegateRef& createConstantObjFunc);
+		DelegateRef findConstantMap(const string& constantName) const;
 
 		const FuncLibraryRef& getFunctionLib() const;
 		const TypeManagerRef& getTypeManager() const;
@@ -273,7 +273,7 @@ namespace ffscript {
 	typedef std::shared_ptr<ScriptCompiler> ScriptCompilerRef;
 
 	template<class T>
-	class ContantFactory : public DFunction {
+	class ContantFactory : public CachedDelegate {
 	protected:
 		std::string _type;
 		T _val;
@@ -286,15 +286,10 @@ namespace ffscript {
 		virtual void call() {
 			_retStorage = new CConstOperand<T>(_val, _type);
 		}
-		bool pushParam(void* param) { return false; }
-		void* popParam() { return nullptr; }
-		DFunction* clone() {
-			return new ContantFactory(_val, _type);
-		}
 	};
 
 	template<class T>
-	class ContantFactory2 : public DFunction {
+	class ContantFactory2 : public CachedDelegate {
 		std::string _type;
 		T _val;
 		ConstOperandBase* _retStorage;
@@ -304,13 +299,8 @@ namespace ffscript {
 			_ret = &_retStorage;
 			_valInString = valInString;
 		}
-		bool pushParam(void* param) { return false; }
-		void* popParam() { return nullptr; }
 		void call() {
 			_retStorage = new CConstOperand<T>(_val, _type, _valInString);
-		}
-		DFunction* clone() {
-			return new ContantFactory2(_val, _type, _valInString);
 		}
 	};
 

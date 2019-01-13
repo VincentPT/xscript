@@ -86,7 +86,7 @@ typedef unsigned char byte;
 
 #pragma endregion
 
-class DFunction;
+class CachedDelegate;
 class DFunction2;
 
 #include "function/FunctionDelegate3.hpp"
@@ -120,7 +120,7 @@ namespace ffscript {
 	class Variable;
 	
 	typedef std::shared_ptr<DFunction2> DFunction2Ref;
-	typedef std::shared_ptr<DFunction> DFunctionRef;
+	typedef std::shared_ptr<CachedDelegate> DelegateRef;
 	typedef InstructionCommand** CommandPointer;
 	typedef std::list<InstructionCommand*> CommandList;
 	typedef std::list<std::shared_ptr<InstructionCommand>> ScopeAutoRunList;

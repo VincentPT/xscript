@@ -11,8 +11,8 @@
 *
 **********************************************************************/
 
-#include "function/FunctionDelegate.hpp"
-#include "function/MemberFunction.hpp"
+#include "function/CachedFunction.hpp"
+#include "function/CachedMethod.hpp"
 #include "function/DynamicFunction2.h"
 #include "function/DynamicFunction.h"
 #include "ExpUnitExecutor.h"
@@ -246,12 +246,10 @@ namespace ffscript {
 				////when this function is called, the command pointer of the script function is not determine yet
 				////so we need to add to update later list of program to complete the arguments.
 
-				auto updateScriptFunctionFunc = new FunctionDelegate<void, Program*, CallScriptFuntion2*, int>(CodeUpdater::updateScriptFunction);
-				updateScriptFunctionFunc->pushParam(program);
-				updateScriptFunctionFunc->pushParam((void*)callScriptFunctionFunc);
-				updateScriptFunctionFunc->pushParam((void*)(size_t)scriptFunction->getId());
+				auto updateScriptFunctionFunc = new FT::CachedFunctionDelegate<void, Program*, CallScriptFuntion2*, int>(CodeUpdater::updateScriptFunction);
+				updateScriptFunctionFunc->setArgs(program, callScriptFunctionFunc, scriptFunction->getId());
 
-				updateLaterMan->addUpdateLaterTask(updateScriptFunctionFunc);
+				updateLaterMan->addUpdateLaterTask((DelegateRef)updateScriptFunctionFunc);
 			}
 			else {
 				callScriptFunctionFunc->setTargetCommand(nullptr);
@@ -358,11 +356,8 @@ namespace ffscript {
 		callCreateLambda->setCommandData(returnOffset, beginParamOffset, paramSize);
 
 		//set lambda target function address
-		auto updateCreateLambdaFunctionFunc = new FunctionDelegate<void, Program*, CallCreateLambda*, int>(CodeUpdater::updateLamdaScriptFunctionObject);
-		updateCreateLambdaFunctionFunc->pushParam(program);
-		updateCreateLambdaFunctionFunc->pushParam((void*)callCreateLambda);
-		updateCreateLambdaFunctionFunc->pushParam((void*)(size_t)functionId);
-
+		auto updateCreateLambdaFunctionFunc = std::make_shared<FT::CachedFunctionDelegate<void, Program*, CallCreateLambda*, int>>(CodeUpdater::updateLamdaScriptFunctionObject);
+		updateCreateLambdaFunctionFunc->setArgs(program,callCreateLambda,functionId);
 		updateLaterMan->addUpdateLaterTask(updateCreateLambdaFunctionFunc);
 		//////////////////////////
 
@@ -1141,9 +1136,9 @@ namespace ffscript {
 					auto userBlockRef = dynamic_pointer_cast<ObjectBlock<OperatorBuidInfo>>(node->getUserData());
 					OperatorBuidInfo* buildInfo = (OperatorBuidInfo*)userBlockRef->getDataRef();
 					if (buildInfo->operatorIndex >= 0) {
-						auto constructorTrigger = std::make_shared<FunctionDelegate<void, int>>(afterCallConstructor);
+						auto constructorTrigger = std::make_shared<FT::CachedFunctionDelegate<void, int>>(afterCallConstructor);
 						//push constructor index to function afterCallConstructor
-						constructorTrigger->pushParam((void*)(size_t)buildInfo->operatorIndex);
+						constructorTrigger->setArgs(buildInfo->operatorIndex);
 						triggerCommand->setAfterTrigger(constructorTrigger, "setctor(" + std::to_string(buildInfo->operatorIndex) + ")");
 					}
 
@@ -1196,14 +1191,12 @@ namespace ffscript {
 						//set param to build constructor for children member
 						auto codeUpdateLater = CodeUpdater::getInstance(getScope());
 
-						auto constructorUpdater = new MFunction<
-							void, BeforeConstructorCall, ScriptCompiler*,
-							ScriptScope*, const std::list<OperatorBuidItemInfo>&>(
+						auto constructorUpdater = std::make_shared<FT::CachedMethodDelegate<
+							BeforeConstructorCall, void, ScriptCompiler*,
+							ScriptScope*, const std::list<OperatorBuidItemInfo>&>>(
 								runChildConstructors.get(), &BeforeConstructorCall::buildOperator);
 						//add params for function BeforeConstructorCall::buildOperator
-						constructorUpdater->pushParam((void*)scriptCompiler);
-						constructorUpdater->pushParam((void*)getScope());
-						constructorUpdater->pushParam((void*)(&buildInfo->buildItems));
+						constructorUpdater->setArgs(scriptCompiler,getScope(),buildInfo->buildItems);
 
 						codeUpdateLater->addUpdateLaterTask(constructorUpdater);
 					}
@@ -1216,9 +1209,9 @@ namespace ffscript {
 					OperatorBuidInfo* buildInfo = (OperatorBuidInfo*)userBlockRef->getDataRef();
 					if (operatorType & UMASK_DESTRUCTOR) {
 						triggerCommand = new ConditionTriggerCommand();
-						auto destructorTrigger = std::make_shared<FunctionDelegate<unsigned char, int>>(beforeCallDestructor);
+						auto destructorTrigger = std::make_shared<FT::CachedFunctionDelegate<unsigned char, int>>(beforeCallDestructor);
 						//push constructor index to function beforeCallDestructor
-						destructorTrigger->pushParam((void*)(size_t)buildInfo->operatorIndex);
+						destructorTrigger->setArgs(buildInfo->operatorIndex);
 						//set condition command
 						triggerCommand->setBeforeTrigger(destructorTrigger, "checkctor(" + std::to_string(buildInfo->operatorIndex) + ")");
 					}
@@ -1235,14 +1228,12 @@ namespace ffscript {
 						//set param to build constructor for children member
 						auto codeUpdateLater = CodeUpdater::getInstance(getScope());
 
-						auto destructorUpdater = new MFunction<
-							void, BeforeConstructorCall, ScriptCompiler*,
-							ScriptScope*, const std::list<OperatorBuidItemInfo>&>(
+						auto destructorUpdater = std::make_shared<FT::CachedMethodDelegate<
+							BeforeConstructorCall, void, ScriptCompiler*,
+							ScriptScope*, const std::list<OperatorBuidItemInfo>&>>(
 								runChilddestructors.get(), &BeforeConstructorCall::buildOperator);
 						//add params for function BeforeConstructorCall::buildOperator
-						destructorUpdater->pushParam((void*)scriptCompiler);
-						destructorUpdater->pushParam((void*)getScope());
-						destructorUpdater->pushParam((void*)(&buildInfo->buildItems));
+						destructorUpdater->setArgs(scriptCompiler, getScope(), buildInfo->buildItems);
 
 						codeUpdateLater->addUpdateLaterTask(destructorUpdater);
 					}

@@ -14,7 +14,7 @@
 
 #include "CodeUpdater.h"
 #include "InstructionCommand.h"
-#include "function/DynamicFunction.h"
+#include "function/CachedDelegate.h"
 #include "Program.h"
 #include "ScriptScope.h"
 #include "GlobalScope.h"
@@ -27,8 +27,8 @@ namespace ffscript {
 	CodeUpdater::~CodeUpdater() {
 	}
 
-	void CodeUpdater::addUpdateLaterTask(DFunction* task) {
-		_updateLaterList.push_back( DFunctionRef(task) );
+	void CodeUpdater::addUpdateLaterTask(const DelegateRef& task) {
+		_updateLaterList.push_back(task);
 	}
 
 	void CodeUpdater::clear() {
@@ -37,7 +37,7 @@ namespace ffscript {
 	}
 
 	void CodeUpdater::runUpdate() {
-		for (const DFunctionRef& task : _updateLaterList) {
+		for (const DelegateRef& task : _updateLaterList) {
 			task->call();
 		}
 	}

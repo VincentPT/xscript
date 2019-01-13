@@ -41,3 +41,4 @@ namespace FT {
 }
 
 #define ARG_OFFSET(idx) Helper::template offset<idx>()
+constexpr size_t ARG_ALIGMENT_SIZE = sizeof(void*);

@@ -6,17 +6,15 @@ SET (DELEGATES
 	./function/CachedDelegate.h
 	./function/CachedDelegate.cpp
 	./function/CachedMethod.hpp
-	./function/FunctionDelegate.hpp
 	./function/FunctionDelegate3.hpp
-	./function/DynamicFunction.h
 	./function/DynamicFunction2.h
 	./function/FunctionHelper.hpp
-	./function/MemberFunction.hpp
 	./function/MemberFunction3.hpp
 	./function/MemberTypeInfo.hpp
 	./function/functioninternal.hpp
 	./function/functioninternal2.hpp
 	./function/MemberFunction4.hpp
+	./function/DynamicFunction2.cpp
 )
 
 SET (HEADERS
@@ -147,8 +145,6 @@ SET (SOURCES
 	./Utils.cpp
 	./Variable.cpp
 	./expressionunit.cpp
-	./function/DynamicFunction.cpp
-	./function/DynamicFunction2.cpp
 	./template/TemplateTypeManager.cpp
 )
 

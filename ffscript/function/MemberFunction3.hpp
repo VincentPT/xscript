@@ -32,7 +32,7 @@ namespace MemberFunction3 {
 #define DECLARE_CLASS_MINVOKER_T(Class, Ret, ...)\
 	struct MInvoke<Class, Ret, ##__VA_ARGS__> {\
 	public:\
-	typedef MemberTypeInfo<0, sizeof(void*), ##__VA_ARGS__> Helper;\
+	typedef MemberTypeInfo<0, ARG_ALIGMENT_SIZE, ##__VA_ARGS__> Helper;\
 	typedef typename real_type<Ret>::_T RRT;\
 	template <std::size_t N>\
 	using ATs  = typename std::tuple_element<N, std::tuple<__VA_ARGS__>>::type;\
@@ -50,7 +50,7 @@ namespace MemberFunction3 {
 #define DECLARE_CLASS_MINVOKER_VOID(Class,...) \
 	struct MInvokeVoid<Class, ##__VA_ARGS__> {\
 	public:\
-	typedef MemberTypeInfo<0, sizeof(void*), ##__VA_ARGS__> Helper;\
+	typedef MemberTypeInfo<0, ARG_ALIGMENT_SIZE, ##__VA_ARGS__> Helper;\
 	template <std::size_t N>\
 	using ATs  = typename std::tuple_element<N, std::tuple<__VA_ARGS__>>::type;\
 	template <std::size_t N>\

@@ -125,14 +125,14 @@ public:
 	BEGIN_INSTRUCTION_COMMAND_DECLARE(TriggerCommand, TargetedCommand);
 protected:
 	TargetedCommand* _mainCommand;
-	std::shared_ptr<DFunction> _afterExecuteFunc;
-	std::shared_ptr<DFunction> _beforeExecuteFunc;
+	DelegateRef _afterExecuteFunc;
+	DelegateRef _beforeExecuteFunc;
 	std::string _beforeExecuteCommandName;
 	std::string _afterExecuteCommandName;
 public:
 	void setCommand(TargetedCommand* mainCommand);
-	void setBeforeTrigger(const std::shared_ptr<DFunction>& beforeExecuted, const std::string& commandName);
-	void setAfterTrigger(const std::shared_ptr<DFunction>& afterExecuted, const std::string& commandName);
+	void setBeforeTrigger(const DelegateRef& beforeExecuted, const std::string& commandName);
+	void setAfterTrigger(const DelegateRef& afterExecuted, const std::string& commandName);
 	END_INSTRUCTION_COMMAND_DECLARE(ConditionalCommand);
 
 	////////////////////////////////////////////////////

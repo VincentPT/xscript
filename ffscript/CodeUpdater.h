@@ -31,13 +31,13 @@ namespace ffscript {
 	
 	class CodeUpdater
 	{
-		std::list<DFunctionRef> _updateLaterList;
+		std::list<DelegateRef> _updateLaterList;
 		std::map<CommandUnitBuilder*, Executor*> _commandExecutorMap;
 		ScriptScope* _ownerScope;
 	public:
 		CodeUpdater(ScriptScope* ownerScope);
 		virtual ~CodeUpdater();
-		void addUpdateLaterTask(DFunction* task);
+		void addUpdateLaterTask(const DelegateRef& task);
 		void runUpdate();
 		void clear();
 		void setUpdateInfo(CommandUnitBuilder* commandUnit, Executor* executor);

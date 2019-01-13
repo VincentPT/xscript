@@ -2304,7 +2304,7 @@ namespace ffscript {
 		return it->second;
 	}
 
-	void ScriptCompiler::setConstantMap(const string& constantName, const DFunctionRef& createConstantObjFunc) {		
+	void ScriptCompiler::setConstantMap(const string& constantName, const DelegateRef& createConstantObjFunc) {		
 		auto it = _constantMap.insert( std::make_pair(constantName, createConstantObjFunc) );
 		//overwrite if constant name is existed
 		if (it.second == false) {
@@ -2312,7 +2312,7 @@ namespace ffscript {
 		}
 	}
 
-	DFunctionRef ScriptCompiler::findConstantMap(const string& constantName) const {
+	DelegateRef ScriptCompiler::findConstantMap(const string& constantName) const {
 		auto it = _constantMap.find(constantName);
 		if (it != _constantMap.end()) {
 			return it->second;

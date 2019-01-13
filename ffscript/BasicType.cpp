@@ -18,7 +18,7 @@
 #include "ScriptCompiler.h"
 #include "BasicOperators.hpp"
 #include "ScriptType.h"
-#include "function/FunctionDelegate.hpp"
+#include "function/CachedFunction.hpp"
 #include "Utils.h"
 
 namespace ffscript {
@@ -194,16 +194,16 @@ namespace ffscript {
 
 	void BasicTypes::registerConstants(ScriptCompiler* scriptCompiler) const {
 
-		auto falseFunctionObj = std::make_shared<FunctionDelegate<ConstOperandBase*, bool>>(createBoolConsant);
-		auto trueFunctionObj = std::make_shared<FunctionDelegate<ConstOperandBase*, bool>>(createBoolConsant);
+		auto falseFunctionObj = std::make_shared<FT::CachedFunctionDelegate<ConstOperandBase*, bool>>(createBoolConsant);
+		auto trueFunctionObj = std::make_shared<FT::CachedFunctionDelegate<ConstOperandBase*, bool>>(createBoolConsant);
 
-		falseFunctionObj->pushParam((void*)false);
-		trueFunctionObj->pushParam((void*)true);
+		falseFunctionObj->setArgs(false);
+		trueFunctionObj->setArgs(true);
 
 		scriptCompiler->setConstantMap("false", falseFunctionObj);
 		scriptCompiler->setConstantMap("true", trueFunctionObj);
 
-		auto nullFunctionObj = std::make_shared<FunctionDelegate<ConstOperandBase*>>(createNullConsant);
+		auto nullFunctionObj = std::make_shared<FT::CachedFunctionDelegate<ConstOperandBase*>>(createNullConsant);
 		scriptCompiler->setConstantMap("nullptr", nullFunctionObj);
 	}
 

@@ -14,8 +14,8 @@
 #include "ControllerExecutor.h"
 #include "FunctionScope.h"
 #include "LoopScope.h"
-#include "function/FunctionDelegate.hpp"
-#include "function/MemberFunction.hpp"
+#include "function/CachedFunction.hpp"
+#include "function/CachedMethod.hpp"
 #include "ScriptCompiler.h"
 #include "FunctionFactory.h"
 #include "CodeUpdater.h"
@@ -69,8 +69,8 @@ namespace ffscript {
 		pExcutor->addCommand(enterScopeNative);
 
 		CodeUpdater* updateLaterMan = CodeUpdater::getInstance(this->getScope());
-		auto updateEnterCommand = new MFunction<void, EnterScopeBuilder, EnterContextScope*>(this, &EnterScopeBuilder::fillParams);
-		updateEnterCommand->pushParam(enterScopeNative);
+		auto updateEnterCommand = std::make_shared<FT::CachedMethodDelegate<EnterScopeBuilder, void, EnterContextScope*>>(this, &EnterScopeBuilder::fillParams);
+		updateEnterCommand->setArgs(enterScopeNative);
 		updateLaterMan->addUpdateLaterTask(updateEnterCommand);
 
 		return pExcutor;
@@ -113,9 +113,8 @@ namespace ffscript {
 		ExitContextScope* exitScopeCommand = new ExitContextScope();
 
 		CodeUpdater* updateLaterMan = CodeUpdater::getInstance(scope);
-		auto updateExitScopeCommand = new FunctionDelegate<void, ContextScope*, ExitContextScope*>(ExitScopeBuilder::fillParams);
-		updateExitScopeCommand->pushParam(scope);
-		updateExitScopeCommand->pushParam(exitScopeCommand);
+		auto updateExitScopeCommand = std::make_shared<FT::CachedFunctionDelegate<void, ContextScope*, ExitContextScope*>>(ExitScopeBuilder::fillParams);
+		updateExitScopeCommand->setArgs(scope, exitScopeCommand);
 		updateLaterMan->addUpdateLaterTask(updateExitScopeCommand);
 
 		return exitScopeCommand;
@@ -175,18 +174,16 @@ namespace ffscript {
 			auto copyReturnData = new PushParamOffset();
 			pExcutor->addCommand(copyReturnData);
 
-			auto updateReturnCommand = new MFunction<void, ReturnCommandBuilder, PushParamOffset*>(this, &ReturnCommandBuilder::fillParams);
-			updateReturnCommand->pushParam(copyReturnData);
+			auto updateReturnCommand = std::make_shared<FT::CachedMethodDelegate<ReturnCommandBuilder, void, PushParamOffset*>>(this, &ReturnCommandBuilder::fillParams);
+			updateReturnCommand->setArgs(copyReturnData);
 			updateLaterMan->addUpdateLaterTask(updateReturnCommand);
 		}
 
 		auto exitAtReturn = new ExitScriptFuntionAtReturn();
 		pExcutor->addCommand(exitAtReturn);
 
-		auto updateReturnCommand2 = new FunctionDelegate<void, ContextScope*, ContextScope*, ExitScriptFuntionAtReturn*>(ReturnCommandBuilder_FillParam);
-		updateReturnCommand2->pushParam(_ownerScope);
-		updateReturnCommand2->pushParam(_functionScope);
-		updateReturnCommand2->pushParam(exitAtReturn);
+		auto updateReturnCommand2 = std::make_shared<FT::CachedFunctionDelegate<void, ContextScope*, ContextScope*, ExitScriptFuntionAtReturn*>>(ReturnCommandBuilder_FillParam);
+		updateReturnCommand2->setArgs(_ownerScope, _functionScope, exitAtReturn);
 		updateLaterMan->addUpdateLaterTask(updateReturnCommand2);
 
 		return pExcutor;
@@ -238,8 +235,8 @@ namespace ffscript {
 			auto copyReturnData = new CopyDataToRef();
 			pExcutor->addCommand(copyReturnData);
 
-			auto updateReturnCommand = new MFunction<void, ReturnCommandBuilder2, CopyDataToRef*>(this, &ReturnCommandBuilder2::fillParams);
-			updateReturnCommand->pushParam(copyReturnData);
+			auto updateReturnCommand = std::make_shared<FT::CachedMethodDelegate<ReturnCommandBuilder2, void, CopyDataToRef*>>(this, &ReturnCommandBuilder2::fillParams);
+			updateReturnCommand->setArgs(copyReturnData);
 			updateLaterMan->addUpdateLaterTask(updateReturnCommand);
 		}
 
@@ -247,10 +244,8 @@ namespace ffscript {
 		exitAtReturn->setCommandData(_indexPreventDestructorRun);
 		pExcutor->addCommand(exitAtReturn);
 
-		auto updateReturnCommand2 = new FunctionDelegate<void, ContextScope*, ContextScope*, ExitScriptFuntionAtReturn*>(ReturnCommandBuilder_FillParam);
-		updateReturnCommand2->pushParam(_ownerScope);
-		updateReturnCommand2->pushParam(_functionScope);
-		updateReturnCommand2->pushParam(exitAtReturn);
+		auto updateReturnCommand2 = std::make_shared<FT::CachedFunctionDelegate<void, ContextScope*, ContextScope*, ExitScriptFuntionAtReturn*>>(ReturnCommandBuilder_FillParam);
+		updateReturnCommand2->setArgs(_ownerScope, _functionScope, exitAtReturn);
 		updateLaterMan->addUpdateLaterTask(updateReturnCommand2);
 
 		return pExcutor;
@@ -301,8 +296,8 @@ namespace ffscript {
 		pExcutor->addCommand(breakCommand);
 
 		CodeUpdater* updateLaterMan = CodeUpdater::getInstance(_ownerScope);
-		auto updateBreakCommand = new MFunction<void, BreakCommandBuilder, BreakCommand*>(this, &BreakCommandBuilder::fillParams);
-		updateBreakCommand->pushParam(breakCommand);
+		auto updateBreakCommand = std::make_shared<FT::CachedMethodDelegate<BreakCommandBuilder, void, BreakCommand*>>(this, &BreakCommandBuilder::fillParams);
+		updateBreakCommand->setArgs(breakCommand);
 		updateLaterMan->addUpdateLaterTask(updateBreakCommand);
 
 		return pExcutor;
@@ -333,8 +328,8 @@ namespace ffscript {
 		pExcutor->addCommand(continueCommand);
 
 		CodeUpdater* updateLaterMan = CodeUpdater::getInstance(_ownerScope);
-		auto updateContinueCommand = new MFunction<void, ContinueCommandBuilder, ContinueCommand*>(this, &ContinueCommandBuilder::fillParams);
-		updateContinueCommand->pushParam(continueCommand);
+		auto updateContinueCommand = std::make_shared<FT::CachedMethodDelegate<ContinueCommandBuilder, void, ContinueCommand*>>(this, &ContinueCommandBuilder::fillParams);
+		updateContinueCommand->setArgs(continueCommand);
 		updateLaterMan->addUpdateLaterTask(updateContinueCommand);
 
 		return pExcutor;
@@ -373,12 +368,12 @@ namespace ffscript {
 
 	Executor* JumpToSubScopeCommandBuilder::buildNativeCommand() {
 		ControllerExecutor* pExcutor = new ControllerExecutor();
-		InstructionCommand* command = new Jump();
+		auto command = new Jump();
 		pExcutor->addCommand(command);
 
 		CodeUpdater* updateLaterMan = CodeUpdater::getInstance(_subScope);
-		auto updateIfCommand = new MFunction<void, JumpToSubScopeCommandBuilder, Jump*>(this, &JumpToSubScopeCommandBuilder::fillParams);
-		updateIfCommand->pushParam(command);
+		auto updateIfCommand = std::make_shared<FT::CachedMethodDelegate<JumpToSubScopeCommandBuilder, void, Jump*>>(this, &JumpToSubScopeCommandBuilder::fillParams);
+		updateIfCommand->setArgs(command);
 		updateLaterMan->addUpdateLaterTask(updateIfCommand);
 
 		return pExcutor;
@@ -428,8 +423,8 @@ namespace ffscript {
 		pExcutor->addCommand(command);
 
 		CodeUpdater* updateLaterMan = CodeUpdater::getInstance(_ifScope);
-		auto updateIfCommand = new MFunction<void, IfCommandBuilder, InstructionCommand*>(this, &IfCommandBuilder::fillParams);
-		updateIfCommand->pushParam(command);
+		auto updateIfCommand = std::make_shared<FT::CachedMethodDelegate<IfCommandBuilder, void, InstructionCommand*>>(this, &IfCommandBuilder::fillParams);
+		updateIfCommand->setArgs(command);
 		updateLaterMan->addUpdateLaterTask(updateIfCommand);
 
 		return pExcutor;
@@ -469,8 +464,8 @@ namespace ffscript {
 		pExcutor->addCommand(jumpIf);
 
 		CodeUpdater* updateLaterMan = CodeUpdater::getInstance(_loopScope);
-		auto updateLoopCommand = new MFunction<void, LoopCommandBuilder, JumpIf*>(this, &LoopCommandBuilder::fillParams);
-		updateLoopCommand->pushParam(jumpIf);
+		auto updateLoopCommand = std::make_shared<FT::CachedMethodDelegate<LoopCommandBuilder, void, JumpIf*>>(this, &LoopCommandBuilder::fillParams);
+		updateLoopCommand->setArgs(jumpIf);
 		updateLaterMan->addUpdateLaterTask(updateLoopCommand);
 
 		return pExcutor;
