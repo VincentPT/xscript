@@ -18,163 +18,208 @@
 #include "functioninternal.hpp"
 #include <cstring>
 
-template <class ...Args> class FunctionInvoker;
+template <class Ret, class ...Args>
+class FunctionInvoker;
 
-template <class Ret> class FunctionInvoker<Ret> {
-	Ret _retStorage;
-public:
-	void* _fx;
-	FunctionInvoker(void* fx, void** data) : _fx(fx) { *data = &_retStorage;}
-	inline void call() {
-		typedef Ret(*FunctionType)();
-		this->_retStorage = ((FunctionType)this->_fx)();
+//////////////////////////////////////////////////////////////////////////////////////////////////
+#define DECLARE_FUNCTION_INVOKER_T(Ret, ...)\
+	class FunctionInvoker<Ret, ##__VA_ARGS__> : public FunctionInvokerBase<__VA_ARGS__> {\
+	protected:\
+		Ret _retStorage;\
+	public:\
+		typedef Ret(*Fx)(__VA_ARGS__);\
+		Fx _fx;\
+		FunctionInvoker(Fx fx, void** data) : _fx(fx) {\
+			*data = &_retStorage;\
+		}\
+		void call();\
 	}
-	inline bool pushParam(void*) { return false; }
-	inline void* popParam() { return nullptr; }
-};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+#define DECLARE_FUNCTION_INVOKER_VOID(...)\
+	class FunctionInvoker<void, ##__VA_ARGS__> : public FunctionInvokerBase<__VA_ARGS__> {\
+	public:\
+		typedef void(*Fx)(__VA_ARGS__);\
+		Fx _fx;\
+		FunctionInvoker(Fx fx, void** data) : _fx(fx) {\
+			*data = nullptr;\
+		}\
+		void call();\
+	}
+
+//template <>
+//DECLARE_FUNCTION_INVOKER_VOID();
+
+template <class T1>
+DECLARE_FUNCTION_INVOKER_VOID(T1);
+
+template <class T1, class T2>
+DECLARE_FUNCTION_INVOKER_VOID(T1, T2);
+
+template <class T1, class T2, class T3>
+DECLARE_FUNCTION_INVOKER_VOID(T1, T2, T3);
+
+template <class T1, class T2, class T3, class T4>
+DECLARE_FUNCTION_INVOKER_VOID(T1, T2, T3, T4);
+
+template <class T1, class T2, class T3, class T4, class T5>
+DECLARE_FUNCTION_INVOKER_VOID(T1, T2, T3, T4, T5);
+
+template <class T1, class T2, class T3, class T4, class T5, class T6>
+DECLARE_FUNCTION_INVOKER_VOID(T1, T2, T3, T4, T5, T6);
+
+template <class T1, class T2, class T3, class T4, class T5, class T6, class T7>
+DECLARE_FUNCTION_INVOKER_VOID(T1, T2, T3, T4, T5, T6, T7);
+
+template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
+DECLARE_FUNCTION_INVOKER_VOID(T1, T2, T3, T4, T5, T6, T7, T8);
+
+template <class Ret>
+DECLARE_FUNCTION_INVOKER_T(Ret);
 
 template <class Ret, class T1>
-BEGIN_INVOKER1(FunctionInvoker, Ret, T1)
-	inline void call() {
-		typedef Ret(*FunctionType)(void*);
-		this->_retStorage = ((FunctionType)this->_fx)(this->_params[0]);
-	}
-END_INVOKER1;
-
+DECLARE_FUNCTION_INVOKER_T(Ret, T1);
 
 template <class Ret, class T1, class T2>
-BEGIN_INVOKER1(FunctionInvoker, Ret, T1, T2)
-	inline void call() {
-		typedef Ret(*FunctionType)(void*, void*);
-		this->_retStorage = ((FunctionType)this->_fx)(this->_params[0], this->_params[1]);
-	}
-END_INVOKER1;
+DECLARE_FUNCTION_INVOKER_T(Ret, T1, T2);
 
 template <class Ret, class T1, class T2, class T3>
-BEGIN_INVOKER1(FunctionInvoker, Ret, T1, T2, T3)
-	inline void call() {
-		typedef Ret(*FunctionType)(void*, void*, void*);
-		this->_retStorage = ((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2]);
-	}
-END_INVOKER1;
+DECLARE_FUNCTION_INVOKER_T(Ret, T1, T2, T3);
 
 template <class Ret, class T1, class T2, class T3, class T4>
-BEGIN_INVOKER1(FunctionInvoker, Ret, T1, T2, T3, T4)
-	inline void call() {
-		typedef Ret(*FunctionType)(void*, void*, void*, void*);
-		this->_retStorage = ((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2], this->_params[3]);
-	}
-END_INVOKER1;
+DECLARE_FUNCTION_INVOKER_T(Ret, T1, T2, T3, T4);
 
 template <class Ret, class T1, class T2, class T3, class T4, class T5>
-BEGIN_INVOKER1(FunctionInvoker, Ret, T1, T2, T3, T4, T5)
-	inline void call() {
-		typedef Ret(*FunctionType)(void*, void*, void*, void*, void*);
-		this->_retStorage = ((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2], this->_params[3], this->_params[4]);
-	}
-END_INVOKER1;
+DECLARE_FUNCTION_INVOKER_T(Ret, T1, T2, T3, T4, T5);
 
 template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6>
-BEGIN_INVOKER1(FunctionInvoker, Ret, T1, T2, T3, T4, T5, T6)
-inline void call() {
-	typedef Ret(*FunctionType)(void*, void*, void*, void*, void*, void*);
-	this->_retStorage = ((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5]);
-}
-END_INVOKER1;
+DECLARE_FUNCTION_INVOKER_T(Ret, T1, T2, T3, T4, T5, T6);
 
 template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
-BEGIN_INVOKER1(FunctionInvoker, Ret, T1, T2, T3, T4, T5, T6, T7)
-inline void call() {
-	typedef Ret(*FunctionType)(void*, void*, void*, void*, void*, void*, void*);
-	this->_retStorage = ((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5], this->_params[6]);
-}
-END_INVOKER1;
+DECLARE_FUNCTION_INVOKER_T(Ret, T1, T2, T3, T4, T5, T6, T7);
 
 template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
-BEGIN_INVOKER1(FunctionInvoker, Ret, T1, T2, T3, T4, T5, T6, T7, T8)
-inline void call() {
-	typedef Ret(*FunctionType)(void*, void*, void*, void*, void*, void*, void*, void*);
-	this->_retStorage = ((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5], this->_params[6], this->_params[7]);
-}
-END_INVOKER1;
+DECLARE_FUNCTION_INVOKER_T(Ret, T1, T2, T3, T4, T5, T6, T7, T8);
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-template <> class FunctionInvoker<void> {
+template <>
+class FunctionInvoker<void> : public FunctionInvokerBase<> {
 public:
-	void* _fx;
-	FunctionInvoker(void* fx, void** data) : _fx(fx) { *data = nullptr; }
-	inline void call() {
-		typedef void(*FunctionType)();
-		((FunctionType)this->_fx)();
+	typedef void(*Fx)();
+	Fx _fx;
+	FunctionInvoker(Fx fx, void** data) : _fx(fx) {
+		*data = nullptr;
 	}
-	inline bool pushParam(void*) { return false; }
-	inline void* popParam() { return nullptr; }
+	void call() {
+		typedef void(*RFx)();
+		((RFx)_fx)();
+	}
 };
 
 template <class T1>
-BEGIN_INVOKER2(FunctionInvoker, T1)
-	inline void call() {
-		typedef void(*FunctionType)(void*);
-		((FunctionType)this->_fx)(this->_params[0]);
-	}
-};
-
+void FunctionInvoker<void, T1>::call() {
+	typedef void(*RFx)(void*);
+	((RFx)_fx)(this->_args[0]);
+}
 
 template <class T1, class T2>
-BEGIN_INVOKER2(FunctionInvoker, T1, T2)
-	inline void call() {
-		typedef void(*FunctionType)(void*, void*);
-		((FunctionType)this->_fx)(this->_params[0], this->_params[1]);
-	}
-};
+void FunctionInvoker<void, T1, T2>::call() {
+	typedef void(*RFx)(void*, void*);
+	((RFx)_fx)(this->_args[0], this->_args[1]);
+}
 
 template <class T1, class T2, class T3>
-BEGIN_INVOKER2(FunctionInvoker, T1, T2, T3)
-	inline void call() {
-		typedef void(*FunctionType)(void*, void*, void*);
-		((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2]);
-	}
-};
+void FunctionInvoker<void, T1, T2, T3>::call() {
+	typedef void(*RFx)(void*, void*, void*);
+	((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2]);
+}
 
 template <class T1, class T2, class T3, class T4>
-BEGIN_INVOKER2(FunctionInvoker, T1, T2, T3, T4)
-	inline void call() {
-		typedef void(*FunctionType)(void*, void*, void*, void*);
-		 ((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2], this->_params[3]);
-	}
-};
+void FunctionInvoker<void, T1, T2, T3, T4>::call() {
+	typedef void(*RFx)(void*, void*, void*, void*);
+	((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2], this->_args[3]);
+}
 
 template <class T1, class T2, class T3, class T4, class T5>
-BEGIN_INVOKER2(FunctionInvoker, T1, T2, T3, T4, T5)
-	inline void call() {
-		typedef void(*FunctionType)(void*, void*, void*, void*, void*);
-		 ((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2], this->_params[3], this->_params[4]);
-	}
-};
+void FunctionInvoker<void, T1, T2, T3, T4, T5>::call() {
+	typedef void(*RFx)(void*, void*, void*, void*, void*);
+	((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2], this->_args[3], this->_args[4]);
+}
+
 
 template <class T1, class T2, class T3, class T4, class T5, class T6>
-BEGIN_INVOKER2(FunctionInvoker, T1, T2, T3, T4, T5, T6)
-inline void call() {
-	typedef void(*FunctionType)(void*, void*, void*, void*, void*, void*);
-	((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5]);
+void FunctionInvoker<void, T1, T2, T3, T4, T5, T6>::call() {
+	typedef void(*RFx)(void*, void*, void*, void*, void*, void*);
+	((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2], this->_args[3], this->_args[4], this->_args[5]);
 }
-};
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7>
-BEGIN_INVOKER2(FunctionInvoker, T1, T2, T3, T4, T5, T6, T7)
-inline void call() {
-	typedef void(*FunctionType)(void*, void*, void*, void*, void*, void*, void*);
-	((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5], this->_params[6]);
+void FunctionInvoker<void, T1, T2, T3, T4, T5, T6, T7>::call() {
+	typedef void(*RFx)(void*, void*, void*, void*, void*, void*, void*);
+	((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2], this->_args[3], this->_args[4], this->_args[5], this->_args[6]);
 }
-};
 
 template <class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
-BEGIN_INVOKER2(FunctionInvoker, T1, T2, T3, T4, T5, T6, T7, T8)
-inline void call() {
-	typedef void(*FunctionType)(void*, void*, void*, void*, void*, void*, void*, void*);
-	((FunctionType)this->_fx)(this->_params[0], this->_params[1], this->_params[2], this->_params[3], this->_params[4], this->_params[5], this->_params[6], this->_params[7]);
+void FunctionInvoker<void, T1, T2, T3, T4, T5, T6, T7, T8>::call() {
+	typedef void(*RFx)(void*, void*, void*, void*, void*, void*, void*, void*);
+	((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2], this->_args[3], this->_args[4], this->_args[5], this->_args[6], this->_args[7]);
 }
-};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+template <class Ret>
+void FunctionInvoker<Ret>::call() {
+	typedef Ret(*RFx)();
+	_retStorage = ((RFx)_fx)();
+}
+
+template <class Ret, class T1>
+void FunctionInvoker<Ret, T1>::call() {
+	typedef Ret(*RFx)(void*);
+	_retStorage = ((RFx)_fx)(this->_args[0]);
+}
+
+template <class Ret, class T1, class T2>
+void FunctionInvoker<Ret, T1, T2>::call() {
+	typedef Ret(*RFx)(void*, void*);
+	_retStorage = ((RFx)_fx)(this->_args[0], this->_args[1]);
+}
+
+template <class Ret, class T1, class T2, class T3>
+void FunctionInvoker<Ret, T1, T2, T3>::call() {
+	typedef Ret(*RFx)(void*, void*, void*);
+	_retStorage = ((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2]);
+}
+
+template <class Ret, class T1, class T2, class T3, class T4>
+void FunctionInvoker<Ret, T1, T2, T3, T4>::call() {
+	typedef Ret(*RFx)(void*, void*, void*, void*);
+	_retStorage = ((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2], this->_args[3]);
+}
+
+template <class Ret, class T1, class T2, class T3, class T4, class T5>
+void FunctionInvoker<Ret, T1, T2, T3, T4, T5>::call() {
+	typedef Ret(*RFx)(void*, void*, void*, void*, void*);
+	_retStorage = ((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2], this->_args[3], this->_args[4]);
+}
+
+
+template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6>
+void FunctionInvoker<Ret, T1, T2, T3, T4, T5, T6>::call() {
+	typedef Ret(*RFx)(void*, void*, void*, void*, void*, void*);
+	_retStorage = ((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2], this->_args[3], this->_args[4], this->_args[5]);
+}
+
+template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
+void FunctionInvoker<Ret, T1, T2, T3, T4, T5, T6, T7>::call() {
+	typedef Ret(*RFx)(void*, void*, void*, void*, void*, void*, void*);
+	_retStorage = ((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2], this->_args[3], this->_args[4], this->_args[5], this->_args[6]);
+}
+
+template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
+void FunctionInvoker<Ret, T1, T2, T3, T4, T5, T6, T7, T8>::call() {
+	typedef Ret(*RFx)(void*, void*, void*, void*, void*, void*, void*, void*);
+	_retStorage = ((RFx)_fx)(this->_args[0], this->_args[1], this->_args[2], this->_args[3], this->_args[4], this->_args[5], this->_args[6], this->_args[7]);
+}
+
 
 template <class Ret, class ...Args>
 class FunctionDelegate :
@@ -185,8 +230,7 @@ public:
 protected:
 	FunctionInvoker<Ret, Args...> invoker;
 public:
-	FunctionDelegate(FuncType function) : FunctionDelegate(*((void**)&function)) {}
-	FunctionDelegate(void* function) : invoker(function, &_ret) {}
+	FunctionDelegate(FuncType function) : invoker(function, &_ret) {}
 	virtual ~FunctionDelegate() {}
 
 	virtual Ret operator()(Args...args) {

@@ -51,9 +51,27 @@ namespace ffscriptUT
 	{
 		CachedFunctionDelegate<double, int, char, const double&, const float&, unsigned int, short> funcDelegate(&funcFooGeneral);
 
-		funcDelegate.setArgs(1, '2', 3.0, 4.0f, 5, 6);
+		double arg3 = 3.0;
+		float arg4 = 4.0f;
+		funcDelegate.setArgs(1, '2', arg3, arg4, 5, 6);
 		funcDelegate.call();
 
 		EXPECT_EQ(1000000000000000.0, funcDelegate.getReturnValAsDouble());
+	}
+
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(FunctionDelegate, testMemberTypeInfo1)
+	{
+		typedef MemberTypeInfo < 0, sizeof(void*), float, double, int > ArgumentHelper;
+		auto offset2 = ArgumentHelper::template offset<2>();
+		EXPECT_EQ(3 * sizeof(void*), offset2);
+	}
+
+	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
+	TEST(FunctionDelegate, testMemberTypeInfo2)
+	{
+		typedef MemberTypeInfo < 0, sizeof(void*), int, char, const double&, const float&, unsigned int, short > ArgumentHelper;
+		auto offset3 = ArgumentHelper::template offset<3>();
+		EXPECT_EQ(3 * sizeof(void*), offset3);
 	}
 }

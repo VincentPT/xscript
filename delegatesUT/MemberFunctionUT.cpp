@@ -21,13 +21,13 @@ namespace ffscriptUT
 	namespace MethodContainerUT {
 		FF_TEST_METHOD(MethodContainer, testMethodContainerVoid1)
 		{
-			MFunction<void, MethodContainer> memberFunction(this, &MethodContainer::memberFoo);
+			MFunction<MethodContainer, void> memberFunction(this, &MethodContainer::memberFoo);
 			memberFunction.call();
 		}
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerVoid2)
 		{
-			MFunction<void, MethodContainer, const float&> memberFunction(this, &MethodContainer::memberFoo);
+			MFunction<MethodContainer, void, const float&> memberFunction(this, &MethodContainer::memberFoo);
 
 			float forRefValue1 = 1.0f;		
 
@@ -38,7 +38,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerVoid3)
 		{
-			MFunction<void, MethodContainer, const float&, const float&> memberFunction(this, &MethodContainer::memberFoo);
+			MFunction<MethodContainer, void, const float&, const float&> memberFunction(this, &MethodContainer::memberFoo);
 
 			float forRefValue1 = 1.0f;
 			float forRefValue2 = 2.0f;
@@ -50,7 +50,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerVoid4)
 		{
-			MFunction<void, MethodContainer, const float&, const float&, int> memberFunction(this, &MethodContainer::memberFoo);
+			MFunction<MethodContainer, void, const float&, const float&, int> memberFunction(this, &MethodContainer::memberFoo);
 
 			float forRefValue1 = 1.0f;
 			float forRefValue2 = 2.0f;
@@ -63,7 +63,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerVoid5)
 		{
-			MFunction<void, MethodContainer, const float&, const float&, int, char> memberFunction(this, &MethodContainer::memberFoo);
+			MFunction<MethodContainer, void, const float&, const float&, int, char> memberFunction(this, &MethodContainer::memberFoo);
 
 			float forRefValue1 = 1.0f;
 			float forRefValue2 = 2.0f;
@@ -77,7 +77,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerVoid6)
 		{
-			MFunction<void, MethodContainer, const float&,
+			MFunction<MethodContainer, void, const float&,
 				const float&, int, char, const double&> memberFunction(this, &MethodContainer::memberFoo);
 
 			float forRefValue1 = 1.0f;
@@ -93,7 +93,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerVoid7)
 		{
-			MFunction<void, MethodContainer, const float&,
+			MFunction<MethodContainer, void, const float&,
 				const float&, int, char, const double&, void*> memberFunction(this, &MethodContainer::memberFoo);
 
 			float forRefValue1 = 1.0f;
@@ -110,7 +110,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerVoid8)
 		{
-			MFunction<void, MethodContainer, const float&,
+			MFunction<MethodContainer, void, const float&,
 				const float&, int, char, const double&, void*, short> memberFunction(this, &MethodContainer::memberFoo);
 
 			float forRefValue1 = 1.0f;
@@ -128,7 +128,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerVoid9)
 		{
-			MFunction<void, MethodContainer, const float&,
+			MFunction<MethodContainer, void, const float&,
 				const float&, int, char, const double&, void*, short, int> memberFunction(this, &MethodContainer::memberFoo);
 			
 			float forRefValue1 = 1.0f;
@@ -147,7 +147,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerFloat1)
 		{
-			MFunction<float, MethodContainer> memberFunction(this, &MethodContainer::memberFoof);
+			MFunction<MethodContainer, float> memberFunction(this, &MethodContainer::memberFoof);
 
 			float expectedVal = 1.0f;
 			memberVariable = expectedVal;
@@ -161,7 +161,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerFloat2)
 		{
-			MFunction<float, MethodContainer, const float&> memberFunction(this, &MethodContainer::memberFoof);
+			MFunction<MethodContainer, float, const float&> memberFunction(this, &MethodContainer::memberFoof);
 
 			float forRefValue1 = 1.0f;
 
@@ -179,7 +179,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerFloat3)
 		{
-			MFunction<float, MethodContainer, const float&, const float&> memberFunction(this, &MethodContainer::memberFoof);
+			MFunction<MethodContainer, float, const float&, const float&> memberFunction(this, &MethodContainer::memberFoof);
 
 			float forRefValue1 = 1.0f;
 			float forRefValue2 = 2.0f;
@@ -198,7 +198,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerFloat4)
 		{
-			MFunction<float, MethodContainer, const float&, const float&, int> memberFunction(this, &MethodContainer::memberFoof);
+			MFunction<MethodContainer, float, const float&, const float&, int> memberFunction(this, &MethodContainer::memberFoof);
 
 			float forRefValue1 = 1.0f;
 			float forRefValue2 = 2.0f;
@@ -218,7 +218,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerFloat5)
 		{
-			MFunction<float, MethodContainer, const float&, const float&, int, char> memberFunction(this, &MethodContainer::memberFoof);
+			MFunction<MethodContainer, float, const float&, const float&, int, char> memberFunction(this, &MethodContainer::memberFoof);
 
 			float forRefValue1 = 1.0f;
 			float forRefValue2 = 2.0f;
@@ -239,7 +239,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerFloat6)
 		{
-			MFunction<float, MethodContainer, const float&,
+			MFunction<MethodContainer, float, const float&,
 				const float&, int, char, const double&> memberFunction(this, &MethodContainer::memberFoof);
 
 			float forRefValue1 = 1.0f;
@@ -262,7 +262,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerFloat7)
 		{
-			MFunction<float, MethodContainer, const float&,
+			MFunction<MethodContainer, float, const float&,
 				const float&, int, char, const double&, void*> memberFunction(this, &MethodContainer::memberFoof);
 
 			float forRefValue1 = 1.0f;
@@ -286,7 +286,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerFloat8)
 		{
-			MFunction<float, MethodContainer, const float&,
+			MFunction<MethodContainer, float, const float&,
 				const float&, int, char, const double&, void*, short> memberFunction(this, &MethodContainer::memberFoof);
 
 			float forRefValue1 = 1.0f;
@@ -311,7 +311,7 @@ namespace ffscriptUT
 
 		FF_TEST_METHOD(MethodContainer, testMethodContainerFloat9)
 		{
-			MFunction<float, MethodContainer, const float&,
+			MFunction<MethodContainer, float, const float&,
 				const float&, int, char, const double&, void*, short, int> memberFunction(this, &MethodContainer::memberFoof);
 
 			float forRefValue1 = 1.0f;
@@ -338,7 +338,7 @@ namespace ffscriptUT
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
 		FF_TEST_METHOD(MethodContainer, testMethodContainerGeneral1)
 		{
-			MFunction<char, MethodContainer> memberFunction(this, &MethodContainer::MemberFooGeneral);
+			MFunction<MethodContainer, char> memberFunction(this, &MethodContainer::MemberFooGeneral);
 
 			DFunction* dynamicCaller = &memberFunction;
 			dynamicCaller->call();
@@ -349,7 +349,7 @@ namespace ffscriptUT
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
 		FF_TEST_METHOD(MethodContainer, testMethodContainerGeneral2)
 		{
-			MFunction<short, MethodContainer, int> memberFunction(this, &MethodContainer::MemberFooGeneral);
+			MFunction<MethodContainer, short, int> memberFunction(this, &MethodContainer::MemberFooGeneral);
 
 			DFunction* dynamicCaller = &memberFunction;
 			dynamicCaller->pushParam((void*)1);
@@ -361,7 +361,7 @@ namespace ffscriptUT
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
 		FF_TEST_METHOD(MethodContainer, testMethodContainerGeneral3)
 		{
-			MFunction<float, MethodContainer, int, char> memberFunction(this, &MethodContainer::MemberFooGeneral);
+			MFunction<MethodContainer, float, int, char> memberFunction(this, &MethodContainer::MemberFooGeneral);
 
 			DFunction* dynamicCaller = &memberFunction;
 			dynamicCaller->pushParam((void*)1);
@@ -374,7 +374,7 @@ namespace ffscriptUT
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
 		FF_TEST_METHOD(MethodContainer, testMethodContainerGeneral4)
 		{
-			MFunction<int, MethodContainer, int, char, const double&> memberFunction(this, &MethodContainer::MemberFooGeneral);
+			MFunction<MethodContainer, int, int, char, const double&> memberFunction(this, &MethodContainer::MemberFooGeneral);
 
 			double p3 = 3.0f;
 
@@ -390,7 +390,7 @@ namespace ffscriptUT
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
 		FF_TEST_METHOD(MethodContainer, testMethodContainerGeneral5)
 		{
-			MFunction<long, MethodContainer, int, char, const double&, const float&> memberFunction(this, &MethodContainer::MemberFooGeneral);
+			MFunction<MethodContainer, long, int, char, const double&, const float&> memberFunction(this, &MethodContainer::MemberFooGeneral);
 
 			double p3 = 3.0f;
 			float p4 = 4.0f;
@@ -408,7 +408,7 @@ namespace ffscriptUT
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
 		FF_TEST_METHOD(MethodContainer, testMethodContainerGeneral6)
 		{
-			MFunction<long long, MethodContainer, int, char, const double&, const float&, unsigned int> memberFunction(this, &MethodContainer::MemberFooGeneral);
+			MFunction<MethodContainer, long long, int, char, const double&, const float&, unsigned int> memberFunction(this, &MethodContainer::MemberFooGeneral);
 
 			double p3 = 3.0f;
 			float p4 = 4.0f;
@@ -427,7 +427,7 @@ namespace ffscriptUT
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
 		FF_TEST_METHOD(MethodContainer, testMethodContainerGeneral7)
 		{
-			MFunction<double, MethodContainer, int, char, const double&, const float&, unsigned int, short> memberFunction(this, &MethodContainer::MemberFooGeneral);
+			MFunction<MethodContainer, double, int, char, const double&, const float&, unsigned int, short> memberFunction(this, &MethodContainer::MemberFooGeneral);
 
 			double p3 = 3.0f;
 			float p4 = 4.0f;
@@ -447,7 +447,7 @@ namespace ffscriptUT
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
 		FF_TEST_METHOD(MethodContainer, testMethodContainerGeneral8)
 		{
-			MFunction<unsigned short, MethodContainer, int, char, const double&, const float&, unsigned int, short, long> memberFunction(this, &MethodContainer::MemberFooGeneral);
+			MFunction<MethodContainer, unsigned short, int, char, const double&, const float&, unsigned int, short, long> memberFunction(this, &MethodContainer::MemberFooGeneral);
 
 			double p3 = 3.0f;
 			float p4 = 4.0f;
@@ -468,7 +468,7 @@ namespace ffscriptUT
 		/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
 		FF_TEST_METHOD(MethodContainer, testMethodContainerGeneral9)
 		{
-			MFunction<unsigned short, MethodContainer, int, char, const double&, const float&, unsigned int, short, long> memberFunction(this, &MethodContainer::MemberFooGeneral);
+			MFunction<MethodContainer, unsigned short, int, char, const double&, const float&, unsigned int, short, long> memberFunction(this, &MethodContainer::MemberFooGeneral);
 
 			double p3 = 3.0f;
 			float p4 = 4.0f;
@@ -489,80 +489,6 @@ namespace ffscriptUT
 			pNewInsance->call();
 
 			FF_EXPECT_EQ(1, (int)pNewInsance->getReturnValAsInt16());
-		}
-
-		FF_TEST_METHOD(MethodContainer, testMethodContainerCdecl1)
-		{
-			Function<double, double> function(::sin);
-			double p = 1.0f;
-			double expect = ::sin(p);
-
-			function.pushParam(&p);
-			function.call();
-
-			double val1 = function.getReturnValAsDouble();
-			FF_EXPECT_EQ(expect, val1);
-		}
-
-		static double cdelfoo(const double& d) {
-			return d;
-		}
-
-
-		FF_TEST_METHOD(MethodContainer, testMethodContainerCdecl2)
-		{
-			Function<double, const double&> function(cdelfoo);
-			double p = 1.0f;
-			double expect = cdelfoo(p);
-
-			function.pushParam(&p);
-			function.call();
-
-			double val1 = function.getReturnValAsDouble();
-			FF_EXPECT_EQ(expect, val1);
-		}
-
-		FF_TEST_METHOD(MethodContainer, testMethodContainerMember1)
-		{
-			MFunctionW <void, MethodContainer, float> function(this, &MethodContainer::memberFoo);
-			double p = 1.0f;
-			function.pushParam(&p);
-			function.call();
-		}
-
-		FF_TEST_METHOD(MethodContainer, testMethodContainerMember2)
-		{
-			MFunctionW <double, MethodContainer, float, double> function(this, &MethodContainer::memberFoo);
-			float p = 1.0f;
-			double q = 1.0f;
-			double expect = memberFoo(p, q);
-
-			function.pushParam(&p);
-			function.pushParam(&q);
-			function.call();
-
-			double val1 = function.getReturnValAsDouble();
-			FF_EXPECT_EQ(expect, val1);
-		}
-
-		FF_TEST_METHOD(MethodContainer, testMethodContainerMember3)
-		{
-			MFunctionW <double, MethodContainer, float, double> function(this, &MethodContainer::memberFoo);
-			float p = 1.0f;
-			double q = 1.0f;
-			double expect = memberFoo(p, q);
-
-			function.pushParam(&p);
-			function.pushParam(&q);
-			function.call();
-
-			DFunction* newInstance = function.clone();
-			newInstance->call();
-			double val2 = newInstance->getReturnValAsDouble();
-
-			double val1 = function.getReturnValAsDouble();
-			FF_EXPECT_EQ(expect, val1);
-			FF_EXPECT_EQ(expect, val2);
 		}
 	};
 }

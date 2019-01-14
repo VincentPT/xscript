@@ -36,70 +36,42 @@ inline void pushParams(DFunction* pFunction, Args... args) {
 		pFunction->pushParam(*pstart++);
 	}
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////
-template <class Ret, class ...Args> class InvokerInternal1 {
+
+template <typename Fx1, typename Fx2>
+struct FunctionConverter
+{
+	union {
+		Fx1 fx1;
+		Fx2 fx2;
+	} conv;
+	FunctionConverter(Fx1 fx1) {
+		conv.fx1 = fx1;
+	}
+	static Fx2 convert(Fx1 fx1) {
+		FunctionConverter converter(fx1);
+		return converter.conv.fx2;
+	}
+};
+
+template <class...Args>
+class FunctionInvokerBase {
 protected:
 	static const int _maxParam = sizeof...(Args);
 	int _paramCount;
-	Ret _retStorage;
-public:
-	void* _params[_maxParam];
-	void* _fx;
-	InvokerInternal1(void* fx, void** data) : _fx(fx), _paramCount(0)
-	{
-		*data = &_retStorage;
-	}
+	void* _args[_maxParam + 1];
+protected:
+	FunctionInvokerBase() : _paramCount(0) {}
 
+public:
 	inline bool pushParam(void* param) {
 		if (_maxParam <= _paramCount) {
 			return false;
 		}
-		_params[_paramCount++] = param;
+		_args[_paramCount++] = param;
 		return true;
 	}
 	inline void* popParam() {
 		if (_paramCount == 0) return nullptr;
-		return _params[--_paramCount];
+		return _args[--_paramCount];
 	}
 };
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-template <class ...Args> class InvokerInternal2 {
-protected:
-	static const int _maxParam = sizeof...(Args);
-	int _paramCount;
-public:
-	void* _params[_maxParam];
-	void* _fx;
-	InvokerInternal2(void* fx, void** data) : _fx(fx), _paramCount(0)
-	{
-		*data = nullptr;
-	}
-
-	inline bool pushParam(void* param) {
-		if (_maxParam <= _paramCount) {
-			return false;
-		}
-		_params[_paramCount++] = param;
-		return true;
-	}
-	inline void* popParam() {
-		if (_paramCount == 0) return nullptr;
-		return _params[--_paramCount];
-	}
-};
-
-
-#define BEGIN_INVOKER1(className, ...) \
-class className<__VA_ARGS__> : public InvokerInternal1<__VA_ARGS__> { \
-public: \
-	className(void* fx, void** data) : InvokerInternal1<__VA_ARGS__>(fx, data) {}
-
-#define END_INVOKER1 }
-
-#define BEGIN_INVOKER2(className, ...) \
-class className<void, ##__VA_ARGS__> : public InvokerInternal2<__VA_ARGS__> { \
-public: \
-	className(void* fx, void** data) : InvokerInternal2<__VA_ARGS__>(fx, data) {}
-
-#define END_INVOKER2 }
