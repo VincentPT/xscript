@@ -44,8 +44,8 @@ namespace FTCached {
 		static void setArg(char* base, First first, Rest...rest) {
 			typedef typename std::conditional<std::is_reference<First>::value, SetArgRef, SetArgVal>::type SetArg;
 			SetArg::template set<First>(base, first);
-
-			constexpr int size = FT::getAlignSize<FT::real_type<First>::_T, alignment>();
+			typedef typename FT::real_type<First>::_T RT;
+			constexpr int size = FT::getAlignSize<RT, alignment>();
 			ArgumentTuple<alignment>::template setArg<Rest...>(base + size, rest...);
 		}
 

@@ -64,7 +64,8 @@ namespace ffscriptUT
 	{
 		typedef MemberTypeInfo < 0, sizeof(void*), float, double, int > ArgumentHelper;
 		auto offset2 = ArgumentHelper::template offset<2>();
-		EXPECT_EQ(3 * sizeof(void*), offset2);
+		auto constexpr expectedOffset = sizeof(double) > sizeof(void*) ? 3 * sizeof(void*) : 2 * sizeof(void*);
+		EXPECT_EQ(expectedOffset, offset2);
 	}
 
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
