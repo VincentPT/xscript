@@ -219,12 +219,13 @@ First, you must define the function in C++ part.
  I share the desire items I want to implement in the future whenever I have a free time.  
  - [ ] Call un-ordered script function.
  - [x] Support type cast operator - (Type)a.
- - [ ] Support cross platform (Linux, Mac). Currently, support on Windows only.
+ - [x] Support cross platform(currently, Windows and Linux are supported).
  - [ ] Support template function and structure.
  - [ ] Register constructor/destructor in script part.
  - [ ] Register dynamic function in script part.
  - [ ] Update overloading algorithm to make it more easy to use the overloading function in the script.
-
+ - [x] Support method calling style.
+ 
 # Feedback
  The objective of this project is sharing knowledge and contributing a litle of effort to open source community. As a contributor, I am happy if someone use my contribution in their products.  
  So, if you have any issue, any ideal or even a greeting message you can contact me via Github issue management system or my E-mail: minhpta@outlook.com.  
