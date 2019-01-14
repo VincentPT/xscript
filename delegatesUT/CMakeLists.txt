@@ -16,6 +16,8 @@ SET (PROJECT_SOURCE_FILES
 	MethodsForTest.cpp
 	FunctionsForTest.cpp
 	FunctionDelegate3UT.cpp
+	CachedMethodUT.cpp
+	CachedFunctionUT.cpp
 	../ffscript/function/DynamicFunction.cpp
 	../ffscript/function/DynamicFunction2.cpp
 	../ffscript/function/CachedDelegate.cpp

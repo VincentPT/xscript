@@ -116,21 +116,22 @@ namespace FunctionInvoker3 {
 	template <class Ret, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
 	DECLARE_CLASS_INVOKER_T(Ret, T1, T2, T3, T4, T5, T6, T7, T8);
 
-	//template <>
-	//void InvokeVoid<>::operator()(void* pRet, char* args) {
-	//	_fx();
-	//}
-
-	struct InvokeVoidN0 {
+	template <>
+	struct InvokeVoid<> {
 	public:
 		typedef void(*Fp)();
 		Fp _fx;
 	public:
-		InvokeVoidN0(Fp fx) : _fx(fx) {}
+		InvokeVoid(Fp fx) : _fx(fx) {}
 		void operator()(void* pRet, char* args) {
 			_fx();
 		}
 	};
+
+	//template <>
+	//void InvokeVoid<>::operator()(void* pRet, char* args) {
+	//	_fx();
+	//}
 
 	template <class T>
 	void InvokeVoid<T>::operator()(void* pRet, char* args) {
@@ -257,8 +258,7 @@ namespace FT {
 	public:
 		typedef Ret(*Fx)(Types...);
 	private:
-		typedef typename std::conditional<sizeof...(Types) != 0, InvokeVoid<Types...>, InvokeVoidN0>::type MyInvokerVoid;
-		typedef typename std::conditional<std::is_void<Ret>::value, MyInvokerVoid, Invoke<Ret, Types...>>::type MyInvoker;
+		typedef typename std::conditional<std::is_void<Ret>::value, InvokeVoid<Types...>, Invoke<Ret, Types...>>::type MyInvoker;
 		MyInvoker _invoker;
 	public:
 		FunctionDelegate3(Fx fx) : _invoker(fx) {}

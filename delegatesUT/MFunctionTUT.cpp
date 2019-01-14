@@ -28,24 +28,6 @@ namespace ffscriptUT
 		memberFunction.call(nullptr, nullptr);
 	}
 
-	FF_TEST_METHOD(MethodContainer, methodArgumentBufferTestCachedDelegate1)
-	{
-		CachedMethodDelegate<MethodContainer, void> memberFunction(this, &MethodContainer::memberFoo);
-	}
-
-	FF_TEST_METHOD(MethodContainer, methodArgumentBufferTestCachedDelegate2)
-	{
-		CachedMethodDelegate<MethodContainer, double, float, double> memberFunction(this, &MethodContainer::memberFoo);
-		float arg1 = 0;
-		double arg2 = 1;
-		memberFunction.setArgs(arg1, arg2);
-		memberFunction.call();
-
-		auto ret = memberFunction.getReturnValAsDouble();
-
-		FF_EXPECT_EQ(MethodContainer::memberFoo(arg1, arg2), ret);
-	}
-
 	/*test two params funtion void(const float&, const float&, int, char, const double&, void*, short, int>) - static call*/
 	TEST(FunctionDelegate, testCachedFunctionDelegate1)
 	{
