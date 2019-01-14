@@ -54,7 +54,7 @@ class MethodInvokerVoid;
 		MethodInvokerVoid(Class* obj, MFx fx, void** data) : _obj(obj), _fx(fx) {\
 			*data = nullptr;\
 		}\
-		MethodInvokerVoid(Class* obj, MFxConst fx, void** data) : MethodInvoker(obj, (MFx)fx, data) {\
+		MethodInvokerVoid(Class* obj, MFxConst fx, void** data) : MethodInvokerVoid(obj, (MFx)fx, data) {\
 		}\
 		void call();\
 	}
@@ -260,10 +260,6 @@ public:
 	MFunction(T* pObject, MFxConst function) : MFunction(pObject, (MFx)function) {}
 
 	virtual ~MFunction() {
-	}
-
-	Ret operator()(Args...args) {
-		return ((T*)this->mParams[0])->*(*((FuncType*)&this->mFx)) (args...);
 	}
 
 	inline void call() override {
