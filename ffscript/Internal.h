@@ -16,7 +16,7 @@
 template <typename CharType>
 inline const CharType* trimLeft(const CharType* s, const CharType* end) {
 	const CharType* c = s;
-	while (c < end && (*c == ' ' || *c =='\t') || *c == '\r' || *c == '\n')
+	while (c < end && (*c == ' ' || *c =='\t' || *c == '\r' || *c == '\n'))
 	{
 		c++;
 	}
@@ -26,7 +26,7 @@ inline const CharType* trimLeft(const CharType* s, const CharType* end) {
 template <typename CharType>
 inline const CharType* trimRight(const CharType* s, const CharType* end) {
 	const CharType* c = end - 1;
-	while (c >= s && (*c == ' ' || *c == '\t') || *c == '\r' || *c == '\n')
+	while (c >= s && (*c == ' ' || *c == '\t' || *c == '\r' || *c == '\n'))
 	{
 		c--;
 	}
