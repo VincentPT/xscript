@@ -6,6 +6,10 @@ if (WIN32)
 	conan_basic_setup()
 endif (WIN32)
 
+if (GTEST_CMAKE)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../gtest/gtest.cmake)
+endif ()
+
 
 SET (PROJECT_SOURCE_FILES
 	fftest.hpp
@@ -58,7 +62,7 @@ add_executable(${PROJECT_NAME} main.cpp ${PROJECT_SOURCE_FILES})
 if (WIN32)
     conan_target_link_libraries(${PROJECT_NAME})
 else (WIN32)
-	target_link_libraries(${PROJECT_NAME} gtest gtest_main)
+    target_link_libraries(${PROJECT_NAME} gtest gtest_main)
 endif (WIN32)
 
 target_link_libraries(${PROJECT_NAME} ffscriptLibrary)

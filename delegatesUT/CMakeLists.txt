@@ -6,6 +6,10 @@ if (WIN32)
 	conan_basic_setup()
 endif (WIN32)
 
+if (GTEST_CMAKE)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../gtest/gtest.cmake)
+endif ()
+
 
 SET (PROJECT_SOURCE_FILES
 	MFunctionTUT.cpp

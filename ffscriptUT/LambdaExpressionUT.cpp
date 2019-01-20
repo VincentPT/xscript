@@ -14,6 +14,7 @@
 #include <CompilerSuite.h>
 #include <ScriptTask.h>
 #include <Utils.h>
+#include <thread>
 
 using namespace std;
 using namespace ffscript;
@@ -347,12 +348,15 @@ namespace ffscriptUT
 
 			int functionId = scriptCompiler->findFunction("foo", "");
 			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
-
-			ScriptTask scriptTask(program);
-			scriptTask.runFunction(functionId, nullptr);
-			int* funcRes = (int*)scriptTask.getTaskResult();
-
-			FF_EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
+#if __APPLE__
+            FF_EXPECT_TRUE(false, L"this test is defaultly failed when run on gtest 1.7.0 on Mac");
+#else
+            ScriptTask scriptTask(program);
+            scriptTask.runFunction(functionId, nullptr);
+            int* funcRes = (int*)scriptTask.getTaskResult();
+            
+            FF_EXPECT_TRUE(*funcRes == 0, L"program can run but return wrong value");
+#endif //__APPLE__
 		}
 
 		FF_TEST_FUNCTION(LambdaExpression, CompileThread2)
@@ -381,11 +385,11 @@ namespace ffscriptUT
 			int functionId = scriptCompiler->findFunction("foo", "");
 			FF_EXPECT_TRUE(functionId >= 0, L"cannot find function 'foo'");
 
-			ScriptTask scriptTask(program);
-			scriptTask.runFunction(functionId, nullptr);
-			int* funcRes = (int*)scriptTask.getTaskResult();
+            ScriptTask scriptTask(program);
+            scriptTask.runFunction(functionId, nullptr);
+            int* funcRes = (int*)scriptTask.getTaskResult();
 
-			FF_EXPECT_TRUE(*funcRes == 1000000, L"program can run but return wrong value");
+            FF_EXPECT_TRUE(*funcRes == 1000000, L"program can run but return wrong value");
 		}
 	};
 }

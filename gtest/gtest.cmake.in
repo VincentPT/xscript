@@ -1,0 +1,2 @@
+include_directories(AFTER ${GTEST_INCLUDE_DIR_ABSOLUTE})
+link_directories(${GTEST_LIB_DIR_ABSOLUTE})
