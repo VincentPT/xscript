@@ -1,0 +1,24 @@
+cmake_minimum_required(VERSION 3.2.0)
+
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    set (FFSCRIPT_PLATFORM x64)
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    set (FFSCRIPT_PLATFORM x86)
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+
+include_directories(BEFORE @CMAKE_SOURCE_DIR@/ffscript)
+include_directories(BEFORE @CMAKE_SOURCE_DIR@/ffscriptLibrary)
+
+if (WIN32)
+	find_library (FFSCRIPT_LIB_CORE_D ffscript PATHS @CMAKE_BINARY_DIR@/ffscript PATH_SUFFIXES Debug)
+	find_library (FFSCRIPT_LIB_CORE_R ffscript PATHS @CMAKE_BINARY_DIR@/ffscript PATH_SUFFIXES Release)
+	find_library (FFSCRIPT_LIB_CUSTOM_D ffscriptLibrary PATHS @CMAKE_BINARY_DIR@/ffscriptLibrary PATH_SUFFIXES Debug)
+	find_library (FFSCRIPT_LIB_CUSTOM_R ffscriptLibrary PATHS @CMAKE_BINARY_DIR@/ffscriptLibrary PATH_SUFFIXES Release)
+	
+	target_link_libraries(${PROJECT_NAME} debug "${FFSCRIPT_LIB_CORE_D}" optimized "${FFSCRIPT_LIB_CORE_R}")
+	target_link_libraries(${PROJECT_NAME} debug "${FFSCRIPT_LIB_CUSTOM_D}" optimized "${FFSCRIPT_LIB_CUSTOM_R}")
+else (WIN32)
+	find_library (FFSCRIPT_LIB_CORE ffscript PATHS @CMAKE_BINARY_DIR@/ffscript)
+	find_library (FFSCRIPT_LIB_CUSTOM ffscriptLibrary PATHS @CMAKE_BINARY_DIR@/ffscriptLibrary)	
+	target_link_libraries(${PROJECT_NAME} ${FFSCRIPT_LIB_CORE} ${FFSCRIPT_LIB_CUSTOM})
+endif (WIN32)

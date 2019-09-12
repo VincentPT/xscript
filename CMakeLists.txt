@@ -12,3 +12,5 @@ add_subdirectory(ffscriptUT)
 add_subdirectory(delegatesUT)
 #tutorial projects
 add_subdirectory(tutorials)
+
+configure_file(ffscript.cmake.in ${CMAKE_BINARY_DIR}/ffscript.cmake @ONLY)
