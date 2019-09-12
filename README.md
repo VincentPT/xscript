@@ -214,6 +214,33 @@ First, you must define the function in C++ part.
     println("sum(0, 1.1f, 2.2, 3l) = " + val);
  }
  ```
+# How to build
+## Precondition.
+ Install Conan version 1.9.2 or higher.
+
+## Build steps
+1. Add dependencies remote repositories
+ You may need to add 'bincrafters' into conan remote repositories.  
+```
+conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+```
+2. Create dependencies directory.  
+change directory to 'gtest' and create 'conan' directory.
+
+3. Install dependencies.  
+This project uses multi-configurations on Windows, so use following commands.
+```
+conan install .. -g cmake_multi -s arch=x86 -s build_type=Release
+conan install .. -g cmake_multi -s arch=x86 -s build_type=Debug
+conan install .. -g cmake_multi -s arch=x86_64 -s build_type=Release
+conan install .. -g cmake_multi -s arch=x86_64 -s build_type=Debug
+```
+
+For Linux(test on Ubuntu 16.04).
+```
+conan install .. --build missing -s compiler.libcxx=libstdc++11
+```
+
 # Road map
  Although this project take me alot of effort to build it from a simple expression parser algorithm to an usable scripting library that can compile, embeded an run the script, it needs more effort to make the library more easy to use, cross platform working...
  I share the desire items I want to implement in the future whenever I have a free time.  

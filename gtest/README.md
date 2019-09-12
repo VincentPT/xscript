@@ -21,7 +21,7 @@ conan install .. -g cmake_multi -s arch=x86_64 -s build_type=Release
 conan install .. -g cmake_multi -s arch=x86_64 -s build_type=Debug
 ```
 
-For Linux, just use
+For Linux(test on Ubuntu 16.04).
 ```
-conan install ..
+conan install .. --build missing -s compiler.libcxx=libstdc++11
 ```
