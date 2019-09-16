@@ -210,30 +210,30 @@ namespace ffscript {
 	//	ScopedCompilingScope autoScope(scriptCompiler, this);
 	//	ExpressionParser parser(getCompiler());
 
-	//	eResult = E_SUCCESS;
+	//	eResult = EE_SUCCESS;
 
 	//	std::list<ExpressionRef> expList;
 	//	bool res = parser.compile(unitList, expList);
 	//	if (res == false) {
-	//		eResult = E_TYPE_UNKNOWN;
+	//		eResult = EE_TYPE_UNKNOWN;
 	//		return false;
 	//	}
 
 	//	if (expList.size() > 1) {
 	//		scriptCompiler->setErrorText("multi expression cannot begin by a declaration expresion");
-	//		eResult = E_FAIL;
+	//		eResult = EE_FAIL;
 	//		return false;
 	//	}
 
 	//	CandidateCollectionRef candidates = std::make_shared<CandidateCollection>();
 	//	eResult = parser.link(expList.front().get(), candidates);
 
-	//	if (eResult != E_SUCCESS) {
+	//	if (eResult != EE_SUCCESS) {
 	//		return false;
 	//	}
 	//	if (candidates->size() == 0) {
 	//		scriptCompiler->setErrorText("unknown error");
-	//		eResult = E_TYPE_UNKNOWN;
+	//		eResult = EE_TYPE_UNKNOWN;
 	//		return false;
 	//	}
 	//	auto& firstCandidate = candidates->front();

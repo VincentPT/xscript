@@ -41,7 +41,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 ? 2 : 3", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -73,7 +73,7 @@ namespace ffscriptUT
 
 			//check linking
 			eResult = parser.link(expList.front().get());
-			FF_EXPECT_TRUE(E_SUCCESS == eResult, L"link failed");
+			FF_EXPECT_TRUE(EE_SUCCESS == eResult, L"link failed");
 
 			expUnit = expList.front()->getRoot();
 			FF_EXPECT_EQ(basicType.TYPE_INT, expUnit->getReturnType().iType(), L"link success but wrong return type for conditional operator");
@@ -103,7 +103,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"0 ? 2 : 3", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -135,7 +135,7 @@ namespace ffscriptUT
 
 			//check linking
 			eResult = parser.link(expList.front().get());
-			FF_EXPECT_TRUE(E_SUCCESS == eResult, L"link failed");
+			FF_EXPECT_TRUE(EE_SUCCESS == eResult, L"link failed");
 
 			expUnit = expList.front()->getRoot();
 			FF_EXPECT_EQ(basicType.TYPE_INT, expUnit->getReturnType().iType(), L"link success but wrong return type for conditional operator");
@@ -167,7 +167,7 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&rootScope);
 			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 ? 3 : 4 : 5", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -222,7 +222,7 @@ namespace ffscriptUT
 
 			//check linking
 			eResult = parser.link(expList.front().get());
-			FF_EXPECT_TRUE(E_SUCCESS == eResult, L"link failed");
+			FF_EXPECT_TRUE(EE_SUCCESS == eResult, L"link failed");
 
 			expUnit = expList.front()->getRoot();
 			ScriptType expectedType(basicType.TYPE_INT, "int");
@@ -263,7 +263,7 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&rootScope);
 			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7", units);
 			int y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7;
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -343,7 +343,7 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&rootScope);
 			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 ? 3 : 4 : 5 + 6", units);
 			int y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7;
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -420,7 +420,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			scriptCompiler.pushScope(&rootScope);
 			EExpressionResult eResult = parser.tokenize(L"y = 1 ? 2 + 3 : 5 ? 6 : 7", units);
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -498,7 +498,7 @@ namespace ffscriptUT
 			scriptCompiler.pushScope(&rootScope);
 			EExpressionResult eResult = parser.tokenize(L"y = 0 + 1 ? 2 ? 3 : 4 : 5 ? 6 : 7", units);
 			int y = 1 ? 2 ? 3 : 4 : 5 ? 6 : 7;
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);

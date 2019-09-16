@@ -46,7 +46,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 			FF_EXPECT_TRUE(units.size() == 3, L"the units is not 1 + 2");
 		}
 
@@ -61,7 +61,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2 - (3 - 4)", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 			FF_EXPECT_TRUE(units.size() == 9, L"the units is not '1 + 2 - (3 - 4)'");
 		}
 
@@ -77,7 +77,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + \"hello\"", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 			FF_EXPECT_TRUE(units.size() == 3, L"the units is not '1 + \"hello\"'");
 		}
 
@@ -93,7 +93,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + L\"hello\" + 2", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 			FF_EXPECT_TRUE(units.size() == 5, L"the units is not '1 + L\"hello\" + 2'");
 		}
 
@@ -109,7 +109,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -130,7 +130,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2 + (3 - 4)", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -151,7 +151,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2 + (3 - 4", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -171,7 +171,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2 + 3 - 4)", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -191,7 +191,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2 + )3 - 4)", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -212,7 +212,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2 + (3 - 4(", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -232,7 +232,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1+2,3", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -253,7 +253,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2, 3", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -274,7 +274,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L",1  + 2, 3", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -294,7 +294,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2, 3,", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -315,7 +315,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L",1  + 2, 3,", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -335,7 +335,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1  + 2, 3 - 4", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -356,7 +356,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2 * 3 - 4", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -377,7 +377,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2 3 * - 4", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -397,7 +397,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2 * - 4", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -407,7 +407,7 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(res, L"compile '1 + 2 * - 4' must success!");
 
 			eResult = parser.link(expList.front().get());
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2 * - 4' failed.");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"link expression '1 + 2 * - 4' failed.");
 
 			FF_EXPECT_TRUE(((Function*)expList.front()->getRoot().get())->getChild(0)->toString() == "1", L"first param of root function of '1 + 2 * (- 4)' must be '1'");
 			FF_EXPECT_TRUE(((Function*)expList.front()->getRoot().get())->getChild(1)->toString() == "*", L"second param of root function of '1 + 2 * (- 4)' must be '*'");
@@ -425,7 +425,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2 * (- 4)", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -433,7 +433,7 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(res, L"compile '1 + 2 * (- 4)' must success!");
 
 			eResult = parser.link(expList.front().get());
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2 * (- 4)' failed.");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"link expression '1 + 2 * (- 4)' failed.");
 
 			FF_EXPECT_TRUE(expList.front()->getRoot()->toString() == "+", L"root unit of '1 + 2 * (- 4)' must be '+'");
 			FF_EXPECT_TRUE(((Function*)expList.front()->getRoot().get())->getChild(0)->toString() == "1", L"first param of root function of '1 + 2 * (- 4)' must be '1'");
@@ -452,7 +452,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 * 2 + 3", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -474,7 +474,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 * (2 + 3)", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -496,14 +496,14 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
 			FF_EXPECT_TRUE(res, L"compile '1 + 2' failed!");
 
 			eResult = parser.link(expList.front().get());
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2' failed.");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"link expression '1 + 2' failed.");
 
 			FF_EXPECT_TRUE(expList.front()->getRoot()->toString() == "+", L"root unit of '1 + 2' must be '+'");
 			FF_EXPECT_TRUE( ((Function*)expList.front()->getRoot().get())->getChild(0)->toString() == "1", L"first param of '1 + 2' must be '1'");
@@ -529,7 +529,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"sum(1,2)", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);

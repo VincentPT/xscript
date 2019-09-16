@@ -78,7 +78,7 @@ namespace ffscript{
 		EExpressionResult eResult = parser.tokenize(expression, units);
 		_globalScopeRef->setErrorCompilerChar(parser.getLastCompileChar());
 
-		if (eResult != E_SUCCESS) {
+		if (eResult != EE_SUCCESS) {
 			return nullptr;
 		}
 
@@ -88,7 +88,7 @@ namespace ffscript{
 
 		Expression* expressionPtr = expList.front().get();
 		eResult = parser.link(expressionPtr);
-		if (eResult != E_SUCCESS) return nullptr;
+		if (eResult != EE_SUCCESS) return nullptr;
 
 		//all variable in the scope will be place at right offset by bellow command
 		//if this function is not execute before extract the code then all variable

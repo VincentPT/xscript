@@ -22,14 +22,14 @@ ffscript::ExpUnitExecutor* compileExpression(ScriptCompiler* scriptCompiler, con
 	list<ExpUnitRef> units;
 	EExpressionResult eResult = parser.tokenize(exp, units);
 
-	if (eResult != E_SUCCESS) return nullptr;
+	if (eResult != EE_SUCCESS) return nullptr;
 
 	list<ExpressionRef> expList;
 	bool res = parser.compile(units, expList);
 	if (!res) return nullptr;
 
 	eResult = parser.link(expList.front().get());
-	if (eResult != E_SUCCESS) return nullptr;
+	if (eResult != EE_SUCCESS) return nullptr;
 
 	ExpUnitExecutor* excutor = new ExpUnitExecutor(scriptCompiler->currentScope());
 	res = excutor->extractCode(scriptCompiler, expList.front().get());

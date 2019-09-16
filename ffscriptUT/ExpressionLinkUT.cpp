@@ -87,7 +87,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -95,7 +95,7 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(res, L"compile '1 + 2' failed!");
 
 			eResult = parser.link(expList.front().get());
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2' failed!");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"link expression '1 + 2' failed!");
 		}
 
 		FF_TEST_METHOD(ExpressionLink, testExpressionLink2)
@@ -111,7 +111,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2.0", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -120,7 +120,7 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(res, L"compile '1 + 2.0' failed!");
 
 			eResult = parser.link(expList.front().get());
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2.0'  failed!");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"link expression '1 + 2.0'  failed!");
 		}
 
 		FF_TEST_METHOD(ExpressionLink, testExpressionLink3)
@@ -136,7 +136,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2.0", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -145,7 +145,7 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(res, L"compile '1 + 2.0' failed!");
 
 			eResult = parser.link(expList.front().get());
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2.0' failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"link expression '1 + 2.0' failed");
 		}
 
 		FF_TEST_METHOD(ExpressionLink, testExpressionLink4)
@@ -160,7 +160,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2.0 * 3", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -169,8 +169,8 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(res, L"compile '1 + 2.0 * 3' failed!");
 
 			eResult = parser.link(expList.front().get());
-			//FF_EXPECT_TRUE(eResult != E_SUCCESS, L"link expression '1 + 2.0 * 3'  must failed. To link successfully, program must register casting function");
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3'  should be success. To link successfully, program should implement basic function support all basic parameters without registering casting function");
+			//FF_EXPECT_TRUE(eResult != EE_SUCCESS, L"link expression '1 + 2.0 * 3'  must failed. To link successfully, program must register casting function");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"link expression '1 + 2.0 * 3'  should be success. To link successfully, program should implement basic function support all basic parameters without registering casting function");
 		}
 
 		FF_TEST_METHOD(ExpressionLink, testExpressionLink5)
@@ -186,7 +186,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2.0 * 3", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -195,7 +195,7 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(res, L"compile '1 + 2.0 * 3' failed!");
 
 			eResult = parser.link(expList.front().get());
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3' failed.");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"link expression '1 + 2.0 * 3' failed.");
 
 			FF_EXPECT_TRUE(expList.front()->getRoot()->toString() == "+", L"Root function must be '+'");
 			FF_EXPECT_TRUE(expList.front()->getRoot()->getReturnType().iType() == basicType.TYPE_DOUBLE , L"operator '+' must return double");
@@ -214,7 +214,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"1 + 2.0 * 3", units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -223,7 +223,7 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(res, L"compile '1 + 2.0 * 3' failed!");
 
 			eResult = parser.link(expList.front().get());
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"link expression '1 + 2.0 * 3' failed.");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"link expression '1 + 2.0 * 3' failed.");
 		}
 
 		FF_TEST_METHOD(ExpressionLink, testExpressionLink7)
@@ -251,7 +251,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -260,9 +260,9 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(res, (L"compile '" + functionString + L"' failed!").c_str());
 
 			eResult = parser.link(expList.front().get());
-			//FF_EXPECT_TRUE(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
+			//FF_EXPECT_TRUE(eResult == EE_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
 			//FF_EXPECT_TRUE( dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId3, (L"function '" + functionString + L"' must be linked to sum(double,float,int).").c_str());
-			FF_EXPECT_TRUE(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
+			FF_EXPECT_TRUE(eResult != EE_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
 		}
 
 		FF_TEST_METHOD(ExpressionLink, testExpressionLink8)
@@ -291,7 +291,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -300,9 +300,9 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(res, (L"compile '" + functionString + L"' failed!").c_str());
 
 			eResult = parser.link(expList.front().get());
-			//FF_EXPECT_TRUE(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
+			//FF_EXPECT_TRUE(eResult == EE_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
 			//FF_EXPECT_TRUE(dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId3, (L"function '" + functionString + L"' must be linked to sum(double,float,int).").c_str());
-			FF_EXPECT_TRUE(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
+			FF_EXPECT_TRUE(eResult != EE_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
 		}
 
 		FF_TEST_METHOD(ExpressionLink, testExpressionLink9)
@@ -323,7 +323,7 @@ namespace ffscriptUT
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(functionString.c_str(), units);
 
-			FF_EXPECT_TRUE(eResult == E_SUCCESS, L"parse string to units failed");
+			FF_EXPECT_TRUE(eResult == EE_SUCCESS, L"parse string to units failed");
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -332,9 +332,9 @@ namespace ffscriptUT
 			FF_EXPECT_TRUE(res, (L"compile '" + functionString + L"' failed!").c_str());
 
 			eResult = parser.link(expList.front().get());
-			//FF_EXPECT_TRUE(eResult == E_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
+			//FF_EXPECT_TRUE(eResult == EE_SUCCESS, (L"link expression '" + functionString + L"' failed.").c_str());
 			//FF_EXPECT_TRUE(dynamic_cast<ffscript::Function*>(expList.front()->getRoot().get())->getId() == functionId1, (L"function '" + functionString + L"' must be linked to sum(int,int,int).").c_str());
-			FF_EXPECT_TRUE(eResult != E_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
+			FF_EXPECT_TRUE(eResult != EE_SUCCESS, (L"link expression '" + functionString + L"' should failed due tu ambious function call.").c_str());
 		}
 	};
 }

@@ -2135,7 +2135,7 @@ namespace ffscript {
 
 				FunctionFactory* fp2 = getFunctionFactory(jt->first);
 				if (fp1->getReturnType() == fp2->getReturnType()) {
-					eResult = E_TYPE_AMBIOUS_CALL;
+					eResult = EE_TYPE_AMBIOUS_CALL;
 					setErrorText("ambious call for function " + functionName);
 					return nullptr;
 				}

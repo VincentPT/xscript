@@ -115,7 +115,7 @@ namespace ffscriptUT
 
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"sum(1,2)", units);
-			EXPECT_TRUE(eResult == E_SUCCESS) << L"parse string to units failed";
+			EXPECT_TRUE(eResult == EE_SUCCESS) << L"parse string to units failed";
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -123,7 +123,7 @@ namespace ffscriptUT
 
 			Expression* expressionPtr = expList.front().get();
 			eResult = parser.link(expressionPtr);
-			EXPECT_TRUE(eResult == E_SUCCESS) << L"link the program with dynamic function 'sum(1,2)' should be succcess";
+			EXPECT_TRUE(eResult == EE_SUCCESS) << L"link the program with dynamic function 'sum(1,2)' should be succcess";
 		}
 
 		TEST(CompileDynamicFunction, TestCompileDynamicFunction2)
@@ -148,7 +148,7 @@ namespace ffscriptUT
 
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"sum(1,2,3)", units);
-			EXPECT_TRUE(eResult == E_SUCCESS) << L"parse string to units failed";
+			EXPECT_TRUE(eResult == EE_SUCCESS) << L"parse string to units failed";
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -156,7 +156,7 @@ namespace ffscriptUT
 
 			Expression* expressionPtr = expList.front().get();
 			eResult = parser.link(expressionPtr);
-			EXPECT_TRUE(eResult == E_SUCCESS) << L"link the program with dynamic function 'sum(1,2,3)' should be succcess";
+			EXPECT_TRUE(eResult == EE_SUCCESS) << L"link the program with dynamic function 'sum(1,2,3)' should be succcess";
 		}
 
 		TEST(CompileDynamicFunction, TestCompileDynamicFunction3)
@@ -181,7 +181,7 @@ namespace ffscriptUT
 
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"sum(1,2,3)", units);
-			EXPECT_TRUE(eResult == E_SUCCESS) << L"parse string to units failed";
+			EXPECT_TRUE(eResult == EE_SUCCESS) << L"parse string to units failed";
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -189,7 +189,7 @@ namespace ffscriptUT
 
 			Expression* expressionPtr = expList.front().get();
 			eResult = parser.link(expressionPtr);
-			EXPECT_TRUE(eResult == E_SUCCESS) << L"link the program with dynamic function 'sum(1,2,3)' should be succcess";
+			EXPECT_TRUE(eResult == EE_SUCCESS) << L"link the program with dynamic function 'sum(1,2,3)' should be succcess";
 			EXPECT_EQ(expressionPtr->getRoot()->getType(), EXP_UNIT_ID_DYNAMIC_FUNC) << L"the sum(1,2,3) should be compiled as a dynamic function";
 		}
 
@@ -208,7 +208,7 @@ namespace ffscriptUT
 
 			list<ExpUnitRef> units;
 			EExpressionResult eResult = parser.tokenize(L"sum(1,2,3)", units);
-			EXPECT_TRUE(eResult == E_SUCCESS) << L"parse string to units failed";
+			EXPECT_TRUE(eResult == EE_SUCCESS) << L"parse string to units failed";
 
 			list<ExpressionRef> expList;
 			bool res = parser.compile(units, expList);
@@ -216,7 +216,7 @@ namespace ffscriptUT
 
 			Expression* expressionPtr = expList.front().get();
 			eResult = parser.link(expressionPtr);
-			EXPECT_TRUE (E_SUCCESS != eResult) << L"link the program with dynamic function 'sum(1,2,3)' should be failed";
+			EXPECT_TRUE (EE_SUCCESS != eResult) << L"link the program with dynamic function 'sum(1,2,3)' should be failed";
 		}
 	}
 }

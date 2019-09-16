@@ -1,0 +1,7 @@
+int reverse(int value) {
+	int b1 = value & 0xFF;
+	int b2 = (value & 0xFF00) >> 8;
+	int b3 = (value & 0xFF0000) >> 16;
+	int b4 = (value & 0xFF000000) >> 24;
+	return (b1 << 24) | (b2 << 16) | (b3 << 8) | b4;
+}

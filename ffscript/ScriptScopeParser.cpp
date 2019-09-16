@@ -121,7 +121,7 @@ namespace ffscript {
 
 	EExpressionResult ScriptScope::parseExpressionInternal(ExpressionParser* pParser, std::list<ExpUnitRef>& unitList, const ScriptType* expectedReturnType) {
 		if (unitList.size() == 0) {
-			return E_SUCCESS;
+			return EE_SUCCESS;
 		}
 		ExpressionParser& parser = *pParser;
 
@@ -132,7 +132,7 @@ namespace ffscript {
 			if (errorUnitRef) {
 				((GlobalScope*)getRoot())->setErrorCompilerCharIndex(errorUnitRef->getSourceCharIndex());
 			}
-			return E_TYPE_UNKNOWN;
+			return EE_TYPE_UNKNOWN;
 		}
 		return parseExpressionInternal(pParser, expList, expectedReturnType);
 	}
@@ -140,11 +140,11 @@ namespace ffscript {
 	EExpressionResult ScriptScope::parseExpressionInternal(ExpressionParser* pParser, std::list<ExpressionRef>& expList, const ScriptType* expectedReturnType) {
 		ExpressionParser& parser = *pParser;
 		ScriptCompiler* scriptCompiler = parser.getCompiler();
-		EExpressionResult eResult = E_INCOMPLETED_EXPRESSION;
+		EExpressionResult eResult = EE_INCOMPLETED_EXPRESSION;
 		if (expList.size() == 1) {
 			CandidateCollectionRef candidates = std::make_shared<CandidateCollection>();
 			eResult = parser.link(expList.front().get(), candidates);
-			if (eResult == E_SUCCESS) {
+			if (eResult == EE_SUCCESS) {
 				if (expectedReturnType == nullptr) {
 					putCommandUnit(candidates->front());
 				}
@@ -152,7 +152,7 @@ namespace ffscript {
 					auto candidate = chooseCandidate(candidates, *expectedReturnType);
 					if (!candidate) {
 						scriptCompiler->setErrorText("Cannot cast the return type to '" + expectedReturnType->sType() + "'");
-						return E_TYPE_CONVERSION_ERROR;
+						return EE_TYPE_CONVERSION_ERROR;
 					}
 					putCommandUnit(candidate);
 				}
@@ -168,10 +168,10 @@ namespace ffscript {
 			auto lastUnitIter = expList.end();
 			lastUnitIter--;
 			CandidateCollectionRef candidates = std::make_shared<CandidateCollection>();
-			eResult = E_SUCCESS;
-			for (auto it = expList.begin(); eResult == E_SUCCESS && it != expList.end(); ++it) {
+			eResult = EE_SUCCESS;
+			for (auto it = expList.begin(); eResult == EE_SUCCESS && it != expList.end(); ++it) {
 				eResult = parser.link(it->get(), candidates);
-				if (eResult == E_SUCCESS) {
+				if (eResult == EE_SUCCESS) {
 					if (expectedReturnType == nullptr || it != lastUnitIter) {
 						putCommandUnit(candidates->front());
 					}
@@ -201,7 +201,7 @@ namespace ffscript {
 	const wchar_t* ScriptScope::parseExpressionInternal(const wchar_t* text, const wchar_t* end, const ScriptType* expectedReturnType) {
 		ScriptCompiler* scriptCompiler = getCompiler();
 		std::list<ExpUnitRef> unitList;
-		EExpressionResult eResult = E_FAIL;
+		EExpressionResult eResult = EE_FAIL;
 		const wchar_t* c = nullptr;
 		ScopedCompilingScope autoScope(scriptCompiler, this);
 		ExpressionParser parser(getCompiler());
@@ -210,7 +210,7 @@ namespace ffscript {
 		((GlobalScope*)getRoot())->setErrorCompilerChar(parser.getLastCompileChar());
 		((GlobalScope*)getRoot())->convertSourceCharIndexToGlobal(text, unitList);
 
-		if (eResult != E_SUCCESS || c == nullptr) {
+		if (eResult != EE_SUCCESS || c == nullptr) {
 			if (c != nullptr && scriptCompiler->getLastError().size() == 0) {
 				std::wstring message = L"compile expression '" + std::wstring(text, c - text) + L"' failed";
 				scriptCompiler->setErrorText(convertToAscii(message.c_str(), message.size()));
@@ -221,7 +221,7 @@ namespace ffscript {
 		}
 
 		eResult = parseExpressionInternal(&parser, unitList, expectedReturnType);
-		if (eResult != E_SUCCESS) {
+		if (eResult != EE_SUCCESS) {
 			c = nullptr;
 		}
 
@@ -233,13 +233,13 @@ namespace ffscript {
 		std::list<ExpUnitRef> unitList;
 		ScopedCompilingScope autoScope(scriptCompiler, this);
 		ExpressionParser parser(getCompiler());
-		EExpressionResult eResult = E_FAIL;
+		EExpressionResult eResult = EE_FAIL;
 		auto c = parser.readExpression(text, end, eResult, unitList);
 		auto globalScope = (GlobalScope*)getRoot();
 		globalScope->setErrorCompilerChar(parser.getLastCompileChar());
 		globalScope->convertSourceCharIndexToGlobal(text, unitList);
 
-		if (eResult != E_SUCCESS || c == nullptr) {
+		if (eResult != EE_SUCCESS || c == nullptr) {
 			return nullptr;
 		}
 		if (unitList.size() == 0) {
@@ -293,7 +293,7 @@ namespace ffscript {
 			}
 		}
 
-		if (parseExpressionInternal(&parser, expList) != E_SUCCESS) {
+		if (parseExpressionInternal(&parser, expList) != EE_SUCCESS) {
 			c = nullptr;
 		}
 

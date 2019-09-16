@@ -69,15 +69,15 @@ namespace ffscript {
 	EExpressionResult ExpressionParser::makeExpression(OutputStack& output, OperatorStack& operators) {
 		DynamicParamFunctionRef pExpFunction;
 		ExecutableUnitRef expUnitTemp;
-		EExpressionResult eResult = E_SUCCESS;
+		EExpressionResult eResult = EE_SUCCESS;
 		int iResult;
 
-		while (eResult == E_SUCCESS && operators.size() && output.size())
+		while (eResult == EE_SUCCESS && operators.size() && output.size())
 		{
 			pExpFunction = static_pointer_cast<DynamicParamFunction>(operators.top());
 			if ( !ISFUNCTION(pExpFunction) ) {
 				DBG_ERROR(_tprintf(__T("\n[#]Unexpected token %s"), pExpFunction->GetName()));
-				eResult = E_TOKEN_UNEXPECTED;
+				eResult = EE_TOKEN_UNEXPECTED;
 				_lastErrorUnit = pExpFunction;
 				break;
 			}
@@ -90,13 +90,13 @@ namespace ffscript {
 				iResult = pExpFunction->pushParamFront(expUnitTemp);
 				if (iResult < 0) {
 					DBG_ERROR(_tprintf(__T("\n[#]Unexpected token %s"), expUnitTemp->GetName()));					
-					eResult = E_TOKEN_UNEXPECTED;
+					eResult = EE_TOKEN_UNEXPECTED;
 					_lastErrorUnit = expUnitTemp;
 					break;
 				}
 
 				if (iResult == 0) {
-					eResult = E_SUCCESS;
+					eResult = EE_SUCCESS;
 					break;
 				}
 			}
@@ -223,7 +223,7 @@ namespace ffscript {
 			globalScope = dynamic_cast<GlobalScope*>(currentScope);
 		}
 		if (globalScope == nullptr) {
-			eResult = E_TOKEN_UNEXPECTED;
+			eResult = EE_TOKEN_UNEXPECTED;
 			compiler->setErrorText("Lambda function is only allow when compile in a program context");
 			return nullptr;
 		}
@@ -250,7 +250,7 @@ namespace ffscript {
 		}
 		
 		if (c >= end) {
-			eResult = E_INCOMPLETED_EXPRESSION;
+			eResult = EE_INCOMPLETED_EXPRESSION;
 			compiler->setErrorText("Unexpected lambda function, '[' and ']' does not match");
 			return nullptr;
 		}
@@ -280,7 +280,7 @@ namespace ffscript {
 			lastCharOffset -= offset;
 		}
 		setLastCompilerChar(begin + lastCharOffset);
-		if (d == nullptr || eResult != E_SUCCESS) {
+		if (d == nullptr || eResult != EE_SUCCESS) {
 			return nullptr;
 		}
 
@@ -295,7 +295,7 @@ namespace ffscript {
 		list<ExpressionRef> temp;
 		bool res = compile(expUnitList, temp, &eResult);
 		if (res == false || temp.size() == 0) {
-			eResult = E_TYPE_UNKNOWN;
+			eResult = EE_TYPE_UNKNOWN;
 			return nullptr;
 		}
 		lambdaExpression = dynamic_pointer_cast<Function>(temp.back()->getRoot());
@@ -439,14 +439,14 @@ namespace ffscript {
 		s2 = sToken2;
 		pLastUnit = NULL;
 
-		eResult = E_SUCCESS;
+		eResult = EE_SUCCESS;
 
 		unique_ptr<WCHAR,  std::function<void(WCHAR*)>> lastCompileCharScope((WCHAR*)begin, [this, &c](WCHAR*) {
 			setLastCompilerChar(c);
 		});
 
 		static string key_create_array_func(SYSTEM_ARRAY_FUNCTION);
-		for (c = begin; eResult == E_SUCCESS; c++)
+		for (c = begin; eResult == EE_SUCCESS; c++)
 		{
 			sToken = NULL;
 			pFixedExpUnit = NULL;
@@ -523,7 +523,7 @@ namespace ffscript {
 
 						for (; c < end && *c != '\"'; c++) {
 							if (constantString.size() > MAX_FUNCTION_LENGTH) {
-								eResult = E_TOKEN_OUTOFLENGTH;
+								eResult = EE_TOKEN_OUTOFLENGTH;
 								scriptCompiler->setErrorText("token is too long");
 								break;
 							}
@@ -531,20 +531,20 @@ namespace ffscript {
 								constantString.append(lastC, c);
 								c++;
 								if (c == end) {
-									eResult = E_INCOMPLETED_EXPRESSION;
+									eResult = EE_INCOMPLETED_EXPRESSION;
 									scriptCompiler->setErrorText("missing character after '\\'");
 									break;
 								}
 								if (*c == 'x') {
 									c++;
 									if (c + 1 >= end) {
-										eResult = E_INCOMPLETED_EXPRESSION;
+										eResult = EE_INCOMPLETED_EXPRESSION;
 										scriptCompiler->setErrorText("lack of character after '\\'x");
 										break;
 									}
 									auto res = escapeChar(c);
 									if (res == -1) {
-										eResult = E_TOKEN_INVALID;
+										eResult = EE_TOKEN_INVALID;
 										string errorMsg("invalid escape character, token ");
 										errorMsg += (char)*c;
 										errorMsg += (char)*(c + 1);
@@ -559,7 +559,7 @@ namespace ffscript {
 								else {
 									auto cRes = escapeChar((char)*c);
 									if (cRes == -1) {
-										eResult = E_TOKEN_INVALID;
+										eResult = EE_TOKEN_INVALID;
 										scriptCompiler->setErrorText("invalid escape character after '\\'");
 										break;
 									}
@@ -572,9 +572,9 @@ namespace ffscript {
 							constantString.append(lastC, c);
 						}
 
-						if (eResult == E_SUCCESS) {
+						if (eResult == EE_SUCCESS) {
 							if (*c != '\"') {
-								eResult = E_TOKEN_UNEXPECTED;
+								eResult = EE_TOKEN_UNEXPECTED;
 								scriptCompiler->setErrorText("missing '\"'");
 							}
 							else {
@@ -644,19 +644,19 @@ namespace ffscript {
 			}
 
 			//if (blHasDot && blHasDot == blHasChar) {
-			//	eResult = E_TOKEN_INVALID;
+			//	eResult = EE_TOKEN_INVALID;
 			//	scriptCompiler->setErrorText("operator '.' is not supported now");
 			//	DBG_ERROR(_tprintf(__T("\n[#]Error at index %d"), c - sExpressionString));
 			//	break;
 			//}
 			if (s1 - sToken1 > MAX_FUNCTION_LENGTH) {
-				eResult = E_TOKEN_OUTOFLENGTH;
+				eResult = EE_TOKEN_OUTOFLENGTH;
 				scriptCompiler->setErrorText("token is too long");
 				DBG_ERROR(_tprintf(__T("\n[#]Error at index %d"), c - sExpressionString));
 				break;
 			}
 			if (s2 - sToken2 > MAX_FUNCTION_LENGTH) {
-				eResult = E_TOKEN_OUTOFLENGTH;
+				eResult = EE_TOKEN_OUTOFLENGTH;
 				scriptCompiler->setErrorText("token is too long");
 				DBG_ERROR(_tprintf(__T("\n[#]Error at index %d"), c - sExpressionString));
 				break;
@@ -762,7 +762,7 @@ namespace ffscript {
 						unsigned long long n = wcstoull(&sToken[2], &p, 16);
 						if (*p != 0) {
 							std::string&& stdtoken = convertToAscii(sToken, tokenLength);
-							eResult = E_TOKEN_UNEXPECTED;
+							eResult = EE_TOKEN_UNEXPECTED;
 							scriptCompiler->setErrorText("token '" + stdtoken + "' is expected as a hexa number");
 							break;
 						}
@@ -794,7 +794,7 @@ namespace ffscript {
 					}
 					else {
 						std::string&& stdtoken = convertToAscii(sToken, tokenLength);
-						eResult = E_TOKEN_UNEXPECTED;
+						eResult = EE_TOKEN_UNEXPECTED;
 						scriptCompiler->setErrorText("token '" + stdtoken + "' is not expected here");
 						break;
 					}
@@ -821,7 +821,7 @@ namespace ffscript {
 					}
 					if (!foundRefType) {
 						if (scriptCompiler->findKeyword(stdtoken) != KEYWORD_UNKNOWN) {
-							eResult = E_TOKEN_UNEXPECTED;
+							eResult = EE_TOKEN_UNEXPECTED;
 							scriptCompiler->setErrorText("token '" + stdtoken + "' is not expected here");
 							break;
 						}
@@ -839,7 +839,7 @@ namespace ffscript {
 
 							if (pVariable) {
 								if (pVariable->getDataType().isUnkownType()) {
-									eResult = E_TYPE_UNKNOWN;
+									eResult = EE_TYPE_UNKNOWN;
 									scriptCompiler->setErrorText("type of '" + pVariable->getName() + "' is unknown");
 									DBG_ERROR(_tprintf(__T("\n[#]varible's type is unknown")));
 									break;
@@ -854,7 +854,7 @@ namespace ffscript {
 								if (*ctemp == '=' && *(ctemp + 1) != '=') {
 									if (currentScope == nullptr) {
 										scriptCompiler->setErrorText("internal error: the scope is missing");
-										eResult = E_TOKEN_UNEXPECTED;
+										eResult = EE_TOKEN_UNEXPECTED;
 										// keep last char in c
 										c = ctemp;
 										return nullptr;
@@ -896,7 +896,7 @@ namespace ffscript {
 										/*pTBDExpUnit = scriptCompiler->createExpUnitFromName(stdtoken);
 										if (pTBDExpUnit == NULL) {
 										DBG_ERROR(_tprintf(__T("\n[#]Unexpected token '%s'"), sToken));
-										eResult = E_TOKEN_UNEXPECTED;
+										eResult = EE_TOKEN_UNEXPECTED;
 										scriptCompiler->setErrorText("Unexpected token '" + convertToAscii(sToken) + "'");
 										}*/
 									}
@@ -1019,10 +1019,10 @@ namespace ffscript {
 		}
 
 		if (pArrayExpUnit) {
-			eResult = E_INCOMPLETED_EXPRESSION;
+			eResult = EE_INCOMPLETED_EXPRESSION;
 		}
 
-		if (eResult != E_SUCCESS)
+		if (eResult != EE_SUCCESS)
 		{
 			//clear and need to delete ExpUnit before clear
 			expUnitList.clear();
@@ -1084,7 +1084,7 @@ namespace ffscript {
 	}
 
 	EExpressionResult ExpressionParser::pickParamUnitsForFunction(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, const DynamicParamFunctionRef& functionRef) {
-		EExpressionResult eResult = E_SUCCESS;
+		EExpressionResult eResult = EE_SUCCESS;
 
 		OperatorStack* pOperatorStack = new OperatorStack();;
 		OutputStack* pOutputStack = new OutputStack();
@@ -1100,12 +1100,12 @@ namespace ffscript {
 		for (; it != end; it++)
 		{
 			eResult = putAnExpUnit(it, end, inputList);
-			if (eResult != E_SUCCESS || (int)params.size() >= maxParam) {
+			if (eResult != EE_SUCCESS || (int)params.size() >= maxParam) {
 				break;
 			}
 		}
 
-		if (eResult != E_SUCCESS) {
+		if (eResult != EE_SUCCESS) {
 			return eResult;
 		}
 
@@ -1113,9 +1113,9 @@ namespace ffscript {
 			list<ExpressionRef> expList;
 			eResult = makeExpressionList(inputList, expList);
 
-			if (eResult == E_SUCCESS && expList.size() != 1) {
+			if (eResult == EE_SUCCESS && expList.size() != 1) {
 				_lastErrorUnit = functionRef;
-				eResult = E_INCOMPLETED_EXPRESSION;
+				eResult = EE_INCOMPLETED_EXPRESSION;
 			}
 			else if (_lastErrorUnit.get() == nullptr) {
 				_lastErrorUnit = functionRef;
@@ -1126,7 +1126,7 @@ namespace ffscript {
 	}
 
 	EExpressionResult ExpressionParser::pickParamUnitsElseClause(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, const DynamicParamFunctionRef& elseClauseUnitRef) {
-		EExpressionResult eResult = E_SUCCESS;
+		EExpressionResult eResult = EE_SUCCESS;
 
 		OperatorStack* pOperatorStack = new OperatorStack();;
 		OutputStack* pOutputStack = new OutputStack();
@@ -1142,18 +1142,18 @@ namespace ffscript {
 		for (; it != end; it++)
 		{
 			eResult = putAnExpUnit(it, end, inputList);
-			if (eResult != E_SUCCESS || (int)params.size() >= maxParam) {
+			if (eResult != EE_SUCCESS || (int)params.size() >= maxParam) {
 				break;
 			}
 		}
 
-		while (eResult != E_SUCCESS) {
+		while (eResult != EE_SUCCESS) {
 			if (it != end) {
 				auto& expUnit = *it;
 				if (expUnit->getType() == EXP_UNIT_ID_CLOSED_ROUND_BRACKET ||
 					expUnit->getType() == EXP_UNIT_ID_CLOSED_CURLY_BRACKET ||
 					expUnit->getType() == EXP_UNIT_ID_FUNC_SEPERATOR) {
-					eResult = E_SUCCESS;
+					eResult = EE_SUCCESS;
 					break;
 				}
 			}
@@ -1164,9 +1164,9 @@ namespace ffscript {
 			list<ExpressionRef> expList;
 			eResult = makeExpressionList(inputList, expList);
 
-			if (eResult == E_SUCCESS && expList.size() != 1) {
+			if (eResult == EE_SUCCESS && expList.size() != 1) {
 				_lastErrorUnit = elseClauseUnitRef;
-				eResult = E_INCOMPLETED_EXPRESSION;
+				eResult = EE_INCOMPLETED_EXPRESSION;
 			}
 			else if (_lastErrorUnit.get() == nullptr) {
 				_lastErrorUnit = elseClauseUnitRef;
@@ -1177,7 +1177,7 @@ namespace ffscript {
 	}
 
 	EExpressionResult ExpressionParser::compileConditionalExpression(list<ExpUnitRef>::const_iterator& it, list<ExpUnitRef>::const_iterator end, ExecutableUnitRef& ifClauseUnit, ExecutableUnitRef& elseClauseUnit) {
-		EExpressionResult eResult = E_SUCCESS;
+		EExpressionResult eResult = EE_SUCCESS;
 		//find if clause expression
 		//use dummy function to collect the unit for if clause
 		DynamicParamFunctionRef dummyFuncion = std::make_shared<DynamicParamFunction>(":", EXP_UNIT_ID_FUNC_CHOICE, FUNCTION_PRIORITY_CONDITIONAL, 1);
@@ -1186,13 +1186,13 @@ namespace ffscript {
 
 		eResult = pickParamUnitsForFunction(it, end, dummyFuncion);
 
-		if (eResult != E_SUCCESS) {
+		if (eResult != EE_SUCCESS) {
 			return eResult;
 		}
 
 		if (it == end || (*it)->getType() != EXP_UNIT_ID_FUNC_CHOICE) {
 			getCompiler()->setErrorText("Incompleted condition expression");
-			eResult = E_INCOMPLETED_EXPRESSION;
+			eResult = EE_INCOMPLETED_EXPRESSION;
 			_lastErrorUnit = dummyFuncion;
 			return eResult;
 		}
@@ -1205,7 +1205,7 @@ namespace ffscript {
 		it++;
 		eResult = pickParamUnitsElseClause(it, end, choiceOperatorRef);
 
-		if (eResult == E_SUCCESS) {
+		if (eResult == EE_SUCCESS) {
 			elseClauseUnit = choiceOperatorRef->popParam();
 		}
 		else {
@@ -1217,14 +1217,14 @@ namespace ffscript {
 
 	EExpressionResult ExpressionParser::putFunction(OperatorStack* pOperatorStack, OutputStack* pOutputStack, const DynamicParamFunctionRef& functionRef,
 		list<ExpUnitRef>::const_iterator& iter, list<ExpUnitRef>::const_iterator end) {
-		EExpressionResult eResult = E_SUCCESS;
+		EExpressionResult eResult = EE_SUCCESS;
 		ScriptCompiler* scriptCompiler = getCompiler();
 
 		int iResult;
 
 		//push the function or operator to Operator stack
 		//// before push to stack compare with top of Operator stack
-		while (eResult == E_SUCCESS && pOperatorStack->size()) {
+		while (eResult == EE_SUCCESS && pOperatorStack->size()) {
 
 			auto& pExpFunction = pOperatorStack->top();
 			if (!ISFUNCTION(pExpFunction) || pExpFunction->IsOrdered(functionRef.get()) == true) {
@@ -1238,7 +1238,7 @@ namespace ffscript {
 				if (iResult < 0) {
 					DBG_ERROR(_tprintf(__T("\n[#]Unexpected token %s"), pFuncTemp1->GetName()));
 					scriptCompiler->setErrorText("Unexpected token '" + pFuncTemp1->toString() + "' inside '" + pExpFunction->getName() + "'");
-					eResult = E_TOKEN_UNEXPECTED;
+					eResult = EE_TOKEN_UNEXPECTED;
 					_lastErrorUnit = pFuncTemp1;
 					break;
 				}
@@ -1250,13 +1250,13 @@ namespace ffscript {
 			pOutputStack->push(pExpFunction);
 			pOperatorStack->pop();
 		}
-		if (eResult == E_SUCCESS) {
+		if (eResult == EE_SUCCESS) {
 			if (functionRef->getType() == EXP_UNIT_ID_FUNC_CONDITIONAL) {
 				ExecutableUnitRef ifClause, elseClause;
 
 				iter++;
 				eResult = compileConditionalExpression(iter, end, ifClause, elseClause);
-				if (eResult != E_SUCCESS) {
+				if (eResult != EE_SUCCESS) {
 					return eResult;
 				}
 				iter--;
@@ -1283,9 +1283,9 @@ namespace ffscript {
 	}
 
 	EExpressionResult ExpressionParser::putAnExpUnit(list<ExpUnitRef>::const_iterator& iter, list<ExpUnitRef>::const_iterator end, ExpressionInputList& inputList) {
-		EExpressionResult eResult = E_SUCCESS;
+		EExpressionResult eResult = EE_SUCCESS;
 		/*if (iter == end) {
-			return E_TYPE_END;
+			return EE_TYPE_END;
 		}*/
 
 		ExpUnitRef expUnitTemp;
@@ -1307,7 +1307,7 @@ namespace ffscript {
 				pOutputStack->push(functionRef);
 			}
 			else {
-				if (eResult == E_SUCCESS) {
+				if (eResult == EE_SUCCESS) {
 					eResult = putFunction(pOperatorStack, pOutputStack, functionRef, iter, end);
 				}
 			}
@@ -1327,7 +1327,7 @@ namespace ffscript {
 		else if (expUnit->getType() == EXP_UNIT_ID_FUNC_SEPERATOR) {
 			//make expression tree for current output stack and operator stack
 			eResult = makeExpression(*pOutputStack, *pOperatorStack);
-			if (eResult != E_SUCCESS) {
+			if (eResult != EE_SUCCESS) {
 				return eResult;
 			}
 
@@ -1341,9 +1341,9 @@ namespace ffscript {
 			if (/*pOutputStack->size() != 1 || */pOperatorStack->size() > 0) {
 				_lastErrorUnit = expUnit;
 				scriptCompiler->setErrorText("Incompleted expression");
-				eResult = E_INCOMPLETED_EXPRESSION;
+				eResult = EE_INCOMPLETED_EXPRESSION;
 			}
-			if (eResult != E_SUCCESS) {
+			if (eResult != EE_SUCCESS) {
 				return eResult;
 			}
 
@@ -1374,7 +1374,7 @@ namespace ffscript {
 
 				if (pOutputStack->size() != 1 || pOperatorStack->size() > 0) {
 					scriptCompiler->setErrorText("Incompleted expression");
-					eResult = E_INCOMPLETED_EXPRESSION;
+					eResult = EE_INCOMPLETED_EXPRESSION;
 					break;
 				}
 				params.push_front (pOutputStack->top());
@@ -1382,7 +1382,7 @@ namespace ffscript {
 				delete pOutputStack;
 				delete pOperatorStack;
 			}
-			if (eResult != E_SUCCESS) {
+			if (eResult != EE_SUCCESS) {
 				_lastErrorUnit = expUnit;
 				return eResult;
 			}
@@ -1391,7 +1391,7 @@ namespace ffscript {
 			if (inputList.size() == 0) {
 				DBG_ERROR(_tprintf(__T("\n[#]Unexpected token %s"), expUnit->GetName()));
 				scriptCompiler->setErrorText("Unexpected token '" + expUnit->toString() + "'");
-				eResult = E_INCOMPLETED_EXPRESSION;
+				eResult = EE_INCOMPLETED_EXPRESSION;
 				_lastErrorUnit = expUnit;
 				return eResult;
 			}
@@ -1399,7 +1399,7 @@ namespace ffscript {
 			if (pOperatorStack->size() == 0 || pOperatorStack->top()->getType() != openBracketType) {
 				scriptCompiler->setErrorText("Unexpected token ')'");
 				_lastErrorUnit = expUnit;
-				return E_INCOMPLETED_EXPRESSION;
+				return EE_INCOMPLETED_EXPRESSION;
 			}
 			
 			//pop open bracket, we don't need it any more
@@ -1472,7 +1472,7 @@ namespace ffscript {
 				functionOperator->setSourceCharIndex(iter->get()->getSourceCharIndex());
 
 				eResult = putFunction(pOperatorStack, pOutputStack, functionOperator, iter, end);
-				if (eResult != E_SUCCESS) {
+				if (eResult != EE_SUCCESS) {
 					return eResult;
 				}
 				//pust param collection of subscript operator to output stack
@@ -1503,9 +1503,9 @@ namespace ffscript {
 			if (pOutputStack->size() != 1 || pOperatorStack->size() > 0) {
 				scriptCompiler->setErrorText("Incompleted expression");
 				_lastErrorUnit = expUnit;
-				eResult = E_INCOMPLETED_EXPRESSION;
+				eResult = EE_INCOMPLETED_EXPRESSION;
 			}
-			if (eResult != E_SUCCESS) {
+			if (eResult != EE_SUCCESS) {
 				return eResult;
 			}
 			auto paramCollectionUnit = new ParamUnitCollection();
@@ -1527,7 +1527,7 @@ namespace ffscript {
 
 				if (pOutputStack->size() != 1 || pOperatorStack->size() > 0) {
 					scriptCompiler->setErrorText("Incompleted expression");
-					eResult = E_INCOMPLETED_EXPRESSION;
+					eResult = EE_INCOMPLETED_EXPRESSION;
 					break;
 				}
 				params.push_front(pOutputStack->top());
@@ -1536,7 +1536,7 @@ namespace ffscript {
 				delete pOperatorStack;
 			}
 
-			if (eResult != E_SUCCESS) {
+			if (eResult != EE_SUCCESS) {
 				_lastErrorUnit = expUnit;
 				return eResult;
 			}
@@ -1545,7 +1545,7 @@ namespace ffscript {
 			if (inputList.size() < 1) {
 				DBG_ERROR(_tprintf(__T("\n[#]Unexpected token %s"), expUnit->GetName()));
 				scriptCompiler->setErrorText("Unexpected token '" + expUnit->toString() + "'");
-				eResult = E_INCOMPLETED_EXPRESSION;
+				eResult = EE_INCOMPLETED_EXPRESSION;
 				_lastErrorUnit = expUnit;
 				return eResult;
 			}
@@ -1553,7 +1553,7 @@ namespace ffscript {
 			if (pOperatorStack->size() == 0 || pOperatorStack->top()->getType() != EXP_UNIT_ID_OPEN_SQUARE_BRACKET) {
 				scriptCompiler->setErrorText("Unexpected token ')'");
 				_lastErrorUnit = expUnit;
-				return E_INCOMPLETED_EXPRESSION;
+				return EE_INCOMPLETED_EXPRESSION;
 			}
 
 			// set true source char index of paramCollectionUnit is source char index of open bracket
@@ -1567,7 +1567,7 @@ namespace ffscript {
 			subscriptOperator->setSourceCharIndex(paramCollectionUnit->getSourceCharIndex());
 
 			eResult = putFunction(pOperatorStack, pOutputStack, subscriptOperator, iter, end);
-			if (eResult != E_SUCCESS) {
+			if (eResult != EE_SUCCESS) {
 				return eResult;
 			}
 			//pust param collection of subscript operator to output stack
@@ -1578,7 +1578,7 @@ namespace ffscript {
 			//unknown expression unit type
 			DBG_ERROR(_tprintf(__T("\n[#]unknown type %X of token '%s'"), expUnit->GetType(), expUnit->GetName()));
 			scriptCompiler->setErrorText("internal error: unknow type of token '" + expUnit->toString() + "'");
-			eResult = E_TOKEN_TYPE_UNEXPECTED;
+			eResult = EE_TOKEN_TYPE_UNEXPECTED;
 			_lastErrorUnit = expUnit;
 		}
 
@@ -1589,7 +1589,7 @@ namespace ffscript {
 		OperatorStack* pOperatorStack;
 		OutputStack* pOutputStack;
 		Expression* pExp = NULL;
-		EExpressionResult eResult = E_SUCCESS;
+		EExpressionResult eResult = EE_SUCCESS;
 		ScriptCompiler* scriptCompiler = getCompiler();
 
 		while (inputList.size()) {
@@ -1598,17 +1598,17 @@ namespace ffscript {
 			pOperatorStack = entry.second;
 			inputList.pop_back();
 
-			if (eResult == E_SUCCESS) {
+			if (eResult == EE_SUCCESS) {
 				eResult = makeExpression(*pOutputStack, *pOperatorStack);
 
 				if (pOutputStack->size() != 1 || pOperatorStack->size() > 0) {
-					eResult = E_INCOMPLETED_EXPRESSION;
+					eResult = EE_INCOMPLETED_EXPRESSION;
 					scriptCompiler->setErrorText("Incompleted expression");
 					if (pOperatorStack->size()) {
 						_lastErrorUnit = pOperatorStack->top();
 					}
 				}
-				if (eResult != E_SUCCESS) {
+				if (eResult != EE_SUCCESS) {
 					expList.clear();
 				}
 				else {
@@ -1635,7 +1635,7 @@ namespace ffscript {
 		if (peResult) pResult = peResult;
 		EExpressionResult& eResult = *pResult;
 
-		eResult = E_SUCCESS;
+		eResult = EE_SUCCESS;
 
 		OperatorStack* pOperatorStack = new OperatorStack();;
 		OutputStack* pOutputStack = new OutputStack();
@@ -1644,23 +1644,23 @@ namespace ffscript {
 		DBG_INFO(List_Enumerate(&expUnitList, printNode));
 		
 		const list<ExpUnitRef>& expUnitListConst = expUnitList;
-		for (auto iter = expUnitListConst.begin(); iter != expUnitListConst.end() && eResult == E_SUCCESS; iter++)
+		for (auto iter = expUnitListConst.begin(); iter != expUnitListConst.end() && eResult == EE_SUCCESS; iter++)
 		{
 			eResult = putAnExpUnit(iter, expUnitListConst.end(), inputList);
 		}
 
-		if (eResult != E_SUCCESS) {
+		if (eResult != EE_SUCCESS) {
 			return false;
 		}
 
 		eResult = makeExpressionList(inputList, expList);
-		if (eResult != E_SUCCESS && _lastErrorUnit.get() == nullptr) {
+		if (eResult != EE_SUCCESS && _lastErrorUnit.get() == nullptr) {
 			if (expUnitList.size()) {
 				_lastErrorUnit = expUnitList.back();
 			}
 		}
 
-		return eResult == E_SUCCESS && expList.size() > 0;
+		return eResult == EE_SUCCESS && expList.size() > 0;
 	}
 
 	const CandidateInfo* chooseFunction(ScriptCompiler* scriptCompiler, const list<CandidateInfo>& candidates, int paramCount, EExpressionResult& eResult) {
@@ -2180,7 +2180,7 @@ namespace ffscript {
 		const list<OverLoadingItem>* overloadingFuncs = scriptCompiler->findOverloadingFuncRoot(functionName);
 
 		if (!overloadingFuncs) {
-			eResult = E_FUNCTION_NOT_FOUND;
+			eResult = EE_FUNCTION_NOT_FOUND;
 			scriptCompiler->setErrorText("function " + functionName + " is not found");
 			return nullptr;
 		}
@@ -2189,7 +2189,7 @@ namespace ffscript {
 	}	
 
 	EExpressionResult checkCandidates(ScriptCompiler* scriptCompiler, const FunctionRef& function, const CandidateCollectionRef& candidates) {
-		return E_SUCCESS;
+		return EE_SUCCESS;
 		for (auto it = candidates->begin(); it != candidates->end(); it++) {
 			auto jt = it;
 			ExecutableUnitRef& c1 = *it;
@@ -2199,12 +2199,12 @@ namespace ffscript {
 				auto& rt2 = c2->getReturnType();
 				if (rt1 == rt2) {
 					scriptCompiler->setErrorText("ambious function call for function " + function->getName());
-					return E_TYPE_AMBIOUS_CALL;
+					return EE_TYPE_AMBIOUS_CALL;
 				}
 			}
 		}
 
-		return E_SUCCESS;
+		return EE_SUCCESS;
 	}
 
 	inline bool isScriptFunction(ScriptCompiler* scriptCompiler, int functionId) {
@@ -2233,7 +2233,7 @@ namespace ffscript {
 					items.push_back(overloadingItem);
 				}
 				else {
-					eResult = E_FUNCTION_NOT_FOUND;
+					eResult = EE_FUNCTION_NOT_FOUND;
 					scriptCompiler->setErrorText("token '" + unit->toString() + "' is not found");
 					LOG_COMPILE_MESSAGE(scriptCompiler->getLogger(), MESSAGE_ERROR, scriptCompiler->formatMessage("token '%s' is not found", unit->toString().c_str()));
 					_lastErrorUnit = unit;
@@ -2266,7 +2266,7 @@ namespace ffscript {
 			if (scriptType.isUnkownType()) {
 				scriptType.updateType(scriptCompiler);
 				if (scriptType.isUnkownType()) {
-					eResult = E_TYPE_UNKNOWN;
+					eResult = EE_TYPE_UNKNOWN;
 					scriptCompiler->setErrorText("data type of '" + unit->toString() + "' is unknown");
 					_lastErrorUnit = unit;
 					return nullptr;
@@ -2277,7 +2277,7 @@ namespace ffscript {
 		}
 		else {
 			//other kinds is known as error
-			eResult = E_TOKEN_UNEXPECTED;
+			eResult = EE_TOKEN_UNEXPECTED;
 			scriptCompiler->setErrorText("Unexpected operator '" + unit->toString() + "'");
 			_lastErrorUnit = unit;
 		}
@@ -2303,7 +2303,7 @@ namespace ffscript {
 
 	CandidateCollectionRef ExpressionParser::completeFunctionTree(ScriptCompiler* scriptCompiler, FunctionRef& function, EExpressionResult& eResult) {
 		//LOG_I("begin update expression tree for " + POINTER2STRING(function.get()));
-		eResult = E_SUCCESS;
+		eResult = EE_SUCCESS;
 
 		Variable* variable;
 		int n = function->getChildCount();
@@ -2339,7 +2339,7 @@ namespace ffscript {
 					auto& functionName = pExeUnit1->toString();
 					auto newFunction = scriptCompiler->createExpUnitFromName(functionName);
 					if (newFunction == nullptr) {
-						eResult = E_TOKEN_UNEXPECTED;
+						eResult = EE_TOKEN_UNEXPECTED;
 						scriptCompiler->setErrorText("Unexpected token '" + functionName + "'");
 						_lastErrorUnit = pExeUnit1;
 						return nullptr;
@@ -2350,7 +2350,7 @@ namespace ffscript {
 					function.reset((Function*)newFunction);
 					for (auto it = params.begin(); it != params.end(); it++) {
 						if (function->pushParam(*it) < 0) {
-							eResult = E_FUNCTION_NOT_FOUND;
+							eResult = EE_FUNCTION_NOT_FOUND;
 							scriptCompiler->setErrorText("function '" + function->getName() + "' is not compatible with its parameters");
 							_lastErrorUnit = *it;
 							return nullptr;
@@ -2366,7 +2366,7 @@ namespace ffscript {
 						auto contextObjectRef = contextObject;
 						scriptCompiler->convertToRef(contextObjectRef);
 						auto candidatesRef = linkForUnit(scriptCompiler, contextObjectRef, eResult);
-						if (eResult != E_SUCCESS) {
+						if (eResult != EE_SUCCESS) {
 							return nullptr;
 						}
 						candidatesRef->push_back(contextObject);
@@ -2435,7 +2435,7 @@ namespace ffscript {
 					//try to find function operator for type
 					//before do that, we need to know data type of first parameter by linking it
 					auto param1CandidatesTmp = linkForUnit(scriptCompiler, pExeUnit1, eResult);
-					if (eResult != E_SUCCESS) {
+					if (eResult != EE_SUCCESS) {
 						return nullptr;
 					}
 					// first check the candidate is a function type...
@@ -2463,7 +2463,7 @@ namespace ffscript {
 								if ((functionOperator = scriptCompiler->getFunctionOperator(checkType.iType())) >= 0) {
 									auto functionUnit = scriptCompiler->createFunctionFromId(functionOperator);
 									if (functionUnit == nullptr) {
-										eResult = E_FUNCTION_NOT_FOUND;
+										eResult = EE_FUNCTION_NOT_FOUND;
 										scriptCompiler->setErrorText("Library error function operator for type " + checkType.sType() + " is missing");
 										_lastErrorUnit = *it;
 										return nullptr;
@@ -2476,7 +2476,7 @@ namespace ffscript {
 							}
 						}
 						if (functionCandidates->size() <= 0) {
-							eResult = E_TOKEN_UNEXPECTED;
+							eResult = EE_TOKEN_UNEXPECTED;
 							scriptCompiler->setErrorText("Unexpected operator for token " + pExeUnit1->toString() + " '()'");
 							_lastErrorUnit = pExeUnit1;
 							return nullptr;
@@ -2509,7 +2509,7 @@ namespace ffscript {
 				}
 			}
 			if (functionCandidates->size() == 0) {
-				eResult = E_FUNCTION_NOT_FOUND;
+				eResult = EE_FUNCTION_NOT_FOUND;
 				scriptCompiler->setErrorText("function '" + function->getName() + "' is not compatible with its parameters");
 				return nullptr;
 			}*/
@@ -2519,21 +2519,21 @@ namespace ffscript {
 		}
 		else if (function->getType() == EXP_UNIT_ID_SEMI_REF) {
 			if (n != 1) {
-				eResult = E_TOKEN_INVALID;
+				eResult = EE_TOKEN_INVALID;
 				scriptCompiler->setErrorText("'&' operator can only take one parameter");
 				_lastErrorUnit = function;
 				return nullptr;
 			}
 			auto& refUnit = function->getChild(0);
 			if (refUnit->getType() != EXP_UNIT_ID_XOPERAND) {
-				eResult = E_TOKEN_INVALID;
+				eResult = EE_TOKEN_INVALID;
 				scriptCompiler->setErrorText("'&' operator can only use for variable");
 				_lastErrorUnit = function;
 				return nullptr;
 			}
 
 			param1Candidates = linkForUnit(scriptCompiler, refUnit, eResult);
-			if (eResult != E_SUCCESS && param1Candidates->size() == 0) {
+			if (eResult != EE_SUCCESS && param1Candidates->size() == 0) {
 				return nullptr;
 			}
 
@@ -2561,14 +2561,14 @@ namespace ffscript {
 		}
 		else if (function->getType() == EXP_UNIT_ID_OPERATOR_TYPE_CAST) {
 			if (n != 1) {
-				eResult = E_TYPE_CONVERSION_ERROR;
+				eResult = EE_TYPE_CONVERSION_ERROR;
 				scriptCompiler->setErrorText("type cast operator can only take one parameter");
 				_lastErrorUnit = function;
 				return nullptr;
 			}
 			auto& returnType = function->getReturnType();
 			if (returnType.isSemiRefType()) {
-				eResult = E_TYPE_CONVERSION_ERROR;
+				eResult = EE_TYPE_CONVERSION_ERROR;
 				scriptCompiler->setErrorText("type cast operator can not apply to " + returnType.sType());
 				_lastErrorUnit = function;
 				return nullptr;
@@ -2576,7 +2576,7 @@ namespace ffscript {
 			
 			auto& paramUnit = function->getChild(0);
 			param1Candidates = linkForUnit(scriptCompiler, paramUnit, eResult);
-			if (eResult != E_SUCCESS && param1Candidates->size() == 0) {
+			if (eResult != EE_SUCCESS && param1Candidates->size() == 0) {
 				return nullptr;
 			}
 
@@ -2720,7 +2720,7 @@ namespace ffscript {
 			}
 
 			if (functionCandidates->size() == 0) {
-				eResult = E_TYPE_CONVERSION_ERROR;
+				eResult = EE_TYPE_CONVERSION_ERROR;
 				scriptCompiler->setErrorText("type cast operator can not apply to any candidate of unit '" + paramUnit->toString() + "'");
 				_lastErrorUnit = function;
 				return nullptr;
@@ -2731,7 +2731,7 @@ namespace ffscript {
 		else if (function->getType() == EXP_UNIT_ID_OPERATOR_LOGIC_AND ||
 			function->getType() == EXP_UNIT_ID_OPERATOR_LOGIC_OR) {
 			if (n != 2) {
-				eResult = E_TOKEN_INVALID;
+				eResult = EE_TOKEN_INVALID;
 				scriptCompiler->setErrorText("operator '" + function->getName() + "' must has two parameters");
 				_lastErrorUnit = function;
 				return nullptr;
@@ -2743,9 +2743,9 @@ namespace ffscript {
 			ScriptType typeBool(basicType.TYPE_BOOL, scriptCompiler->getType(basicType.TYPE_BOOL));
 
 			param1Candidates = linkForUnit(scriptCompiler, pExeUnit1, eResult);
-			if (param1Candidates && param1Candidates->size() && eResult == E_SUCCESS) {
+			if (param1Candidates && param1Candidates->size() && eResult == EE_SUCCESS) {
 				auto param2Candidates = linkForUnit(scriptCompiler, pExeUnit2, eResult);
-				if (param2Candidates && param2Candidates->size() && eResult == E_SUCCESS) {
+				if (param2Candidates && param2Candidates->size() && eResult == EE_SUCCESS) {
 					functionCandidates = make_shared<CandidateCollection>();
 					
 					candidatesForParams[0] = param1Candidates;
@@ -2830,7 +2830,7 @@ namespace ffscript {
 					variable = xOperand->getVariable();
 
 					auto param2Candidates = linkForUnit(scriptCompiler, pExeUnit2, eResult);
-					if (eResult != E_SUCCESS) {
+					if (eResult != EE_SUCCESS) {
 						return nullptr;
 					}
 
@@ -2868,7 +2868,7 @@ namespace ffscript {
 
 					for (auto it = param1Candidates->begin(); it != param1Candidates->end(); it++) {
 						if ( (*it)->getReturnType().isUnkownType()) {
-							eResult = E_TYPE_UNKNOWN;
+							eResult = EE_TYPE_UNKNOWN;
 							scriptCompiler->setErrorText("data type of '" + pExeUnit1->toString() + "' is not set");
 							//check later - bellow line was added
 							_lastErrorUnit = pExeUnit1;
@@ -2885,7 +2885,7 @@ namespace ffscript {
 		Function* bestFunctionMatch = nullptr;
 
 		if(updated == false && n > 0) {
-			for (int i = 0, k = 0; i < n && eResult == E_SUCCESS; i++, k++) {
+			for (int i = 0, k = 0; i < n && eResult == EE_SUCCESS; i++, k++) {
 				//if candidate is already updated
 				if (candidatesForParams[k]) {
 					continue;
@@ -2896,7 +2896,7 @@ namespace ffscript {
 					auto& paramsInCollection = paramCollection->getParams();
 					candidatesForParams.resize(n + paramsInCollection.size() - 1);
 
-					for (auto it = paramsInCollection.begin(); it != paramsInCollection.end() && eResult == E_SUCCESS; it++, k++) {
+					for (auto it = paramsInCollection.begin(); it != paramsInCollection.end() && eResult == EE_SUCCESS; it++, k++) {
 						ExecutableUnitRef& pExeUnitTmp = *it;
 						candidatesForParams[k] = linkForUnit(scriptCompiler, pExeUnitTmp, eResult);
 					}
@@ -2906,7 +2906,7 @@ namespace ffscript {
 					candidatesForParams[k] = linkForUnit(scriptCompiler, pExeUnit, eResult);
 				}
 			}
-			if (eResult != E_SUCCESS) {
+			if (eResult != EE_SUCCESS) {
 				return nullptr;
 			}
 			//update param count
@@ -2915,7 +2915,7 @@ namespace ffscript {
 			if (n == 3 && function->getType() == EXP_UNIT_ID_FUNC_CONDITIONAL) {
 				choosedFunctionId = scriptCompiler->getConditionalFunction();
 				if (choosedFunctionId < 0) {
-					eResult = E_FUNCTION_NOT_FOUND;
+					eResult = EE_FUNCTION_NOT_FOUND;
 					scriptCompiler->setErrorText("internal error: definition of operator ? is missing");
 					_lastErrorUnit = function;
 					return nullptr;
@@ -2936,7 +2936,7 @@ namespace ffscript {
 					auto& elseClauseReturnType = elseUnit->getReturnType();
 
 					if (ifClauseReturnType != elseClauseReturnType) {
-						eResult = E_TYPE_CONVERSION_ERROR;
+						eResult = EE_TYPE_CONVERSION_ERROR;
 						error = "data type of if clause and else clause is not same";
 						continue;
 					}
@@ -2944,7 +2944,7 @@ namespace ffscript {
 					if (conditionDataType.iType() != basicType.TYPE_BOOL) {
 						auto castingFunction = scriptCompiler->findCastingFunction(conditionDataType, ScriptType(basicType.TYPE_BOOL, scriptCompiler->getType(basicType.TYPE_BOOL)));
 						if (!castingFunction) {
-							eResult = E_TYPE_CONVERSION_ERROR;
+							eResult = EE_TYPE_CONVERSION_ERROR;
 							error = "cannot cast condition type to bool";
 							continue;
 						}
@@ -2973,7 +2973,7 @@ namespace ffscript {
 					_lastErrorUnit = function;
 				}
 				eResult = checkCandidates(scriptCompiler, function, functionCandidates);
-				if (eResult != E_SUCCESS) {
+				if (eResult != EE_SUCCESS) {
 					_lastErrorUnit = function;
 					return nullptr;
 				}
@@ -3009,13 +3009,13 @@ namespace ffscript {
 					}
 				}
 				if (functionCandidates->size() == 0) {
-					eResult = E_FUNCTION_NOT_FOUND;
+					eResult = EE_FUNCTION_NOT_FOUND;
 					scriptCompiler->setErrorText("internal error: definition of operator 'ref' is missing");
 					_lastErrorUnit = function;
 					return nullptr;
 				}
 				eResult = checkCandidates(scriptCompiler, function, functionCandidates);
-				if (eResult != E_SUCCESS) {
+				if (eResult != EE_SUCCESS) {
 					_lastErrorUnit = function;
 					return nullptr;
 				}
@@ -3028,7 +3028,7 @@ namespace ffscript {
 		if (n == 2 && function->getType() == EXP_UNIT_ID_DEFAULT_COPY_CONTRUCTOR) {
 			choosedFunctionId = scriptCompiler->getDefaultCopyFunction();
 			if (choosedFunctionId < 0) {
-				eResult = E_FUNCTION_NOT_FOUND;
+				eResult = EE_FUNCTION_NOT_FOUND;
 				scriptCompiler->setErrorText("internal error: definition of operator '" DEFAULT_COPY_OPERATOR "' is missing");
 				_lastErrorUnit = function;
 				return nullptr;
@@ -3183,7 +3183,7 @@ namespace ffscript {
 			// check if need call constructor but there is not candidate was create...
 			if (needToCallConstructor && (!functionCandidates || functionCandidates->size() == 0)) {
 				// ...then its must be and error case
-				eResult = E_FUNCTION_NOT_FOUND;
+				eResult = EE_FUNCTION_NOT_FOUND;
 				scriptCompiler->setErrorText("there is no copy constructor or a combination of default copy constructor and assigment operator found");
 				_lastErrorUnit = function;
 				return nullptr;
@@ -3193,7 +3193,7 @@ namespace ffscript {
 		}
 #pragma endregion
 
-		if (eResult != E_SUCCESS) {
+		if (eResult != EE_SUCCESS) {
 			//LOG_I("end update expression tree for " + POINTER2STRING(function.get()));
 			return nullptr;
 		}
@@ -3216,7 +3216,7 @@ namespace ffscript {
 					argTypes.push_back(functionPointerUnit->getReturnType());
 					scriptCompiler->parseFunctionType(functionType, returnType, argTypes, isDynamicFunction);
 					if (returnType.isUnkownType()) {
-						eResult = E_TYPE_UNKNOWN;
+						eResult = EE_TYPE_UNKNOWN;
 						scriptCompiler->setErrorText("function type is not specified for unit'" + functionPointerUnit->toString() + "'");
 						_lastErrorUnit = functionPointerUnit;
 						return nullptr;
@@ -3245,7 +3245,7 @@ namespace ffscript {
 
 				if (paramPathCandidate.size() == 0) {
 					scriptCompiler->setErrorText("Cannot convert from parameter types to argument types");
-					eResult = E_TYPE_CONVERSION_ERROR;
+					eResult = EE_TYPE_CONVERSION_ERROR;
 					_lastErrorUnit = function;
 					return nullptr;
 				}
@@ -3277,7 +3277,7 @@ namespace ffscript {
 							string& memberName = *((string*)pExeUnit2->Execute());
 							MemberInfo memberInfo;
 							if (!struct1->getInfo(memberName, memberInfo)) {
-								eResult = E_TOKEN_UNEXPECTED;
+								eResult = EE_TOKEN_UNEXPECTED;
 								scriptCompiler->setErrorText(memberName + " is not member of " + struct1->getName());
 								_lastErrorUnit = pExeUnit2;
 								return nullptr;
@@ -3296,7 +3296,7 @@ namespace ffscript {
 							;//do nothing
 						}
 						else {
-							eResult = E_TOKEN_UNEXPECTED;
+							eResult = EE_TOKEN_UNEXPECTED;
 							scriptCompiler->setErrorText("Wrong syntax of using operator '.'");
 							_lastErrorUnit = function;
 							return nullptr;
@@ -3313,7 +3313,7 @@ namespace ffscript {
 
 									//check variant array if valid or not in use to assign to a struct
 									if (!checkAssigmentOperatorForStruct(scriptCompiler, struct1, dynamic_pointer_cast<DynamicParamFunction>(pExeUnit2))) {
-										eResult = E_TYPE_CONVERSION_ERROR;
+										eResult = EE_TYPE_CONVERSION_ERROR;
 										scriptCompiler->setErrorText("different type and different number of element for struct assigment does not allow");
 										_lastErrorUnit = pExeUnit2;
 										return nullptr;
@@ -3327,7 +3327,7 @@ namespace ffscript {
 								bool hasNoError;
 								auto functionRef = scriptCompiler->applyConstructorForCompisiteType(pExeUnit1, pExeUnit2, hasNoError);
 								if (!hasNoError) {
-									eResult = E_TYPE_CONVERSION_ERROR;
+									eResult = EE_TYPE_CONVERSION_ERROR;
 									scriptCompiler->setErrorText("different type and different number of element for struct assigment does not allow");
 									_lastErrorUnit = pExeUnit2;
 									return nullptr;
@@ -3353,7 +3353,7 @@ namespace ffscript {
 			}
 
 			functionCandidates = filterCandidate(scriptCompiler, function->getName(), function->getType(), candidatesForParams, eResult);
-			if (eResult == E_SUCCESS && functionCandidates != nullptr && functionCandidates->size()) {
+			if (eResult == EE_SUCCESS && functionCandidates != nullptr && functionCandidates->size()) {
 				return functionCandidates;
 			}
 			
@@ -3371,7 +3371,7 @@ namespace ffscript {
 					//check later - bellow code was commented
 					/*
 					if (paramPaths.size() != 1) {
-						eResult = E_TYPE_AMBIOUS_CALL;
+						eResult = EE_TYPE_AMBIOUS_CALL;
 						scriptCompiler->setErrorText("ambious function call for dynamic function");
 						return nullptr;
 					}*/
@@ -3382,7 +3382,7 @@ namespace ffscript {
 				}
 				functionCandidates = std::make_shared<CandidateCollection>();
 				functionCandidates->push_back(ExecutableUnitRef(dynamicFunction));
-				eResult = E_SUCCESS;
+				eResult = EE_SUCCESS;
 #pragma endregion
 			}
 			else {
@@ -3391,7 +3391,7 @@ namespace ffscript {
 				//now it is time to check some default operators
 				functionCandidates = findApproxiateDefaultOperator(scriptCompiler, function, candidatesForParams);
 				if (functionCandidates == nullptr || !functionCandidates->size()) {
-					eResult = E_FUNCTION_NOT_FOUND;
+					eResult = EE_FUNCTION_NOT_FOUND;
 
 					std::list<std::vector<ExecutableUnitRef>> paramPaths;
 					listPaths<ExecutableUnitRef, CandidateCollection, ExecutableUnitRef>(candidatesForParams, paramPaths);
@@ -3422,7 +3422,7 @@ namespace ffscript {
 				auto functionId = ((Function*)(*it).get())->getId();				
 				auto functionInfo = functionLib->findFunctionInfo(functionId);				
 				if (functionInfo == nullptr) {
-					eResult = E_FUNCTION_NOT_FOUND;
+					eResult = EE_FUNCTION_NOT_FOUND;
 					scriptCompiler->setErrorText("library error: information of '" + function->getName() + "' is missing");
 					_lastErrorUnit = function;
 					return nullptr;
@@ -3459,7 +3459,7 @@ namespace ffscript {
 #pragma endregion
 		}
 		eResult = checkCandidates(scriptCompiler, function, functionCandidates);
-		if (eResult != E_SUCCESS) {
+		if (eResult != EE_SUCCESS) {
 			_lastErrorUnit = function;
 			return nullptr;
 		}
@@ -3469,16 +3469,16 @@ namespace ffscript {
 
 	EExpressionResult ExpressionParser::link(Expression* pExp) {
 		ExecutableUnitRef& root = pExp->getRoot();
-		EExpressionResult eResult = E_SUCCESS;
+		EExpressionResult eResult = EE_SUCCESS;
 		if (ISFUNCTION(root)) {
 			auto unitFunctionRef = dynamic_pointer_cast<Function>(root);
 			auto candidateFounds = completeFunctionTree(getCompiler(), unitFunctionRef, eResult);
 			root = unitFunctionRef;
-			if (eResult == E_SUCCESS && candidateFounds && candidateFounds->size()) {
+			if (eResult == EE_SUCCESS && candidateFounds && candidateFounds->size()) {
 				if (candidateFounds->size() > 1) {
 					_scriptCompiler->setErrorText("ambitious call for function '" + root->toString() + "'");
 					_lastErrorUnit = root;
-					return E_TYPE_AMBIOUS_CALL;
+					return EE_TYPE_AMBIOUS_CALL;
 				}
 				//check later - need consider choose r-value and l-value return of candidate
 				root = candidateFounds->front();
@@ -3495,22 +3495,22 @@ namespace ffscript {
 			if (root->getReturnType().isUnkownType()) {
 				root->getReturnType().updateType(getCompiler());
 			}
-			eResult = root->getReturnType().isUnkownType() ? E_TYPE_UNKNOWN : E_SUCCESS;
+			eResult = root->getReturnType().isUnkownType() ? EE_TYPE_UNKNOWN : EE_SUCCESS;
 		}
 		return eResult;
 	}
 
 	EExpressionResult ExpressionParser::link(Expression* pExp, CandidateCollectionRef& candidates) {
 		ExecutableUnitRef& root = pExp->getRoot();
-		EExpressionResult eResult = E_SUCCESS;
+		EExpressionResult eResult = EE_SUCCESS;
 		_lastErrorUnit.reset();
 
 		candidates = linkForUnit(getCompiler(), root, eResult);
-		if (eResult == E_SUCCESS) {
+		if (eResult == EE_SUCCESS) {
 			if (candidates->size() > 1) {
 				_scriptCompiler->setErrorText("ambitious call for function '" + root->toString() + "'");
 				_lastErrorUnit = root;
-				return E_TYPE_AMBIOUS_CALL;
+				return EE_TYPE_AMBIOUS_CALL;
 			}
 		}
 		return eResult;
