@@ -115,6 +115,7 @@ namespace ffscript {
 	void Context::popScope() {
 		_allocatedStack.pop_front();
 		_currentOffset -= _allocatedStack.front();
+        _allocatedStack.front() -= _scopeCodeSize.front();
 	}
 
 	void Context::scopeAllocate(unsigned int scopeDataSize, unsigned int scopeCodeSize) {
