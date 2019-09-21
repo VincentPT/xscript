@@ -120,7 +120,12 @@ namespace ffscript {
 
 		auto& variables = getVariables();
 		for (auto it = variables.begin(); it != variables.end(); it++) {
-			scriptProgram->addVariable( std::shared_ptr<Variable>(it->clone(false)));
+            auto programGlobalVariable = std::shared_ptr<Variable>(it->clone(false));
+            // after detach program from global scope
+            // the global scope is no longer owner of the variable.
+            // then set it to null
+            programGlobalVariable->setScope(nullptr);
+			scriptProgram->addVariable(programGlobalVariable);
 		}
 
 		return scriptProgram;

@@ -54,6 +54,7 @@ SET (PROJECT_SOURCE_FILES
 	VectorCompatibleUT.cpp
 	ffscriptUT.cpp
 	MethodUT.cpp
+	RealLifeCases.cpp
 )
 
 add_executable(${PROJECT_NAME} main.cpp ${PROJECT_SOURCE_FILES})

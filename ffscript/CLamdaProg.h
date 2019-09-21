@@ -14,6 +14,7 @@
 #pragma once
 #include <memory>
 #include <GlobalScope.h>
+#include <sstream>
 
 namespace ffscript {
 
@@ -52,4 +53,32 @@ namespace ffscript {
 		const std::list<std::shared_ptr<Variable>>& getVariables() const;
 		Variable* findDeclaredVariable(const char* variableName) const;
 	};
+    
+    template <typename T>
+    void setGlobalVariable(CLamdaProg* program, const char* variableName, const T& val) {
+        Variable* variable = program->findDeclaredVariable(variableName);
+        if (!variable) {
+            std::stringstream ss;
+            ss << "Cannot find variable '" << variableName << "' in global scope of the script program.";
+            throw std::runtime_error(ss.str());
+        }
+        
+        auto& globalContext = program->getGlobalContext();
+        T* pVal = (T*)globalContext->getAbsoluteAddress(variable->getOffset());
+        *pVal = val;
+    }
+    
+    template <typename T>
+    T& getGlobalVariable(CLamdaProg* program, const char* variableName) {
+        Variable* variable = program->findDeclaredVariable(variableName);
+        if (!variable) {
+            std::stringstream ss;
+            ss << "Cannot find variable '" << variableName << "' in global scope of the script program.";
+            throw std::runtime_error(ss.str());
+        }
+        
+        auto& globalContext = program->getGlobalContext();
+        T* pVal = (T*)globalContext->getAbsoluteAddress(variable->getOffset());
+        return *pVal;
+    }
 }
