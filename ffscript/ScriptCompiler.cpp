@@ -1251,7 +1251,6 @@ namespace ffscript {
 		auto param2 = argUnit;
 
 		auto& param1Type = param1->getReturnType();
-		auto& param2Type = param2->getReturnType();
 
 		auto constructorCandidates = getConstructor(param1Type, param2);
 		auto pCandidate = ScriptCompiler::selectSingleCandidate(constructorCandidates);
@@ -1262,7 +1261,7 @@ namespace ffscript {
 			auto& castingInfo = pCandidate->paramCasting.front();
 
 			//convert param 1 to ref
-			if (param1Type.refLevel() == param2Type.refLevel()) {
+			if (param1Type.refLevel() == 0 && param1Type.semiRefLevel() == 0) {
 				convertToRef(param1);
 			}
 

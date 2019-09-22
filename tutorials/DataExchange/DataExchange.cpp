@@ -71,19 +71,6 @@ void importApplicationLibrary(ScriptCompiler* scriptCompiler) {
 			);
 }
 
-template <typename T>
-void setGlobalVariable(CLamdaProg* program, const char* variableName, const T& val) {
-	Variable* variable = program->findDeclaredVariable(variableName);
-	if (!variable) {
-		cout << "Cannot find variable '" << variableName << "' in global scope of the script program." << endl;
-		return;
-	}
-
-	auto& globalContext = program->getGlobalContext();
-	T* pVal = (T*)globalContext->getAbsoluteAddress(variable->getOffset());
-	*pVal = val;
-}
-
 #pragma pack(push)
 #pragma pack(1)
 

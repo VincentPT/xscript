@@ -42,7 +42,7 @@ TEST(RealLifeCases, IntegerReverse1)
 
 	auto rawProgram = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
 	int functionId = scriptCompiler->findFunction("reverse", "int");
-	EXPECT_TRUE(functionId >= 0) << L"cannot find function 'reverse'";
+	ASSERT_TRUE(functionId >= 0) << L"cannot find function 'reverse'";
     
     auto program = std::unique_ptr<CLamdaProg>(rootScope->detachScriptProgram(rawProgram));
 
@@ -83,7 +83,7 @@ TEST(RealLifeCases, IntegerReverse2)
     
     Program* rawProgram = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
     int functionId = scriptCompiler->findFunction("main", "");
-    EXPECT_TRUE(functionId >= 0) << L"cannot find function 'main'";
+    ASSERT_TRUE(functionId >= 0) << L"cannot find function 'main'";
     auto program = std::unique_ptr<CLamdaProg>(rootScope->detachScriptProgram(rawProgram));
     program->runGlobalCode();
     
@@ -98,6 +98,7 @@ TEST(RealLifeCases, IntegerReverse2)
 
 TEST(RealLifeCases, IntegerReverse3)
 {
+    
     CompilerSuite compiler;
     compiler.initialize(1024);
     GlobalScopeRef rootScope = compiler.getGlobalScope();
@@ -119,7 +120,7 @@ TEST(RealLifeCases, IntegerReverse3)
     
     Program* rawProgram = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
     int functionId = scriptCompiler->findFunction("reverse", "int");
-    EXPECT_TRUE(functionId >= 0) << L"cannot find function 'reverse'";
+    ASSERT_TRUE(functionId >= 0) << L"cannot find function 'reverse'";
     
     auto program = std::unique_ptr<CLamdaProg>(rootScope->detachScriptProgram(rawProgram));
     program->runGlobalCode();
@@ -143,4 +144,177 @@ TEST(RealLifeCases, IntegerReverse3)
     EXPECT_EQ(b3,(n & 0xFF0000) >> 16);
     EXPECT_EQ(b4,(n & 0xFF000000) >> 24);
     EXPECT_EQ(*funcRes,0x44332211);
+}
+
+
+const char* getStringPtr() {
+    return "Hello World";
+}
+
+void print(const RawString& s) {
+    std::wcout << s.elms << endl;
+}
+
+
+TEST(RealLifeCases, StringFromCharPtr1)
+{
+    CompilerSuite compiler;
+    compiler.initialize(1024);
+    GlobalScopeRef rootScope = compiler.getGlobalScope();
+    auto scriptCompiler = rootScope->getCompiler();
+    
+    // import custom libraries
+    // String library
+    includeRawStringToCompiler(scriptCompiler);
+    
+    FunctionRegisterHelper fb(scriptCompiler);
+    registerFunction<const char*>(fb, getStringPtr, "getStringPtr", "ref char", "");
+    registerFunction<void, const RawString&>(fb, print, "print", "void", "String&");
+    
+    scriptCompiler->beginUserLib();
+    
+    const wchar_t* scriptCode =
+    L"void main() {"
+    L"String s = getStringPtr();"
+    L"print(s);"
+    L"}"
+    ;
+    
+    Program* rawProgram = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+    ASSERT_EQ(nullptr, rawProgram);
+}
+
+namespace ffscript {
+    extern void constantConstructor(RawString& rawString, const std::string& s);
+}
+
+void charPtrContructor(RawString& rawString, const char* s) {
+    constantConstructor(rawString, s);
+}
+
+void intContructor(RawString& rawString, int val) {
+    std::string s = std::to_string(val);
+    constantConstructor(rawString, s);
+}
+
+TEST(RealLifeCases, StringFromCharPtr2)
+{
+    CompilerSuite compiler;
+    compiler.initialize(1024);
+    GlobalScopeRef rootScope = compiler.getGlobalScope();
+    auto scriptCompiler = rootScope->getCompiler();
+    auto& basicTypes = scriptCompiler->getTypeManager()->getBasicTypes();
+    
+    // import custom libraries
+    // String library
+    includeRawStringToCompiler(scriptCompiler);
+    
+    FunctionRegisterHelper fb(scriptCompiler);
+    registerFunction<const char*>(fb, getStringPtr, "getStringPtr", "ref char", "");
+    registerFunction<void, const RawString&>(fb, print, "print", "void", "String&");
+    
+    auto ctor = registerFunction<void, RawString&, const char*>(fb, charPtrContructor, "constantConstructor","void", "ref String, ref char");
+    scriptCompiler->registConstructor(basicTypes.TYPE_RAWSTRING, ctor);
+    
+    scriptCompiler->beginUserLib();
+    
+    const wchar_t* scriptCode =
+    L"void main() {"
+    L"String s = getStringPtr();"
+    L"print(s);"
+    L"}"
+    ;
+    
+    Program* rawProgram = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+    ASSERT_NE(nullptr, rawProgram);
+    int functionId = scriptCompiler->findFunction("main", "");
+    ASSERT_TRUE(functionId >= 0) << L"cannot find function 'main'";
+    
+    auto program = std::unique_ptr<CLamdaProg>(rootScope->detachScriptProgram(rawProgram));
+    program->runGlobalCode();
+    
+    ScriptRunner scriptRunner(program->getProgram(), functionId);
+    scriptRunner.runFunction(nullptr);
+}
+
+
+TEST(RealLifeCases, StringFromCharPtr3)
+{
+    CompilerSuite compiler;
+    compiler.initialize(1024);
+    GlobalScopeRef rootScope = compiler.getGlobalScope();
+    auto scriptCompiler = rootScope->getCompiler();
+    auto& basicTypes = scriptCompiler->getTypeManager()->getBasicTypes();
+    
+    // import custom libraries
+    // String library
+    includeRawStringToCompiler(scriptCompiler);
+    
+    FunctionRegisterHelper fb(scriptCompiler);
+    registerFunction<const char*>(fb, getStringPtr, "getStringPtr", "ref char", "");
+    registerFunction<void, const RawString&>(fb, print, "print", "void", "String&");
+    
+    auto ctor = registerFunction<void, RawString&, const char*>(fb, charPtrContructor, "constantConstructor","void", "ref String, ref char");
+    scriptCompiler->registConstructor(basicTypes.TYPE_RAWSTRING, ctor);
+    
+    scriptCompiler->beginUserLib();
+    
+    const wchar_t* scriptCode =
+    L"void main() {"
+    L"charptr = getStringPtr();"
+    L"String s = charptr;"
+    L"print(s);"
+    L"}"
+    ;
+    
+    Program* rawProgram = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+    ASSERT_NE(nullptr, rawProgram);
+    int functionId = scriptCompiler->findFunction("main", "");
+    ASSERT_TRUE(functionId >= 0) << L"cannot find function 'main'";
+    
+    auto program = std::unique_ptr<CLamdaProg>(rootScope->detachScriptProgram(rawProgram));
+    program->runGlobalCode();
+    
+    ScriptRunner scriptRunner(program->getProgram(), functionId);
+    scriptRunner.runFunction(nullptr);
+}
+
+TEST(RealLifeCases, StringFromCharPtr4)
+{
+    CompilerSuite compiler;
+    compiler.initialize(1024);
+    GlobalScopeRef rootScope = compiler.getGlobalScope();
+    auto scriptCompiler = rootScope->getCompiler();
+    auto& basicTypes = scriptCompiler->getTypeManager()->getBasicTypes();
+    
+    // import custom libraries
+    // String library
+    includeRawStringToCompiler(scriptCompiler);
+    
+    FunctionRegisterHelper fb(scriptCompiler);
+    registerFunction<const char*>(fb, getStringPtr, "getStringPtr", "ref char", "");
+    registerFunction<void, const RawString&>(fb, print, "print", "void", "String&");
+    
+    auto ctor = registerFunction<void, RawString&, int>(fb, intContructor, "constantConstructor","void", "ref String, int");
+    scriptCompiler->registConstructor(basicTypes.TYPE_RAWSTRING, ctor);
+    
+    scriptCompiler->beginUserLib();
+    
+    const wchar_t* scriptCode =
+    L"void main() {"
+    L"String s = 2;"
+    L"print(s);"
+    L"}"
+    ;
+    
+    Program* rawProgram = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+    ASSERT_NE(nullptr, rawProgram);
+    int functionId = scriptCompiler->findFunction("main", "");
+    ASSERT_TRUE(functionId >= 0) << L"cannot find function 'main'";
+    
+    auto program = std::unique_ptr<CLamdaProg>(rootScope->detachScriptProgram(rawProgram));
+    program->runGlobalCode();
+    
+    ScriptRunner scriptRunner(program->getProgram(), functionId);
+    scriptRunner.runFunction(nullptr);
 }

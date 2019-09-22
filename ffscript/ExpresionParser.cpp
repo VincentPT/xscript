@@ -3049,11 +3049,11 @@ namespace ffscript {
 				// check if param 1 is a variable and it is declared in expression...
 				if (param1->getType() == EXP_UNIT_ID_XOPERAND &&
 					(param1->getMask() & UMASK_DECLAREINEXPRESSION) != 0 &&
-					!ISFUNCTION(param2)
+					((!ISFUNCTION(param2) && param2->getReturnType() == param1->getReturnType()) || (param2->getReturnType() != param1->getReturnType()))
 					) {
-					// ...then it is must used constructor instead of default copy constructor if there is
-					// constructor for data type of the variable and param 2 is not a function
-					// because a function will return an object from inside of it, and this object is already construct
+                    // ...then it is must used constructor instead of default copy constructor if there is one of following cases:
+                    // case 1: param1 = param2 if param2 is not a function
+                    // case 2: param1 = param2 if param2 is a function but they have different return types
 					
 					auto newFunction = scriptCompiler->applyConstructor(param1, param2);
 
