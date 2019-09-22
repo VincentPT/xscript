@@ -1037,6 +1037,7 @@ namespace ffscript {
 		runtimeData->anoynymousInfo.data = malloc(_dataSize);
 		runtimeData->anoynymousInfo.targetOffset = _destDataOffset;
 		runtimeData->anoynymousInfo.dataSize = _dataSize;
+        runtimeData->info.type = RuntimeFunctionType::ScriptFunction;
 		memcpy_s(runtimeData->anoynymousInfo.data, _dataSize, dataAddress, _dataSize);
 	}
 }
