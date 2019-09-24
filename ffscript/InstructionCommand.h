@@ -186,6 +186,7 @@ public:
 		CallFuntion();
 		int getBeginParamOffset() const;
 		void setFunctionName(const std::string& functionName);
+		const std::string& getFunctionName();
 		virtual ~CallFuntion();		
 	};
 
@@ -203,7 +204,7 @@ private:
 	int _funtionInfoOffset;
 	int _paramSize;
 public:
-	void setCommandData(int funtionInfoOffset, int returnOffset, int beginParamOffset, int paramSize);
+	void setCommandData(int funtionInfoOffset, int returnOffset, int beginParamOffset, int paramSize, bool isRefFunction);
 	END_INSTRUCTION_COMMAND_DECLARE(FunctionForwarder);
 
 	////////////////////////////////////////////////////

@@ -16,22 +16,11 @@
 
 namespace ffscript {
 	std::string convertToAscii(const wchar_t* ws, size_t n) {
-		char stemp[MAX_FUNCTION_LENGTH + 1];
-		char* ctemp = stemp;
-		char* cmax = ctemp + n;
-		while (ctemp < cmax && (*ctemp++ = (char)*ws++));
-		*ctemp = 0;
-
-		return std::string(stemp);
+		return std::string(ws, ws + n);
 	}
 
 	std::string convertToAscii(const wchar_t* ws) {
-		char stemp[MAX_FUNCTION_LENGTH + 1];
-		char* ctemp = stemp;
-		while (*ctemp++ = (char)*ws++);
-		*ctemp = 0;
-
-		return std::string(stemp);
+		return std::string(ws, ws + wcslen(ws));
 	}
 
 	std::wstring convertToWstring(const std::string& s) {

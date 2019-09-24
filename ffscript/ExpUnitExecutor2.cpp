@@ -299,10 +299,12 @@ namespace ffscript {
 			functionCommandTree->pushCommandParam(paramCommand);
 		}
 		ExecutableUnitRef& paramUnit = expFunctionUnit->getChild(0);
-		auto functionInfoSize = scriptCompiler->getTypeSizeInStack(paramUnit->getReturnType().iType());
+		auto& functionType = paramUnit->getReturnType();
+		auto functionInfoSize = scriptCompiler->getTypeSizeInStack(functionType.iType());
 
 		auto runForwader = new FunctionForwarder();
-		runForwader->setCommandData(beginParamOffset, returnOffset, beginParamOffset + functionInfoSize, paramSize - functionInfoSize);
+		runForwader->setCommandData(beginParamOffset, returnOffset, beginParamOffset + functionInfoSize, paramSize - functionInfoSize,
+			(functionType.isSemiRefType()|| functionType.isRefType()));
 		originCommand = runForwader;
 
 		functionCommandTree->setCommand(originCommand);

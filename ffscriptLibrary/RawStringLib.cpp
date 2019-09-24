@@ -360,6 +360,11 @@ namespace ffscript {
 		return rwNew;
 	}
 
+	int stringLength(const RawString& s) {
+		return s.size;
+	}
+		
+
 	void includeRawStringToCompiler(ScriptCompiler* scriptCompiler) {
 		FunctionRegisterHelper fb(scriptCompiler);
 
@@ -482,5 +487,7 @@ namespace ffscript {
 
 		fb.registPredefinedOperators("+", "wstring&,double", "String", createFunctionDelegate<RawString, const wstring&, double>(addConstantWithVal));
 		fb.registPredefinedOperators("+", "double,wstring&", "String", createFunctionDelegate<RawString, double, const wstring&>(addValWithConsant));
+
+		fb.registFunction("length", "String&", createUserFunctionFactory<int, const RawString&>(scriptCompiler, "int", stringLength));
 	}
 }

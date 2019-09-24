@@ -386,6 +386,10 @@ namespace ffscript {
 		return _beginParamOffset;
 	}
 
+	const std::string& CallFuntion::getFunctionName() {
+		return _functionName;
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////
 	CallNativeFuntion::CallNativeFuntion() : _targetFunction(nullptr) {}
 	CallNativeFuntion::~CallNativeFuntion() {}
@@ -423,18 +427,24 @@ namespace ffscript {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
+#define IS_REF_FUNCTION_MASK 0x80000000
+#define FUNCTION_OFFSET() (_funtionInfoOffset & ~IS_REF_FUNCTION_MASK)
+#define IS_REF_FUNCTION() ((_funtionInfoOffset & IS_REF_FUNCTION_MASK) != 0)
 	FunctionForwarder::FunctionForwarder() {}
 	FunctionForwarder::~FunctionForwarder() {}
-	void FunctionForwarder::setCommandData(int funtionInfoOffset, int returnOffset, int beginParamOffset, int paramSize) {
+	void FunctionForwarder::setCommandData(int funtionInfoOffset, int returnOffset, int beginParamOffset, int paramSize, bool isRefFunction) {
 		setTargetOffset(returnOffset);
 		_beginParamOffset = beginParamOffset;
 		_funtionInfoOffset = funtionInfoOffset;
 		_paramSize = paramSize;
+		if (isRefFunction) {
+			_funtionInfoOffset |= IS_REF_FUNCTION_MASK;
+		}
 	}
 
 	void FunctionForwarder::buildCommandText(std::list<std::string>& strCommands) {
 		std::stringstream ss;
-		ss << "call ([" << _funtionInfoOffset << "], [" << _beginParamOffset << "]," << _paramSize << ", [" << getTargetOffset() << "])";
+		ss << "call " << (IS_REF_FUNCTION() ? "([*" : "([") << FUNCTION_OFFSET() << "], [" << _beginParamOffset << "]," << _paramSize << ", [" << getTargetOffset() << "])";
 		strCommands.emplace_back(ss.str());
 	}
 
@@ -443,9 +453,11 @@ namespace ffscript {
 		int currentOffset = context->getCurrentOffset();
 
 		//params if any follow by returnOffset
-		int functionInfoOffset = _funtionInfoOffset + currentOffset;
+		int functionInfoOffset = FUNCTION_OFFSET() + currentOffset;
 
-		RuntimeFunctionInfo* runtimeInfo = (RuntimeFunctionInfo*)context->getAbsoluteAddress(functionInfoOffset);
+		RuntimeFunctionInfo* runtimeInfo = IS_REF_FUNCTION() ?
+			*(RuntimeFunctionInfo**)context->getAbsoluteAddress(functionInfoOffset):
+			(RuntimeFunctionInfo*)context->getAbsoluteAddress(functionInfoOffset);
 		
 		if (runtimeInfo->info.type == RuntimeFunctionType::NativeFunction) {
 			CallNativeFuntion callNativeFunction;

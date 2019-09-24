@@ -53,7 +53,9 @@ namespace ffscript {
 
 #pragma region bitwise operators
 			template <class RT, class T1, class T2>
-			RT bitwise_and(T1 a, T2 b) { return a & b; }
+			RT bitwise_and(T1 a, T2 b) { 
+				return a & b; 
+			}
 
 			template <class RT, class T1, class T2>
 			RT bitwise_or (T1 a, T2 b) { return a | b; }
@@ -68,7 +70,9 @@ namespace ffscript {
 			RT bitwise_shiftLeft(T1 a, T2 b) { return a << b; }
 
 			template <class RT, class T1, class T2>
-			RT bitwise_shiftRight(T1 a, T2 b) { return a >> b; }
+			RT bitwise_shiftRight(T1 a, T2 b) { 
+				return a >> b; 
+			}
 #pragma endregion
 
 			template <class T>
