@@ -67,3 +67,5 @@ firefly.VC.VC.opendb
 /ffscript/Debug
 /ffscriptLibrary/Debug/ffscriptLibrary.tlog
 /ffscriptLibrary/Debug
+build/*
+gtest/conan/*

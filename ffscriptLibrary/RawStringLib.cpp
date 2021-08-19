@@ -360,6 +360,41 @@ namespace ffscript {
 		return rwNew;
 	}
 
+	RawString subString(const RawString& rws, int start, int count) {
+		if(start >= rws.size || start < 0) {
+			throw std::runtime_error("substring: start is out of range");
+		}
+
+		RawString rwNew;
+		if (count < 0) {
+			constantConstructor(rwNew, rws);
+			return rwNew;
+		}
+		if(start + count > rws.size) {
+			count = rws.size - start;
+		}
+
+		rwNew = allocRawString(count);
+		memcpy(rwNew.elms, rws.elms + start, rwNew.size * sizeof(RawChar));
+		rwNew.elms[rwNew.size] = 0;
+		
+		return rwNew;
+	}
+
+	int findString(const RawString& rws1, const RawString& rws2, int start) {
+		if(start >= rws1.size) {
+			return -1;
+		}
+		if(start < 0) {
+			throw std::runtime_error("findString: start is out of range");
+		}
+
+		auto res = wcsstr(rws1.elms + start, rws2.elms);
+		if(res == nullptr) return -1;
+		
+		return (int)(res - rws1.elms);
+	}
+
 	int stringLength(const RawString& s) {
 		return s.size;
 	}
@@ -489,5 +524,7 @@ namespace ffscript {
 		fb.registPredefinedOperators("+", "double,wstring&", "String", createFunctionDelegate<RawString, double, const wstring&>(addValWithConsant));
 
 		fb.registFunction("length", "String&", createUserFunctionFactory<int, const RawString&>(scriptCompiler, "int", stringLength));
+		fb.registFunction("subString", "String&,int,int", createUserFunctionFactory<RawString, const RawString&, int, int>(scriptCompiler, "String", subString));
+		fb.registFunction("findString", "String&,String&,int", createUserFunctionFactory<int, const RawString&, const RawString&, int>(scriptCompiler, "int", findString));
 	}
 }

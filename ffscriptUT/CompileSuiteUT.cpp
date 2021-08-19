@@ -846,6 +846,259 @@ TEST(CompileSuite, ConvertToString5)
 	freeRawString(*rws);
 }
 
+TEST(CompileSuite, testFindString1)
+{
+	CompilerSuite compiler;
+
+	//the code does not contain any global scope'code and only a variable
+	//so does not need global memory
+	compiler.initialize(8);
+	GlobalScopeRef rootScope = compiler.getGlobalScope();
+	auto scriptCompiler = rootScope->getCompiler();
+
+	includeRawStringToCompiler(scriptCompiler);
+	scriptCompiler->beginUserLib();
+
+	const wchar_t* scriptCode =
+		L"int foo() {"
+		L"	String s1 = \"Hello world!\";"
+		L"	String s2 = \"world\";"
+		L"	i = findString(s1,s2,0);"
+		L"	return i;"
+		L"}"
+		;
+	Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+	ASSERT_NE(nullptr, program);
+	int functionId = scriptCompiler->findFunction("foo", "");
+	EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
+
+	ScriptTask scriptTask(program);
+	scriptTask.runFunction(functionId, nullptr);
+	int* funcRes = (int*)scriptTask.getTaskResult();
+
+	EXPECT_EQ(6, *funcRes) << L"program can run but return wrong value";
+}
+
+TEST(CompileSuite, testFindString2)
+{
+	CompilerSuite compiler;
+
+	//the code does not contain any global scope'code and only a variable
+	//so does not need global memory
+	compiler.initialize(8);
+	GlobalScopeRef rootScope = compiler.getGlobalScope();
+	auto scriptCompiler = rootScope->getCompiler();
+
+	includeRawStringToCompiler(scriptCompiler);
+	scriptCompiler->beginUserLib();
+
+	const wchar_t* scriptCode =
+		L"int foo() {"
+		L"	String s1 = \"Hello world!\";"
+		L"	String s2 = \"world\";"
+		L"	i = findString(s1,s2,7);"
+		L"	return i;"
+		L"}"
+		;
+	Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+	ASSERT_NE(nullptr, program);
+	int functionId = scriptCompiler->findFunction("foo", "");
+	EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
+
+	ScriptTask scriptTask(program);
+	scriptTask.runFunction(functionId, nullptr);
+	int* funcRes = (int*)scriptTask.getTaskResult();
+
+	EXPECT_EQ(-1, *funcRes) << L"program can run but return wrong value";
+}
+
+TEST(CompileSuite, testFindString3)
+{
+	CompilerSuite compiler;
+
+	//the code does not contain any global scope'code and only a variable
+	//so does not need global memory
+	compiler.initialize(8);
+	GlobalScopeRef rootScope = compiler.getGlobalScope();
+	auto scriptCompiler = rootScope->getCompiler();
+
+	includeRawStringToCompiler(scriptCompiler);
+	scriptCompiler->beginUserLib();
+
+	const wchar_t* scriptCode =
+		L"int foo() {"
+		L"	String s1 = \"Hello world!\";"
+		L"	String s2 = \"world\";"
+		L"	i = findString(s1,s2,100);"
+		L"	return i;"
+		L"}"
+		;
+	Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+	ASSERT_NE(nullptr, program);
+	int functionId = scriptCompiler->findFunction("foo", "");
+	EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
+
+	ScriptTask scriptTask(program);
+	scriptTask.runFunction(functionId, nullptr);
+	int* funcRes = (int*)scriptTask.getTaskResult();
+
+	EXPECT_EQ(-1, *funcRes) << L"program can run but return wrong value";
+}
+
+TEST(CompileSuite, testFindString4)
+{
+	CompilerSuite compiler;
+
+	//the code does not contain any global scope'code and only a variable
+	//so does not need global memory
+	compiler.initialize(8);
+	GlobalScopeRef rootScope = compiler.getGlobalScope();
+	auto scriptCompiler = rootScope->getCompiler();
+
+	includeRawStringToCompiler(scriptCompiler);
+	scriptCompiler->beginUserLib();
+
+	const wchar_t* scriptCode =
+		L"int foo() {"
+		L"	String s1 = \"Hello world!\";"
+		L"	String s2 = \"world\";"
+		L"	i = findString(s1,s2,-1);"
+		L"	return i;"
+		L"}"
+		;
+	Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+	ASSERT_NE(nullptr, program);
+	int functionId = scriptCompiler->findFunction("foo", "");
+	EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
+
+	ScriptTask scriptTask(program);
+	EXPECT_THROW(scriptTask.runFunction(functionId, nullptr), std::exception);
+}
+
+TEST(CompileSuite, testSubString1)
+{
+	CompilerSuite compiler;
+
+	//the code does not contain any global scope'code and only a variable
+	//so does not need global memory
+	compiler.initialize(8);
+	GlobalScopeRef rootScope = compiler.getGlobalScope();
+	auto scriptCompiler = rootScope->getCompiler();
+
+	includeRawStringToCompiler(scriptCompiler);
+	scriptCompiler->beginUserLib();
+
+	const wchar_t* scriptCode =
+		L"String foo() {"
+		L"	String s = \"Hello world!\";"
+		L"	return subString(s,0,5);"
+		L"}"
+		;
+	Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+	ASSERT_NE(nullptr, program);
+	int functionId = scriptCompiler->findFunction("foo", "");
+	EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
+
+	ScriptTask scriptTask(program);
+	scriptTask.runFunction(functionId, nullptr);
+
+	RawString* rws = (RawString*)scriptTask.getTaskResult();
+	EXPECT_EQ(5, rws->size);
+	EXPECT_STREQ(L"Hello", rws->elms);
+
+	freeRawString(*rws);
+}
+
+TEST(CompileSuite, testSubString2)
+{
+	CompilerSuite compiler;
+
+	//the code does not contain any global scope'code and only a variable
+	//so does not need global memory
+	compiler.initialize(8);
+	GlobalScopeRef rootScope = compiler.getGlobalScope();
+	auto scriptCompiler = rootScope->getCompiler();
+
+	includeRawStringToCompiler(scriptCompiler);
+	scriptCompiler->beginUserLib();
+
+	const wchar_t* scriptCode =
+		L"String foo() {"
+		L"	String s = \"Hello world!\";"
+		L"	return subString(s,6,100);"
+		L"}"
+		;
+	Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+	ASSERT_NE(nullptr, program);
+	int functionId = scriptCompiler->findFunction("foo", "");
+	EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
+
+	ScriptTask scriptTask(program);
+	scriptTask.runFunction(functionId, nullptr);
+
+	RawString* rws = (RawString*)scriptTask.getTaskResult();
+	EXPECT_EQ(6, rws->size);
+	EXPECT_STREQ(L"world!", rws->elms);
+
+	freeRawString(*rws);
+}
+
+TEST(CompileSuite, testSubString3)
+{
+	CompilerSuite compiler;
+
+	//the code does not contain any global scope'code and only a variable
+	//so does not need global memory
+	compiler.initialize(8);
+	GlobalScopeRef rootScope = compiler.getGlobalScope();
+	auto scriptCompiler = rootScope->getCompiler();
+
+	includeRawStringToCompiler(scriptCompiler);
+	scriptCompiler->beginUserLib();
+
+	const wchar_t* scriptCode =
+		L"String foo() {"
+		L"	String s = \"Hello world!\";"
+		L"	return subString(s,60,1);"
+		L"}"
+		;
+	Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+	ASSERT_NE(nullptr, program);
+	int functionId = scriptCompiler->findFunction("foo", "");
+	EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
+
+	ScriptTask scriptTask(program);
+	EXPECT_THROW(scriptTask.runFunction(functionId, nullptr), std::exception);
+}
+
+TEST(CompileSuite, testSubString4)
+{
+	CompilerSuite compiler;
+
+	//the code does not contain any global scope'code and only a variable
+	//so does not need global memory
+	compiler.initialize(8);
+	GlobalScopeRef rootScope = compiler.getGlobalScope();
+	auto scriptCompiler = rootScope->getCompiler();
+
+	includeRawStringToCompiler(scriptCompiler);
+	scriptCompiler->beginUserLib();
+
+	const wchar_t* scriptCode =
+		L"String foo() {"
+		L"	String s = \"Hello world!\";"
+		L"	return subString(s,-1,1);"
+		L"}"
+		;
+	Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+	ASSERT_NE(nullptr, program);
+	int functionId = scriptCompiler->findFunction("foo", "");
+	EXPECT_TRUE(functionId >= 0) << L"cannot find function 'foo'";
+
+	ScriptTask scriptTask(program);
+	EXPECT_THROW(scriptTask.runFunction(functionId, nullptr), std::exception);
+}
+
 TEST(CompileSuite, TestHexNumber1)
 {
 	CompilerSuite compiler;
