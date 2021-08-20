@@ -69,9 +69,9 @@ namespace ffscript {
 	public:
 		ScriptScope(ScriptCompiler* scriptCompiler);
 		virtual ~ScriptScope();
-		Variable* findVariable(const std::string&);
-		Variable* registVariable(const std::string&);
-		Variable* registVariable();
+		virtual Variable* findVariable(const std::string&);
+		virtual Variable* registVariable(const std::string&);
+		virtual Variable* registVariable();
 		void removeVariable(Variable*);
 		Variable* registTempVariable(CommandUnitBuilder* parentUnit, int offset);
 		Variable* applyTemporaryVariableFor(CommandUnitBuilder* parentUnit, Variable* pVariable);
