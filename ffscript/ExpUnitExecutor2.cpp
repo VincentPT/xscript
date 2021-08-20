@@ -178,6 +178,7 @@ namespace ffscript {
 		}
 		const DFunction2Ref& nativeFunction = expFunctionUnit->getNative();
 		auto runNativeFuncFunc = new CallNativeFuntion();
+#ifndef FFSCRIPT_EXCLUDE_THREAD
 		if (expFunctionUnit->getType() == EXP_UNIT_ID_CREATE_THREAD) {
 			auto newFunction = (CreateThreadCommand*)nativeFunction->clone();
 			ExecutableUnitRef& functionObjectUnit = expFunctionUnit->getChild(0);
@@ -194,7 +195,10 @@ namespace ffscript {
 			newFunction->setCommandData(scriptCompiler->getTypeSize(functionReturnType), paramSize);
 			runNativeFuncFunc->setCommandData(returnOffset, beginParamOffset, DFunction2Ref(newFunction));
 		}
-		else {
+		else
+#endif //FFSCRIPT_EXCLUDE_THREAD
+		{
+
 			runNativeFuncFunc->setCommandData(returnOffset, beginParamOffset, nativeFunction);
 		}
 		runNativeFuncFunc->setFunctionName(expFunctionUnit->getName());
