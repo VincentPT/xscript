@@ -501,6 +501,7 @@ namespace ffscript {
 	}
 
 	/////////////////////////////////////////
+#ifndef FFSCRIPT_EXCLUDE_THREAD
 	CreateThreadCommand::CreateThreadCommand() : CreateThreadCommand(0,0) {}
 	CreateThreadCommand::CreateThreadCommand(int returnSize, int paramSize) : _returnSize(returnSize), _paramSize(paramSize) {}
 
@@ -576,7 +577,7 @@ namespace ffscript {
 		}
 		delete pThread;
 	}
-
+#endif //FFSCRIPT_EXCLUDE_THREAD
 	///
 	/// access to an element in static array
 	///

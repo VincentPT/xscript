@@ -179,6 +179,7 @@ namespace ffscript {
 	void runtimeFunctionInfoConstructByNull(RuntimeFunctionInfo* obj1, void*);
 	void runtimeFunctionInfoDestructor(RuntimeFunctionInfo* obj);
 
+#ifndef FFSCRIPT_EXCLUDE_THREAD
 	class CreateThreadCommand : public DFunction2 {
 		int _returnSize;
 		int _paramSize;
@@ -192,7 +193,7 @@ namespace ffscript {
 
 	void joinThread(THREAD_HANDLE);
 	void closeThread(THREAD_HANDLE);
-
+#endif //FFSCRIPT_EXCLUDE_THREAD
 	///
 	/// access to an element in static array
 	///

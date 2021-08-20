@@ -699,10 +699,11 @@ namespace ffscript {
 		scriptCompiler->setRuntimeInfoConstructor(f1);
 		scriptCompiler->setRuntimeInfoDestructor(f2);
 		//scriptCompiler->setRuntimeInfoCopyConstructor(f3);
-		
+#ifndef FFSCRIPT_EXCLUDE_THREAD
 		fb.registFunction("createThread", "function<void()>&", new BasicFunctionFactory<1>(EXP_UNIT_ID_CREATE_THREAD, FUNCTION_PRIORITY_USER_FUNCTION, "hthread", new CreateThreadCommand(), scriptCompiler), true);
 		fb.registFunction("joinThread", "hthread", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", createFunctionDelegate<void, THREAD_HANDLE>(joinThread), scriptCompiler), true);
 		fb.registFunction("closeThread", "hthread", new BasicFunctionFactory<1>(EXP_UNIT_ID_USER_FUNC, FUNCTION_PRIORITY_USER_FUNCTION, "void", createFunctionDelegate<void, THREAD_HANDLE>(closeThread), scriptCompiler), true);
+#endif //FFSCRIPT_EXCLUDE_THREAD
 #pragma endregion
 	}
 }
