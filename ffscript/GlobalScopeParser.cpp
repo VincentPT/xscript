@@ -34,6 +34,10 @@ namespace ffscript {
 		return _updateLaterMan;
 	}
 
+	StaticContext* GlobalScope::getContext() const {
+		return _staticContextRef.get();
+	}
+
 	const wchar_t* GlobalScope::parseStruct(const wchar_t* text, const wchar_t* end) {
 		const wchar_t* c;
 		const wchar_t* d;

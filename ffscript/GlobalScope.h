@@ -53,6 +53,7 @@ namespace ffscript {
 		virtual bool extractCode(Program* program);		
 		virtual int registScriptFunction(const std::string& name, const ScriptType& returnType, const std::vector<ScriptType>& paramTypes);
 		CodeUpdater* getCodeUpdater() const;
+		StaticContext* getContext() const;
 	protected:
 		const wchar_t* detectKeyword(const wchar_t* text, const wchar_t* end);
 		const wchar_t* parseStruct(const wchar_t* text, const wchar_t* end);
