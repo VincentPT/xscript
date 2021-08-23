@@ -92,12 +92,15 @@ namespace ffscript {
 		ScopeAutoRunList* getConstructorList();
 		MemberVariable* registMemberVariable(Variable* parent, const std::string&);
 		void updateVariableOffset();
+		void updateLastVariableOffset();
 
 		int getScopeSize() const;
 		int getDataSize() const;
 		int getBaseOffset() const;
 		void setBaseOffset(int offset);
 		void allocate(int size);
+		// ignore allocated buffer to run the code
+		void resetCodeSize();
 		virtual void addChild(ScriptScope* child);
 		ScriptCompiler* getCompiler() const;
 

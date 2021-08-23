@@ -376,16 +376,26 @@ namespace ffscript {
 	}
 
 	void ScriptScope::updateVariableOffset() {
-		int dataSize;
-
-		_scopeSize = SCOPE_INFO_SIZE;
+		_dataSize = SCOPE_INFO_SIZE;
 		for (auto it = _varibles.begin(); it != _varibles.end(); ++it) {
-			it->setOffset(_scopeSize + _scopeBaseOffset);
-			dataSize = it->getSize();
-			_scopeSize += dataSize;
+			it->setOffset(_dataSize + _scopeBaseOffset);
+			_dataSize += it->getSize();
 		}
 
-		_dataSize = _scopeSize;
+		_scopeSize = _dataSize;
+	}
+
+	void ScriptScope::updateLastVariableOffset() {
+		if(_varibles.size()) {
+			int oldDataSize = _dataSize;
+			if(_varibles.size() == 1) {
+				_dataSize = SCOPE_INFO_SIZE;
+			}
+			auto& lastVariable = _varibles.back();
+			lastVariable.setOffset(_dataSize + _scopeBaseOffset);
+			_dataSize += lastVariable.getSize();
+			_scopeSize += _dataSize - oldDataSize;
+		}
 	}
 
 	int ScriptScope::getScopeSize() const {
@@ -406,6 +416,11 @@ namespace ffscript {
 
 	void ScriptScope::allocate(int size) {
 		_scopeSize += size;
+	}
+
+	void ScriptScope::resetCodeSize() {
+		// ignore allocated buffer to run the code
+		_scopeSize = _dataSize;
 	}
 
 	DFunction2Ref ScriptScope::getProcessingFunc(const std::string& keyword) {
