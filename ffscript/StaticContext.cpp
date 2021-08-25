@@ -57,4 +57,9 @@ namespace ffscript {
 	void StaticContext::runDestructorCommands() {
 		runCommands(_destructorCommands);
 	}
+
+    void StaticContext::clearGlobalCommands() {
+        _globalCommands.clear();
+        _destructorCommands.clear();
+    }
 }

@@ -17,7 +17,7 @@
 #include "InstructionCommand.h"
 
 namespace ffscript {
-	Program::Program() : _commandCounter(0), _programCode(nullptr)
+	Program::Program() : _commandCounter(0), _programCode(nullptr), _programCodeEnd(nullptr)
 		//_moveOffset()
 	{
 		//_assitantFuncLib = (FuncLibraryRef)( new FuncLibrary() );
@@ -37,6 +37,15 @@ namespace ffscript {
 		}
 	}
 
+	void Program::resetExcutors() {
+		_commandContainer.clear();
+		_commandCounter = 0;
+	}
+
+	void Program::resetFunctionMap() {
+		_functionMap.clear();
+	}
+
 	void Program::convertToPlainCode() {
 		if (_commandCounter == 0) return;
 
@@ -45,6 +54,7 @@ namespace ffscript {
 			free(_programCode);
 		}
 		_programCode = (CommandPointer)malloc(sizeof(InstructionCommand*)* _commandCounter);
+		_programCodeEnd = _programCode + _commandCounter;
 		CommandPointer pCommand = _programCode;
 		auto end1 = _commandContainer.end();
 		for (auto it1 = _commandContainer.begin(); it1 != end1; ++it1) {
@@ -66,7 +76,7 @@ namespace ffscript {
 	}
 
 	CommandPointer Program::getEndCommand() const {
-		return _programCode + _commandCounter;
+		return _programCodeEnd;
 	}
 
 	CodeSegmentEntry* Program::getCode(Executor* pExcutor) {

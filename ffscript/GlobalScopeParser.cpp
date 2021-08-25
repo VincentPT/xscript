@@ -400,6 +400,8 @@ namespace ffscript {
 	bool GlobalScope::extractCode(Program* program) {
 
 		updateVariableOffset();
+		getCodeUpdater()->clearTask();
+        _staticContextRef->clearGlobalCommands();
 
 		int expressionCount = this->getCommandUnitCount();
 		std::list<Executor*> globalExcutors;

@@ -36,6 +36,10 @@ namespace ffscript {
 		_commandExecutorMap.clear();
 	}
 
+	void CodeUpdater::clearTask() {
+		_updateLaterList.clear();
+	}
+
 	void CodeUpdater::runUpdate() {
 		for (const DelegateRef& task : _updateLaterList) {
 			task->call();

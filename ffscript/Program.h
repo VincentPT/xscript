@@ -38,6 +38,7 @@ namespace ffscript {
 		//FuncLibraryRef _assitantFuncLib;
 
 		CommandPointer _programCode;
+		CommandPointer _programCodeEnd;
 		int _commandCounter;
 		//static Program* g_instance;
 	public:
@@ -45,6 +46,8 @@ namespace ffscript {
 		virtual ~Program();
 
 		void addExecutor(const ExecutorRef& executor);
+		void resetExcutors();
+		void resetFunctionMap();
 		//int findFunction(const std::string& name, const std::vector<int>& paramTypes);
 		//int mapFunction(const std::string& name, const std::vector<ScriptType>& paramTypes, int functionId);
 		//int mapDynamicFunction(const std::string& name, int functionId);

@@ -40,6 +40,7 @@ namespace ffscript {
 		void addUpdateLaterTask(const DelegateRef& task);
 		void runUpdate();
 		void clear();
+		void clearTask();
 		void setUpdateInfo(CommandUnitBuilder* commandUnit, Executor* executor);
 		void saveUpdateInfo(CommandUnitBuilder* commandUnit, Executor* executor);
 		Executor* findUpdateInfo(CommandUnitBuilder* commandUnit) const;

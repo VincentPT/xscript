@@ -34,6 +34,7 @@ namespace ffscript {
 		void addDestructorCommand(CommandPointer command);
 		virtual void run();
 		virtual void runDestructorCommands();
+        void clearGlobalCommands();
 	};
 
 	typedef std::shared_ptr<StaticContext> StaticContextRef;

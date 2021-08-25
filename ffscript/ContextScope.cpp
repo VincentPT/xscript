@@ -587,6 +587,8 @@ namespace ffscript {
 
 	bool ContextScope::extractCode(Program* program) {
 		updateVariableOffset();
+		_beginExecutor.reset();
+		_endExecutor.reset();
 
 		auto updateLaterMan = CodeUpdater::getInstance(this);
 
