@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.27)
 project(DynamicParameterFunction C CXX)
 
 SET (PROJECT_SOURCE_FILES

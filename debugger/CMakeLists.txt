@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.2)
+cmake_minimum_required(VERSION 3.27)
 project(ffdebugger)
 
 # add cinder dependency interface

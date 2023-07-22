@@ -219,27 +219,15 @@ First, you must define the function in C++ part.
  Install Conan version 1.9.2 or higher.
 
 ## Build steps
-1. Add dependencies remote repositories
- You may need to add 'bincrafters' into conan remote repositories.  
-```
-conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
-```
-2. Create dependencies directory.  
-change directory to 'gtest' and create 'conan' directory.
+1. create 'build' fodler and change directory to 'build' folder  
+2. Install dependencies  
+```conan install .. --output-folder=. --build=missing --settings=build_type=<Config>```
+3. Generate project files  
+```cmake .. -DCMAKE_TOOLCHAIN_FILE=./conan_toolchain```
+4. Build projects  
+```cmake --build . --config <Config>```
 
-3. Install dependencies.  
-This project uses multi-configurations on Windows, so use following commands.
-```
-conan install .. -g cmake_multi -s arch=x86 -s build_type=Release
-conan install .. -g cmake_multi -s arch=x86 -s build_type=Debug
-conan install .. -g cmake_multi -s arch=x86_64 -s build_type=Release
-conan install .. -g cmake_multi -s arch=x86_64 -s build_type=Debug
-```
-
-For Linux(test on Ubuntu 16.04).
-```
-conan install .. --build missing -s compiler.libcxx=libstdc++11
-```
+Config is 'Debug' or 'Release'
 
 # Road map
  Although this project take me alot of effort to build it from a simple expression parser algorithm to an usable scripting library that can compile, embeded an run the script, it needs more effort to make the library more easy to use, cross platform working...

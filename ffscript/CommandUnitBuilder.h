@@ -13,6 +13,7 @@
 
 #pragma once
 #include <memory>
+#include <string>
 #include "ffscript.h"
 #include "expresion_defs.h"
 #include "MemoryBlock.h" 

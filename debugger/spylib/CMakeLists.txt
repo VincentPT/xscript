@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.2)
+cmake_minimum_required (VERSION 3.27)
 project(spylib C CXX)
 
 SET (SOURCES spylib.cpp spylib.h spylib_interfaces.h FFObjectsCommands.cpp FFObjectsCommands.h)

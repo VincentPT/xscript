@@ -1,4 +1,6 @@
-cmake_minimum_required (VERSION 3.2)
+cmake_minimum_required(VERSION 3.27)
+cmake_policy(SET CMP0091 NEW)
+
 project(ffscript)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")

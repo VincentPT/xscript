@@ -1,8 +1,0 @@
-[requires]
-gtest/1.7.0@bincrafters/stable
-
-[generators]
-cmake
-
-[options]
-gtest:shared=False

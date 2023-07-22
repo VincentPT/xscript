@@ -1,14 +1,8 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.27)
 project(ffscriptUT C CXX)
 
-if (WIN32)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/../gtest/conan/conanbuildinfo_multi.cmake)
-else (WIN32)
-	include(${CMAKE_CURRENT_SOURCE_DIR}/../gtest/conan/conanbuildinfo.cmake)
-endif (WIN32)
-
-conan_basic_setup()
-
+list(PREPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
+find_package(GTest)
 
 SET (PROJECT_SOURCE_FILES
 	fftest.hpp
@@ -59,8 +53,8 @@ SET (PROJECT_SOURCE_FILES
 
 add_executable(${PROJECT_NAME} main.cpp ${PROJECT_SOURCE_FILES})
 
-conan_target_link_libraries(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} ffscriptLibrary)
+target_link_libraries(${PROJECT_NAME} gtest::gtest)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} ARGS -E copy "${CMAKE_CURRENT_SOURCE_DIR}/scripts/CreateSimpleString1.c955" "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} ARGS -E copy "${CMAKE_CURRENT_SOURCE_DIR}/scripts/ErrorInFunctionScope1.c955" "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
