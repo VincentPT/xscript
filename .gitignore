@@ -29,6 +29,7 @@ firefly.VC.db
 firefly.VC.VC.opendb
 
 # Executables
+CMakeUserPresets.json
 *.exe
 *.out
 *.app

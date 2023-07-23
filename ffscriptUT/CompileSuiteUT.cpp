@@ -285,7 +285,6 @@ TEST(CompileSuite, CompileSimpleProgram9)
 
 	EXPECT_TRUE(scriptCompiler->getLastError().length() > 0) << L"error message should not be empty";
 }
-
 TEST(CompileSuite, ProgramIndependent1)
 {
 	GlobalScopeRef rootScope;
@@ -1756,3 +1755,53 @@ TEST(CompileSuite, TestSemiRef07)
 	scriptTask.runFunction(functionId, paramBuffer);
 }
 #endif
+
+TEST(CompileSuite, MultiContext01)
+{
+	CompilerSuite compiler;
+
+	//the code does not contain any global scope'code and only a variable
+	//so does not need global memory
+	compiler.initialize(8);
+	GlobalScopeRef rootScope = compiler.getGlobalScope();
+	auto scriptCompiler = rootScope->getCompiler();
+	includeRawStringToCompiler(scriptCompiler);
+	// if not call bellow code, the RawString library will be remove when compile the program
+	scriptCompiler->beginUserLib();
+
+	const wchar_t* scriptCode =
+		L"int sum(int a, int b) {"
+		L"	int c = a + b;"
+		L"	return c;"
+		L"}"
+
+		L"int mul(int a, int b) {"
+		L"	int c = a * b;"
+		L"	return c;"
+		L"}"
+		;
+
+	Program* program = compiler.compileProgram(scriptCode, scriptCode + wcslen(scriptCode));
+
+	int functionId1 = scriptCompiler->findFunction("sum", "int, int");
+	EXPECT_TRUE(functionId1 >= 0) << L"cannot find function 'main'";
+
+	int functionId2 = scriptCompiler->findFunction("mul", "int, int");
+	EXPECT_TRUE(functionId2 >= 0) << L"cannot find function 'main'";
+
+	ScriptParamBuffer paramBuffer;
+	paramBuffer.addParam(3);
+	paramBuffer.addParam(2);
+
+	ScriptTask scriptTask1(program);
+	scriptTask1.runFunction(functionId1, paramBuffer);
+
+	ScriptTask scriptTask2(program);
+	scriptTask2.runFunction(functionId2, paramBuffer);
+
+	int* res1 = (int*)scriptTask1.getTaskResult();
+	int* res2 = (int*)scriptTask2.getTaskResult();
+
+	EXPECT_EQ(*res1, 5);
+	EXPECT_EQ(*res2, 6);
+}
