@@ -18,7 +18,7 @@
 #include "InstructionCommand.h"
 
 namespace ffscript {
-	static const int s_returnOffset = SCRIPT_FUNCTION_RETURN_STORAGE_OFFSET;
+	const int s_returnOffset = SCRIPT_FUNCTION_RETURN_STORAGE_OFFSET;
 
 	ScriptRunner::ScriptRunner(Program* program, int functionId) : _program(program), _functionInfo(nullptr)
 	{
@@ -64,6 +64,7 @@ namespace ffscript {
 		int backupOffset = context->getCurrentOffset();
 		auto backupScopeRuntimeData = context->getScopeRuntimeData();
 
+#if USE_FUNCTION_TREE
 		try {
 			_scriptInvoker->execute();
 		}
@@ -79,10 +80,15 @@ namespace ffscript {
 			throw;
 		}
 
-#if !USE_FUNCTION_TREE
-		_scriptContext->run();
+#else
+		context->run();
 #endif
-		context->scopeUnallocate(allocatedSize, 0);
+		if (!context->isAwating()) {
+			context->scopeUnallocate(allocatedSize, 0);
+		}
+		else {
+			context->setPendingUnallocated(allocatedSize);
+		}
 	}
 
 	void* ScriptRunner::getTaskResult() {

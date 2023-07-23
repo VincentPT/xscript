@@ -86,6 +86,8 @@ SET (HEADERS
 	./unitType.h
 	./template/TemplateBlock.hpp
 	./template/TemplateTypeManager.h
+	./ResumeEvent.h
+	./AsyncEnabledRunner.h
 )
 
 SET (SOURCES
@@ -146,6 +148,8 @@ SET (SOURCES
 	./Variable.cpp
 	./expressionunit.cpp
 	./template/TemplateTypeManager.cpp
+	./ResumeEvent.cpp
+	./AsyncEnabledRunner.cpp
 )
 
 source_group(delegates FILES ${DELEGATES})

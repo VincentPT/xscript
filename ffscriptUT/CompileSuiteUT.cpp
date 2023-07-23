@@ -1762,7 +1762,7 @@ TEST(CompileSuite, MultiContext01)
 
 	//the code does not contain any global scope'code and only a variable
 	//so does not need global memory
-	compiler.initialize(8);
+	compiler.initialize(32);
 	GlobalScopeRef rootScope = compiler.getGlobalScope();
 	auto scriptCompiler = rootScope->getCompiler();
 	includeRawStringToCompiler(scriptCompiler);
@@ -1792,6 +1792,8 @@ TEST(CompileSuite, MultiContext01)
 	ScriptParamBuffer paramBuffer;
 	paramBuffer.addParam(3);
 	paramBuffer.addParam(2);
+
+	rootScope->runGlobalCode();
 
 	ScriptTask scriptTask1(program);
 	scriptTask1.runFunction(functionId1, paramBuffer);

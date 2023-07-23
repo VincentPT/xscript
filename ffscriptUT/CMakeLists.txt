@@ -48,6 +48,7 @@ SET (PROJECT_SOURCE_FILES
 	VectorCompatibleUT.cpp
 	ffscriptUT.cpp
 	MethodUT.cpp
+	AsyncUT.cpp
 	RealLifeCases.cpp
 )
 

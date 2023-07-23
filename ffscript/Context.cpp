@@ -51,7 +51,8 @@ namespace ffscript {
 #ifdef REDUCE_SCOPE_ALLOCATING_MEM
 		_scopeCodeSize(RaiseStackOverflow),
 #endif
-		_contextStack(RaiseStackOverflow)
+		_contextStack(RaiseStackOverflow),
+		_levelStack(RaiseStackOverflow)
 	{
 		Context::makeCurrent(this);
 		_threadData = (unsigned char*)malloc(_dataSize);
@@ -68,7 +69,8 @@ namespace ffscript {
 #ifdef REDUCE_SCOPE_ALLOCATING_MEM
 		_scopeCodeSize(RaiseStackOverflow),
 #endif
-		_contextStack(RaiseStackOverflow)
+		_contextStack(RaiseStackOverflow),
+		_levelStack(RaiseStackOverflow)
 	{
 		Context::makeCurrent(this);
 		_isError = false;
@@ -260,7 +262,8 @@ namespace ffscript {
 		if (_isError) return;
 #endif
 		int stackLevel = _allocatedStack.getSize();
-		while (_currentCommand != _endCommand) {
+		_levelStack.push_front(stackLevel);
+		while (_currentCommand != _endCommand && _temporaryStopRequested == false) {
 			//const std::string& commandText = (*_currentCommand)->toString();
 			//Logger::WriteMessage((int_to_hex((size_t)_currentCommand) + " " + commandText).c_str());
 			(*_currentCommand)->execute();
@@ -274,6 +277,36 @@ namespace ffscript {
 				break;
 			}
 			_currentCommand++;
+		}
+		if (!_temporaryStopRequested) {
+			_levelStack.pop_front();
+		}
+	}
+
+	void Context::resumeFromPending() {
+		_temporaryStopRequested = false;
+		while(_levelStack.getSize() && _temporaryStopRequested == false) {
+			int stackLevel = _levelStack.front();
+			_levelStack.pop_front();
+			while (_currentCommand != _endCommand && _temporaryStopRequested == false) {
+				(*_currentCommand)->execute();
+
+				if (_allocatedStack.getSize() != stackLevel
+	#ifndef THROW_EXCEPTION_ON_ERROR
+					|| _isError
+	#endif 
+					)
+				{
+					break;
+				}
+				_currentCommand++;
+			}
+			if (_temporaryStopRequested) {
+				_levelStack.push_front(stackLevel);
+			}
+		}
+		if (!_temporaryStopRequested) {
+			this->scopeUnallocate(_pendingUnallocatedSize, 0);
 		}
 	}
 
@@ -295,5 +328,21 @@ namespace ffscript {
 				_currentCommand++;
 			}
 		}
+	}
+
+	void Context::awaitInterupt() {
+		_temporaryStopRequested = true;
+	}
+
+	bool Context::isAwating() {
+		return _temporaryStopRequested;
+	}
+
+	void Context::setPendingUnallocated(unsigned int scopeDataSize) {
+		_pendingUnallocatedSize = scopeDataSize;
+	}
+
+	unsigned int Context::getPendingUnallocated() {
+		return _pendingUnallocatedSize;
 	}
 }

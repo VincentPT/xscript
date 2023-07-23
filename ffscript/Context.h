@@ -33,6 +33,7 @@ namespace ffscript {
 
 	typedef FFStack<unsigned int, 4096> ScopeAllocatedStack;
 	typedef FFStack<ContextInfo, 4096> ContextStack;
+	typedef FFStack<int, 4096> LevelStack;
 
 	class Context
 	{
@@ -50,6 +51,9 @@ namespace ffscript {
 		ScopeAllocatedStack _scopeCodeSize;
 #endif
 		ContextStack _contextStack;
+		LevelStack _levelStack;
+		bool _temporaryStopRequested = false;
+		unsigned int _pendingUnallocatedSize = 0;
 	public:
 		Context(unsigned char* threadData, unsigned int bufferSize);
 		Context(unsigned int stackSize);
@@ -81,6 +85,11 @@ namespace ffscript {
 
 		virtual void run();
 		virtual void runFunctionScript();
+		void resumeFromPending();
+		void awaitInterupt();
+		bool isAwating();
+		void setPendingUnallocated(unsigned int scopeDataSize);
+		unsigned int getPendingUnallocated();
 
 		static Context* getCurrent();
 		static void makeCurrent(Context* context);
